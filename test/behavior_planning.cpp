@@ -35,6 +35,8 @@
 //	  ASSERT_FLOAT_EQ((10.0f + 2.0f) * 3.0f, 10.0f * 3.0f + 2.0f * 3.0f)
 //}
 //=======================================================================================================================================================
+#include <memory>
+#include <string>
 #include "gtest/gtest.h"
 
 // A google test function (uncomment the next function, add code and
@@ -42,3 +44,63 @@
 // TEST(TestGroupName, TestName) {
 // TODO: Add your test code here
 //}
+using Command = std::string;
+
+
+class Behavior {
+public:
+    using Ptr = std::shared_ptr<Behavior>;
+
+    Behavior(const std::string& name = "Behavior") : name_{name} {
+    }
+
+    virtual Command getCommand() = 0;
+    virtual bool checkInvocationCondition() const {
+        return false;
+    }
+    virtual bool checkCommitmentCondition() const {
+        return false;
+    }
+    virtual void gainControl() {
+    }
+    virtual void loseControl() {
+    }
+
+    const std::string name_;
+};
+
+
+class DummyBehavior : public Behavior {
+public:
+    DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
+
+    Command getCommand() override {
+        return name_;
+    }
+    bool checkInvocationCondition() const override {
+        return invocationCondition_;
+    }
+    bool checkCommitmentCondition() const override {
+        return commitmentCondition_;
+    }
+
+
+    bool invocationCondition_;
+    bool commitmentCondition_;
+};
+
+class DummyBehaviorTest : public ::testing::Test {
+protected:
+    DummyBehavior testBehaviorTrue{true, true};
+
+    Command expected_command{"DummyBehavior"};
+};
+
+TEST_F(DummyBehaviorTest, BasicInterface) {
+    EXPECT_EQ(expected_command, testBehaviorTrue.getCommand());
+    EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition());
+    EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition());
+    EXPECT_NO_THROW(testBehaviorTrue.gainControl());
+    EXPECT_NO_THROW(testBehaviorTrue.loseControl());
+}
