@@ -35,6 +35,7 @@
 //	  ASSERT_FLOAT_EQ((10.0f + 2.0f) * 3.0f, 10.0f * 3.0f + 2.0f * 3.0f)
 //}
 //=======================================================================================================================================================
+#include <map>
 #include <memory>
 #include <string>
 #include <boost/optional.hpp>
@@ -222,4 +223,147 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
     EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+}
+
+
+class CostArbitrator : public Behavior {
+public:
+    struct CostEstimator {
+        CostEstimator(const double& cost) : cost_{cost} {};
+        double operator()() {
+            return cost_;
+        }
+        double cost_;
+    };
+
+    CostArbitrator(const std::string& name = "CostArbitrator") : Behavior(name){};
+
+    void addOption(const Behavior::Ptr& behavior, const bool interruptable, const CostEstimator& costEstimator) {
+        behaviorOptions_.push_back({behavior, interruptable, costEstimator});
+    }
+
+    Command getCommand() override {
+        if (activeBehavior_) {
+            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
+                return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+            } else {
+                behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+            }
+        }
+
+        activateNextBehavior();
+        return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+    }
+
+    bool checkInvocationCondition() const override {
+        for (auto& option : behaviorOptions_) {
+            if (option.behavior->checkInvocationCondition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool checkCommitmentCondition() const override {
+        if (activeBehavior_) {
+            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
+                return true;
+            } else {
+                return checkInvocationCondition();
+            }
+        }
+        return false;
+    }
+
+    virtual void gainControl() override {
+    }
+
+    virtual void loseControl() override {
+        if (activeBehavior_) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+        }
+        activeBehavior_ = boost::none;
+    }
+
+
+private:
+    struct Option {
+        Behavior::Ptr behavior;
+        bool interruptable;
+        CostEstimator costEstimator;
+    };
+
+    std::vector<Option> behaviorOptions_;
+    boost::optional<int> activeBehavior_;
+
+    void activateNextBehavior() {
+        double costOfBestOption = std::numeric_limits<double>::max();
+        boost::optional<int> bestOption;
+
+        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
+            Option& option = behaviorOptions_.at(i);
+            if (option.behavior->checkInvocationCondition()) {
+
+                double cost = option.costEstimator();
+
+                if (cost < costOfBestOption) {
+                    costOfBestOption = cost;
+                    bestOption = i;
+                }
+            }
+        }
+
+        if (!bestOption) {
+            throw std::runtime_error("No behavior with true invocation condition found!");
+        }
+
+        activeBehavior_ = bestOption;
+        behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+    }
+};
+
+
+class CostArbitratorTest : public ::testing::Test {
+protected:
+    Behavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
+    Behavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
+    Behavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
+
+    std::map<std::string, double> costMap{{"low_cost", 0}, {"mid_cost", 1}, {"high_cost", 2}};
+
+    CostArbitrator testCostArbitrator;
+};
+
+
+TEST_F(CostArbitratorTest, BasicFunctionality) {
+    // if there are no options yet -> the invocationCondition should be false
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
+    testCostArbitrator.addOption(testBehaviorLowCost, true, CostArbitrator::CostEstimator(costMap.at("low_cost")));
+    testCostArbitrator.addOption(testBehaviorLowCost, true, CostArbitrator::CostEstimator(costMap.at("low_cost")));
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+
+    testCostArbitrator.addOption(testBehaviorHighCost, true, CostArbitrator::CostEstimator(costMap.at("high_cost")));
+    testCostArbitrator.addOption(testBehaviorMidCost, true, CostArbitrator::CostEstimator(costMap.at("mid_cost")));
+
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+
+    testCostArbitrator.gainControl();
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = false;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+
+    // high_cost behavior is interruptable -> mid_cost should become active again
+    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = true;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
 }
