@@ -37,6 +37,7 @@
 //=======================================================================================================================================================
 #include <memory>
 #include <string>
+#include <boost/optional.hpp>
 #include "gtest/gtest.h"
 
 // A google test function (uncomment the next function, add code and
@@ -103,4 +104,110 @@ TEST_F(DummyBehaviorTest, BasicInterface) {
     EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition());
     EXPECT_NO_THROW(testBehaviorTrue.gainControl());
     EXPECT_NO_THROW(testBehaviorTrue.loseControl());
+}
+
+class PriorityArbitrator : public Behavior {
+public:
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Behavior(name){};
+
+    void addOption(const Behavior::Ptr& behavior, const bool interruptable) {
+        behaviorOptions_.push_back({behavior, interruptable});
+    }
+    Command getCommand() override {
+        if (activeBehavior_) {
+            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
+                return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+            } else {
+                behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+            }
+        }
+
+        activateNextBehavior();
+        return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+    }
+
+    bool checkInvocationCondition() const override {
+        for (auto& option : behaviorOptions_) {
+            if (option.behavior->checkInvocationCondition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool checkCommitmentCondition() const override {
+        if (activeBehavior_) {
+            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
+                return true;
+            } else {
+                checkInvocationCondition();
+            }
+        }
+        return false;
+    }
+
+    virtual void gainControl() override {
+    }
+
+    virtual void loseControl() override {
+        if (activeBehavior_) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+        }
+        activeBehavior_ = boost::none;
+    }
+
+
+private:
+    struct Option {
+        Behavior::Ptr behavior;
+        bool interruptable;
+    };
+
+    std::vector<Option> behaviorOptions_;
+    boost::optional<int> activeBehavior_;
+
+    void activateNextBehavior() {
+        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
+            Option& option = behaviorOptions_.at(i);
+            if (option.behavior->checkInvocationCondition()) {
+                activeBehavior_ = i;
+                option.behavior->gainControl();
+                return;
+            }
+        }
+        if (!activeBehavior_) {
+            throw std::runtime_error("No behavior with true invocation condition found!");
+        }
+    }
+};
+
+class PriorityArbitratorTest : public ::testing::Test {
+protected:
+    Behavior::Ptr testBehaviorFalseFalse = std::make_shared<DummyBehavior>(false, false, "FalseFalse");
+    Behavior::Ptr testBehaviorTrueFalse = std::make_shared<DummyBehavior>(true, false, "TrueFalse");
+    Behavior::Ptr testBehaviorTrueTrue = std::make_shared<DummyBehavior>(true, true, "TrueTrue");
+
+
+    PriorityArbitrator testPriorityArbitrator;
+};
+
+
+TEST_F(PriorityArbitratorTest, BasicFunctionality) {
+    // if there are no options yet-> the invocationCondition should be false
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
+    testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
+    testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+
+    testPriorityArbitrator.addOption(testBehaviorTrueFalse, true);
+    testPriorityArbitrator.addOption(testBehaviorTrueTrue, true);
+
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+
+    testPriorityArbitrator.gainControl();
+    
+    EXPECT_EQ("TrueFalse", testPriorityArbitrator.getCommand());
 }
