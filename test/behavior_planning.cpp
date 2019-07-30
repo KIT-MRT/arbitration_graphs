@@ -140,7 +140,7 @@ public:
             if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
                 return true;
             } else {
-                checkInvocationCondition();
+                return checkInvocationCondition();
             }
         }
         return false;
