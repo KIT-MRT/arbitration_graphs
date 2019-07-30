@@ -113,6 +113,7 @@ public:
     void addOption(const Behavior::Ptr& behavior, const bool interruptable) {
         behaviorOptions_.push_back({behavior, interruptable});
     }
+
     Command getCommand() override {
         if (activeBehavior_) {
             if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
@@ -192,7 +193,7 @@ protected:
 
 
 TEST_F(PriorityArbitratorTest, BasicFunctionality) {
-    // if there are no options yet-> the invocationCondition should be false
+    // if there are no options yet -> the invocationCondition should be false
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
@@ -204,10 +205,21 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     testPriorityArbitrator.addOption(testBehaviorTrueTrue, true);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     testPriorityArbitrator.gainControl();
-    
     EXPECT_EQ("TrueFalse", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("TrueFalse", testPriorityArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorTrueFalse.get())->invocationCondition_ = false;
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorTrueFalse.get())->invocationCondition_ = true;
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
 }
