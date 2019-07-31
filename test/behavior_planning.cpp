@@ -349,12 +349,12 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, true, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, false, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, false, cost_estimator);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
 
@@ -370,10 +370,10 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
 
-    // high_cost behavior is interruptable -> mid_cost should become active again
+    // high_cost behavior is not interruptable -> high_cost should stay active
     dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
 }
