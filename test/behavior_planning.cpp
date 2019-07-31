@@ -231,9 +231,7 @@ public:
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
 
-        virtual double estimateCost(const Command& command) {
-            return std::numeric_limits<double>::max();
-        }
+        virtual double estimateCost(const Command& command) = 0;
     };
 
     CostArbitrator(const std::string& name = "CostArbitrator") : Behavior(name){};
@@ -340,6 +338,7 @@ protected:
     Behavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 1}, {"high_cost", 2}};
+    CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
     CostArbitrator testCostArbitrator;
 };
@@ -350,12 +349,12 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, true, std::make_shared<CostEstimatorFromCostMap>(costMap));
-    testCostArbitrator.addOption(testBehaviorLowCost, true, std::make_shared<CostEstimatorFromCostMap>(costMap));
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, true, std::make_shared<CostEstimatorFromCostMap>(costMap));
-    testCostArbitrator.addOption(testBehaviorMidCost, true, std::make_shared<CostEstimatorFromCostMap>(costMap));
+    testCostArbitrator.addOption(testBehaviorHighCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, true, cost_estimator);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
 
