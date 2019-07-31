@@ -241,15 +241,28 @@ public:
     }
 
     Command getCommand() override {
-        if (activeBehavior_) {
-            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
-                return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
+        bool activeBehaviorCanBeContinued =
+            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+
+        if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
+            boost::optional<int> bestOption = findBestOption();
+
+            if (bestOption) {
+                if (!activeBehavior_) {
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                } else if (*bestOption != *activeBehavior_) {
+                    behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                }
             } else {
-                behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
+                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
-
-        activateNextBehavior();
         return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
     }
 
@@ -293,14 +306,26 @@ private:
     std::vector<Option> behaviorOptions_;
     boost::optional<int> activeBehavior_;
 
-    void activateNextBehavior() {
+    /*!
+     * Find behavior option with lowest cost and true invocation condition
+     *
+     * @param checkCommitmentOfActiveBehavior   Should the currently active behavior also be considered if it has
+     *                                          true commitment condition, even if its invocation condition is false?
+     * @return                                  Applicable option with lowest costs
+     */
+    boost::optional<int> findBestOption() {
         double costOfBestOption = std::numeric_limits<double>::max();
         boost::optional<int> bestOption;
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             Option& option = behaviorOptions_.at(i);
-            if (option.behavior->checkInvocationCondition()) {
 
+            bool isActive = activeBehavior_ && (i == *activeBehavior_);
+            bool isActiveAndCanBeContinued =
+                isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+            if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
+                //                bool isActive = activeBehavior_ && (i == activeBehavior_); /todo add option to weight
+                //                active behavior
                 double cost = option.costEstimator->estimateCost(option.behavior->getCommand());
 
                 if (cost < costOfBestOption) {
@@ -309,13 +334,7 @@ private:
                 }
             }
         }
-
-        if (!bestOption) {
-            throw std::runtime_error("No behavior with true invocation condition found!");
-        }
-
-        activeBehavior_ = bestOption;
-        behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+        return bestOption;
     }
 };
 
@@ -376,4 +395,39 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+}
+
+
+TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
+    // if there are no options yet -> the invocationCondition should be false
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+
+    testCostArbitrator.addOption(testBehaviorHighCost, true, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, true, cost_estimator);
+
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+
+    testCostArbitrator.gainControl();
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = false;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+
+    // high_cost behavior is interruptable -> mid_cost should become active again
+    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = true;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
 }
