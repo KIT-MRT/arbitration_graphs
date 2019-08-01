@@ -184,9 +184,9 @@ private:
 
 class PriorityArbitratorTest : public ::testing::Test {
 protected:
-    Behavior::Ptr testBehaviorFalseFalse = std::make_shared<DummyBehavior>(false, false, "FalseFalse");
-    Behavior::Ptr testBehaviorTrueFalse = std::make_shared<DummyBehavior>(true, false, "TrueFalse");
-    Behavior::Ptr testBehaviorTrueTrue = std::make_shared<DummyBehavior>(true, true, "TrueTrue");
+    Behavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
+    Behavior::Ptr testBehaviorMidPriority = std::make_shared<DummyBehavior>(true, false, "MidPriority");
+    Behavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
 
 
     PriorityArbitrator testPriorityArbitrator;
@@ -199,32 +199,32 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
-    testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, false);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, false);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
-    testPriorityArbitrator.addOption(testBehaviorTrueFalse, true);
-    testPriorityArbitrator.addOption(testBehaviorTrueTrue, true);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, false);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, false);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     testPriorityArbitrator.gainControl();
-    EXPECT_EQ("TrueFalse", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("TrueFalse", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorTrueFalse.get())->invocationCondition_ = false;
+    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorTrueFalse.get())->invocationCondition_ = true;
+    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("TrueTrue", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
 }
 
 
