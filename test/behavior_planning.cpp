@@ -72,7 +72,7 @@ public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{0} {};
 
     Command getCommand() override {
         return name_;
@@ -83,10 +83,13 @@ public:
     bool checkCommitmentCondition() const override {
         return commitmentCondition_;
     }
-
+    virtual void loseControl() override {
+        loseControlCounter_++;
+    }
 
     bool invocationCondition_;
     bool commitmentCondition_;
+    int loseControlCounter_;
 };
 
 class DummyBehaviorTest : public ::testing::Test {
@@ -232,14 +235,24 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     testPriorityArbitrator.gainControl();
+
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorMidPriority->loseControlCounter_);
+
+    // testBehaviorMidPriority.loseControl() should be called within getCommand since commitment condition is false
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ(1, testBehaviorMidPriority->loseControlCounter_);
 
     testBehaviorMidPriority->invocationCondition_ = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
+
+    // testBehaviorLowPriority.loseControl() should NOT be called within getCommand since commitment condition is true
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
 
     testBehaviorMidPriority->invocationCondition_ = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
@@ -445,13 +458,19 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
 
     testCostArbitrator.gainControl();
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorMidCost->loseControlCounter_);
+
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ(1, testBehaviorMidCost->loseControlCounter_);
 
     testBehaviorMidCost->invocationCondition_ = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
 
     // high_cost behavior is not interruptable -> high_cost should stay active
     testBehaviorMidCost->invocationCondition_ = true;
