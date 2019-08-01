@@ -113,9 +113,15 @@ public:
     }
 
     Command getCommand() override {
-        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
         bool activeBehaviorCanBeContinued =
             activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+
+        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+            activeBehavior_ = boost::none;
+        }
+
+        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
             boost::optional<int> bestOption = findBestOption();
@@ -293,9 +299,15 @@ public:
     }
 
     Command getCommand() override {
-        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
         bool activeBehaviorCanBeContinued =
             activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+
+        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+            activeBehavior_ = boost::none;
+        }
+
+        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
             boost::optional<int> bestOption = findBestOption();
