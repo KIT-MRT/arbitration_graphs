@@ -302,7 +302,7 @@ public:
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
 
-        virtual double estimateCost(const Command& command) = 0;
+        virtual double estimateCost(const Command& command, const bool isActive) = 0;
     };
 
     CostArbitrator(const std::string& name = "CostArbitrator") : Behavior(name){};
@@ -399,9 +399,7 @@ private:
             bool isActiveAndCanBeContinued =
                 isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
             if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
-                //                bool isActive = activeBehavior_ && (i == activeBehavior_); /todo add option to weight
-                //                active behavior
-                double cost = option.costEstimator->estimateCost(option.behavior->getCommand());
+                double cost = option.costEstimator->estimateCost(option.behavior->getCommand(), isActive);
 
                 if (cost < costOfBestOption) {
                     costOfBestOption = cost;
@@ -416,13 +414,20 @@ private:
 struct CostEstimatorFromCostMap : public CostArbitrator::CostEstimator {
     using CostMap = std::map<Command, double>;
 
-    CostEstimatorFromCostMap(const CostMap& costMap) : costMap_{costMap} {};
-    virtual double estimateCost(const Command& command) override {
-        return costMap_.at(command);
+    CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
+            : costMap_{costMap}, activationCosts_{activationCosts} {};
+
+    virtual double estimateCost(const Command& command, const bool isActive) override {
+        if (isActive) {
+            return costMap_.at(command);
+        } else {
+            return costMap_.at(command) + activationCosts_;
+        }
     }
 
 private:
     CostMap costMap_;
+    double activationCosts_;
 };
 
 class CostArbitratorTest : public ::testing::Test {
@@ -433,6 +438,8 @@ protected:
 
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 1}, {"high_cost", 2}};
     CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
+    CostEstimatorFromCostMap::Ptr cost_estimator_with_activation_costs =
+        std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
     CostArbitrator testCostArbitrator;
 };
@@ -471,6 +478,44 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
+
+    // high_cost behavior is not interruptable -> high_cost should stay active
+    testBehaviorMidCost->invocationCondition_ = true;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+}
+
+
+TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivationCosts) {
+    // if there are no options yet -> the invocationCondition should be false
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator_with_activation_costs);
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+
+    testCostArbitrator.addOption(testBehaviorHighCost, true, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorMidCost, true, cost_estimator_with_activation_costs);
+
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+
+    testCostArbitrator.gainControl();
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+
+    testBehaviorMidCost->invocationCondition_ = false;
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
 
     // high_cost behavior is not interruptable -> high_cost should stay active
     testBehaviorMidCost->invocationCondition_ = true;
