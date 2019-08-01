@@ -196,11 +196,13 @@ protected:
 TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
     testPriorityArbitrator.addOption(testBehaviorFalseFalse, true);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     testPriorityArbitrator.addOption(testBehaviorTrueFalse, true);
     testPriorityArbitrator.addOption(testBehaviorTrueTrue, true);
@@ -364,11 +366,13 @@ protected:
 TEST_F(CostArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
     testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     testCostArbitrator.addOption(testBehaviorHighCost, false, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, false, cost_estimator);
@@ -399,11 +403,13 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
 TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     // if there are no options yet -> the invocationCondition should be false
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
     testCostArbitrator.addOption(testBehaviorLowCost, true, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     testCostArbitrator.addOption(testBehaviorHighCost, true, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, true, cost_estimator);
