@@ -116,15 +116,28 @@ public:
     }
 
     Command getCommand() override {
-        if (activeBehavior_) {
-            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
-                return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
+        bool activeBehaviorCanBeContinued =
+            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+
+        if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
+            boost::optional<int> bestOption = findBestOption();
+
+            if (bestOption) {
+                if (!activeBehavior_) {
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                } else if (*bestOption != *activeBehavior_) {
+                    behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                }
             } else {
-                behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
+                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
-
-        activateNextBehavior();
         return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
     }
 
@@ -164,22 +177,27 @@ private:
         bool interruptable;
     };
 
-    std::vector<Option> behaviorOptions_;
-    boost::optional<int> activeBehavior_;
-
-    void activateNextBehavior() {
+    /*!
+     * Find behavior option with highest priority and true invocation condition
+     *
+     * @return  Applicable option with highest priority (can also be the currently active option)
+     */
+    boost::optional<int> findBestOption() {
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             Option& option = behaviorOptions_.at(i);
-            if (option.behavior->checkInvocationCondition()) {
-                activeBehavior_ = i;
-                option.behavior->gainControl();
-                return;
+
+            bool isActive = activeBehavior_ && (i == *activeBehavior_);
+            bool isActiveAndCanBeContinued =
+                isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+            if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
+                return i;
             }
         }
-        if (!activeBehavior_) {
-            throw std::runtime_error("No behavior with true invocation condition found!");
-        }
+        return boost::none;
     }
+
+    std::vector<Option> behaviorOptions_;
+    boost::optional<int> activeBehavior_;
 };
 
 class PriorityArbitratorTest : public ::testing::Test {
@@ -225,6 +243,41 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+}
+
+
+TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
+    // if there are no options yet -> the invocationCondition should be false
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, true);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, true);
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, true);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, true);
+
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+
+    testPriorityArbitrator.gainControl();
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = false;
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+
+    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = true;
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 }
 
 
