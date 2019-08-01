@@ -309,9 +309,7 @@ private:
     /*!
      * Find behavior option with lowest cost and true invocation condition
      *
-     * @param checkCommitmentOfActiveBehavior   Should the currently active behavior also be considered if it has
-     *                                          true commitment condition, even if its invocation condition is false?
-     * @return                                  Applicable option with lowest costs
+     * @return  Applicable option with lowest costs (can also be the currently active option)
      */
     boost::optional<int> findBestOption() {
         double costOfBestOption = std::numeric_limits<double>::max();
