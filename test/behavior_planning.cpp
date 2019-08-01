@@ -69,6 +69,8 @@ public:
 
 class DummyBehavior : public Behavior {
 public:
+    using Ptr = std::shared_ptr<DummyBehavior>;
+
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
@@ -197,9 +199,9 @@ private:
 
 class PriorityArbitratorTest : public ::testing::Test {
 protected:
-    Behavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
-    Behavior::Ptr testBehaviorMidPriority = std::make_shared<DummyBehavior>(true, false, "MidPriority");
-    Behavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
+    DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
+    DummyBehavior::Ptr testBehaviorMidPriority = std::make_shared<DummyBehavior>(true, false, "MidPriority");
+    DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
 
 
     PriorityArbitrator testPriorityArbitrator;
@@ -227,13 +229,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = false;
+    testBehaviorMidPriority->invocationCondition_ = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = true;
+    testBehaviorMidPriority->invocationCondition_ = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
@@ -262,13 +264,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = false;
+    testBehaviorMidPriority->invocationCondition_ = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidPriority.get())->invocationCondition_ = true;
+    testBehaviorMidPriority->invocationCondition_ = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
@@ -400,9 +402,9 @@ private:
 
 class CostArbitratorTest : public ::testing::Test {
 protected:
-    Behavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
-    Behavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
-    Behavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
+    DummyBehavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
+    DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
+    DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 1}, {"high_cost", 2}};
     CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
@@ -433,14 +435,14 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = false;
+    testBehaviorMidCost->invocationCondition_ = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
 
     // high_cost behavior is not interruptable -> high_cost should stay active
-    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = true;
+    testBehaviorMidCost->invocationCondition_ = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
@@ -470,14 +472,14 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
 
-    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = false;
+    testBehaviorMidCost->invocationCondition_ = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
 
     // high_cost behavior is interruptable -> mid_cost should become active again
-    dynamic_cast<DummyBehavior*>(testBehaviorMidCost.get())->invocationCondition_ = true;
+    testBehaviorMidCost->invocationCondition_ = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
