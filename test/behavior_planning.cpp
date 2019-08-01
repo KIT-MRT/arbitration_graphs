@@ -41,11 +41,6 @@
 #include <boost/optional.hpp>
 #include "gtest/gtest.h"
 
-// A google test function (uncomment the next function, add code and
-// change the names TestGroupName and TestName)
-// TEST(TestGroupName, TestName) {
-// TODO: Add your test code here
-//}
 using Command = std::string;
 
 
