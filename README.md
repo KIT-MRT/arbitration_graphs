@@ -10,4 +10,4 @@ behavior planning based on simple atomic behaviors that are combined to more com
 - [ ] (optional) use iterator instead of index for activeBehavior_  
       `behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();` would look like  
       `activeBehavior_->behavior->checkCommitmentCondition();`
-- [ ] template Command type
+- [x] template Command type
