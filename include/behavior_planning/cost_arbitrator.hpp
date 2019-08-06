@@ -1,0 +1,127 @@
+#pragma once
+
+#include <memory>
+#include <boost/optional.hpp>
+
+#include "behavior.hpp"
+
+
+namespace behavior_planning {
+
+template <typename CommandT>
+class CostArbitrator : public Behavior<CommandT> {
+public:
+    struct CostEstimator {
+        using Ptr = std::shared_ptr<CostEstimator>;
+
+        virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
+    };
+
+    CostArbitrator(const std::string& name = "CostArbitrator") : Behavior<CommandT>(name){};
+
+    void addOption(const typename Behavior<CommandT>::Ptr& behavior,
+                   const bool interruptable,
+                   const typename CostEstimator::Ptr& costEstimator) {
+        behaviorOptions_.push_back({behavior, interruptable, costEstimator});
+    }
+
+    CommandT getCommand() override {
+        bool activeBehaviorCanBeContinued =
+            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+
+        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+            activeBehavior_ = boost::none;
+        }
+
+        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
+
+        if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
+            boost::optional<int> bestOption = findBestOption();
+
+            if (bestOption) {
+                if (!activeBehavior_) {
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                } else if (*bestOption != *activeBehavior_) {
+                    behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+
+                    activeBehavior_ = bestOption;
+                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
+                }
+            } else {
+                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
+                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
+            }
+        }
+        return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
+    }
+
+    bool checkInvocationCondition() const override {
+        for (auto& option : behaviorOptions_) {
+            if (option.behavior->checkInvocationCondition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool checkCommitmentCondition() const override {
+        if (activeBehavior_) {
+            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
+                return true;
+            } else {
+                return checkInvocationCondition();
+            }
+        }
+        return false;
+    }
+
+    virtual void gainControl() override {
+    }
+
+    virtual void loseControl() override {
+        if (activeBehavior_) {
+            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
+        }
+        activeBehavior_ = boost::none;
+    }
+
+
+private:
+    struct Option {
+        typename Behavior<CommandT>::Ptr behavior;
+        bool interruptable;
+        typename CostEstimator::Ptr costEstimator;
+    };
+
+    std::vector<Option> behaviorOptions_;
+    boost::optional<int> activeBehavior_;
+
+    /*!
+     * Find behavior option with lowest cost and true invocation condition
+     *
+     * @return  Applicable option with lowest costs (can also be the currently active option)
+     */
+    boost::optional<int> findBestOption() {
+        double costOfBestOption = std::numeric_limits<double>::max();
+        boost::optional<int> bestOption;
+
+        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
+            Option& option = behaviorOptions_.at(i);
+
+            bool isActive = activeBehavior_ && (i == *activeBehavior_);
+            bool isActiveAndCanBeContinued =
+                isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
+            if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
+                double cost = option.costEstimator->estimateCost(option.behavior->getCommand(), isActive);
+
+                if (cost < costOfBestOption) {
+                    costOfBestOption = cost;
+                    bestOption = i;
+                }
+            }
+        }
+        return bestOption;
+    }
+};
+} // namespace behavior_planning
