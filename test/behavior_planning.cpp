@@ -41,9 +41,8 @@
 #include <boost/optional.hpp>
 #include "gtest/gtest.h"
 
-using Command = std::string;
 
-
+template <typename CommandT>
 class Behavior {
 public:
     using Ptr = std::shared_ptr<Behavior>;
@@ -51,7 +50,7 @@ public:
     Behavior(const std::string& name = "Behavior") : name_{name} {
     }
 
-    virtual Command getCommand() = 0;
+    virtual CommandT getCommand() = 0;
     virtual bool checkInvocationCondition() const {
         return false;
     }
@@ -66,15 +65,16 @@ public:
     const std::string name_;
 };
 
-
-class DummyBehavior : public Behavior {
+using DummyCommand = std::string;
+class DummyBehavior : public Behavior<DummyCommand> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{0} {};
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{
+                                                                                                      0} {};
 
-    Command getCommand() override {
+    DummyCommand getCommand() override {
         return name_;
     }
     bool checkInvocationCondition() const override {
@@ -96,7 +96,7 @@ class DummyBehaviorTest : public ::testing::Test {
 protected:
     DummyBehavior testBehaviorTrue{true, true};
 
-    Command expected_command{"DummyBehavior"};
+    DummyCommand expected_command{"DummyBehavior"};
 };
 
 TEST_F(DummyBehaviorTest, BasicInterface) {
@@ -107,15 +107,16 @@ TEST_F(DummyBehaviorTest, BasicInterface) {
     EXPECT_NO_THROW(testBehaviorTrue.loseControl());
 }
 
-class PriorityArbitrator : public Behavior {
+template <typename CommandT>
+class PriorityArbitrator : public Behavior<CommandT> {
 public:
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Behavior(name){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Behavior<CommandT>(name){};
 
-    void addOption(const Behavior::Ptr& behavior, const bool interruptable) {
+    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const bool interruptable) {
         behaviorOptions_.push_back({behavior, interruptable});
     }
 
-    Command getCommand() override {
+    CommandT getCommand() override {
         bool activeBehaviorCanBeContinued =
             activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
 
@@ -179,7 +180,7 @@ public:
 
 private:
     struct Option {
-        Behavior::Ptr behavior;
+        typename Behavior<CommandT>::Ptr behavior;
         bool interruptable;
     };
 
@@ -213,7 +214,7 @@ protected:
     DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
 
 
-    PriorityArbitrator testPriorityArbitrator;
+    PriorityArbitrator<DummyCommand> testPriorityArbitrator;
 };
 
 
@@ -297,21 +298,24 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
 }
 
 
-class CostArbitrator : public Behavior {
+template <typename CommandT>
+class CostArbitrator : public Behavior<CommandT> {
 public:
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
 
-        virtual double estimateCost(const Command& command, const bool isActive) = 0;
+        virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
     };
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : Behavior(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator") : Behavior<CommandT>(name){};
 
-    void addOption(const Behavior::Ptr& behavior, const bool interruptable, const CostEstimator::Ptr& costEstimator) {
+    void addOption(const typename Behavior<CommandT>::Ptr& behavior,
+                   const bool interruptable,
+                   const typename CostEstimator::Ptr& costEstimator) {
         behaviorOptions_.push_back({behavior, interruptable, costEstimator});
     }
 
-    Command getCommand() override {
+    CommandT getCommand() override {
         bool activeBehaviorCanBeContinued =
             activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
 
@@ -375,9 +379,9 @@ public:
 
 private:
     struct Option {
-        Behavior::Ptr behavior;
+        typename Behavior<CommandT>::Ptr behavior;
         bool interruptable;
-        CostEstimator::Ptr costEstimator;
+        typename CostEstimator::Ptr costEstimator;
     };
 
     std::vector<Option> behaviorOptions_;
@@ -411,13 +415,13 @@ private:
     }
 };
 
-struct CostEstimatorFromCostMap : public CostArbitrator::CostEstimator {
-    using CostMap = std::map<Command, double>;
+struct CostEstimatorFromCostMap : public CostArbitrator<DummyCommand>::CostEstimator {
+    using CostMap = std::map<DummyCommand, double>;
 
     CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
             : costMap_{costMap}, activationCosts_{activationCosts} {};
 
-    virtual double estimateCost(const Command& command, const bool isActive) override {
+    virtual double estimateCost(const DummyCommand& command, const bool isActive) override {
         if (isActive) {
             return costMap_.at(command);
         } else {
@@ -441,7 +445,7 @@ protected:
     CostEstimatorFromCostMap::Ptr cost_estimator_with_activation_costs =
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
-    CostArbitrator testCostArbitrator;
+    CostArbitrator<DummyCommand> testCostArbitrator;
 };
 
 
