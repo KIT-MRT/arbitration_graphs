@@ -190,9 +190,9 @@ struct CostEstimatorFromCostMap : public CostArbitrator<DummyCommand>::CostEstim
 
     virtual double estimateCost(const DummyCommand& command, const bool isActive) override {
         if (isActive) {
-            return costMap_.at(command);
+            return costMap_.at(command) / (1 + activationCosts_);
         } else {
-            return costMap_.at(command) + activationCosts_;
+            return (costMap_.at(command) + activationCosts_) / (1 + activationCosts_);
         }
     }
 
@@ -207,7 +207,7 @@ protected:
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
-    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 1}, {"high_cost", 2}};
+    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
     CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
     CostEstimatorFromCostMap::Ptr cost_estimator_with_activation_costs =
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
