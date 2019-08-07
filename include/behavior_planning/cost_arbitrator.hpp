@@ -102,12 +102,12 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() {
+    boost::optional<int> findBestOption() const {
         double costOfBestOption = std::numeric_limits<double>::max();
         boost::optional<int> bestOption;
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-            Option& option = behaviorOptions_.at(i);
+            const Option& option = behaviorOptions_.at(i);
 
             bool isActive = activeBehavior_ && (i == *activeBehavior_);
             bool isActiveAndCanBeContinued =

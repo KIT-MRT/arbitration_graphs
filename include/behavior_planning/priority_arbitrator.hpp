@@ -90,9 +90,9 @@ private:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() {
+    boost::optional<int> findBestOption() const {
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-            Option& option = behaviorOptions_.at(i);
+            const Option& option = behaviorOptions_.at(i);
 
             bool isActive = activeBehavior_ && (i == *activeBehavior_);
             bool isActiveAndCanBeContinued =
