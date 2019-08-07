@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iomanip>
 #include <memory>
 #include <boost/optional.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "behavior.hpp"
 
@@ -84,6 +86,30 @@ public:
             behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
         }
         activeBehavior_ = boost::none;
+    }
+
+    friend std::ostream& operator<<(std::ostream& output, const CostArbitrator& cost_arbitrator) {
+        output << cost_arbitrator.name_;
+
+        for (int i = 0; i < (int)cost_arbitrator.behaviorOptions_.size(); ++i) {
+            const Option& option = cost_arbitrator.behaviorOptions_.at(i);
+            bool isActive = cost_arbitrator.activeBehavior_ && (i == *(cost_arbitrator.activeBehavior_));
+
+            output << std::fixed << std::setprecision(3) << std::endl;
+
+            if (option.last_estimated_cost){
+                output << "  - (cost: " << *option.last_estimated_cost << ") ";
+            } else {
+                output << "  - (cost:  n.a.) ";
+            }
+
+            if (isActive) {
+                output << boost::to_upper_copy<std::string>(option.behavior->str());
+            } else {
+                output << *option.behavior;
+            }
+        }
+        return output;
     }
 
 

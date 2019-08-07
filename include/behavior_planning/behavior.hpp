@@ -1,6 +1,8 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
+#include <sstream>
 
 
 namespace behavior_planning {
@@ -23,6 +25,17 @@ public:
     virtual void gainControl() {
     }
     virtual void loseControl() {
+    }
+
+    std::string str() const {
+        std::stringstream ss;
+        ss << *this;
+        return ss.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& output, const Behavior& behavior) {
+        output << behavior.name_;
+        return output;
     }
 
     const std::string name_;

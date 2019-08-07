@@ -90,6 +90,15 @@ TEST_F(DummyBehaviorTest, BasicInterface) {
     EXPECT_NO_THROW(testBehaviorTrue.loseControl());
 }
 
+TEST_F(DummyBehaviorTest, Printout) {
+    const std::string expected_printout = "DummyBehavior";
+    std::stringstream actual_printout;
+    actual_printout << testBehaviorTrue;
+    std::cout << actual_printout.str() << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout.str());
+}
+
 
 class PriorityArbitratorTest : public ::testing::Test {
 protected:
@@ -144,6 +153,39 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+}
+
+TEST_F(PriorityArbitratorTest, Printout) {
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, false);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, false);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, false);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, false);
+
+    std::string expected_printout = "PriorityArbitrator\n"
+                                    "  1. HighPriority\n"
+                                    "  2. HighPriority\n"
+                                    "  3. MidPriority\n"
+                                    "  4. LowPriority";
+    std::stringstream actual_printout;
+    actual_printout << testPriorityArbitrator;
+    std::cout << actual_printout.str() << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout.str());
+
+
+    testPriorityArbitrator.gainControl();
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+
+    expected_printout = "PriorityArbitrator\n"
+                        "  1. HighPriority\n"
+                        "  2. HighPriority\n"
+                        "  3. MIDPRIORITY\n"
+                        "  4. LowPriority";
+    actual_printout.str("");
+    actual_printout << testPriorityArbitrator;
+    std::cout << actual_printout.str() << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout.str());
 }
 
 
@@ -256,6 +298,39 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+}
+
+TEST_F(CostArbitratorTest, Printout) {
+    testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, false, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, false, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, false, cost_estimator);
+
+    std::string expected_printout = "CostArbitrator\n"
+                                    "  - (cost:  n.a.) low_cost\n"
+                                    "  - (cost:  n.a.) low_cost\n"
+                                    "  - (cost:  n.a.) high_cost\n"
+                                    "  - (cost:  n.a.) mid_cost";
+    std::stringstream actual_printout;
+    actual_printout << testCostArbitrator;
+    std::cout << actual_printout.str() << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout.str());
+
+
+    testCostArbitrator.gainControl();
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+
+    expected_printout = "CostArbitrator\n"
+                        "  - (cost:  n.a.) low_cost\n"
+                        "  - (cost:  n.a.) low_cost\n"
+                        "  - (cost: 1.000) high_cost\n"
+                        "  - (cost: 0.500) MID_COST";
+    actual_printout.str("");
+    actual_printout << testCostArbitrator;
+    std::cout << actual_printout.str() << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout.str());
 }
 
 
