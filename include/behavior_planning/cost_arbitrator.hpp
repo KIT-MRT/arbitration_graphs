@@ -22,7 +22,7 @@ public:
     void addOption(const typename Behavior<CommandT>::Ptr& behavior,
                    const bool interruptable,
                    const typename CostEstimator::Ptr& costEstimator) {
-        behaviorOptions_.push_back({behavior, interruptable, costEstimator});
+        behaviorOptions_.push_back({behavior, interruptable, costEstimator, boost::none});
     }
 
     CommandT getCommand() override {
@@ -92,6 +92,7 @@ private:
         typename Behavior<CommandT>::Ptr behavior;
         bool interruptable;
         typename CostEstimator::Ptr costEstimator;
+        mutable boost::optional<double> last_estimated_cost;
     };
 
     std::vector<Option> behaviorOptions_;
@@ -114,6 +115,7 @@ private:
                 isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
             if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
                 double cost = option.costEstimator->estimateCost(option.behavior->getCommand(), isActive);
+                option.last_estimated_cost = cost;
 
                 if (cost < costOfBestOption) {
                     costOfBestOption = cost;
