@@ -34,6 +34,17 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& output, const Behavior& behavior) {
+        if (behavior.checkInvocationCondition()) {
+            output << "\033[32mINVOCATION\033[0m ";
+        } else {
+            output << "\033[31mInvocation\033[0m ";
+        }
+        if (behavior.checkCommitmentCondition()) {
+            output << "\033[32mCOMMITMENT\033[0m ";
+        } else {
+            output << "\033[31mCommitment\033[0m ";
+        }
+
         output << behavior.name_;
         return output;
     }

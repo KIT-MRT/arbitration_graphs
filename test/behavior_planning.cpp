@@ -90,8 +90,12 @@ TEST_F(DummyBehaviorTest, BasicInterface) {
     EXPECT_NO_THROW(testBehaviorTrue.loseControl());
 }
 
+const std::string invocationTrueString = "\033[32mINVOCATION\033[0m ";
+const std::string invocationFalseString = "\033[31mInvocation\033[0m ";
+const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[0m ";
+const std::string commitmentFalseString = "\033[31mCommitment\033[0m ";
 TEST_F(DummyBehaviorTest, Printout) {
-    const std::string expected_printout = "DummyBehavior";
+    const std::string expected_printout = invocationTrueString + commitmentTrueString + "DummyBehavior";
     std::stringstream actual_printout;
     actual_printout << testBehaviorTrue;
     std::cout << actual_printout.str() << std::endl;
@@ -161,11 +165,13 @@ TEST_F(PriorityArbitratorTest, Printout) {
     testPriorityArbitrator.addOption(testBehaviorMidPriority, false);
     testPriorityArbitrator.addOption(testBehaviorLowPriority, false);
 
-    std::string expected_printout = "PriorityArbitrator\n"
-                                    "  1. HighPriority\n"
-                                    "  2. HighPriority\n"
-                                    "  3. MidPriority\n"
-                                    "  4. LowPriority";
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
+                                    "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                                    "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                                    "    3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
+                                    "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
     std::stringstream actual_printout;
     actual_printout << testPriorityArbitrator;
     std::cout << actual_printout.str() << std::endl;
@@ -176,11 +182,13 @@ TEST_F(PriorityArbitratorTest, Printout) {
     testPriorityArbitrator.gainControl();
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 
-    expected_printout = "PriorityArbitrator\n"
-                        "  1. HighPriority\n"
-                        "  2. HighPriority\n"
-                        "  3. MIDPRIORITY\n"
-                        "  4. LowPriority";
+    // clang-format off
+    expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        " -> 3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
+                        "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
     actual_printout.str("");
     actual_printout << testPriorityArbitrator;
     std::cout << actual_printout.str() << std::endl;
@@ -306,11 +314,13 @@ TEST_F(CostArbitratorTest, Printout) {
     testCostArbitrator.addOption(testBehaviorHighCost, false, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, false, cost_estimator);
 
-    std::string expected_printout = "CostArbitrator\n"
-                                    "  - (cost:  n.a.) low_cost\n"
-                                    "  - (cost:  n.a.) low_cost\n"
-                                    "  - (cost:  n.a.) high_cost\n"
-                                    "  - (cost:  n.a.) mid_cost";
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentFalseString + "CostArbitrator\n"
+                                    "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                                    "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                                    "    - (cost:  n.a.) " + invocationTrueString + commitmentTrueString + "high_cost\n"
+                                    "    - (cost:  n.a.) " + invocationTrueString + commitmentFalseString + "mid_cost";
+    // clang-format on
     std::stringstream actual_printout;
     actual_printout << testCostArbitrator;
     std::cout << actual_printout.str() << std::endl;
@@ -321,11 +331,13 @@ TEST_F(CostArbitratorTest, Printout) {
     testCostArbitrator.gainControl();
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
 
-    expected_printout = "CostArbitrator\n"
-                        "  - (cost:  n.a.) low_cost\n"
-                        "  - (cost:  n.a.) low_cost\n"
-                        "  - (cost: 1.000) high_cost\n"
-                        "  - (cost: 0.500) MID_COST";
+    // clang-format off
+    expected_printout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
+                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                        "    - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "high_cost\n"
+                        " -> - (cost: 0.500) " + invocationTrueString + commitmentFalseString + "mid_cost";
+    // clang-format on
     actual_printout.str("");
     actual_printout << testCostArbitrator;
     std::cout << actual_printout.str() << std::endl;

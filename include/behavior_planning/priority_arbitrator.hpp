@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <boost/optional.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 
 #include "behavior.hpp"
 
@@ -80,19 +79,17 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& output, const PriorityArbitrator& priority_arbitrator) {
-        output << priority_arbitrator.name_;
+        output << priority_arbitrator.str();
 
         for (int i = 0; i < (int)priority_arbitrator.behaviorOptions_.size(); ++i) {
             const Option& option = priority_arbitrator.behaviorOptions_.at(i);
             bool isActive = priority_arbitrator.activeBehavior_ && (i == *(priority_arbitrator.activeBehavior_));
 
             //            int n_max_digits = (int) log10 ((double) priority_arbitrator.behaviorOptions_.size()) + 1;
-            output << std::endl << "  " << i + 1 << ". ";
-
             if (isActive) {
-                output << boost::to_upper_copy<std::string>(option.behavior->str());
+                output << std::endl << " -> " << i + 1 << ". " << *option.behavior;
             } else {
-                output << *option.behavior;
+                output << std::endl << "    " << i + 1 << ". " << *option.behavior;
             }
         }
         return output;

@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <memory>
 #include <boost/optional.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 
 #include "behavior.hpp"
 
@@ -89,24 +88,23 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& output, const CostArbitrator& cost_arbitrator) {
-        output << cost_arbitrator.name_;
+        output << cost_arbitrator.str();
 
         for (int i = 0; i < (int)cost_arbitrator.behaviorOptions_.size(); ++i) {
             const Option& option = cost_arbitrator.behaviorOptions_.at(i);
             bool isActive = cost_arbitrator.activeBehavior_ && (i == *(cost_arbitrator.activeBehavior_));
 
-            output << std::fixed << std::setprecision(3) << std::endl;
-
-            if (option.last_estimated_cost){
-                output << "  - (cost: " << *option.last_estimated_cost << ") ";
+            std::stringstream cost_string;
+            if (option.last_estimated_cost) {
+                cost_string << std::fixed << std::setprecision(3) << *option.last_estimated_cost;
             } else {
-                output << "  - (cost:  n.a.) ";
+                cost_string << " n.a.";
             }
 
             if (isActive) {
-                output << boost::to_upper_copy<std::string>(option.behavior->str());
+                output << std::endl << " -> - (cost: " << cost_string.str() << ") " << *option.behavior;
             } else {
-                output << *option.behavior;
+                output << std::endl << "    - (cost: " << cost_string.str() << ") " << *option.behavior;
             }
         }
         return output;
