@@ -89,12 +89,12 @@ public:
         activeBehavior_ = boost::none;
     }
 
-    friend std::ostream& operator<<(std::ostream& output, const CostArbitrator& cost_arbitrator) {
-        output << cost_arbitrator.str();
+    virtual std::ostream& to_stream(std::ostream& output) const override {
+        Behavior<CommandT>::to_stream(output);
 
-        for (int i = 0; i < (int)cost_arbitrator.behaviorOptions_.size(); ++i) {
-            const Option& option = cost_arbitrator.behaviorOptions_.at(i);
-            bool isActive = cost_arbitrator.activeBehavior_ && (i == *(cost_arbitrator.activeBehavior_));
+        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
+            const Option& option = behaviorOptions_.at(i);
+            bool isActive = activeBehavior_ && (i == *(activeBehavior_));
 
             std::stringstream cost_string;
             if (option.last_estimated_cost) {
@@ -104,10 +104,11 @@ public:
             }
 
             if (isActive) {
-                output << std::endl << " -> - (cost: " << cost_string.str() << ") " << *option.behavior;
+                output << std::endl << " -> - (cost: " << cost_string.str() << ") ";
             } else {
-                output << std::endl << "    - (cost: " << cost_string.str() << ") " << *option.behavior;
+                output << std::endl << "    - (cost: " << cost_string.str() << ") ";
             }
+            option.behavior->to_stream(output);
         }
         return output;
     }

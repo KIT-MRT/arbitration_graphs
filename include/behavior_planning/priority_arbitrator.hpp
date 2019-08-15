@@ -80,19 +80,20 @@ public:
         activeBehavior_ = boost::none;
     }
 
-    friend std::ostream& operator<<(std::ostream& output, const PriorityArbitrator& priority_arbitrator) {
-        output << priority_arbitrator.str();
+    virtual std::ostream& to_stream(std::ostream& output) const override {
+        Behavior<CommandT>::to_stream(output);
 
-        for (int i = 0; i < (int)priority_arbitrator.behaviorOptions_.size(); ++i) {
-            const Option& option = priority_arbitrator.behaviorOptions_.at(i);
-            bool isActive = priority_arbitrator.activeBehavior_ && (i == *(priority_arbitrator.activeBehavior_));
+        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
+            const Option& option = behaviorOptions_.at(i);
+            bool isActive = activeBehavior_ && (i == *(activeBehavior_));
 
             //            int n_max_digits = (int) log10 ((double) priority_arbitrator.behaviorOptions_.size()) + 1;
             if (isActive) {
-                output << std::endl << " -> " << i + 1 << ". " << *option.behavior;
+                output << std::endl << " -> " << i + 1 << ". ";
             } else {
-                output << std::endl << "    " << i + 1 << ". " << *option.behavior;
+                output << std::endl << "    " << i + 1 << ". ";
             }
+            option.behavior->to_stream(output);
         }
         return output;
     }
