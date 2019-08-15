@@ -11,6 +11,8 @@ namespace behavior_planning {
 template <typename CommandT>
 class PriorityArbitrator : public Behavior<CommandT> {
 public:
+    using Ptr = std::shared_ptr<PriorityArbitrator>;
+
     PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Behavior<CommandT>(name){};
 
     void addOption(const typename Behavior<CommandT>::Ptr& behavior, const bool interruptable) {

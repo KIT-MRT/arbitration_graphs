@@ -12,6 +12,8 @@ namespace behavior_planning {
 template <typename CommandT>
 class CostArbitrator : public Behavior<CommandT> {
 public:
+    using Ptr = std::shared_ptr<CostArbitrator>;
+
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
 
