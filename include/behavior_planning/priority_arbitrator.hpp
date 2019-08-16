@@ -80,8 +80,10 @@ public:
         activeBehavior_ = boost::none;
     }
 
-    virtual std::ostream& to_stream(std::ostream& output) const override {
-        Behavior<CommandT>::to_stream(output);
+    virtual std::ostream& to_stream(std::ostream& output,
+                                    const std::string& prefix = "",
+                                    const std::string& suffix = "") const override {
+        Behavior<CommandT>::to_stream(output, prefix, suffix);
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             const Option& option = behaviorOptions_.at(i);
@@ -89,11 +91,11 @@ public:
 
             //            int n_max_digits = (int) log10 ((double) priority_arbitrator.behaviorOptions_.size()) + 1;
             if (isActive) {
-                output << std::endl << " -> " << i + 1 << ". ";
+                output << suffix << std::endl << prefix << " -> " << i + 1 << ". ";
             } else {
-                output << std::endl << "    " << i + 1 << ". ";
+                output << suffix << std::endl << prefix << "    " << i + 1 << ". ";
             }
-            option.behavior->to_stream(output);
+            option.behavior->to_stream(output, "    " + prefix, suffix);
         }
         return output;
     }

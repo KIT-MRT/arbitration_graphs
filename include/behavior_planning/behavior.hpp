@@ -27,13 +27,15 @@ public:
     virtual void loseControl() {
     }
 
-    virtual std::string to_str() const {
+    virtual std::string to_str(const std::string& prefix = "", const std::string& suffix = "") const {
         std::stringstream ss;
-        to_stream(ss);
+        to_stream(ss, prefix, suffix);
         return ss.str();
     }
 
-    virtual std::ostream& to_stream(std::ostream& output) const {
+    virtual std::ostream& to_stream(std::ostream& output,
+                                    const std::string& prefix = "",
+                                    const std::string& suffix = "") const {
         if (checkInvocationCondition()) {
             output << "\033[32mINVOCATION\033[0m ";
         } else {

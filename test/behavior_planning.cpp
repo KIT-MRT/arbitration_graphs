@@ -94,6 +94,7 @@ const std::string invocationTrueString = "\033[32mINVOCATION\033[0m ";
 const std::string invocationFalseString = "\033[31mInvocation\033[0m ";
 const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[0m ";
 const std::string commitmentFalseString = "\033[31mCommitment\033[0m ";
+
 TEST_F(DummyBehaviorTest, Printout) {
     const std::string expected_printout = invocationTrueString + commitmentTrueString + "DummyBehavior";
     std::stringstream actual_printout;
@@ -418,4 +419,76 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+}
+
+
+class NestedArbitratorsTest : public CostArbitratorTest {
+protected:
+    using CostArbitratorT = CostArbitrator<DummyCommand>;
+    using PriorityArbitratorT = PriorityArbitrator<DummyCommand>;
+
+    DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
+    DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
+
+    CostArbitratorT::Ptr testCostArbitrator = std::make_shared<CostArbitratorT>();
+    PriorityArbitratorT::Ptr testPriorityArbitrator = std::make_shared<PriorityArbitratorT>();
+
+    PriorityArbitratorT::Ptr testRootPriorityArbitrator =
+        std::make_shared<PriorityArbitratorT>("root priority arbitrator");
+};
+
+TEST_F(NestedArbitratorsTest, Printout) {
+    testRootPriorityArbitrator->addOption(testCostArbitrator, false);
+    testRootPriorityArbitrator->addOption(testPriorityArbitrator, false);
+
+    testCostArbitrator->addOption(testBehaviorLowCost, false, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorHighCost, false, cost_estimator);
+
+    testPriorityArbitrator->addOption(testBehaviorHighPriority, false);
+    testPriorityArbitrator->addOption(testBehaviorLowPriority, false);
+
+
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentFalseString + "root priority arbitrator\n"
+                                    "    1. " + invocationTrueString + commitmentFalseString + "CostArbitrator\n"
+                                    "        - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                                    "        - (cost:  n.a.) " + invocationTrueString + commitmentTrueString + "high_cost\n"
+                                    "    2. " + invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
+                                    "        1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                                    "        2. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
+
+    // 1. test to_str()
+    EXPECT_EQ(expected_printout, testRootPriorityArbitrator->to_str());
+
+    // 1. test to_stream()
+    std::stringstream actual_printout;
+    testRootPriorityArbitrator->to_stream(actual_printout);
+    EXPECT_EQ(expected_printout, actual_printout.str());
+
+    // 1. test operator<<
+    actual_printout.str("");
+    actual_printout << *testRootPriorityArbitrator;
+    EXPECT_EQ(expected_printout, actual_printout.str());
+
+    std::cout << actual_printout.str() << std::endl;
+
+
+    testPriorityArbitrator->gainControl();
+    EXPECT_EQ("high_cost", testRootPriorityArbitrator->getCommand());
+
+    // clang-format off
+    expected_printout = invocationTrueString + commitmentTrueString + "root priority arbitrator\n"
+                        " -> 1. "  + invocationTrueString + commitmentTrueString + "CostArbitrator\n"
+                        "        - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "low_cost\n"
+                        "     -> - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "high_cost\n"
+                        "    2. " + invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
+                        "        1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "        2. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
+    actual_printout.str("");
+    actual_printout << *testRootPriorityArbitrator;
+    EXPECT_EQ(expected_printout, actual_printout.str());
+
+    std::cout << actual_printout.str() << std::endl;
 }

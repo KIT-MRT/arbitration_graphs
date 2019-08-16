@@ -89,8 +89,10 @@ public:
         activeBehavior_ = boost::none;
     }
 
-    virtual std::ostream& to_stream(std::ostream& output) const override {
-        Behavior<CommandT>::to_stream(output);
+    virtual std::ostream& to_stream(std::ostream& output,
+                                    const std::string& prefix = "",
+                                    const std::string& suffix = "") const override {
+        Behavior<CommandT>::to_stream(output, prefix, suffix);
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             const Option& option = behaviorOptions_.at(i);
@@ -104,11 +106,11 @@ public:
             }
 
             if (isActive) {
-                output << std::endl << " -> - (cost: " << cost_string.str() << ") ";
+                output << suffix << std::endl << prefix  << " -> - (cost: " << cost_string.str() << ") ";
             } else {
-                output << std::endl << "    - (cost: " << cost_string.str() << ") ";
+                output << suffix << std::endl << prefix  << "    - (cost: " << cost_string.str() << ") ";
             }
-            option.behavior->to_stream(output);
+            option.behavior->to_stream(output, "    " + prefix, suffix);
         }
         return output;
     }
