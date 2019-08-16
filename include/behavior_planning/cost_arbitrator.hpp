@@ -20,12 +20,27 @@ public:
         virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
     };
 
+    struct Option {
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+
+        typename Behavior<CommandT>::Ptr behavior;
+        Flags flags;
+        typename CostEstimator::Ptr costEstimator;
+        mutable boost::optional<double> last_estimated_cost;
+
+        bool hasFlag(const Flags& flag_to_check) const {
+            return flags & flag_to_check;
+        }
+    };
+
+
     CostArbitrator(const std::string& name = "CostArbitrator") : Behavior<CommandT>(name){};
 
+
     void addOption(const typename Behavior<CommandT>::Ptr& behavior,
-                   const bool interruptable,
+                   const typename Option::Flags& flags,
                    const typename CostEstimator::Ptr& costEstimator) {
-        behaviorOptions_.push_back({behavior, interruptable, costEstimator, boost::none});
+        behaviorOptions_.push_back({behavior, flags, costEstimator, boost::none});
     }
 
     CommandT getCommand() override {
@@ -37,7 +52,8 @@ public:
             activeBehavior_ = boost::none;
         }
 
-        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
+        bool activeBehaviorInterruptable =
+            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).hasFlag(Option::INTERRUPTABLE);
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
             boost::optional<int> bestOption = findBestOption();
@@ -127,13 +143,6 @@ public:
 
 
 private:
-    struct Option {
-        typename Behavior<CommandT>::Ptr behavior;
-        bool interruptable;
-        typename CostEstimator::Ptr costEstimator;
-        mutable boost::optional<double> last_estimated_cost;
-    };
-
     std::vector<Option> behaviorOptions_;
     boost::optional<int> activeBehavior_;
 

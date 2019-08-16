@@ -13,10 +13,23 @@ class PriorityArbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<PriorityArbitrator>;
 
+    struct Option {
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+
+        typename Behavior<CommandT>::Ptr behavior;
+        Flags flags;
+
+        bool hasFlag(const Flags& flag_to_check) const {
+            return flags & flag_to_check;
+        }
+    };
+
+
     PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Behavior<CommandT>(name){};
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const bool interruptable) {
-        behaviorOptions_.push_back({behavior, interruptable});
+
+    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+        behaviorOptions_.push_back({behavior, flags});
     }
 
     CommandT getCommand() override {
@@ -28,7 +41,8 @@ public:
             activeBehavior_ = boost::none;
         }
 
-        bool activeBehaviorInterruptable = activeBehavior_ && behaviorOptions_.at(*activeBehavior_).interruptable;
+        bool activeBehaviorInterruptable =
+            activeBehavior_ && (behaviorOptions_.at(*activeBehavior_).hasFlag(Option::INTERRUPTABLE));
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
             boost::optional<int> bestOption = findBestOption();
@@ -112,11 +126,6 @@ public:
 
 
 private:
-    struct Option {
-        typename Behavior<CommandT>::Ptr behavior;
-        bool interruptable;
-    };
-
     /*!
      * Find behavior option with highest priority and true invocation condition
      *
