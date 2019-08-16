@@ -32,6 +32,31 @@ public:
                 : Arbitrator<CommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
+        /*!
+         * \brief Writes a string representation of the behavior option and its current state to the output stream.
+         *
+         * \param output        Output stream to write into, will be returned also
+         * \param option_index  Position index of this option within behaviorOptions_
+         * \param prefix        A string that should be prepended to each line that is written to the output stream
+         * \param suffix        A string that should be appended to each line that is written to the output stream
+         * \return              The same given input stream (signature similar to std::ostream& operator<<())
+         *
+         * \see Arbitrator::to_stream()
+         */
+        virtual std::ostream& to_stream(std::ostream& output,
+                                        const int& option_index,
+                                        const std::string& prefix = "",
+                                        const std::string& suffix = "") const {
+            if (last_estimated_cost_) {
+                output << std::fixed << std::setprecision(3) << "- (cost: " << *last_estimated_cost_ << ") ";
+            } else {
+                output << "- (cost:  n.a.) ";
+            }
+
+            Arbitrator<CommandT>::Option::to_stream(output, option_index, prefix, suffix);
+            return output;
+        }
+
         typename CostEstimator::Ptr costEstimator_;
         mutable boost::optional<double> last_estimated_cost_;
     };
@@ -46,43 +71,6 @@ public:
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
     }
-
-    /*!
-     * \brief Writes a string representation of the arbitrator object with its current state to the given output stream.
-     *
-     * \param output    Output stream to write into, will be returned also
-     * \param prefix    A string that should be prepended to each line that is written to the output stream
-     * \param suffix    A string that should be appended to each line that is written to the output stream
-     * \return          The same given input stream (signature similar to std::ostream& operator<<())
-     *
-     * \see Arbitrator::to_stream()
-     */
-    virtual std::ostream& to_stream(std::ostream& output,
-                                    const std::string& prefix = "",
-                                    const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, prefix, suffix);
-
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-            bool isActive = this->activeBehavior_ && (i == *(this->activeBehavior_));
-
-            std::stringstream cost_string;
-            if (option->last_estimated_cost_) {
-                cost_string << std::fixed << std::setprecision(3) << *option->last_estimated_cost_;
-            } else {
-                cost_string << " n.a.";
-            }
-
-            if (isActive) {
-                output << suffix << std::endl << prefix << " -> - (cost: " << cost_string.str() << ") ";
-            } else {
-                output << suffix << std::endl << prefix << "    - (cost: " << cost_string.str() << ") ";
-            }
-            option->behavior_->to_stream(output, "    " + prefix, suffix);
-        }
-        return output;
-    }
-
 
 private:
     /*!

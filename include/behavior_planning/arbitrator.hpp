@@ -31,6 +31,25 @@ public:
         bool hasFlag(const FlagsT& flag_to_check) const {
             return flags_ & flag_to_check;
         }
+
+        /*!
+         * \brief Writes a string representation of the behavior option and its current state to the output stream.
+         *
+         * \param output        Output stream to write into, will be returned also
+         * \param option_index  Position index of this option within behaviorOptions_
+         * \param prefix        A string that should be prepended to each line that is written to the output stream
+         * \param suffix        A string that should be appended to each line that is written to the output stream
+         * \return              The same given input stream (signature similar to std::ostream& operator<<())
+         *
+         * \see Arbitrator::to_stream()
+         */
+        virtual std::ostream& to_stream(std::ostream& output,
+                                        const int& option_index,
+                                        const std::string& prefix = "",
+                                        const std::string& suffix = "") const {
+            behavior_->to_stream(output, prefix, suffix);
+            return output;
+        }
     };
 
     Arbitrator(const std::string& name = "Arbitrator") : Behavior<CommandT>(name){};
@@ -103,13 +122,12 @@ public:
     }
 
     /*!
-     * \brief Writes a string representation of the Arbitrator object with its current state to the given output
-     * stream.
+     * \brief Writes a string representation of the Arbitrator object with its current state to the output stream.
      *
-     * \param output    Output stream to write into, will be returned also
-     * \param prefix    A string that should be prepended to each line that is written to the output stream
-     * \param suffix    A string that should be appended to each line that is written to the output stream
-     * \return          The same given input stream (signature similar to std::ostream& operator<<())
+     * \param output        Output stream to write into, will be returned also
+     * \param prefix        A string that should be prepended to each line that is written to the output stream
+     * \param suffix        A string that should be appended to each line that is written to the output stream
+     * \return              The same given input stream (signature similar to std::ostream& operator<<())
      *
      * \see Behavior::to_stream()
      */
@@ -127,7 +145,7 @@ public:
             } else {
                 output << suffix << std::endl << prefix << "    ";
             }
-            option->behavior_->to_stream(output, "    " + prefix, suffix);
+            option->to_stream(output, i, "    " + prefix, suffix);
         }
         return output;
     }
