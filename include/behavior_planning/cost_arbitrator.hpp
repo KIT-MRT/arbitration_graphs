@@ -4,13 +4,13 @@
 #include <memory>
 #include <boost/optional.hpp>
 
-#include "behavior.hpp"
+#include "arbitrator.hpp"
 
 
 namespace behavior_planning {
 
 template <typename CommandT>
-class CostArbitrator : public Behavior<CommandT> {
+class CostArbitrator : public Arbitrator<CommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
 
@@ -20,89 +20,31 @@ public:
         virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
     };
 
-    struct Option {
+    struct Option : Arbitrator<CommandT>::Option {
+        using Ptr = std::shared_ptr<Option>;
+        using FlagsT = typename Arbitrator<CommandT>::Option::FlagsT;
+
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 
-        typename Behavior<CommandT>::Ptr behavior;
-        Flags flags;
-        typename CostEstimator::Ptr costEstimator;
-        mutable boost::optional<double> last_estimated_cost;
-
-        bool hasFlag(const Flags& flag_to_check) const {
-            return flags & flag_to_check;
+        Option(const typename Behavior<CommandT>::Ptr& behavior,
+               const FlagsT& flags,
+               const typename CostEstimator::Ptr& costEstimator)
+                : Arbitrator<CommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
         }
+
+        typename CostEstimator::Ptr costEstimator_;
+        mutable boost::optional<double> last_estimated_cost_;
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : Behavior<CommandT>(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT>(name){};
 
 
     void addOption(const typename Behavior<CommandT>::Ptr& behavior,
                    const typename Option::Flags& flags,
                    const typename CostEstimator::Ptr& costEstimator) {
-        behaviorOptions_.push_back({behavior, flags, costEstimator, boost::none});
-    }
-
-    CommandT getCommand() override {
-        bool activeBehaviorCanBeContinued =
-            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
-
-        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
-            activeBehavior_ = boost::none;
-        }
-
-        bool activeBehaviorInterruptable =
-            activeBehavior_ && behaviorOptions_.at(*activeBehavior_).hasFlag(Option::INTERRUPTABLE);
-
-        if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            boost::optional<int> bestOption = findBestOption();
-
-            if (bestOption) {
-                if (!activeBehavior_) {
-                    activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
-                } else if (*bestOption != *activeBehavior_) {
-                    behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
-
-                    activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_).behavior->gainControl();
-                }
-            } else {
-                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
-                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
-            }
-        }
-        return behaviorOptions_.at(*activeBehavior_).behavior->getCommand();
-    }
-
-    bool checkInvocationCondition() const override {
-        for (auto& option : behaviorOptions_) {
-            if (option.behavior->checkInvocationCondition()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    bool checkCommitmentCondition() const override {
-        if (activeBehavior_) {
-            if (behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition()) {
-                return true;
-            } else {
-                return checkInvocationCondition();
-            }
-        }
-        return false;
-    }
-
-    virtual void gainControl() override {
-    }
-
-    virtual void loseControl() override {
-        if (activeBehavior_) {
-            behaviorOptions_.at(*activeBehavior_).behavior->loseControl();
-        }
-        activeBehavior_ = boost::none;
+        typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
+        this->behaviorOptions_.push_back(option);
     }
 
     /*!
@@ -113,20 +55,20 @@ public:
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
      *
-     * \see Behavior::to_stream()
+     * \see Arbitrator::to_stream()
      */
     virtual std::ostream& to_stream(std::ostream& output,
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const override {
         Behavior<CommandT>::to_stream(output, prefix, suffix);
 
-        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-            const Option& option = behaviorOptions_.at(i);
-            bool isActive = activeBehavior_ && (i == *(activeBehavior_));
+        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
+            bool isActive = this->activeBehavior_ && (i == *(this->activeBehavior_));
 
             std::stringstream cost_string;
-            if (option.last_estimated_cost) {
-                cost_string << std::fixed << std::setprecision(3) << *option.last_estimated_cost;
+            if (option->last_estimated_cost_) {
+                cost_string << std::fixed << std::setprecision(3) << *option->last_estimated_cost_;
             } else {
                 cost_string << " n.a.";
             }
@@ -136,16 +78,13 @@ public:
             } else {
                 output << suffix << std::endl << prefix << "    - (cost: " << cost_string.str() << ") ";
             }
-            option.behavior->to_stream(output, "    " + prefix, suffix);
+            option->behavior_->to_stream(output, "    " + prefix, suffix);
         }
         return output;
     }
 
 
 private:
-    std::vector<Option> behaviorOptions_;
-    boost::optional<int> activeBehavior_;
-
     /*!
      * Find behavior option with lowest cost and true invocation condition
      *
@@ -155,15 +94,15 @@ private:
         double costOfBestOption = std::numeric_limits<double>::max();
         boost::optional<int> bestOption;
 
-        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-            const Option& option = behaviorOptions_.at(i);
+        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
-            bool isActive = activeBehavior_ && (i == *activeBehavior_);
+            bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
             bool isActiveAndCanBeContinued =
-                isActive && behaviorOptions_.at(*activeBehavior_).behavior->checkCommitmentCondition();
-            if (option.behavior->checkInvocationCondition() || isActiveAndCanBeContinued) {
-                double cost = option.costEstimator->estimateCost(option.behavior->getCommand(), isActive);
-                option.last_estimated_cost = cost;
+                isActive && this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition();
+            if (option->behavior_->checkInvocationCondition() || isActiveAndCanBeContinued) {
+                double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(), isActive);
+                option->last_estimated_cost_ = cost;
 
                 if (cost < costOfBestOption) {
                     costOfBestOption = cost;

@@ -54,8 +54,8 @@ public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{
-                                                                                                      0} {};
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment},
+              loseControlCounter_{0} {};
 
     DummyCommand getCommand() override {
         return name_;
@@ -107,7 +107,7 @@ TEST_F(DummyBehaviorTest, Printout) {
 
 class PriorityArbitratorTest : public ::testing::Test {
 protected:
-    using Option = PriorityArbitrator<DummyCommand>::Option;
+    using OptionFlags = PriorityArbitrator<DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
     DummyBehavior::Ptr testBehaviorMidPriority = std::make_shared<DummyBehavior>(true, false, "MidPriority");
@@ -124,13 +124,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, Option::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, Option::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
@@ -163,10 +163,10 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
 }
 
 TEST_F(PriorityArbitratorTest, Printout) {
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, Option::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, Option::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
 
     // clang-format off
     std::string expected_printout = invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
@@ -206,13 +206,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::INTERRUPTABLE);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, Option::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
 
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, Option::INTERRUPTABLE);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, Option::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::INTERRUPTABLE);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
@@ -256,7 +256,7 @@ private:
 
 class CostArbitratorTest : public ::testing::Test {
 protected:
-    using Option = CostArbitrator<DummyCommand>::Option;
+    using OptionFlags = CostArbitrator<DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
@@ -277,13 +277,13 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::NO_FLAGS, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, Option::NO_FLAGS, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, Option::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NO_FLAGS, cost_estimator);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
 
@@ -314,10 +314,10 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
 }
 
 TEST_F(CostArbitratorTest, Printout) {
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::NO_FLAGS, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::NO_FLAGS, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, Option::NO_FLAGS, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, Option::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NO_FLAGS, cost_estimator);
 
     // clang-format off
     std::string expected_printout = invocationTrueString + commitmentFalseString + "CostArbitrator\n"
@@ -357,13 +357,13 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivati
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::INTERRUPTABLE, cost_estimator_with_activation_costs);
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::INTERRUPTABLE, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, Option::INTERRUPTABLE, cost_estimator_with_activation_costs);
-    testCostArbitrator.addOption(testBehaviorMidCost, Option::INTERRUPTABLE, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
 
@@ -395,13 +395,13 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::INTERRUPTABLE, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, Option::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, Option::INTERRUPTABLE, cost_estimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, Option::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
 
@@ -428,8 +428,8 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
 
 class NestedArbitratorsTest : public CostArbitratorTest {
 protected:
-    using PriorityOption = PriorityArbitrator<DummyCommand>::Option;
-    using CostOption = CostArbitrator<DummyCommand>::Option;
+    using PriorityOptionFlags = PriorityArbitrator<DummyCommand>::Option::Flags;
+    using CostOptionFlags = CostArbitrator<DummyCommand>::Option::Flags;
 
     using CostArbitratorT = CostArbitrator<DummyCommand>;
     using PriorityArbitratorT = PriorityArbitrator<DummyCommand>;
@@ -445,14 +445,14 @@ protected:
 };
 
 TEST_F(NestedArbitratorsTest, Printout) {
-    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOption::NO_FLAGS);
-    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOption::NO_FLAGS);
+    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NO_FLAGS);
+    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NO_FLAGS);
 
-    testCostArbitrator->addOption(testBehaviorLowCost, CostOption::NO_FLAGS, cost_estimator);
-    testCostArbitrator->addOption(testBehaviorHighCost, CostOption::NO_FLAGS, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NO_FLAGS, cost_estimator);
 
-    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOption::NO_FLAGS);
-    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOption::NO_FLAGS);
+    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NO_FLAGS);
+    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NO_FLAGS);
 
 
     // clang-format off
