@@ -7,6 +7,26 @@
 
 namespace behavior_planning {
 
+
+/*!
+ * \brief The Behavior class is the most abstract representation of a behavior.
+ *
+ * Derive from this class to implement simple and atomic behaviors. Multiple behaviors can be combined to more complex
+ * behaviors using arbitrators, building up a behavior hierarchy, \see arbitrator.hpp
+ *
+ * The command itself is a template argument, so you can use this behavior planning library to realize chessplay,
+ * trading or automated driving.
+ *
+ * In general, a behavior is not aware if it is active or not, but only if it is applicable in the current situation.
+ * In such a way, the complexity of behavior planning is tackled on twofold:
+ *  -   The simple, thus manageble behaviors (usually leaf nodes of a behavior hierarchy) carry all the information
+ *      and logic needed to decide if such an action is currently applicable.
+ *  -   The arbitrators (non-leaf nodes of the behavior hierarchy) combine multiple behaviors together
+ *      using a defined policy to select between these subbehaviors.
+ *      An arbitrator itself has no particular information about the nature of its subbehaviors,
+ *      only about their commitment/invocation conditions and optionally other abstract (quality) measures
+ *      (e.g. priority, expected reward, etc.).
+ */
 template <typename CommandT>
 class Behavior {
 public:
@@ -15,15 +35,54 @@ public:
     Behavior(const std::string& name = "Behavior") : name_{name} {
     }
 
+    /*!
+     * \brief Generates a command that realizes this behavior.
+     *
+     * \attention   Make sure to only call getCommand(), if either the invocation or the commitment condition is true!
+     *              Otherwise the behavior is undefined or an exception may be thrown.
+     * \return      A command that can be executed to realize this behavior.
+     */
     virtual CommandT getCommand() = 0;
+
+    /*!
+     * \brief   true if the behavior can be activated in the current state of the environment model
+     *          and would generate reasonable commands
+     * \return  true if this behavior can be activated
+     */
     virtual bool checkInvocationCondition() const {
         return false;
     }
+
+    /*!
+     * \brief true if the behavior would generate reasonable commands in the current state of the environment model.
+     *
+     * Usually tells a superior behavior/arbitrator that this can be continued.
+     *
+     * \return true if this behavior can be continued
+     */
     virtual bool checkCommitmentCondition() const {
         return false;
     }
+
+    /*!
+     * \brief Informs the behavior that it will become active.
+     *
+     * Will be called only once before the behavior is active, so should be used only for preparations.
+     * If the behavior is currently not executable, the invocation condition should be false.
+     * After gainControl(), getCommand() can be called multiple times, as long as the commitment condition is true.
+     *
+     * If possible, the behavior should not be aware if it is active or not. Neither invocation/commitment conditions,
+     * nor the command itself depend on that.
+     */
     virtual void gainControl() {
     }
+
+    /*!
+     * \brief Informs the behavior that it will become inactive.
+     *
+     * Will be called only once before the behavior becomes inactive again, so should be used only for cleanups.
+     * After loseControl(), getCommand() will not be called without prior gainControl().
+     */
     virtual void loseControl() {
     }
 
