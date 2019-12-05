@@ -274,8 +274,7 @@ TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
 }
 
 
-template <typename CommandT>
-struct CostEstimatorFromCostMap : public CostArbitrator<CommandT, DummyCommand>::CostEstimator {
+struct CostEstimatorFromCostMap : public CostEstimator<DummyCommand> {
     using CostMap = std::map<DummyCommand, double>;
 
     CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
@@ -302,11 +301,10 @@ protected:
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
-    CostEstimatorFromCostMap<DummyCommand>::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
-    CostEstimatorFromCostMap<DummyCommand>::Ptr cost_estimator =
-        std::make_shared<CostEstimatorFromCostMap<DummyCommand>>(costMap);
-    CostEstimatorFromCostMap<DummyCommand>::Ptr cost_estimator_with_activation_costs =
-        std::make_shared<CostEstimatorFromCostMap<DummyCommand>>(costMap, 10);
+    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
+    CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
+    CostEstimatorFromCostMap::Ptr cost_estimator_with_activation_costs =
+        std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
     CostArbitrator<DummyCommand> testCostArbitrator;
 };
@@ -474,10 +472,8 @@ TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "__mid_cost__");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "____high_cost____");
 
-    CostEstimatorFromCostMap<DummyCommandInt>::CostMap costMap{
-        {"low_cost", 0}, {"__mid_cost__", 0.5}, {"____high_cost____", 1}};
-    CostEstimatorFromCostMap<DummyCommandInt>::Ptr cost_estimator =
-        std::make_shared<CostEstimatorFromCostMap<DummyCommandInt>>(costMap);
+    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"__mid_cost__", 0.5}, {"____high_cost____", 1}};
+    CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
     CostArbitrator<DummyCommandInt, DummyCommand> testCostArbitrator;
 

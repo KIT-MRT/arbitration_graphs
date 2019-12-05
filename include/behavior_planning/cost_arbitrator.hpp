@@ -9,16 +9,17 @@
 
 namespace behavior_planning {
 
+template <typename SubCommandT>
+struct CostEstimator {
+    using Ptr = std::shared_ptr<CostEstimator>;
+
+    virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
+};
+
 template <typename CommandT, typename SubCommandT = CommandT>
 class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
-
-    struct CostEstimator {
-        using Ptr = std::shared_ptr<CostEstimator>;
-
-        virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
-    };
 
     struct Option : Arbitrator<CommandT, SubCommandT>::Option {
         using Ptr = std::shared_ptr<Option>;
@@ -28,7 +29,7 @@ public:
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
-               const typename CostEstimator::Ptr& costEstimator)
+               const typename CostEstimator<SubCommandT>::Ptr& costEstimator)
                 : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
@@ -57,7 +58,7 @@ public:
             return output;
         }
 
-        typename CostEstimator::Ptr costEstimator_;
+        typename CostEstimator<SubCommandT>::Ptr costEstimator_;
         mutable boost::optional<double> last_estimated_cost_;
     };
 
@@ -67,7 +68,7 @@ public:
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
                    const typename Option::Flags& flags,
-                   const typename CostEstimator::Ptr& costEstimator) {
+                   const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
     }
