@@ -9,7 +9,14 @@
 
 namespace behavior_planning {
 
-template <typename CommandT>
+/*!
+ * \brief The Arbitrator class
+ *
+ * \note If CommandT != SubCommandT either
+ *       - override getCommand() in your specialized Arbitrator or
+ *       - provide a CommandT(const SubCommandT&) constructor
+ */
+template <typename CommandT, typename SubCommandT = CommandT>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
@@ -21,12 +28,12 @@ public:
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
         using FlagsT = std::underlying_type_t<Flags>;
 
-        Option(const typename Behavior<CommandT>::Ptr& behavior, const FlagsT& flags)
+        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : behavior_{behavior}, flags_{flags} {
         }
         virtual ~Option() = default;
 
-        typename Behavior<CommandT>::Ptr behavior_;
+        typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
 
         bool hasFlag(const FlagsT& flag_to_check) const {
@@ -56,8 +63,9 @@ public:
     Arbitrator(const std::string& name = "Arbitrator") : Behavior<CommandT>(name){};
 
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const typename Option::Flags& flags) {
-        behaviorOptions_.push_back({behavior, flags});
+    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+        typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
+        this->behaviorOptions_.push_back(option);
     }
 
     CommandT getCommand() override {

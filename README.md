@@ -11,6 +11,7 @@ behavior planning based on simple atomic behaviors that are combined to more com
 - [x] printout: add intendation by replacing "\n"
 - [x] write base class for arbitrators
 - [x] use enum for behavior options flags (to combine them with "|" while keeping the signature)
+- [x] generalize prio and cost arbitrators to use SubCommandT -> add test to enable SubCommandT != CommandT by providing CommandT(const SubCommandT&) constructor
 - [ ] union arbitrator
 - [ ] write documentation for all basic classes
 

@@ -9,27 +9,27 @@
 
 namespace behavior_planning {
 
-template <typename CommandT>
-class CostArbitrator : public Arbitrator<CommandT> {
+template <typename CommandT, typename SubCommandT = CommandT>
+class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
 
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
 
-        virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
+        virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
     };
 
-    struct Option : Arbitrator<CommandT>::Option {
+    struct Option : Arbitrator<CommandT, SubCommandT>::Option {
         using Ptr = std::shared_ptr<Option>;
-        using FlagsT = typename Arbitrator<CommandT>::Option::FlagsT;
+        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 
-        Option(const typename Behavior<CommandT>::Ptr& behavior,
+        Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
                const typename CostEstimator::Ptr& costEstimator)
-                : Arbitrator<CommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
+                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
         /*!
@@ -53,7 +53,7 @@ public:
                 output << "- (cost:  n.a.) ";
             }
 
-            Arbitrator<CommandT>::Option::to_stream(output, option_index, prefix, suffix);
+            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, option_index, prefix, suffix);
             return output;
         }
 
@@ -62,10 +62,10 @@ public:
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT>(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT, SubCommandT>(name){};
 
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior,
+    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
                    const typename Option::Flags& flags,
                    const typename CostEstimator::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);

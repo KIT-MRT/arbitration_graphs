@@ -49,13 +49,32 @@
 using namespace behavior_planning;
 
 using DummyCommand = std::string;
+
+class DummyCommandInt {
+public:
+    DummyCommandInt(const int command) : command_{command} {
+    }
+    DummyCommandInt(const DummyCommand& command) {
+        command_ = static_cast<std::string>(command).length();
+    }
+
+    bool operator==(const int other_command) const {
+        return command_ == other_command;
+    }
+
+    int command_;
+};
+bool operator==(const int command_int, const DummyCommandInt& command_object) {
+    return command_int == command_object.command_;
+}
+
 class DummyBehavior : public Behavior<DummyCommand> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment},
-              loseControlCounter_{0} {};
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{
+                                                                                                      0} {};
 
     DummyCommand getCommand() override {
         return name_;
@@ -234,8 +253,29 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
 }
 
+TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
+    using OptionFlags = PriorityArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
 
-struct CostEstimatorFromCostMap : public CostArbitrator<DummyCommand>::CostEstimator {
+    DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "___HighPriority___");
+    DummyBehavior::Ptr testBehaviorMidPriority = std::make_shared<DummyBehavior>(true, false, "__MidPriority__");
+    DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "_LowPriority_");
+
+    PriorityArbitrator<DummyCommandInt, DummyCommand> testPriorityArbitrator;
+
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+
+    testPriorityArbitrator.gainControl();
+
+    std::string expected = "__MidPriority__";
+    EXPECT_EQ(expected.length(), testPriorityArbitrator.getCommand());
+}
+
+
+template <typename CommandT>
+struct CostEstimatorFromCostMap : public CostArbitrator<CommandT, DummyCommand>::CostEstimator {
     using CostMap = std::map<DummyCommand, double>;
 
     CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
@@ -262,10 +302,11 @@ protected:
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
-    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
-    CostEstimatorFromCostMap::Ptr cost_estimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
-    CostEstimatorFromCostMap::Ptr cost_estimator_with_activation_costs =
-        std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
+    CostEstimatorFromCostMap<DummyCommand>::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
+    CostEstimatorFromCostMap<DummyCommand>::Ptr cost_estimator =
+        std::make_shared<CostEstimatorFromCostMap<DummyCommand>>(costMap);
+    CostEstimatorFromCostMap<DummyCommand>::Ptr cost_estimator_with_activation_costs =
+        std::make_shared<CostEstimatorFromCostMap<DummyCommand>>(costMap, 10);
 
     CostArbitrator<DummyCommand> testCostArbitrator;
 };
@@ -362,7 +403,8 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivati
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
 
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
+    testCostArbitrator.addOption(
+        testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
     testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
@@ -423,6 +465,31 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+}
+
+TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
+    using OptionFlags = CostArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
+
+    DummyBehavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
+    DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "__mid_cost__");
+    DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "____high_cost____");
+
+    CostEstimatorFromCostMap<DummyCommandInt>::CostMap costMap{
+        {"low_cost", 0}, {"__mid_cost__", 0.5}, {"____high_cost____", 1}};
+    CostEstimatorFromCostMap<DummyCommandInt>::Ptr cost_estimator =
+        std::make_shared<CostEstimatorFromCostMap<DummyCommandInt>>(costMap);
+
+    CostArbitrator<DummyCommandInt, DummyCommand> testCostArbitrator;
+
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator);
+
+    testCostArbitrator.gainControl();
+
+    std::string expected = "__mid_cost__";
+    EXPECT_EQ(expected.length(), testCostArbitrator.getCommand());
 }
 
 
