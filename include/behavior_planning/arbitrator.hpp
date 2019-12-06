@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "behavior.hpp"
+#include "exceptions.hpp"
 
 
 namespace behavior_planning {
@@ -94,8 +95,9 @@ public:
                     behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl();
                 }
             } else {
-                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
-                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
+                throw InvocationConditionIsFalseError(
+                    "No behavior with true invocation condition found! Only call getCommand() if "
+                    "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
         return behaviorOptions_.at(*activeBehavior_)->behavior_->getCommand();
