@@ -13,10 +13,14 @@ behavior planning based on simple atomic behaviors that are combined to more com
 - [x] use enum for behavior options flags (to combine them with "|" while keeping the signature)
 - [x] generalize prio and cost arbitrators to use SubCommandT -> add test to enable SubCommandT != CommandT by providing CommandT(const SubCommandT&) constructor
 - [x] implement ConjunctiveCoordinator
+- [ ] throw exception if gainControl is called with false invocationCondition
 - [ ] write documentation for all basic classes
+- [ ] think about proper handling of addOption for each arbitrator/coordinator when in control -> only problem for coordinators?
+      (either disallow by exception or rather properly handle gain/loseControl of subbehaviors)
 
 ### nice to have
 - [x] use `std::optional`
+- [ ] Use static_assert to ensure our assumptions on the template types are met
 - [ ] (optional) add option to have a cost estimator in the behavior class/object (in order to use its data/computations), similar to std::sort with compare function as class member or static function
 - [ ] (optional) arbitator with dynamically generated options (e.g. create new options in findBestOption if none of the given options is applicable or good enough)
 - [ ] (optional) use iterator instead of index for activeBehavior_  
