@@ -12,7 +12,7 @@ behavior planning based on simple atomic behaviors that are combined to more com
 - [x] write base class for arbitrators
 - [x] use enum for behavior options flags (to combine them with "|" while keeping the signature)
 - [x] generalize prio and cost arbitrators to use SubCommandT -> add test to enable SubCommandT != CommandT by providing CommandT(const SubCommandT&) constructor
-- [ ] union arbitrator
+- [x] implement ConjunctiveCoordinator
 - [ ] write documentation for all basic classes
 
 ### nice to have
@@ -24,6 +24,8 @@ behavior planning based on simple atomic behaviors that are combined to more com
       `activeBehavior_->behavior->checkCommitmentCondition();`
 
 ### low prio
+- [ ] (lowPrio) ConjunctiveCoordinator: add flag loseControlWithoutInvocation
+                (commitmentCondition would need one committed sub-behaviors AND true invocationCondition of all sub-behaviors)
 - [x] (lowPrio) printout: add to_stream() to Option class
 - [ ] (lowPrio) printout: format priority index to fixed number of digits (use fmt) `int n_max_digits = (int) log10 ((double) priority_arbitrator.behaviorOptions_.size()) + 1;`
 - [ ] (lowPrio) printout: use fmt
