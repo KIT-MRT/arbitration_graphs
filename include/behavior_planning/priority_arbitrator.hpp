@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "arbitrator.hpp"
 
@@ -58,7 +58,7 @@ protected:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() const {
+    std::optional<int> findBestOption() const {
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
@@ -69,7 +69,7 @@ protected:
                 return i;
             }
         }
-        return boost::none;
+        return std::nullopt;
     }
 };
 } // namespace behavior_planning

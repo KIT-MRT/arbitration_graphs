@@ -2,7 +2,7 @@
 
 #include <iomanip>
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "arbitrator.hpp"
 
@@ -59,7 +59,7 @@ public:
         }
 
         typename CostEstimator<SubCommandT>::Ptr costEstimator_;
-        mutable boost::optional<double> last_estimated_cost_;
+        mutable std::optional<double> last_estimated_cost_;
     };
 
 
@@ -79,9 +79,9 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() const {
+    std::optional<int> findBestOption() const {
         double costOfBestOption = std::numeric_limits<double>::max();
-        boost::optional<int> bestOption;
+        std::optional<int> bestOption;
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <vector>
-#include <boost/optional.hpp>
 
 #include "behavior.hpp"
 
@@ -74,14 +74,14 @@ public:
 
         if (activeBehavior_ && !activeBehaviorCanBeContinued) {
             behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl();
-            activeBehavior_ = boost::none;
+            activeBehavior_ = std::nullopt;
         }
 
         bool activeBehaviorInterruptable =
             activeBehavior_ && (behaviorOptions_.at(*activeBehavior_)->hasFlag(Option::Flags::INTERRUPTABLE));
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            boost::optional<int> bestOption = findBestOption();
+            std::optional<int> bestOption = findBestOption();
 
             if (bestOption) {
                 if (!activeBehavior_) {
@@ -127,7 +127,7 @@ public:
         if (activeBehavior_) {
             behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl();
         }
-        activeBehavior_ = boost::none;
+        activeBehavior_ = std::nullopt;
     }
 
     /*!
@@ -167,9 +167,9 @@ protected:
      *
      * @return  Best applicable option according to your policy (can also be the currently active option)
      */
-    virtual boost::optional<int> findBestOption() const = 0;
+    virtual std::optional<int> findBestOption() const = 0;
 
     std::vector<typename Option::Ptr> behaviorOptions_;
-    boost::optional<int> activeBehavior_;
+    std::optional<int> activeBehavior_;
 };
 } // namespace behavior_planning
