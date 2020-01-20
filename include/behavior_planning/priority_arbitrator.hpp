@@ -28,6 +28,7 @@ public:
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
          * \param output        Output stream to write into, will be returned also
+         * \param time          Expected execution time point of this behaviors command
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -36,11 +37,12 @@ public:
          * \see Arbitrator::to_stream()
          */
         virtual std::ostream& to_stream(std::ostream& output,
+                                        const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << option_index + 1 << ". ";
-            Arbitrator<CommandT>::Option::to_stream(output, option_index, prefix, suffix);
+            Arbitrator<CommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
@@ -58,14 +60,15 @@ protected:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() const {
+    boost::optional<int> findBestOption(const Time& time) const {
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
             bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
             bool isActiveAndCanBeContinued =
-                isActive && this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition();
-            if (option->behavior_->checkInvocationCondition() || isActiveAndCanBeContinued) {
+                isActive &&
+                this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
+            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
                 return i;
             }
         }

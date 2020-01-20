@@ -4,6 +4,8 @@
 #include <memory>
 #include <sstream>
 
+#include "types.hpp"
+
 
 namespace behavior_planning {
 
@@ -40,16 +42,19 @@ public:
      *
      * \attention   Make sure to only call getCommand(), if either the invocation or the commitment condition is true!
      *              Otherwise the behavior is undefined or an exception may be thrown.
+     * \param time  Expected execution time point of this behaviors command
      * \return      A command that can be executed to realize this behavior.
      */
-    virtual CommandT getCommand() = 0;
+    virtual CommandT getCommand(const Time& time) = 0;
 
     /*!
      * \brief   true if the behavior can be activated in the current state of the environment model
      *          and would generate reasonable commands
-     * \return  true if this behavior can be activated
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      true if this behavior can be activated
      */
-    virtual bool checkInvocationCondition() const {
+    virtual bool checkInvocationCondition(const Time& time) const {
         return false;
     }
 
@@ -58,9 +63,10 @@ public:
      *
      * Usually tells a superior behavior/arbitrator that this can be continued.
      *
-     * \return true if this behavior can be continued
+     * \param time  Expected execution time point of this behaviors command
+     * \return      true if this behavior can be continued
      */
-    virtual bool checkCommitmentCondition() const {
+    virtual bool checkCommitmentCondition(const Time& time) const {
         return false;
     }
 
@@ -73,8 +79,10 @@ public:
      *
      * If possible, the behavior should not be aware if it is active or not. Neither invocation/commitment conditions,
      * nor the command itself depend on that.
+     *
+     * \param time  Expected execution time point of this behaviors command
      */
-    virtual void gainControl() {
+    virtual void gainControl(const Time& time) {
     }
 
     /*!
@@ -82,22 +90,25 @@ public:
      *
      * Will be called only once before the behavior becomes inactive again, so should be used only for cleanups.
      * After loseControl(), getCommand() will not be called without prior gainControl().
+     *
+     * \param time  Expected execution time point of next behaviors command
      */
-    virtual void loseControl() {
+    virtual void loseControl(const Time& time) {
     }
 
     /*!
      * \brief Returns a string representation of the behavior object with its current state using to_stream()
      *
+     * \param time      Expected execution time point of this behaviors command
      * \param prefix    A string that should be prepended to each line this function writes
      * \param suffix    A string that should be appended to each line this function writes
      * \return          String representation of this behavior
      *
      * \see to_stream()
      */
-    virtual std::string to_str(const std::string& prefix = "", const std::string& suffix = "") const {
+    virtual std::string to_str(const Time& time, const std::string& prefix = "", const std::string& suffix = "") const {
         std::stringstream ss;
-        to_stream(ss, prefix, suffix);
+        to_stream(ss, time, prefix, suffix);
         return ss.str();
     }
 
@@ -119,19 +130,21 @@ public:
      *          std::cout << my_behavior_object << std::endl;
      *
      * \param output    Output stream to write into, will be returned also
+     * \param time      Expected execution time point of this behaviors command
      * \param prefix    A string that should be prepended to each line that is written to the output stream
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
      */
     virtual std::ostream& to_stream(std::ostream& output,
+                                    const Time& time,
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const {
-        if (checkInvocationCondition()) {
+        if (checkInvocationCondition(time)) {
             output << "\033[32mINVOCATION\033[0m ";
         } else {
             output << "\033[31mInvocation\033[0m ";
         }
-        if (checkCommitmentCondition()) {
+        if (checkCommitmentCondition(time)) {
             output << "\033[32mCOMMITMENT\033[0m ";
         } else {
             output << "\033[31mCommitment\033[0m ";
@@ -143,22 +156,4 @@ public:
 
     const std::string name_;
 };
-
-
-/*!
- * \brief Writes a string representation of a given behavior object with its current state to the given output stream.
- *
- * \example std::cout << my_behavior_object << std::endl;
- *
- * \param output    Output stream to write into, will be returned also
- * \param behavior  This behavior objects state will be written into the output stream
- * \return          The same given input stream
- *
- * \see Behavior::to_stream()
- */
-template <typename CommandT>
-std::ostream& operator<<(std::ostream& output, const Behavior<CommandT>& behavior) {
-    behavior.to_stream(output);
-    return output;
-}
 } // namespace behavior_planning

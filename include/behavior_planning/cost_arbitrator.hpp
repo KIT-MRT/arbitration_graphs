@@ -36,6 +36,7 @@ public:
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
          * \param output        Output stream to write into, will be returned also
+         * \param time          Expected execution time point of this behaviors command
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -44,6 +45,7 @@ public:
          * \see Arbitrator::to_stream()
          */
         virtual std::ostream& to_stream(std::ostream& output,
+                                        const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
@@ -53,7 +55,7 @@ public:
                 output << "- (cost:  n.a.) ";
             }
 
-            Arbitrator<CommandT>::Option::to_stream(output, option_index, prefix, suffix);
+            Arbitrator<CommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
 
@@ -78,7 +80,7 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    boost::optional<int> findBestOption() const {
+    boost::optional<int> findBestOption(const Time& time) const {
         double costOfBestOption = std::numeric_limits<double>::max();
         boost::optional<int> bestOption;
 
@@ -87,9 +89,10 @@ private:
 
             bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
             bool isActiveAndCanBeContinued =
-                isActive && this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition();
-            if (option->behavior_->checkInvocationCondition() || isActiveAndCanBeContinued) {
-                double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(), isActive);
+                isActive &&
+                this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
+            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
+                double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
                 option->last_estimated_cost_ = cost;
 
                 if (cost < costOfBestOption) {

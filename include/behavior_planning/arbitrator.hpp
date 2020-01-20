@@ -36,6 +36,7 @@ public:
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
          * \param output        Output stream to write into, will be returned also
+         * \param time          Expected execution time point of this behaviors command
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -44,10 +45,11 @@ public:
          * \see Arbitrator::to_stream()
          */
         virtual std::ostream& to_stream(std::ostream& output,
+                                        const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
-            behavior_->to_stream(output, prefix, suffix);
+            behavior_->to_stream(output, time, prefix, suffix);
             return output;
         }
     };
@@ -59,12 +61,12 @@ public:
         behaviorOptions_.push_back({behavior, flags});
     }
 
-    CommandT getCommand() override {
+    CommandT getCommand(const Time& time) override {
         bool activeBehaviorCanBeContinued =
-            activeBehavior_ && behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition();
+            activeBehavior_ && behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition(time);
 
         if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl();
+            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
             activeBehavior_ = boost::none;
         }
 
@@ -72,51 +74,51 @@ public:
             activeBehavior_ && (behaviorOptions_.at(*activeBehavior_)->hasFlag(Option::Flags::INTERRUPTABLE));
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            boost::optional<int> bestOption = findBestOption();
+            boost::optional<int> bestOption = findBestOption(time);
 
             if (bestOption) {
                 if (!activeBehavior_) {
                     activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl();
+                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl(time);
                 } else if (*bestOption != *activeBehavior_) {
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl();
+                    behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
 
                     activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl();
+                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl(time);
                 }
             } else {
                 throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
                                          "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
-        return behaviorOptions_.at(*activeBehavior_)->behavior_->getCommand();
+        return behaviorOptions_.at(*activeBehavior_)->behavior_->getCommand(time);
     }
 
-    bool checkInvocationCondition() const override {
+    bool checkInvocationCondition(const Time& time) const override {
         for (auto& option : behaviorOptions_) {
-            if (option->behavior_->checkInvocationCondition()) {
+            if (option->behavior_->checkInvocationCondition(time)) {
                 return true;
             }
         }
         return false;
     }
-    bool checkCommitmentCondition() const override {
+    bool checkCommitmentCondition(const Time& time) const override {
         if (activeBehavior_) {
-            if (behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition()) {
+            if (behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition(time)) {
                 return true;
             } else {
-                return checkInvocationCondition();
+                return checkInvocationCondition(time);
             }
         }
         return false;
     }
 
-    virtual void gainControl() override {
+    virtual void gainControl(const Time& time) override {
     }
 
-    virtual void loseControl() override {
+    virtual void loseControl(const Time& time) override {
         if (activeBehavior_) {
-            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl();
+            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
         }
         activeBehavior_ = boost::none;
     }
@@ -124,17 +126,19 @@ public:
     /*!
      * \brief Writes a string representation of the Arbitrator object with its current state to the output stream.
      *
-     * \param output        Output stream to write into, will be returned also
-     * \param prefix        A string that should be prepended to each line that is written to the output stream
-     * \param suffix        A string that should be appended to each line that is written to the output stream
-     * \return              The same given input stream (signature similar to std::ostream& operator<<())
+     * \param output    Output stream to write into, will be returned also
+     * \param time      Expected execution time point of this behaviors command
+     * \param prefix    A string that should be prepended to each line that is written to the output stream
+     * \param suffix    A string that should be appended to each line that is written to the output stream
+     * \return          The same given input stream (signature similar to std::ostream& operator<<())
      *
      * \see Behavior::to_stream()
      */
     virtual std::ostream& to_stream(std::ostream& output,
+                                    const Time& time,
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, prefix, suffix);
+        Behavior<CommandT>::to_stream(output, time, prefix, suffix);
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             const typename Option::Ptr& option = behaviorOptions_.at(i);
@@ -145,7 +149,7 @@ public:
             } else {
                 output << suffix << std::endl << prefix << "    ";
             }
-            option->to_stream(output, i, "    " + prefix, suffix);
+            option->to_stream(output, time, i, "    " + prefix, suffix);
         }
         return output;
     }
@@ -158,7 +162,7 @@ protected:
      *
      * @return  Best applicable option according to your policy (can also be the currently active option)
      */
-    virtual boost::optional<int> findBestOption() const = 0;
+    virtual boost::optional<int> findBestOption(const Time& time) const = 0;
 
     std::vector<typename Option::Ptr> behaviorOptions_;
     boost::optional<int> activeBehavior_;
