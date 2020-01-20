@@ -13,15 +13,18 @@ template <typename CommandT>
 class CostArbitrator : public Arbitrator<CommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
+    using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
     struct CostEstimator {
         using Ptr = std::shared_ptr<CostEstimator>;
+        using ConstPtr = std::shared_ptr<const CostEstimator>;
 
         virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
     };
 
     struct Option : Arbitrator<CommandT>::Option {
         using Ptr = std::shared_ptr<Option>;
+        using ConstPtr = std::shared_ptr<const Option>;
         using FlagsT = typename Arbitrator<CommandT>::Option::FlagsT;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };

@@ -12,6 +12,7 @@ template <typename CommandT>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
+    using ConstPtr = std::shared_ptr<const Arbitrator>;
 
     struct Option {
     public:
