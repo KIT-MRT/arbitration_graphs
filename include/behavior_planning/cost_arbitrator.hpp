@@ -12,6 +12,7 @@ namespace behavior_planning {
 template <typename SubCommandT>
 struct CostEstimator {
     using Ptr = std::shared_ptr<CostEstimator>;
+    using ConstPtr = std::shared_ptr<const CostEstimator>;
 
     virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
 };
