@@ -12,11 +12,13 @@ template <typename CommandT, typename SubCommandT = CommandT>
 class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<PriorityArbitrator>;
+    using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
 
     struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 

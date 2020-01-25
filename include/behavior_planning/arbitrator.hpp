@@ -21,6 +21,7 @@ template <typename CommandT, typename SubCommandT = CommandT>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
+    using ConstPtr = std::shared_ptr<const Arbitrator>;
 
     /*!
      * \brief The Option struct
@@ -34,6 +35,7 @@ public:
     struct Option {
     public:
         using Ptr = std::shared_ptr<Option>;
+        using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
         using FlagsT = std::underlying_type_t<Flags>;

@@ -20,10 +20,12 @@ template <typename CommandT, typename SubCommandT = CommandT>
 class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
+    using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
     struct Option : Arbitrator<CommandT, SubCommandT>::Option {
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 

@@ -16,11 +16,13 @@ template <typename CommandT, typename SubCommandT>
 class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<ConjunctiveCoordinator>;
+    using ConstPtr = std::shared_ptr<const ConjunctiveCoordinator>;
 
     struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0 };
 
