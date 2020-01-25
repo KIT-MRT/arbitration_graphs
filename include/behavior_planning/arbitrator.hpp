@@ -22,6 +22,15 @@ class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
 
+    /*!
+     * \brief The Option struct
+     *
+     * \todo explain why it is a subclass of arbitrator
+     * \todo explain flags implementation and usage
+     *       - MyArbitrator::Option::Flags != Arbitrator::Option::Flags (no inheritance)
+     *       - addOption() checks type, but hasFlag() not anymore (otherwise each inherited Option would have to
+     *         implement a new, not overriding (because signature changed) hasFlag() -> error prone)
+     */
     struct Option {
     public:
         using Ptr = std::shared_ptr<Option>;
@@ -32,6 +41,7 @@ public:
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : behavior_{behavior}, flags_{flags} {
         }
+        //! \todo document why we need this
         virtual ~Option() = default;
 
         typename Behavior<SubCommandT>::Ptr behavior_;
