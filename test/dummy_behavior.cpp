@@ -54,21 +54,22 @@ protected:
     DummyBehavior testBehaviorTrue{true, true};
 
     DummyCommand expected_command{"DummyBehavior"};
+
+    Time time{Clock::now()};
 };
 
 TEST_F(DummyBehaviorTest, BasicInterface) {
-    EXPECT_EQ(expected_command, testBehaviorTrue.getCommand());
-    EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition());
-    EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition());
-    EXPECT_NO_THROW(testBehaviorTrue.gainControl());
-    EXPECT_NO_THROW(testBehaviorTrue.loseControl());
+    EXPECT_EQ(expected_command, testBehaviorTrue.getCommand(time));
+    EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition(time));
+    EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition(time));
+    EXPECT_NO_THROW(testBehaviorTrue.gainControl(time));
+    EXPECT_NO_THROW(testBehaviorTrue.loseControl(time));
 }
 
 TEST_F(DummyBehaviorTest, Printout) {
     const std::string expected_printout = invocationTrueString + commitmentTrueString + "DummyBehavior";
-    std::stringstream actual_printout;
-    actual_printout << testBehaviorTrue;
-    std::cout << actual_printout.str() << std::endl;
+    std::string actual_printout = testBehaviorTrue.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 }

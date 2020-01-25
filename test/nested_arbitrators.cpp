@@ -75,6 +75,8 @@ protected:
 
     PriorityArbitratorT::Ptr testRootPriorityArbitrator =
         std::make_shared<PriorityArbitratorT>("root priority arbitrator");
+
+    Time time{Clock::now()};
 };
 
 TEST_F(NestedArbitratorsTest, Printout) {
@@ -99,23 +101,18 @@ TEST_F(NestedArbitratorsTest, Printout) {
     // clang-format on
 
     // 1. test to_str()
-    EXPECT_EQ(expected_printout, testRootPriorityArbitrator->to_str());
+    EXPECT_EQ(expected_printout, testRootPriorityArbitrator->to_str(time));
 
     // 1. test to_stream()
-    std::stringstream actual_printout;
-    testRootPriorityArbitrator->to_stream(actual_printout);
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    std::stringstream actual_printout_stream;
+    testRootPriorityArbitrator->to_stream(actual_printout_stream, time);
+    EXPECT_EQ(expected_printout, actual_printout_stream.str());
 
-    // 1. test operator<<
-    actual_printout.str("");
-    actual_printout << *testRootPriorityArbitrator;
-    EXPECT_EQ(expected_printout, actual_printout.str());
-
-    std::cout << actual_printout.str() << std::endl;
+    std::cout << actual_printout_stream.str() << std::endl;
 
 
-    testPriorityArbitrator->gainControl();
-    EXPECT_EQ("high_cost", testRootPriorityArbitrator->getCommand());
+    testPriorityArbitrator->gainControl(time);
+    EXPECT_EQ("high_cost", testRootPriorityArbitrator->getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "root priority arbitrator\n"
@@ -126,9 +123,8 @@ TEST_F(NestedArbitratorsTest, Printout) {
                         "        1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
                         "        2. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    actual_printout.str("");
-    actual_printout << *testRootPriorityArbitrator;
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    std::string actual_printout = testRootPriorityArbitrator->to_str(time);
+    EXPECT_EQ(expected_printout, actual_printout);
 
-    std::cout << actual_printout.str() << std::endl;
+    std::cout << actual_printout << std::endl;
 }

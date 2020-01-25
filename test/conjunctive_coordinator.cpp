@@ -62,6 +62,8 @@ protected:
 
 
     ConjunctiveCoordinator<DummyCommand, DummyCommand> testConjunctiveCoordinator;
+
+    Time time{Clock::now()};
 };
 
 DummyCommand& operator&=(DummyCommand& a, const DummyCommand& b) {
@@ -71,24 +73,24 @@ DummyCommand& operator&=(DummyCommand& a, const DummyCommand& b) {
 
 TEST_F(ConjunctiveCoordinatorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition());
+    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if all of the option have true invocationCondition
     testConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
-    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition());
+    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
     testConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
     testConjunctiveCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
 
-    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition());
+    EXPECT_FALSE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
     // make all options invocationCondition true now -> the coordinators invocationCondition should also be true
     testBehaviorA->invocationCondition_ = true;
-    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition());
+    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
     // coordinators cannot hold the same behavior instantiation multiple times
     EXPECT_THROW(testConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS),
@@ -97,35 +99,35 @@ TEST_F(ConjunctiveCoordinatorTest, BasicFunctionality) {
 
     // if any option has true commitmentCondition and the coordinator is active, i.e. gained control
     // -> the coordinators commitmentCondition should also be true
-    testConjunctiveCoordinator.gainControl();
-    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_TRUE(testConjunctiveCoordinator.checkCommitmentCondition());
+    testConjunctiveCoordinator.gainControl(time);
+    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_TRUE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
     // the ConjunctiveCoordinator joins all sub-commands using the "& operator"
-    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand());
+    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand(time));
     EXPECT_EQ(0, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorC->loseControlCounter_);
 
-    // loseControl() should never be called within getCommand of the ConjunctiveCoordinator as the sub-behaviors
+    // loseControl(time) should never be called within getCommand of the ConjunctiveCoordinator as the sub-behaviors
     // gain control with the ConjunctiveCoordinator altogether ...
-    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand());
+    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand(time));
     EXPECT_EQ(0, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorC->loseControlCounter_);
 
     // ... even if all of the sub-behaviors commitmentCondition are false
     testBehaviorC->commitmentCondition_ = false;
-    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand());
+    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand(time));
     EXPECT_EQ(0, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(0, testBehaviorC->loseControlCounter_);
 
-    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition());
-    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition());
+    EXPECT_TRUE(testConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(testConjunctiveCoordinator.checkCommitmentCondition(time));
 
-    // ConjunctiveCoordinators loseControl() should also call loseControl() for all its sub-behaviors
-    testConjunctiveCoordinator.loseControl();
+    // ConjunctiveCoordinators loseControl(time) should also call loseControl(time) for all its sub-behaviors
+    testConjunctiveCoordinator.loseControl(time);
     EXPECT_EQ(1, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
@@ -144,15 +146,14 @@ TEST_F(ConjunctiveCoordinatorTest, Printout) {
                                     "    - " + invocationTrueString + commitmentTrueString + "C\n"
                                     "    - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
-    std::stringstream actual_printout;
-    actual_printout << testConjunctiveCoordinator;
-    std::cout << actual_printout.str() << std::endl;
+    std::string actual_printout = testConjunctiveCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 
     testBehaviorA->invocationCondition_ = true;
-    testConjunctiveCoordinator.gainControl();
-    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand());
+    testConjunctiveCoordinator.gainControl(time);
+    EXPECT_EQ("ABCB", testConjunctiveCoordinator.getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "ConjunctiveCoordinator\n"
@@ -161,14 +162,15 @@ TEST_F(ConjunctiveCoordinatorTest, Printout) {
                         " -> - " + invocationTrueString + commitmentTrueString + "C\n"
                         " -> - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
-    actual_printout.str("");
-    actual_printout << testConjunctiveCoordinator;
-    std::cout << actual_printout.str() << std::endl;
+    actual_printout = testConjunctiveCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 }
 
 TEST(ConjunctiveCoordinator, SubCommandTypeDiffersFromCommandType) {
+    Time time{Clock::now()};
+
     using OptionFlags = ConjunctiveCoordinator<DummyCommandInt, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorA = std::make_shared<DummyBehavior>(false, false, "A");
@@ -184,8 +186,8 @@ TEST(ConjunctiveCoordinator, SubCommandTypeDiffersFromCommandType) {
     testConjunctiveCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
 
     testBehaviorA->invocationCondition_ = true;
-    testConjunctiveCoordinator.gainControl();
+    testConjunctiveCoordinator.gainControl(time);
 
     std::string expected = "ABCB";
-    EXPECT_EQ(expected.length(), testConjunctiveCoordinator.getCommand());
+    EXPECT_EQ(expected.length(), testConjunctiveCoordinator.getCommand(time));
 }

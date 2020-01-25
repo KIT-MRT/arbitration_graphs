@@ -60,51 +60,54 @@ protected:
 
 
     PriorityArbitrator<DummyCommand> testPriorityArbitrator;
+
+    Time time{Clock::now()};
 };
 
 
 TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
     testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
 
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
-    testPriorityArbitrator.gainControl();
+    testPriorityArbitrator.gainControl(time);
 
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorMidPriority->loseControlCounter_);
 
-    // testBehaviorMidPriority.loseControl() should be called within getCommand since commitment condition is false
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    // testBehaviorMidPriority.loseControl(time) should be called within getCommand since commitment condition is false
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
     EXPECT_EQ(1, testBehaviorMidPriority->loseControlCounter_);
 
     testBehaviorMidPriority->invocationCondition_ = false;
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time));
 
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
 
-    // testBehaviorLowPriority.loseControl() should NOT be called within getCommand since commitment condition is true
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    // testBehaviorLowPriority.loseControl(time) should NOT be called within getCommand since commitment condition is
+    // true
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
 
     testBehaviorMidPriority->invocationCondition_ = true;
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
 }
 
 TEST_F(PriorityArbitratorTest, Printout) {
@@ -120,15 +123,14 @@ TEST_F(PriorityArbitratorTest, Printout) {
                                     "    3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
                                     "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    std::stringstream actual_printout;
-    actual_printout << testPriorityArbitrator;
-    std::cout << actual_printout.str() << std::endl;
+    std::string actual_printout = testPriorityArbitrator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 
 
-    testPriorityArbitrator.gainControl();
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    testPriorityArbitrator.gainControl(time);
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
@@ -137,49 +139,50 @@ TEST_F(PriorityArbitratorTest, Printout) {
                         " -> 3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
                         "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    actual_printout.str("");
-    actual_printout << testPriorityArbitrator;
-    std::cout << actual_printout.str() << std::endl;
+    actual_printout = testPriorityArbitrator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 }
 
 
 TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
-    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
     testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::INTERRUPTABLE);
     testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::INTERRUPTABLE);
 
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time));
 
-    testPriorityArbitrator.gainControl();
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    testPriorityArbitrator.gainControl(time);
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
 
     testBehaviorMidPriority->invocationCondition_ = false;
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
+    EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
 
     testBehaviorMidPriority->invocationCondition_ = true;
-    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
-    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand());
+    EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
+    EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
 }
 
 TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
+    Time time{Clock::now()};
+
     using OptionFlags = PriorityArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "___HighPriority___");
@@ -193,8 +196,8 @@ TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
     testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
 
-    testPriorityArbitrator.gainControl();
+    testPriorityArbitrator.gainControl(time);
 
     std::string expected = "__MidPriority__";
-    EXPECT_EQ(expected.length(), testPriorityArbitrator.getCommand());
+    EXPECT_EQ(expected.length(), testPriorityArbitrator.getCommand(time));
 }

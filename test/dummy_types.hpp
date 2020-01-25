@@ -42,16 +42,16 @@ public:
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{
                                                                                                       0} {};
 
-    DummyCommand getCommand() override {
+    DummyCommand getCommand(const Time& time) override {
         return name_;
     }
-    bool checkInvocationCondition() const override {
+    bool checkInvocationCondition(const Time& time) const override {
         return invocationCondition_;
     }
-    bool checkCommitmentCondition() const override {
+    bool checkCommitmentCondition(const Time& time) const override {
         return commitmentCondition_;
     }
-    virtual void loseControl() override {
+    virtual void loseControl(const Time& time) override {
         loseControlCounter_++;
     }
 

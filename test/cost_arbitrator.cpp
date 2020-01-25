@@ -65,49 +65,51 @@ protected:
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
     CostArbitrator<DummyCommand> testCostArbitrator;
+
+    Time time{Clock::now()};
 };
 
 
 TEST_F(CostArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NO_FLAGS, cost_estimator);
 
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
 
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
-    testCostArbitrator.gainControl();
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    testCostArbitrator.gainControl(time);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorMidCost->loseControlCounter_);
 
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
     EXPECT_EQ(1, testBehaviorMidCost->loseControlCounter_);
 
     testBehaviorMidCost->invocationCondition_ = false;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
 
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
     EXPECT_EQ(0, testBehaviorHighCost->loseControlCounter_);
 
     // high_cost behavior is not interruptable -> high_cost should stay active
     testBehaviorMidCost->invocationCondition_ = true;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
 }
 
 TEST_F(CostArbitratorTest, Printout) {
@@ -123,15 +125,14 @@ TEST_F(CostArbitratorTest, Printout) {
                                     "    - (cost:  n.a.) " + invocationTrueString + commitmentTrueString + "high_cost\n"
                                     "    - (cost:  n.a.) " + invocationTrueString + commitmentFalseString + "mid_cost";
     // clang-format on
-    std::stringstream actual_printout;
-    actual_printout << testCostArbitrator;
-    std::cout << actual_printout.str() << std::endl;
+    std::string actual_printout = testCostArbitrator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 
 
-    testCostArbitrator.gainControl();
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    testCostArbitrator.gainControl(time);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
@@ -140,90 +141,91 @@ TEST_F(CostArbitratorTest, Printout) {
                         "    - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "high_cost\n"
                         " -> - (cost: 0.500) " + invocationTrueString + commitmentFalseString + "mid_cost";
     // clang-format on
-    actual_printout.str("");
-    actual_printout << testCostArbitrator;
-    std::cout << actual_printout.str() << std::endl;
+    actual_printout = testCostArbitrator.to_str(time);
+    std::cout << actual_printout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout.str());
+    EXPECT_EQ(expected_printout, actual_printout);
 }
 
 
 TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivationCosts) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     testCostArbitrator.addOption(
         testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
     testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator_with_activation_costs);
 
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
 
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
-    testCostArbitrator.gainControl();
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    testCostArbitrator.gainControl(time);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
 
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
 
     testBehaviorMidCost->invocationCondition_ = false;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
 
     // high_cost behavior is not interruptable -> high_cost should stay active
     testBehaviorMidCost->invocationCondition_ = true;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
 }
 
 
 TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::INTERRUPTABLE, cost_estimator);
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
     testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator);
 
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
 
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition());
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
 
-    testCostArbitrator.gainControl();
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    testCostArbitrator.gainControl(time);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
 
     testBehaviorMidCost->invocationCondition_ = false;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
 
     // high_cost behavior is interruptable -> mid_cost should become active again
     testBehaviorMidCost->invocationCondition_ = true;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition());
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition());
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand());
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
 }
 
 TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
+    Time time{Clock::now()};
+
     using OptionFlags = CostArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorLowCost = std::make_shared<DummyBehavior>(false, false, "low_cost");
@@ -240,8 +242,8 @@ TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
     testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::INTERRUPTABLE, cost_estimator);
     testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::INTERRUPTABLE, cost_estimator);
 
-    testCostArbitrator.gainControl();
+    testCostArbitrator.gainControl(time);
 
     std::string expected = "__mid_cost__";
-    EXPECT_EQ(expected.length(), testCostArbitrator.getCommand());
+    EXPECT_EQ(expected.length(), testCostArbitrator.getCommand(time));
 }

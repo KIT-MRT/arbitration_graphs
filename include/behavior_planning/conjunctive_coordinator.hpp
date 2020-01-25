@@ -32,6 +32,7 @@ public:
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
          * \param output        Output stream to write into, will be returned also
+         * \param time          Expected execution time point of this behaviors command
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -40,11 +41,12 @@ public:
          * \see Arbitrator::to_stream()
          */
         virtual std::ostream& to_stream(std::ostream& output,
+                                        const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << "- ";
-            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, option_index, prefix, suffix);
+            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
@@ -65,68 +67,70 @@ public:
         this->behaviorOptions_.push_back(option);
     }
 
-    CommandT getCommand() override {
+    CommandT getCommand(const Time& time) override {
         SubCommandT subcommand_conjunction;
 
         for (auto& option_base : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
-            subcommand_conjunction &= option->behavior_->getCommand();
+            subcommand_conjunction &= option->behavior_->getCommand(time);
         }
 
         return CommandT(subcommand_conjunction);
     }
 
-    bool checkInvocationCondition() const override {
+    bool checkInvocationCondition(const Time& time) const override {
         if (this->behaviorOptions_.size() == 0) {
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
-            if (!option->behavior_->checkInvocationCondition()) {
+            if (!option->behavior_->checkInvocationCondition(time)) {
                 return false;
             }
         }
         return true;
     }
-    bool checkCommitmentCondition() const override {
+    bool checkCommitmentCondition(const Time& time) const override {
         if (!this->activeBehavior_) {
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
-            if (option->behavior_->checkCommitmentCondition()) {
+            if (option->behavior_->checkCommitmentCondition(time)) {
                 return true;
             }
         }
         return false;
     }
 
-    virtual void gainControl() override {
+    virtual void gainControl(const Time& time) override {
         for (auto& option : this->behaviorOptions_) {
-            option->behavior_->gainControl();
+            option->behavior_->gainControl(time);
         }
         this->activeBehavior_ = -1;
     }
 
-    virtual void loseControl() override {
+    virtual void loseControl(const Time& time) override {
         this->activeBehavior_ = std::nullopt;
         for (auto& option : this->behaviorOptions_) {
-            option->behavior_->loseControl();
+            option->behavior_->loseControl(time);
         }
     }
 
     /*!
      * \brief Writes a string representation of the Coordinator object with its current state to the output stream.
      *
-     * \param output        Output stream to write into, will be returned also
-     * \param prefix        A string that should be prepended to each line that is written to the output stream
-     * \param suffix        A string that should be appended to each line that is written to the output stream
-     * \return              The same given input stream (signature similar to std::ostream& operator<<())
+     * \param output    Output stream to write into, will be returned also
+     * \param time      Expected execution time point of this behaviors command
+     * \param prefix    A string that should be prepended to each line that is written to the output stream
+     * \param suffix    A string that should be appended to each line that is written to the output stream
+     * \return          The same given input stream (signature similar to std::ostream& operator<<())
      *
      * \see Behavior::to_stream()
      */
     virtual std::ostream& to_stream(std::ostream& output,
+                                    const Time& time,
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, prefix, suffix);
+        Behavior<CommandT>::to_stream(output, time, prefix, suffix);
 
         bool isActive = this->activeBehavior_;
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
@@ -137,14 +141,14 @@ public:
             } else {
                 output << suffix << std::endl << prefix << "    ";
             }
-            option->to_stream(output, i, "    " + prefix, suffix);
+            option->to_stream(output, time, i, "    " + prefix, suffix);
         }
         return output;
     }
 
 protected:
-    virtual std::optional<int> findBestOption() const override {
+    virtual std::optional<int> findBestOption(const Time& time) const override {
         return std::nullopt;
-    };
+    }
 };
 } // namespace behavior_planning
