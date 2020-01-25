@@ -1,29 +1,29 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "arbitrator.hpp"
 
 
 namespace behavior_planning {
 
-template <typename CommandT>
-class PriorityArbitrator : public Arbitrator<CommandT> {
+template <typename CommandT, typename SubCommandT = CommandT>
+class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
 
-    struct Option : public Arbitrator<CommandT>::Option {
+    struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
+        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
-        using FlagsT = typename Arbitrator<CommandT>::Option::FlagsT;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 
-        Option(const typename Behavior<CommandT>::Ptr& behavior, const FlagsT& flags)
-                : Arbitrator<CommandT>::Option(behavior, flags) {
+        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
+                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
         }
 
         /*!
@@ -44,14 +44,14 @@ public:
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << option_index + 1 << ". ";
-            Arbitrator<CommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Arbitrator<CommandT>(name){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Arbitrator<CommandT, SubCommandT>(name){};
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }
@@ -62,7 +62,7 @@ protected:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    boost::optional<int> findBestOption(const Time& time) const {
+    std::optional<int> findBestOption(const Time& time) const {
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
@@ -74,7 +74,7 @@ protected:
                 return i;
             }
         }
-        return boost::none;
+        return std::nullopt;
     }
 };
 } // namespace behavior_planning

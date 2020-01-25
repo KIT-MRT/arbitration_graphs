@@ -2,37 +2,37 @@
 
 #include <iomanip>
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "arbitrator.hpp"
 
 
 namespace behavior_planning {
 
-template <typename CommandT>
-class CostArbitrator : public Arbitrator<CommandT> {
+template <typename SubCommandT>
+struct CostEstimator {
+    using Ptr = std::shared_ptr<CostEstimator>;
+
+    virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
+};
+
+template <typename CommandT, typename SubCommandT = CommandT>
+class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
-    struct CostEstimator {
-        using Ptr = std::shared_ptr<CostEstimator>;
-        using ConstPtr = std::shared_ptr<const CostEstimator>;
-
-        virtual double estimateCost(const CommandT& command, const bool isActive) = 0;
-    };
-
-    struct Option : Arbitrator<CommandT>::Option {
+    struct Option : Arbitrator<CommandT, SubCommandT>::Option {
         using Ptr = std::shared_ptr<Option>;
+        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
-        using FlagsT = typename Arbitrator<CommandT>::Option::FlagsT;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 
-        Option(const typename Behavior<CommandT>::Ptr& behavior,
+        Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
-               const typename CostEstimator::Ptr& costEstimator)
-                : Arbitrator<CommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
+               const typename CostEstimator<SubCommandT>::Ptr& costEstimator)
+                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
         /*!
@@ -58,21 +58,21 @@ public:
                 output << "- (cost:  n.a.) ";
             }
 
-            Arbitrator<CommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
 
-        typename CostEstimator::Ptr costEstimator_;
-        mutable boost::optional<double> last_estimated_cost_;
+        typename CostEstimator<SubCommandT>::Ptr costEstimator_;
+        mutable std::optional<double> last_estimated_cost_;
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT>(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT, SubCommandT>(name){};
 
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior,
+    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
                    const typename Option::Flags& flags,
-                   const typename CostEstimator::Ptr& costEstimator) {
+                   const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
     }
@@ -83,9 +83,9 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    boost::optional<int> findBestOption(const Time& time) const {
+    std::optional<int> findBestOption(const Time& time) const {
         double costOfBestOption = std::numeric_limits<double>::max();
-        boost::optional<int> bestOption;
+        std::optional<int> bestOption;
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));

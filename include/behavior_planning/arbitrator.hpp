@@ -1,32 +1,52 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
+#include <vector>
 
 #include "behavior.hpp"
+#include "exceptions.hpp"
 
 
 namespace behavior_planning {
 
-template <typename CommandT>
+/*!
+ * \brief The Arbitrator class
+ *
+ * \note If CommandT != SubCommandT either
+ *       - override getCommand() in your specialized Arbitrator or
+ *       - provide a CommandT(const SubCommandT&) constructor
+ */
+template <typename CommandT, typename SubCommandT = CommandT>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
+    /*!
+     * \brief The Option struct
+     *
+     * \todo explain why it is a subclass of arbitrator
+     * \todo explain flags implementation and usage
+     *       - MyArbitrator::Option::Flags != Arbitrator::Option::Flags (no inheritance)
+     *       - addOption() checks type, but hasFlag() not anymore (otherwise each inherited Option would have to
+     *         implement a new, not overriding (because signature changed) hasFlag() -> error prone)
+     */
     struct Option {
     public:
         using Ptr = std::shared_ptr<Option>;
+        using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
         using FlagsT = std::underlying_type_t<Flags>;
 
-        Option(const typename Behavior<CommandT>::Ptr& behavior, const FlagsT& flags)
+        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : behavior_{behavior}, flags_{flags} {
         }
+        //! \todo document why we need this
         virtual ~Option() = default;
 
-        typename Behavior<CommandT>::Ptr behavior_;
+        typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
 
         bool hasFlag(const FlagsT& flag_to_check) const {
@@ -58,8 +78,9 @@ public:
     Arbitrator(const std::string& name = "Arbitrator") : Behavior<CommandT>(name){};
 
 
-    void addOption(const typename Behavior<CommandT>::Ptr& behavior, const typename Option::Flags& flags) {
-        behaviorOptions_.push_back({behavior, flags});
+    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+        typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
+        this->behaviorOptions_.push_back(option);
     }
 
     CommandT getCommand(const Time& time) override {
@@ -68,14 +89,14 @@ public:
 
         if (activeBehavior_ && !activeBehaviorCanBeContinued) {
             behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
-            activeBehavior_ = boost::none;
+            activeBehavior_ = std::nullopt;
         }
 
         bool activeBehaviorInterruptable =
             activeBehavior_ && (behaviorOptions_.at(*activeBehavior_)->hasFlag(Option::Flags::INTERRUPTABLE));
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            boost::optional<int> bestOption = findBestOption(time);
+            std::optional<int> bestOption = findBestOption(time);
 
             if (bestOption) {
                 if (!activeBehavior_) {
@@ -88,8 +109,9 @@ public:
                     behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl(time);
                 }
             } else {
-                throw std::runtime_error("No behavior with true invocation condition found! Only call getCommand() if "
-                                         "checkInvocationCondition() or checkCommitmentCondition() is true!");
+                throw InvocationConditionIsFalseError(
+                    "No behavior with true invocation condition found! Only call getCommand() if "
+                    "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
         return behaviorOptions_.at(*activeBehavior_)->behavior_->getCommand(time);
@@ -121,7 +143,7 @@ public:
         if (activeBehavior_) {
             behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
         }
-        activeBehavior_ = boost::none;
+        activeBehavior_ = std::nullopt;
     }
 
     /*!
@@ -163,9 +185,9 @@ protected:
      *
      * @return  Best applicable option according to your policy (can also be the currently active option)
      */
-    virtual boost::optional<int> findBestOption(const Time& time) const = 0;
+    virtual std::optional<int> findBestOption(const Time& time) const = 0;
 
     std::vector<typename Option::Ptr> behaviorOptions_;
-    boost::optional<int> activeBehavior_;
+    std::optional<int> activeBehavior_;
 };
 } // namespace behavior_planning
