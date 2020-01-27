@@ -103,6 +103,8 @@ private:
                     costOfBestOption = cost;
                     bestOption = i;
                 }
+            } else {
+                option->last_estimated_cost_ = std::nullopt;
             }
         }
         return bestOption;
