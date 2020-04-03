@@ -96,7 +96,14 @@ private:
                 isActive &&
                 this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
             if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                double cost;
+                if (isActive) {
+                    cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                } else {
+                    option->behavior_->gainControl(time);
+                    cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                    option->behavior_->loseControl(time);
+                }
                 option->last_estimated_cost_ = cost;
 
                 if (cost < costOfBestOption) {
