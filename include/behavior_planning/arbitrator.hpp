@@ -146,6 +146,10 @@ public:
         activeBehavior_ = std::nullopt;
     }
 
+    virtual bool isActive() const {
+        return activeBehavior_.has_value();
+    }
+
     /*!
      * \brief Writes a string representation of the Arbitrator object with its current state to the output stream.
      *
