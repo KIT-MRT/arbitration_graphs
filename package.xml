@@ -31,6 +31,7 @@
     <depend>mrt_opencv</depend>
   -->
   <depend>boost</depend>
+  <depend>yaml-cpp</depend>
 
   <export>
     <!-- Other tools can request additional information be placed here -->

@@ -147,6 +147,62 @@ TEST_F(CostArbitratorTest, Printout) {
     EXPECT_EQ(expected_printout, actual_printout);
 }
 
+TEST_F(CostArbitratorTest, ToYaml) {
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NO_FLAGS, cost_estimator);
+
+    YAML::Node yaml = testCostArbitrator.toYaml(time);
+
+//    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ("CostArbitrator", yaml["type"].as<std::string>());
+    EXPECT_EQ("CostArbitrator", yaml["name"].as<std::string>());
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][2]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][3]["type"].as<std::string>());
+    EXPECT_EQ("low_cost", yaml["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("low_cost", yaml["options"][1]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("high_cost", yaml["options"][2]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("mid_cost", yaml["options"][3]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][2]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][3]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][0]["cost"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["cost"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][2]["cost"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][3]["cost"].IsDefined());
+
+    EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
+
+    testCostArbitrator.gainControl(time);
+    testCostArbitrator.getCommand(time);
+
+    yaml = testCostArbitrator.toYaml(time);
+
+//    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+
+    EXPECT_EQ(false, yaml["options"][0]["cost"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["cost"].IsDefined());
+    ASSERT_EQ(true, yaml["options"][2]["cost"].IsDefined());
+    ASSERT_EQ(true, yaml["options"][3]["cost"].IsDefined());
+    EXPECT_NEAR(1.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
+    EXPECT_NEAR(0.5, yaml["options"][3]["cost"].as<double>(), 1e-3);
+
+    ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
+    EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
+}
+
 
 TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivationCosts) {
     // if there are no options yet -> the invocationCondition should be false

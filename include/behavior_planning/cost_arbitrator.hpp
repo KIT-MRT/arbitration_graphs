@@ -4,6 +4,8 @@
 #include <memory>
 #include <optional>
 
+#include <yaml-cpp/yaml.h>
+
 #include "arbitrator.hpp"
 
 
@@ -63,6 +65,20 @@ public:
             return output;
         }
 
+        /*!
+         * \brief Returns a yaml representation of this option with its current state
+         *
+         * \param time  Expected execution time point of this behaviors command
+         * \return      Yaml representation of this behavior
+         */
+        virtual YAML::Node toYaml(const Time& time) const override {
+            YAML::Node node = Arbitrator<CommandT, SubCommandT>::Option::toYaml(time);
+            if (last_estimated_cost_) {
+                node["cost"] = *last_estimated_cost_;
+            }
+            return node;
+        }
+
         typename CostEstimator<SubCommandT>::Ptr costEstimator_;
         mutable std::optional<double> last_estimated_cost_;
     };
@@ -76,6 +92,24 @@ public:
                    const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
+    }
+
+    /*!
+     * \brief Returns a yaml representation of the arbitrator object with its current state
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      Yaml representation of this behavior
+     */
+    virtual YAML::Node toYaml(const Time& time) const override {
+        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+
+        node["type"] = "CostArbitrator";
+        node["options"] = YAML::Null;
+        for (const auto& option : this->behaviorOptions_) {
+            node["options"].push_back(option->toYaml(time));
+        }
+
+        return node;
     }
 
 private:

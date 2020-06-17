@@ -4,6 +4,8 @@
 #include <optional>
 #include <vector>
 
+#include <yaml-cpp/yaml.h>
+
 #include "behavior.hpp"
 #include "exceptions.hpp"
 
@@ -72,6 +74,24 @@ public:
                                         const std::string& suffix = "") const {
             behavior_->to_stream(output, time, prefix, suffix);
             return output;
+        }
+
+        /*!
+         * \brief Returns a yaml representation of this option with its current state
+         *
+         * \param time  Expected execution time point of this behaviors command
+         * \return      Yaml representation of this behavior
+         */
+        virtual YAML::Node toYaml(const Time& time) const {
+            YAML::Node node;
+            node["type"] = "Option";
+            node["behavior"] = behavior_->toYaml(time);
+
+            if (hasFlag(Option::Flags::INTERRUPTABLE)) {
+                node["flags"].push_back("INTERRUPTABLE");
+            }
+
+            return node;
         }
     };
 
@@ -179,6 +199,27 @@ public:
             option->to_stream(output, time, i, "    " + prefix, suffix);
         }
         return output;
+    }
+
+    /*!
+     * \brief Returns a yaml representation of the arbitrator object with its current state
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      Yaml representation of this behavior
+     */
+    virtual YAML::Node toYaml(const Time& time) const override {
+        YAML::Node node = Behavior<CommandT>::toYaml(time);
+
+        node["type"] = "Arbitrator";
+        for (const typename Option::Ptr& option : behaviorOptions_) {
+            YAML::Node yaml = option->toYaml(time);
+            node["options"].push_back(yaml);
+        }
+        if (activeBehavior_) {
+            node["activeBehavior"] = *activeBehavior_;
+        }
+
+        return node;
     }
 
 

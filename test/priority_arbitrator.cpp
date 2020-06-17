@@ -145,6 +145,49 @@ TEST_F(PriorityArbitratorTest, Printout) {
     EXPECT_EQ(expected_printout, actual_printout);
 }
 
+TEST_F(PriorityArbitratorTest, ToYaml) {
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+
+    YAML::Node yaml = testPriorityArbitrator.toYaml(time);
+
+//    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ("PriorityArbitrator", yaml["type"].as<std::string>());
+    EXPECT_EQ("PriorityArbitrator", yaml["name"].as<std::string>());
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][2]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][3]["type"].as<std::string>());
+    EXPECT_EQ("HighPriority", yaml["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("HighPriority", yaml["options"][1]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("MidPriority", yaml["options"][2]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("LowPriority", yaml["options"][3]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
+    ASSERT_EQ(true, yaml["options"][2]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][3]["flags"].IsDefined());
+
+    EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
+
+    testPriorityArbitrator.gainControl(time);
+    testPriorityArbitrator.getCommand(time);
+
+    yaml = testPriorityArbitrator.toYaml(time);
+
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
+    EXPECT_EQ(2, yaml["activeBehavior"].as<int>());
+}
+
 
 TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     // if there are no options yet -> the invocationCondition should be false

@@ -3,6 +3,8 @@
 #include <memory>
 #include <optional>
 
+#include <yaml-cpp/yaml.h>
+
 #include "arbitrator.hpp"
 
 
@@ -54,6 +56,18 @@ public:
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
+    }
+
+    /*!
+     * \brief Returns a yaml representation of the arbitrator object with its current state
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      Yaml representation of this behavior
+     */
+    virtual YAML::Node toYaml(const Time& time) const override {
+        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        node["type"] = "PriorityArbitrator";
+        return node;
     }
 
 protected:

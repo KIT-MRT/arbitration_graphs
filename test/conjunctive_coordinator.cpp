@@ -168,6 +168,63 @@ TEST_F(ConjunctiveCoordinatorTest, Printout) {
     EXPECT_EQ(expected_printout, actual_printout);
 }
 
+TEST_F(ConjunctiveCoordinatorTest, ToYaml) {
+    testConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    testConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    testConjunctiveCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    testConjunctiveCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    YAML::Node yaml = testConjunctiveCoordinator.toYaml(time);
+
+    EXPECT_EQ("ConjunctiveCoordinator", yaml["type"].as<std::string>());
+    EXPECT_EQ("ConjunctiveCoordinator", yaml["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][2]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][3]["type"].as<std::string>());
+    EXPECT_EQ("A", yaml["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("B", yaml["options"][1]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("C", yaml["options"][2]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("B", yaml["options"][3]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][2]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][3]["flags"].IsDefined());
+
+    testBehaviorA->invocationCondition_ = true;
+    testConjunctiveCoordinator.gainControl(time);
+    testConjunctiveCoordinator.getCommand(time);
+
+    yaml = testConjunctiveCoordinator.toYaml(time);
+
+//    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ(true, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
+}
+
 TEST(ConjunctiveCoordinator, SubCommandTypeDiffersFromCommandType) {
     Time time{Clock::now()};
 

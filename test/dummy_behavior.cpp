@@ -73,3 +73,12 @@ TEST_F(DummyBehaviorTest, Printout) {
 
     EXPECT_EQ(expected_printout, actual_printout);
 }
+
+TEST_F(DummyBehaviorTest, ToYaml) {
+    YAML::Node yaml = testBehaviorTrue.toYaml(time);
+
+    EXPECT_EQ("Behavior", yaml["type"].as<std::string>());
+    EXPECT_EQ("DummyBehavior", yaml["name"].as<std::string>());
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+}

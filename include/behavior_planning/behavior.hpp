@@ -4,6 +4,8 @@
 #include <memory>
 #include <sstream>
 
+#include <yaml-cpp/yaml.h>
+
 #include "types.hpp"
 
 
@@ -153,6 +155,21 @@ public:
 
         output << name_;
         return output;
+    }
+
+    /*!
+     * \brief Returns a yaml representation of the behavior object with its current state
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      Yaml representation of this behavior
+     */
+    virtual YAML::Node toYaml(const Time& time) const {
+        YAML::Node node;
+        node["type"] = "Behavior";
+        node["name"] = name_;
+        node["invocationCondition"] = checkInvocationCondition(time);
+        node["commitmentCondition"] = checkCommitmentCondition(time);
+        return node;
     }
 
     const std::string name_;

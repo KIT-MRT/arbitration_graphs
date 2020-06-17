@@ -3,6 +3,8 @@
 #include <memory>
 #include <optional>
 
+#include <yaml-cpp/yaml.h>
+
 #include "arbitrator.hpp"
 #include "exceptions.hpp"
 
@@ -146,6 +148,18 @@ public:
             option->to_stream(output, time, i, "    " + prefix, suffix);
         }
         return output;
+    }
+
+    /*!
+     * \brief Returns a yaml representation of the arbitrator object with its current state
+     *
+     * \param time  Expected execution time point of this behaviors command
+     * \return      Yaml representation of this behavior
+     */
+    virtual YAML::Node toYaml(const Time& time) const override {
+        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        node["type"] = "ConjunctiveCoordinator";
+        return node;
     }
 
 protected:

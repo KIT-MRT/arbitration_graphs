@@ -128,3 +128,59 @@ TEST_F(NestedArbitratorsTest, Printout) {
 
     std::cout << actual_printout << std::endl;
 }
+
+
+
+TEST_F(NestedArbitratorsTest, ToYaml) {
+    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NO_FLAGS);
+    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NO_FLAGS);
+
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NO_FLAGS, cost_estimator);
+
+    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NO_FLAGS);
+    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NO_FLAGS);
+
+    YAML::Node yaml = testRootPriorityArbitrator->toYaml(time);
+
+//    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ("PriorityArbitrator", yaml["type"].as<std::string>());
+    EXPECT_EQ("root priority arbitrator", yaml["name"].as<std::string>());
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(2, yaml["options"].size());
+    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
+    EXPECT_EQ("CostArbitrator", yaml["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("PriorityArbitrator", yaml["options"][1]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
+
+    ASSERT_EQ(2, yaml["options"][0]["behavior"]["options"].size());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["activeBehavior"].IsDefined());
+    EXPECT_EQ("low_cost", yaml["options"][0]["behavior"]["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("high_cost", yaml["options"][0]["behavior"]["options"][1]["behavior"]["name"].as<std::string>());
+
+    ASSERT_EQ(2, yaml["options"][1]["behavior"]["options"].size());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["activeBehavior"].IsDefined());
+    EXPECT_EQ("HighPriority", yaml["options"][1]["behavior"]["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("LowPriority", yaml["options"][1]["behavior"]["options"][1]["behavior"]["name"].as<std::string>());
+
+    EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
+
+    testPriorityArbitrator->gainControl(time);
+    testRootPriorityArbitrator->getCommand(time);
+
+    yaml = testRootPriorityArbitrator->toYaml(time);
+
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
+    EXPECT_EQ(0, yaml["activeBehavior"].as<int>());
+
+    ASSERT_EQ(true, yaml["options"][0]["behavior"]["activeBehavior"].IsDefined());
+    EXPECT_EQ(1, yaml["options"][0]["behavior"]["activeBehavior"].as<int>());
+}
