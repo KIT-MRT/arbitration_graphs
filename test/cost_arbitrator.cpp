@@ -155,7 +155,7 @@ TEST_F(CostArbitratorTest, ToYaml) {
 
     YAML::Node yaml = testCostArbitrator.toYaml(time);
 
-//    std::cout << yaml << std::endl << std::endl;
+    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ("CostArbitrator", yaml["type"].as<std::string>());
     EXPECT_EQ("CostArbitrator", yaml["name"].as<std::string>());
@@ -187,7 +187,7 @@ TEST_F(CostArbitratorTest, ToYaml) {
 
     yaml = testCostArbitrator.toYaml(time);
 
-//    std::cout << yaml << std::endl << std::endl;
+    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());

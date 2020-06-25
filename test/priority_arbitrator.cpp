@@ -153,7 +153,7 @@ TEST_F(PriorityArbitratorTest, ToYaml) {
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time);
 
-//    std::cout << yaml << std::endl << std::endl;
+    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ("PriorityArbitrator", yaml["type"].as<std::string>());
     EXPECT_EQ("PriorityArbitrator", yaml["name"].as<std::string>());

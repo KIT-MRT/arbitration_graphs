@@ -209,7 +209,7 @@ TEST_F(ConjunctiveCoordinatorTest, ToYaml) {
 
     yaml = testConjunctiveCoordinator.toYaml(time);
 
-//    std::cout << yaml << std::endl << std::endl;
+    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());

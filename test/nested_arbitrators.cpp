@@ -130,7 +130,6 @@ TEST_F(NestedArbitratorsTest, Printout) {
 }
 
 
-
 TEST_F(NestedArbitratorsTest, ToYaml) {
     testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NO_FLAGS);
     testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NO_FLAGS);
@@ -143,7 +142,7 @@ TEST_F(NestedArbitratorsTest, ToYaml) {
 
     YAML::Node yaml = testRootPriorityArbitrator->toYaml(time);
 
-//    std::cout << yaml << std::endl << std::endl;
+    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ("PriorityArbitrator", yaml["type"].as<std::string>());
     EXPECT_EQ("root priority arbitrator", yaml["name"].as<std::string>());
