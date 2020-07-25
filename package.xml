@@ -7,7 +7,7 @@
   <license>MRT</license>
   <maintainer email="piotr.orzechowski@kit.edu">Piotr Orzechowski</maintainer>
   <author email="christoph.burger@kit.edu">burger</author>
-  <url type="repository">https://gitlab.mrt.uni-karlsruhe.de/MRT/private/burger/behavior_planning</url>
+  <url type="repository">https://gitlab.mrt.uni-karlsruhe.de/MRT/draft/behavior_planning</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>mrt_cmake_modules</build_depend>
