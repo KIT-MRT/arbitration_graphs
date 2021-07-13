@@ -96,7 +96,7 @@ public:
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
-            if (!option->behavior_->checkInvocationCondition(time)) {
+            if (option->behavior_->checkInvocationCondition(time)) {
                 return true;
             }
         }
@@ -104,6 +104,7 @@ public:
     }
     bool checkCommitmentCondition(const Time& time) const override {
         if (!this->activeBehavior_) {
+//            std::cout << "no active" << std::endl;
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
