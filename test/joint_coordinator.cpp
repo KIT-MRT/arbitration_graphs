@@ -154,7 +154,7 @@ TEST_F(JointCoordinatorTest, Printout) {
     EXPECT_EQ(expected_printout, actual_printout);
 }
 
- TEST_F(JointCoordinatorTest, ToYaml) {
+TEST_F(JointCoordinatorTest, ToYaml) {
     testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
     testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
@@ -211,7 +211,7 @@ TEST_F(JointCoordinatorTest, Printout) {
     EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
 }
 
- TEST_F(JointCoordinatorTest, SubCommandTypeDiffersFromCommandType) {
+TEST_F(JointCoordinatorTest, SubCommandTypeDiffersFromCommandType) {
     Time time{Clock::now()};
 
     using OptionFlags = JointCoordinator<DummyCommandInt, DummyCommand>::Option::Flags;

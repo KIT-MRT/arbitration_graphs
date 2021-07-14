@@ -31,7 +31,7 @@ public:
         enum Flags { NO_FLAGS = 0b0 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-            : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
+                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
         }
 
         /*!
@@ -57,8 +57,7 @@ public:
         }
     };
 
-    explicit JointCoordinator(const std::string& name = "JointCoordinator")
-        : Arbitrator<CommandT, SubCommandT>(name) {
+    explicit JointCoordinator(const std::string& name = "JointCoordinator") : Arbitrator<CommandT, SubCommandT>(name) {
     }
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
@@ -83,7 +82,7 @@ public:
             bool isActiveAndCanBeContinued =
                 isActive &&
                 this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
-            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued){
+            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
                 subcommand_conjunction &= option->behavior_->getCommand(time);
             }
         }
@@ -104,7 +103,7 @@ public:
     }
     bool checkCommitmentCondition(const Time& time) const override {
         if (!this->activeBehavior_) {
-//            std::cout << "no active" << std::endl;
+            //            std::cout << "no active" << std::endl;
             return false;
         }
         for (auto& option : this->behaviorOptions_) {

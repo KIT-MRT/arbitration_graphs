@@ -35,8 +35,8 @@
 //	  ASSERT_FLOAT_EQ((10.0f + 2.0f) * 3.0f, 10.0f * 3.0f + 2.0f * 3.0f)
 //}
 //=======================================================================================================================================================
-#include "gtest/gtest.h"
 #include <thread>
+#include "gtest/gtest.h"
 
 #include "cache.hpp"
 
@@ -59,4 +59,3 @@ TEST(CacheTest, BasicTest) {
     Time time3 = std::chrono::system_clock::now();
     EXPECT_FALSE(cache.cachedWithinOneWorkingStep(time3, 10));
 }
-
