@@ -118,119 +118,119 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_EQ(1, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
 }
-//
-//TEST_F(JointCoordinatorTest, Printout) {
-//    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
-//
-//    // clang-format off
-//    std::string expected_printout = invocationFalseString + commitmentFalseString + "ConjunctiveCoordinator\n"
-//                                                                                    "    - " + invocationFalseString + commitmentFalseString + "A\n"
-//                                                                                                                                               "    - " + invocationTrueString + commitmentFalseString + "B\n"
-//                                                                                                                                                                                                         "    - " + invocationTrueString + commitmentTrueString + "C\n"
-//                                                                                                                                                                                                                                                                  "    - " + invocationTrueString + commitmentFalseString + "B";
-//    // clang-format on
-//    std::string actual_printout = testJointCoordinator.to_str(time);
-//    std::cout << actual_printout << std::endl;
-//
-//    EXPECT_EQ(expected_printout, actual_printout);
-//
-//    testBehaviorA->invocationCondition_ = true;
-//    testJointCoordinator.gainControl(time);
-//    EXPECT_EQ("ABCB", testJointCoordinator.getCommand(time));
-//
-//    // clang-format off
-//    expected_printout = invocationTrueString + commitmentTrueString + "ConjunctiveCoordinator\n"
-//                                                                      " -> - " + invocationTrueString + commitmentFalseString + "A\n"
-//                                                                                                                                " -> - " + invocationTrueString + commitmentFalseString + "B\n"
-//                                                                                                                                                                                          " -> - " + invocationTrueString + commitmentTrueString + "C\n"
-//                                                                                                                                                                                                                                                   " -> - " + invocationTrueString + commitmentFalseString + "B";
-//    // clang-format on
-//    actual_printout = testJointCoordinator.to_str(time);
-//    std::cout << actual_printout << std::endl;
-//
-//    EXPECT_EQ(expected_printout, actual_printout);
-//}
-//
-//TEST_F(JointCoordinatorTest, ToYaml) {
-//    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
-//
-//    YAML::Node yaml = testJointCoordinator.toYaml(time);
-//
-//    EXPECT_EQ("ConjunctiveCoordinator", yaml["type"].as<std::string>());
-//    EXPECT_EQ("ConjunctiveCoordinator", yaml["name"].as<std::string>());
-//    EXPECT_EQ(false, yaml["invocationCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
-//
-//    ASSERT_EQ(4, yaml["options"].size());
-//    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
-//    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
-//    EXPECT_EQ("Option", yaml["options"][2]["type"].as<std::string>());
-//    EXPECT_EQ("Option", yaml["options"][3]["type"].as<std::string>());
-//    EXPECT_EQ("A", yaml["options"][0]["behavior"]["name"].as<std::string>());
-//    EXPECT_EQ("B", yaml["options"][1]["behavior"]["name"].as<std::string>());
-//    EXPECT_EQ("C", yaml["options"][2]["behavior"]["name"].as<std::string>());
-//    EXPECT_EQ("B", yaml["options"][3]["behavior"]["name"].as<std::string>());
-//    EXPECT_EQ(false, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
-//    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
-//    EXPECT_EQ(false, yaml["options"][2]["flags"].IsDefined());
-//    EXPECT_EQ(false, yaml["options"][3]["flags"].IsDefined());
-//
-//    testBehaviorA->invocationCondition_ = true;
-//    testJointCoordinator.gainControl(time);
-//    testJointCoordinator.getCommand(time);
-//
-//    yaml = testJointCoordinator.toYaml(time);
-//
-//    //    std::cout << yaml << std::endl << std::endl;
-//
-//    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
-//
-//    ASSERT_EQ(4, yaml["options"].size());
-//    EXPECT_EQ(true, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
-//    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
-//}
-//
-//TEST(JointCoordinatorTest, SubCommandTypeDiffersFromCommandType) {
-//    Time time{Clock::now()};
-//
-//    using OptionFlags = JointCoordinator<DummyCommandInt, DummyCommand>::Option::Flags;
-//
-//    DummyBehavior::Ptr testBehaviorA = std::make_shared<DummyBehavior>(false, false, "A");
-//    DummyBehavior::Ptr testBehaviorB1 = std::make_shared<DummyBehavior>(true, false, "B");
-//    DummyBehavior::Ptr testBehaviorC = std::make_shared<DummyBehavior>(true, true, "C");
-//    DummyBehavior::Ptr testBehaviorB2 = std::make_shared<DummyBehavior>(true, false, "B");
-//
-//    JointCoordinator<DummyCommandInt, DummyCommand> testJointCoordinator;
-//
-//    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
-//    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
-//
-//    testBehaviorA->invocationCondition_ = true;
-//    testJointCoordinator.gainControl(time);
-//
-//    std::string expected = "ABCB";
-//    EXPECT_EQ(expected.length(), testJointCoordinator.getCommand(time));
-//}
+
+TEST_F(JointCoordinatorTest, Printout) {
+    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentFalseString + "JointCoordinator\n"
+                                                                                    "    - " + invocationFalseString + commitmentFalseString + "A\n"
+                                                                                                                                               "    - " + invocationTrueString + commitmentFalseString + "B\n"
+                                                                                                                                                                                                         "    - " + invocationTrueString + commitmentTrueString + "C\n"
+                                                                                                                                                                                                                                                                  "    - " + invocationTrueString + commitmentFalseString + "B";
+    // clang-format on
+    std::string actual_printout = testJointCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout);
+
+    testBehaviorA->invocationCondition_ = true;
+    testJointCoordinator.gainControl(time);
+    EXPECT_EQ("ABCB", testJointCoordinator.getCommand(time));
+
+    // clang-format off
+    expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
+                                                                      " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                                                                                                                                " -> - " + invocationTrueString + commitmentFalseString + "B\n"
+                                                                                                                                                                                          " -> - " + invocationTrueString + commitmentTrueString + "C\n"
+                                                                                                                                                                                                                                                   " -> - " + invocationTrueString + commitmentFalseString + "B";
+    // clang-format on
+    actual_printout = testJointCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout);
+}
+
+ TEST_F(JointCoordinatorTest, ToYaml) {
+    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    YAML::Node yaml = testJointCoordinator.toYaml(time);
+
+    EXPECT_EQ("JointCoordinator", yaml["type"].as<std::string>());
+    EXPECT_EQ("JointCoordinator", yaml["name"].as<std::string>());
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ("Option", yaml["options"][0]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][1]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][2]["type"].as<std::string>());
+    EXPECT_EQ("Option", yaml["options"][3]["type"].as<std::string>());
+    EXPECT_EQ("A", yaml["options"][0]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("B", yaml["options"][1]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("C", yaml["options"][2]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ("B", yaml["options"][3]["behavior"]["name"].as<std::string>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][2]["flags"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][3]["flags"].IsDefined());
+
+    testBehaviorA->invocationCondition_ = true;
+    testJointCoordinator.gainControl(time);
+    testJointCoordinator.getCommand(time);
+
+    yaml = testJointCoordinator.toYaml(time);
+
+    //    std::cout << yaml << std::endl << std::endl;
+
+    EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
+
+    ASSERT_EQ(4, yaml["options"].size());
+    EXPECT_EQ(true, yaml["options"][0]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][1]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][3]["behavior"]["invocationCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][0]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][1]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(true, yaml["options"][2]["behavior"]["commitmentCondition"].as<bool>());
+    EXPECT_EQ(false, yaml["options"][3]["behavior"]["commitmentCondition"].as<bool>());
+}
+
+ TEST_F(JointCoordinatorTest, SubCommandTypeDiffersFromCommandType) {
+    Time time{Clock::now()};
+
+    using OptionFlags = JointCoordinator<DummyCommandInt, DummyCommand>::Option::Flags;
+
+    DummyBehavior::Ptr testBehaviorA = std::make_shared<DummyBehavior>(false, false, "A");
+    DummyBehavior::Ptr testBehaviorB1 = std::make_shared<DummyBehavior>(true, false, "B");
+    DummyBehavior::Ptr testBehaviorC = std::make_shared<DummyBehavior>(true, true, "C");
+    DummyBehavior::Ptr testBehaviorB2 = std::make_shared<DummyBehavior>(true, false, "B");
+
+    JointCoordinator<DummyCommandInt, DummyCommand> testJointCoordinator;
+
+    testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    testBehaviorA->invocationCondition_ = true;
+    testJointCoordinator.gainControl(time);
+
+    std::string expected = "ABCB";
+    EXPECT_EQ(expected.length(), testJointCoordinator.getCommand(time));
+}
