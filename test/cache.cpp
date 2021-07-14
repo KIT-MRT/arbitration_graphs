@@ -47,9 +47,14 @@ TEST(CacheTest, BasicTest) {
     Cache<double> cache;
     Time time1 = std::chrono::system_clock::now();
     EXPECT_FALSE(cache.cached());
+    EXPECT_FALSE(cache.cachedWithinOneWorkingStep(time1, 10));
+    EXPECT_FALSE(cache.lastCachedTime());
 
     cache.cache(1., time1);
     EXPECT_TRUE(cache.cached());
+    EXPECT_DOUBLE_EQ(*cache.cached(), 1.);
+    EXPECT_TRUE(cache.lastCachedTime());
+    EXPECT_EQ(*cache.lastCachedTime(), time1);
 
     Time time2 = std::chrono::system_clock::now();
     EXPECT_TRUE(cache.cachedWithinOneWorkingStep(time2, 10));

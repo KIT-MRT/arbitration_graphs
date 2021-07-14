@@ -10,8 +10,11 @@ class Cache {
 public:
     Cache() = default;
 
-    bool cached() {
-        return value_ && cachedTime_;
+    std::optional<ValueType> cached() {
+        if (value_ && cachedTime_) {
+            return value_;
+        }
+        return std::nullopt;
     }
 
     std::optional<ValueType> cachedWithinOneWorkingStep(const Time& time, const int& workingFrequency) {
@@ -25,6 +28,10 @@ public:
     void cache(const ValueType& value, const Time& time) {
         value_ = value;
         cachedTime_ = time;
+    }
+
+    std::optional<Time> lastCachedTime() {
+        return cachedTime_;
     }
 
 private:
