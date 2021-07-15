@@ -44,23 +44,23 @@ using namespace behavior_planning;
 using namespace std::chrono_literals;
 
 TEST(CacheTest, BasicTest) {
-    Cache<double> cache;
+    Cache<double, Time> cache;
     Time time1 = std::chrono::system_clock::now();
-    EXPECT_FALSE(cache.cached());
-    EXPECT_FALSE(cache.cachedWithinOneWorkingStep(time1, 10));
-    EXPECT_FALSE(cache.lastCachedTime());
+    EXPECT_FALSE(cache.cached(time1));
 
     cache.cache(1., time1);
-    EXPECT_TRUE(cache.cached());
-    EXPECT_DOUBLE_EQ(*cache.cached(), 1.);
-    EXPECT_TRUE(cache.lastCachedTime());
-    EXPECT_EQ(*cache.lastCachedTime(), time1);
 
+    // exact match
+    EXPECT_TRUE(cache.cached(time1));
+    EXPECT_DOUBLE_EQ(*cache.cached(time1), 1.);
+
+    // approximate match
     Time time2 = std::chrono::system_clock::now();
-    EXPECT_TRUE(cache.cachedWithinOneWorkingStep(time2, 10));
-    EXPECT_DOUBLE_EQ(*cache.cachedWithinOneWorkingStep(time2, 10), 1.);
+    Cache<double, Time>::Policy::ApproximateTime approximateTimePolicy(100);
+    EXPECT_TRUE(cache.cached(time2, approximateTimePolicy));
+    EXPECT_DOUBLE_EQ(*cache.cached(time2, approximateTimePolicy), 1.);
 
-    std::this_thread::sleep_for(200ms);
-    Time time3 = std::chrono::system_clock::now();
-    EXPECT_FALSE(cache.cachedWithinOneWorkingStep(time3, 10));
+    // over threshold
+    Time time3 = time2 + 200ms;
+    EXPECT_FALSE(cache.cached(time3, approximateTimePolicy));
 }

@@ -127,9 +127,9 @@ TEST_F(JointCoordinatorTest, Printout) {
 
     // clang-format off
     std::string expected_printout = invocationTrueString + commitmentFalseString + "JointCoordinator\n"
-                                                                                    "    - " + invocationFalseString + commitmentFalseString + "A\n"
-                                                                                                                                               "    - " + invocationTrueString + commitmentFalseString + "B\n"
-                                                                                                                                                                                                         "    - " + invocationTrueString + commitmentTrueString + "C\n"
+                                    "    - " + invocationFalseString + commitmentFalseString + "A\n"
+                                    "    - " + invocationTrueString + commitmentFalseString + "B\n"
+                                    "    - " + invocationTrueString + commitmentTrueString + "C\n"
                                                                                                                                                                                                                                                                   "    - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     std::string actual_printout = testJointCoordinator.to_str(time);
@@ -143,9 +143,9 @@ TEST_F(JointCoordinatorTest, Printout) {
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
-                                                                      " -> - " + invocationTrueString + commitmentFalseString + "A\n"
-                                                                                                                                " -> - " + invocationTrueString + commitmentFalseString + "B\n"
-                                                                                                                                                                                          " -> - " + invocationTrueString + commitmentTrueString + "C\n"
+                        " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                        " -> - " + invocationTrueString + commitmentFalseString + "B\n"
+                        " -> - " + invocationTrueString + commitmentTrueString + "C\n"
                                                                                                                                                                                                                                                    " -> - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     actual_printout = testJointCoordinator.to_str(time);
@@ -194,8 +194,6 @@ TEST_F(JointCoordinatorTest, ToYaml) {
     testJointCoordinator.getCommand(time);
 
     yaml = testJointCoordinator.toYaml(time);
-
-    //    std::cout << yaml << std::endl << std::endl;
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
