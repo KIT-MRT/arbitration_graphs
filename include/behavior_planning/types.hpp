@@ -5,7 +5,7 @@
 
 namespace behavior_planning {
 
-using Clock = std::chrono::system_clock;
 using Time = Clock::time_point;
+using Clock = std::chrono::steady_clock;
 
 } // namespace behavior_planning
