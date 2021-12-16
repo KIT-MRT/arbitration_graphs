@@ -138,6 +138,10 @@ public:
         return activeBehavior_->behavior_->getCommand(time);
     }
 
+    std::vector<typename Option::ConstPtr> options() const {
+        return std::vector<typename Option::ConstPtr>(behaviorOptions_.begin(), behaviorOptions_.end());
+    }
+
     bool checkInvocationCondition(const Time& time) const override {
         for (auto& option : behaviorOptions_) {
             if (option->behavior_->checkInvocationCondition(time)) {
