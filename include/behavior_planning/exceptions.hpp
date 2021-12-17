@@ -16,4 +16,8 @@ class MultipleReferencesToSameInstanceError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
+class InvalidArgumentsError : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
+
 } // namespace behavior_planning

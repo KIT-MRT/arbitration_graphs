@@ -78,10 +78,17 @@ public:
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-            bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
-            bool isActiveAndCanBeContinued =
-                isActive &&
-                this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
+
+            // Not exacly what isActiveAndCanBeContinued represents in other arbitrators:
+            // Normally, isActiveAndCanBeContinued says that the _one_ active behavior option has true commitment
+            // condition.
+            // Here, isActiveAndCanBeContinued says that the JointCoordinator is active (meaning many of its
+            // options are active) and this particular option has true commitment condition (though itself might yet not
+            // be active).
+            // In order to be consistent with the normal interpretation of isActiveAndCanBeContinued, we would need to
+            // track which of the options are currently active and which not.
+            bool isActiveAndCanBeContinued = isActive_ && option->behavior_->checkCommitmentCondition(time);
+
             if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
                 subcommand_conjunction &= option->behavior_->getCommand(time);
             }
@@ -102,7 +109,7 @@ public:
         return false;
     }
     bool checkCommitmentCondition(const Time& time) const override {
-        if (!this->activeBehavior_) {
+        if (!isActive_) {
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
@@ -117,11 +124,11 @@ public:
         for (auto& option : this->behaviorOptions_) {
             option->behavior_->gainControl(time);
         }
-        this->activeBehavior_ = -1;
+        isActive_ = true;
     }
 
     void loseControl(const Time& time) override {
-        this->activeBehavior_ = std::nullopt;
+        isActive_ = false;
         for (auto& option : this->behaviorOptions_) {
             option->behavior_->loseControl(time);
         }
@@ -144,11 +151,10 @@ public:
                             const std::string& suffix = "") const override {
         Behavior<CommandT>::to_stream(output, time, prefix, suffix);
 
-        bool isActive = this->activeBehavior_;
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
-            if (isActive) {
+            if (isActive_) {
                 output << suffix << std::endl << prefix << " -> ";
             } else {
                 output << suffix << std::endl << prefix << "    ";
@@ -171,8 +177,10 @@ public:
     }
 
 protected:
-    virtual std::optional<int> findBestOption(const Time& time) const override {
-        return std::nullopt;
+    virtual typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
+        return nullptr;
     }
+
+    bool isActive_{false};
 };
 } // namespace behavior_planning

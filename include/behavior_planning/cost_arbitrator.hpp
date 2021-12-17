@@ -118,17 +118,16 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    std::optional<int> findBestOption(const Time& time) const {
+    typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
         double costOfBestOption = std::numeric_limits<double>::max();
-        std::optional<int> bestOption;
+        typename Option::Ptr bestOption;
 
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
+        for (auto& option_base : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
 
-            bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
+            bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
             bool isActiveAndCanBeContinued =
-                isActive &&
-                this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
+                isActive && this->activeBehavior_->behavior_->checkCommitmentCondition(time);
             if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
                 double cost;
                 if (isActive) {
@@ -142,7 +141,7 @@ private:
 
                 if (cost < costOfBestOption) {
                     costOfBestOption = cost;
-                    bestOption = i;
+                    bestOption = option;
                 }
             } else {
                 option->last_estimated_cost_ = std::nullopt;

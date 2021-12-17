@@ -76,19 +76,16 @@ protected:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    std::optional<int> findBestOption(const Time& time) const {
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-
-            bool isActive = this->activeBehavior_ && (i == *this->activeBehavior_);
+    typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
+        for (auto& option : this->behaviorOptions_) {
+            bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
             bool isActiveAndCanBeContinued =
-                isActive &&
-                this->behaviorOptions_.at(*this->activeBehavior_)->behavior_->checkCommitmentCondition(time);
+                isActive && this->activeBehavior_->behavior_->checkCommitmentCondition(time);
             if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                return i;
+                return option;
             }
         }
-        return std::nullopt;
+        return nullptr;
     }
 };
 } // namespace behavior_planning
