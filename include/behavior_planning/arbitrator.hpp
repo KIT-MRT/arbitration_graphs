@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -105,28 +107,27 @@ public:
 
     CommandT getCommand(const Time& time) override {
         bool activeBehaviorCanBeContinued =
-            activeBehavior_ && behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition(time);
+            activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
 
         if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
-            activeBehavior_ = std::nullopt;
+            activeBehavior_->behavior_->loseControl(time);
+            activeBehavior_.reset();
         }
 
-        bool activeBehaviorInterruptable =
-            activeBehavior_ && (behaviorOptions_.at(*activeBehavior_)->hasFlag(Option::Flags::INTERRUPTABLE));
+        bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
 
         if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            std::optional<int> bestOption = findBestOption(time);
+            typename Option::Ptr bestOption = findBestOption(time);
 
             if (bestOption) {
                 if (!activeBehavior_) {
                     activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl(time);
-                } else if (*bestOption != *activeBehavior_) {
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
+                    activeBehavior_->behavior_->gainControl(time);
+                } else if (bestOption != activeBehavior_) {
+                    activeBehavior_->behavior_->loseControl(time);
 
                     activeBehavior_ = bestOption;
-                    behaviorOptions_.at(*activeBehavior_)->behavior_->gainControl(time);
+                    activeBehavior_->behavior_->gainControl(time);
                 }
             } else {
                 throw InvocationConditionIsFalseError(
@@ -134,7 +135,7 @@ public:
                     "checkInvocationCondition() or checkCommitmentCondition() is true!");
             }
         }
-        return behaviorOptions_.at(*activeBehavior_)->behavior_->getCommand(time);
+        return activeBehavior_->behavior_->getCommand(time);
     }
 
     bool checkInvocationCondition(const Time& time) const override {
@@ -147,7 +148,7 @@ public:
     }
     bool checkCommitmentCondition(const Time& time) const override {
         if (activeBehavior_) {
-            if (behaviorOptions_.at(*activeBehavior_)->behavior_->checkCommitmentCondition(time)) {
+            if (activeBehavior_->behavior_->checkCommitmentCondition(time)) {
                 return true;
             } else {
                 return checkInvocationCondition(time);
@@ -161,13 +162,13 @@ public:
 
     virtual void loseControl(const Time& time) override {
         if (activeBehavior_) {
-            behaviorOptions_.at(*activeBehavior_)->behavior_->loseControl(time);
+            activeBehavior_->behavior_->loseControl(time);
         }
-        activeBehavior_ = std::nullopt;
+        activeBehavior_.reset();
     }
 
     virtual bool isActive() const {
-        return activeBehavior_.has_value();
+        return activeBehavior_ != nullptr;
     }
 
     /*!
@@ -189,7 +190,7 @@ public:
 
         for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
             const typename Option::Ptr& option = behaviorOptions_.at(i);
-            bool isActive = activeBehavior_ && (i == *(activeBehavior_));
+            bool isActive = activeBehavior_ && (option == activeBehavior_);
 
             if (isActive) {
                 output << suffix << std::endl << prefix << " -> ";
@@ -216,7 +217,7 @@ public:
             node["options"].push_back(yaml);
         }
         if (activeBehavior_) {
-            node["activeBehavior"] = *activeBehavior_;
+            node["activeBehavior"] = getOptionIndex(activeBehavior_);
         }
 
         return node;
@@ -230,9 +231,19 @@ protected:
      *
      * @return  Best applicable option according to your policy (can also be the currently active option)
      */
-    virtual std::optional<int> findBestOption(const Time& time) const = 0;
+    virtual typename Option::Ptr findBestOption(const Time& time) const = 0;
+
+    std::size_t getOptionIndex(const typename Option::ConstPtr& behaviorOption) const {
+        const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
+
+        if (it != behaviorOptions_.end()) {
+            return std::distance(behaviorOptions_.begin(), it);
+        }
+        throw InvalidArgumentsError(
+            "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
+    }
 
     std::vector<typename Option::Ptr> behaviorOptions_;
-    std::optional<int> activeBehavior_;
+    typename Option::Ptr activeBehavior_;
 };
 } // namespace behavior_planning

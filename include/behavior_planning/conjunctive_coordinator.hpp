@@ -17,19 +17,21 @@ namespace behavior_planning {
 template <typename CommandT, typename SubCommandT>
 class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT> {
 public:
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+
     using Ptr = std::shared_ptr<ConjunctiveCoordinator>;
     using ConstPtr = std::shared_ptr<const ConjunctiveCoordinator>;
 
-    struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
+    struct Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
-        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
+                : ArbitratorBase::Option(behavior, flags) {
         }
 
         /*!
@@ -50,13 +52,12 @@ public:
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << "- ";
-            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
 
-    ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator")
-            : Arbitrator<CommandT, SubCommandT>(name) {
+    ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator") : ArbitratorBase(name) {
     }
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
@@ -94,7 +95,7 @@ public:
         return true;
     }
     bool checkCommitmentCondition(const Time& time) const override {
-        if (!this->activeBehavior_) {
+        if (!isActive_) {
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
@@ -109,11 +110,11 @@ public:
         for (auto& option : this->behaviorOptions_) {
             option->behavior_->gainControl(time);
         }
-        this->activeBehavior_ = -1;
+        isActive_ = true;
     }
 
     virtual void loseControl(const Time& time) override {
-        this->activeBehavior_ = std::nullopt;
+        isActive_ = false;
         for (auto& option : this->behaviorOptions_) {
             option->behavior_->loseControl(time);
         }
@@ -136,11 +137,10 @@ public:
                                     const std::string& suffix = "") const override {
         Behavior<CommandT>::to_stream(output, time, prefix, suffix);
 
-        bool isActive = this->activeBehavior_;
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
-            if (isActive) {
+            if (isActive_) {
                 output << suffix << std::endl << prefix << " -> ";
             } else {
                 output << suffix << std::endl << prefix << "    ";
@@ -157,14 +157,16 @@ public:
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        YAML::Node node = ArbitratorBase::toYaml(time);
         node["type"] = "ConjunctiveCoordinator";
         return node;
     }
 
 protected:
-    virtual std::optional<int> findBestOption(const Time& time) const override {
-        return std::nullopt;
+    virtual typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
+        return nullptr;
     }
+
+    bool isActive_{false};
 };
 } // namespace behavior_planning
