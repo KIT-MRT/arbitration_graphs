@@ -19,19 +19,21 @@ namespace behavior_planning {
 template <typename CommandT, typename SubCommandT>
 class JointCoordinator : public Arbitrator<CommandT, SubCommandT> {
 public:
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+
     using Ptr = std::shared_ptr<JointCoordinator>;
     using ConstPtr = std::shared_ptr<const JointCoordinator>;
 
-    struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
+    struct Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
-        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
+                : ArbitratorBase::Option(behavior, flags) {
         }
 
         /*!
@@ -52,12 +54,12 @@ public:
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << "- ";
-            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
 
-    explicit JointCoordinator(const std::string& name = "JointCoordinator") : Arbitrator<CommandT, SubCommandT>(name) {
+    explicit JointCoordinator(const std::string& name = "JointCoordinator") : ArbitratorBase(name) {
     }
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
@@ -171,13 +173,13 @@ public:
      * \return      Yaml representation of this behavior
      */
     YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        YAML::Node node = ArbitratorBase::toYaml(time);
         node["type"] = "JointCoordinator";
         return node;
     }
 
 protected:
-    virtual typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
+    virtual typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
         return nullptr;
     }
 

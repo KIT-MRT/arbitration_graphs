@@ -22,12 +22,14 @@ struct CostEstimator {
 template <typename CommandT, typename SubCommandT = CommandT>
 class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
-    struct Option : Arbitrator<CommandT, SubCommandT>::Option {
+    struct Option : ArbitratorBase::Option {
         using Ptr = std::shared_ptr<Option>;
-        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
@@ -35,7 +37,7 @@ public:
         Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
                const typename CostEstimator<SubCommandT>::Ptr& costEstimator)
-                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags), costEstimator_{costEstimator} {
+                : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
         /*!
@@ -61,7 +63,7 @@ public:
                 output << "- (cost:  n.a.) ";
             }
 
-            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
 
@@ -72,7 +74,7 @@ public:
          * \return      Yaml representation of this behavior
          */
         virtual YAML::Node toYaml(const Time& time) const override {
-            YAML::Node node = Arbitrator<CommandT, SubCommandT>::Option::toYaml(time);
+            YAML::Node node = ArbitratorBase::Option::toYaml(time);
             if (last_estimated_cost_) {
                 node["cost"] = *last_estimated_cost_;
             }
@@ -84,7 +86,7 @@ public:
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : Arbitrator<CommandT, SubCommandT>(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator") : ArbitratorBase(name){};
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
@@ -101,7 +103,7 @@ public:
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        YAML::Node node = ArbitratorBase::toYaml(time);
 
         node["type"] = "CostArbitrator";
         node["options"] = YAML::Null;
@@ -118,7 +120,7 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
+    typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
         double costOfBestOption = std::numeric_limits<double>::max();
         typename Option::Ptr bestOption;
 

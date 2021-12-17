@@ -13,19 +13,21 @@ namespace behavior_planning {
 template <typename CommandT, typename SubCommandT = CommandT>
 class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
 
-    struct Option : public Arbitrator<CommandT, SubCommandT>::Option {
+    struct Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
-        using FlagsT = typename Arbitrator<CommandT, SubCommandT>::Option::FlagsT;
+        using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-                : Arbitrator<CommandT, SubCommandT>::Option(behavior, flags) {
+                : ArbitratorBase::Option(behavior, flags) {
         }
 
         /*!
@@ -46,12 +48,12 @@ public:
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
             output << option_index + 1 << ". ";
-            Arbitrator<CommandT, SubCommandT>::Option::to_stream(output, time, option_index, prefix, suffix);
+            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
             return output;
         }
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : Arbitrator<CommandT, SubCommandT>(name){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : ArbitratorBase(name){};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
@@ -65,7 +67,7 @@ public:
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Arbitrator<CommandT, SubCommandT>::toYaml(time);
+        YAML::Node node = ArbitratorBase::toYaml(time);
         node["type"] = "PriorityArbitrator";
         return node;
     }
@@ -76,7 +78,7 @@ protected:
      *
      * @return  Applicable option with highest priority (can also be the currently active option)
      */
-    typename Arbitrator<CommandT, SubCommandT>::Option::Ptr findBestOption(const Time& time) const override {
+    typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
         for (auto& option : this->behaviorOptions_) {
             bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
             bool isActiveAndCanBeContinued =
