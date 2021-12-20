@@ -16,10 +16,10 @@ namespace behavior_planning {
  *  Difference to ConjunctiveCoordinator is that it is invocated if any of the sub-behaviors has true
  *  invocationCondition
  */
-template <typename CommandT, typename SubCommandT>
-class JointCoordinator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT, typename SubCommandT, typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
+class JointCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT>;
 
     using Ptr = std::shared_ptr<JointCoordinator>;
     using ConstPtr = std::shared_ptr<const JointCoordinator>;
@@ -77,6 +77,7 @@ public:
     // Combine all the subcommands if any of the sub-behaviors is invocated or is active right now and can be committed
     CommandT getCommand(const Time& time) override {
         SubCommandT subcommand_conjunction;
+        bool isAnyApplicableOptionSafe = false;
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
@@ -92,8 +93,18 @@ public:
             bool isActiveAndCanBeContinued = isActive_ && option->behavior_->checkCommitmentCondition(time);
 
             if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                subcommand_conjunction &= option->behavior_->getCommand(time);
+                const std::optional<SubCommandT> command = this->getAndVerifyCommand(option, time);
+                if (command) {
+                    isAnyApplicableOptionSafe = true;
+                    subcommand_conjunction &= command.value();
+                }
             }
+        }
+
+        if (!isAnyApplicableOptionSafe) {
+            throw NoApplicableOptionPassedVerificationError("None of the " +
+                                                            std::to_string(this->behaviorOptions_.size()) +
+                                                            " applicable options passed the verification step!");
         }
 
         return CommandT(subcommand_conjunction);
@@ -179,8 +190,9 @@ public:
     }
 
 protected:
-    virtual typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        return nullptr;
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        return {};
     }
 
     bool isActive_{false};

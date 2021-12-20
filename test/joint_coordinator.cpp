@@ -132,6 +132,64 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_EQ(3, testBehaviorC->loseControlCounter_);
 }
 
+
+struct DummyResult {
+    bool isOk() const {
+        return isOk_;
+    };
+
+    bool isOk_;
+};
+struct DummyVerifier {
+    static DummyResult analyze(const Time& /*time*/, const DummyCommand& data) {
+        if (data == "B") {
+            return DummyResult{false};
+        }
+        return DummyResult{true};
+    };
+};
+struct RejectingVerifier {
+    static DummyResult analyze(const Time& /*time*/, const DummyCommand& /*data*/) {
+        return DummyResult{false};
+    };
+};
+
+TEST_F(JointCoordinatorTest, DummyVerification) {
+    using OptionFlags = JointCoordinator<DummyCommand, DummyCommand, DummyVerifier>::Option::Flags;
+    JointCoordinator<DummyCommand, DummyCommand, DummyVerifier> verifyingJointCoordinator;
+
+    verifyingJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    EXPECT_TRUE(verifyingJointCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(verifyingJointCoordinator.checkCommitmentCondition(time));
+
+    verifyingJointCoordinator.gainControl(time);
+
+    // B1, C and B2 are invocable, A is not, but B1 and B2 fail verification
+    EXPECT_EQ("C", verifyingJointCoordinator.getCommand(time));
+}
+
+TEST_F(JointCoordinatorTest, RejectingVerification) {
+    using OptionFlags = JointCoordinator<DummyCommand, DummyCommand, RejectingVerifier>::Option::Flags;
+    JointCoordinator<DummyCommand, DummyCommand, RejectingVerifier> verifyingJointCoordinator;
+
+    verifyingJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    EXPECT_TRUE(verifyingJointCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(verifyingJointCoordinator.checkCommitmentCondition(time));
+
+    verifyingJointCoordinator.gainControl(time);
+
+    EXPECT_THROW(verifyingJointCoordinator.getCommand(time), NoApplicableOptionPassedVerificationError);
+}
+
+
 TEST_F(JointCoordinatorTest, Printout) {
     testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);

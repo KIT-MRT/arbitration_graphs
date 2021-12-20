@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 #include <iterator>
 #include <memory>
 #include <optional>
@@ -10,9 +11,11 @@
 
 #include "behavior.hpp"
 #include "exceptions.hpp"
+#include "verification.hpp"
 
 
 namespace behavior_planning {
+
 
 /*!
  * \brief The Arbitrator class
@@ -21,11 +24,15 @@ namespace behavior_planning {
  *       - override getCommand() in your specialized Arbitrator or
  *       - provide a CommandT(const SubCommandT&) constructor
  */
-template <typename CommandT, typename SubCommandT = CommandT>
+template <typename CommandT,
+          typename SubCommandT = CommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
+
+    using VerificationResult = typename decltype(std::function{VerifierT::analyze})::result_type;
 
     /*!
      * \brief The Option struct
@@ -52,6 +59,7 @@ public:
 
         typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
+        mutable std::optional<VerificationResult> verificationResult_;
 
         bool hasFlag(const FlagsT& flag_to_check) const {
             return flags_ & flag_to_check;
@@ -96,6 +104,9 @@ public:
             return node;
         }
     };
+    using Options = std::vector<typename Option::Ptr>;
+    using ConstOptions = std::vector<typename Option::ConstPtr>;
+
 
     Arbitrator(const std::string& name = "Arbitrator") : Behavior<CommandT>(name){};
 
@@ -106,6 +117,8 @@ public:
     }
 
     CommandT getCommand(const Time& time) override {
+        /// \todo split this function
+
         bool activeBehaviorCanBeContinued =
             activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
 
@@ -116,30 +129,56 @@ public:
 
         bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
 
-        if (!activeBehavior_ || !activeBehaviorCanBeContinued || activeBehaviorInterruptable) {
-            typename Option::Ptr bestOption = findBestOption(time);
-
-            if (bestOption) {
-                if (!activeBehavior_) {
-                    activeBehavior_ = bestOption;
-                    activeBehavior_->behavior_->gainControl(time);
-                } else if (bestOption != activeBehavior_) {
-                    activeBehavior_->behavior_->loseControl(time);
-
-                    activeBehavior_ = bestOption;
-                    activeBehavior_->behavior_->gainControl(time);
-                }
-            } else {
-                throw InvocationConditionIsFalseError(
-                    "No behavior with true invocation condition found! Only call getCommand() if "
-                    "checkInvocationCondition() or checkCommitmentCondition() is true!");
+        // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
+        if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
+            const std::optional<SubCommandT> command = getAndVerifyCommand(activeBehavior_, time);
+            if (command) {
+                return command.value();
             }
+
+            activeBehavior_->behavior_->loseControl(time);
+            activeBehavior_ = nullptr;
         }
-        return activeBehavior_->behavior_->getCommand(time);
+
+        // otherwise take all options equally into account, including the active option (if it exists)
+        const auto applicableOptions = this->applicableOptions(time);
+
+        if (!applicableOptions.empty()) {
+            const auto bestApplicableOptions = sortOptionsByGivenPolicy(applicableOptions, time);
+
+            for (const auto& bestOption : bestApplicableOptions) {
+                if (!activeBehavior_ || bestOption != activeBehavior_) {
+                    // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
+                    // if bestOption passes verification
+                    bestOption->behavior_->gainControl(time);
+                }
+                // otherwise we have bestOption == activeBehavior_ which already gained control
+
+                // an arbitrator as option might not return a command, if its applicable options fail verification:
+                const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
+
+                if (command) {
+                    if (activeBehavior_ && bestOption != activeBehavior_) {
+                        // finally, prevent two behaviors from having control
+                        activeBehavior_->behavior_->loseControl(time);
+                    }
+                    activeBehavior_ = bestOption;
+                    return command.value();
+                }
+                bestOption->behavior_->loseControl(time);
+            }
+        } else {
+            throw InvocationConditionIsFalseError(
+                "No behavior with true invocation condition found! Only call getCommand() if "
+                "checkInvocationCondition() or checkCommitmentCondition() is true!");
+        }
+
+        throw NoApplicableOptionPassedVerificationError("None of the " + std::to_string(applicableOptions.size()) +
+                                                        " applicable options passed the verification step!");
     }
 
-    std::vector<typename Option::ConstPtr> options() const {
-        return std::vector<typename Option::ConstPtr>(behaviorOptions_.begin(), behaviorOptions_.end());
+    ConstOptions options() const {
+        return ConstOptions(behaviorOptions_.begin(), behaviorOptions_.end());
     }
 
     bool checkInvocationCondition(const Time& time) const override {
@@ -230,12 +269,40 @@ public:
 
 protected:
     /*!
-     * Override this function in a specialized Arbitrator in order to
-     * find a behavior option that is the best option according to your policy and has true invocation condition
+     * @brief   Override this function in a specialized Arbitrator in order to
+     *          sort given behavior options according to your policy in descending order (first is best)
      *
-     * @return  Best applicable option according to your policy (can also be the currently active option)
+     * @param options  Applicable behavior options in the order given in behaviorOptions_
+     * @param time  Expected execution time point of this behaviors command
+     * @return  Behavior options sorted according to your policy
      */
-    virtual typename Option::Ptr findBestOption(const Time& time) const = 0;
+    virtual Options sortOptionsByGivenPolicy(const Options& options, const Time& time) const = 0;
+
+    /*!
+     * @brief   Returns all behavior options with true invocation condition or
+     *          true commitment condition for the active option
+     *
+     * @param time  Expected execution time point of this behaviors command
+     * @return  Vector of applicable behavior options
+     */
+    Options applicableOptions(const Time& time) const {
+        using namespace std::placeholders;
+
+        Options options;
+        std::copy_if(behaviorOptions_.begin(),
+                     behaviorOptions_.end(),
+                     std::back_inserter(options),
+                     std::bind(&Arbitrator::isApplicable, this, _1, time));
+        return options;
+    };
+
+    bool isActive(const typename Option::Ptr& option) const {
+        return activeBehavior_ && option == activeBehavior_;
+    }
+    bool isApplicable(const typename Option::Ptr& option, const Time& time) const {
+        const bool isActiveAndCanBeContinued = isActive(option) && option->behavior_->checkCommitmentCondition(time);
+        return isActiveAndCanBeContinued || option->behavior_->checkInvocationCondition(time);
+    }
 
     std::size_t getOptionIndex(const typename Option::ConstPtr& behaviorOption) const {
         const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
@@ -247,7 +314,35 @@ protected:
             "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
     }
 
-    std::vector<typename Option::Ptr> behaviorOptions_;
+    /*!
+     * @brief Call getCommand on the given option and verify its returned command
+     *
+     * @param option Behavior option to call and verify
+     * @param time  Expected execution time point of this behaviors command
+     * @return Command of the given option, if it passed verification, otherwise nullopt
+     */
+    std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const {
+        try {
+            const SubCommandT command = option->behavior_->getCommand(time);
+            const VerificationResult verificationResult = verifier_.analyze(time, command);
+            option->verificationResult_ = verificationResult;
+            if (verificationResult.isOk()) {
+                return command;
+            }
+            // given option is applicable, but not safe
+            /// \todo log this somewhere?
+        } catch (VerificationError& e) {
+            // given option is arbitrator without safe applicable option
+            option->verificationResult_.reset();
+
+            /// \todo log this somewhere?
+        }
+        return std::nullopt;
+    }
+
+    Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;
+
+    VerifierT verifier_;
 };
 } // namespace behavior_planning

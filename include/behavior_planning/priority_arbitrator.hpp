@@ -10,10 +10,12 @@
 
 namespace behavior_planning {
 
-template <typename CommandT, typename SubCommandT = CommandT>
-class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT,
+          typename SubCommandT = CommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
+class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT>;
 
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
@@ -74,20 +76,14 @@ public:
 
 protected:
     /*!
-     * Find behavior option with highest priority and true invocation condition
+     * @brief   Sort behavior options by priority
      *
-     * @return  Applicable option with highest priority (can also be the currently active option)
+     * @return  Behavior options sorted by priority
      */
-    typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        for (auto& option : this->behaviorOptions_) {
-            bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
-            bool isActiveAndCanBeContinued =
-                isActive && this->activeBehavior_->behavior_->checkCommitmentCondition(time);
-            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                return option;
-            }
-        }
-        return nullptr;
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
+        return options;
     }
 };
 } // namespace behavior_planning

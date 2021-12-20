@@ -14,10 +14,10 @@ namespace behavior_planning {
 /*!
  * \brief The ConjunctiveCoordinator class combines all sub-commands by conjunction, using the operator&()
  */
-template <typename CommandT, typename SubCommandT>
-class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT, typename SubCommandT, typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
+class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT>;
 
     using Ptr = std::shared_ptr<ConjunctiveCoordinator>;
     using ConstPtr = std::shared_ptr<const ConjunctiveCoordinator>;
@@ -77,7 +77,15 @@ public:
 
         for (auto& option_base : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
-            subcommand_conjunction &= option->behavior_->getCommand(time);
+
+            const std::optional<SubCommandT> command = this->getAndVerifyCommand(option, time);
+            if (!command) {
+                throw ApplicableOptionFailedVerificationError("One of the " +
+                                                              std::to_string(this->behaviorOptions_.size()) +
+                                                              " applicable options failed the verification step!");
+            }
+
+            subcommand_conjunction &= command.value();
         }
 
         return CommandT(subcommand_conjunction);
@@ -163,8 +171,9 @@ public:
     }
 
 protected:
-    virtual typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        return nullptr;
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        return {};
     }
 
     bool isActive_{false};
