@@ -117,27 +117,11 @@ public:
     }
 
     CommandT getCommand(const Time& time) override {
-        /// \todo split this function
+        // first try to continue an active option, if one exists
+        std::optional<SubCommandT> command = getAndVerifyCommandFromActive(time);
 
-        bool activeBehaviorCanBeContinued =
-            activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
-
-        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-            activeBehavior_->behavior_->loseControl(time);
-            activeBehavior_.reset();
-        }
-
-        bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
-
-        // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
-        if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
-            const std::optional<SubCommandT> command = getAndVerifyCommand(activeBehavior_, time);
-            if (command) {
-                return command.value();
-            }
-
-            activeBehavior_->behavior_->loseControl(time);
-            activeBehavior_ = nullptr;
+        if (command) {
+            return command.value();
         }
 
         // otherwise take all options equally into account, including the active option (if it exists)
@@ -145,36 +129,12 @@ public:
 
         if (!applicableOptions.empty()) {
             const auto bestApplicableOptions = sortOptionsByGivenPolicy(applicableOptions, time);
-
-            for (const auto& bestOption : bestApplicableOptions) {
-                if (!activeBehavior_ || bestOption != activeBehavior_) {
-                    // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
-                    // if bestOption passes verification
-                    bestOption->behavior_->gainControl(time);
-                }
-                // otherwise we have bestOption == activeBehavior_ which already gained control
-
-                // an arbitrator as option might not return a command, if its applicable options fail verification:
-                const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
-
-                if (command) {
-                    if (activeBehavior_ && bestOption != activeBehavior_) {
-                        // finally, prevent two behaviors from having control
-                        activeBehavior_->behavior_->loseControl(time);
-                    }
-                    activeBehavior_ = bestOption;
-                    return command.value();
-                }
-                bestOption->behavior_->loseControl(time);
-            }
-        } else {
-            throw InvocationConditionIsFalseError(
-                "No behavior with true invocation condition found! Only call getCommand() if "
-                "checkInvocationCondition() or checkCommitmentCondition() is true!");
+            return getAndVerifyCommandFromApplicable(bestApplicableOptions, time);
         }
 
-        throw NoApplicableOptionPassedVerificationError("None of the " + std::to_string(applicableOptions.size()) +
-                                                        " applicable options passed the verification step!");
+        throw InvocationConditionIsFalseError(
+            "No behavior with true invocation condition found! Only call getCommand() if "
+            "checkInvocationCondition() or checkCommitmentCondition() is true!");
     }
 
     ConstOptions options() const {
@@ -317,8 +277,8 @@ protected:
     /*!
      * @brief Call getCommand on the given option and verify its returned command
      *
-     * @param option Behavior option to call and verify
-     * @param time  Expected execution time point of this behaviors command
+     * @param option    Behavior option to call and verify
+     * @param time      Expected execution time point of this behaviors command
      * @return Command of the given option, if it passed verification, otherwise nullopt
      */
     std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const {
@@ -338,6 +298,72 @@ protected:
             /// \todo log this somewhere?
         }
         return std::nullopt;
+    }
+
+    /*!
+     * @brief Get and verify the command from the active behavior, if there is an active one
+     *
+     * @param time  Expected execution time point of this behaviors command
+     * @return Command of the active option, if it exists, can be continued and it passed verification,
+     *         otherwise nullopt
+     */
+    std::optional<SubCommandT> getAndVerifyCommandFromActive(const Time& time) {
+        bool activeBehaviorCanBeContinued =
+            activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
+
+        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
+            activeBehavior_->behavior_->loseControl(time);
+            activeBehavior_.reset();
+        }
+
+        bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
+
+        // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
+        if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
+            const std::optional<SubCommandT> command = getAndVerifyCommand(activeBehavior_, time);
+            if (command) {
+                return command.value();
+            }
+
+            activeBehavior_->behavior_->loseControl(time);
+            activeBehavior_ = nullptr;
+        }
+
+        return std::nullopt;
+    }
+
+    /*!
+     * @brief Get and verify the command from the best option that passes verification
+     *
+     * @param options   Applicable behavior options, sorted by custom policy (descending: first is best)
+     * @param time      Expected execution time point of this behaviors command
+     * @return Command of best option passing verification, throws if none passes
+     */
+    SubCommandT getAndVerifyCommandFromApplicable(const Options& options, const Time& time) {
+        for (const auto& bestOption : options) {
+            if (!activeBehavior_ || bestOption != activeBehavior_) {
+                // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
+                // if bestOption passes verification
+                bestOption->behavior_->gainControl(time);
+            }
+            // otherwise we have bestOption == activeBehavior_ which already gained control
+
+            // an arbitrator as option might not return a command, if its applicable options fail verification:
+            const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
+
+            if (command) {
+                if (activeBehavior_ && bestOption != activeBehavior_) {
+                    // finally, prevent two behaviors from having control
+                    activeBehavior_->behavior_->loseControl(time);
+                }
+                activeBehavior_ = bestOption;
+                return command.value();
+            }
+            bestOption->behavior_->loseControl(time);
+        }
+
+        throw NoApplicableOptionPassedVerificationError("None of the " + std::to_string(options.size()) +
+                                                        " applicable options passed the verification step!");
     }
 
     Options behaviorOptions_;
