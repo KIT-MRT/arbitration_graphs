@@ -90,6 +90,11 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
 
+    // B1 and C are invocable; A is not
+    testJointCoordinator.gainControl(time);
+    EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
+    testJointCoordinator.loseControl(time);
+
     // make all options invocationCondition false now -> the coordinators invocationCondition should also be false
     testBehaviorB1->invocationCondition_ = false;
     testBehaviorC->invocationCondition_ = false;
@@ -102,6 +107,11 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
                  MultipleReferencesToSameInstanceError);
     EXPECT_NO_THROW(testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS));
 
+    // only B2 is invocable; A, B1 and C are not
+    testJointCoordinator.gainControl(time);
+    EXPECT_EQ("B", testJointCoordinator.getCommand(time));
+    testJointCoordinator.loseControl(time);
+
     // if any option has true commitmentCondition and the coordinator is active, i.e. gained control
     // -> the coordinators commitmentCondition should also be true
     testBehaviorB1->invocationCondition_ = true;
@@ -112,11 +122,14 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
 
+    // B1, C and B2 are invocable; A is not
+    EXPECT_EQ("BCB", testJointCoordinator.getCommand(time));
+
     // ConjunctiveCoordinators loseControl(time) should also call loseControl(time) for all its sub-behaviors
     testJointCoordinator.loseControl(time);
-    EXPECT_EQ(1, testBehaviorA->loseControlCounter_);
-    EXPECT_EQ(1, testBehaviorB1->loseControlCounter_);
-    EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorA->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorB1->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorC->loseControlCounter_);
 }
 
 TEST_F(JointCoordinatorTest, Printout) {
