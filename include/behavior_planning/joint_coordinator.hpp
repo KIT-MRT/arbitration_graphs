@@ -80,7 +80,8 @@ public:
 
         for (auto& option_base : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
-            if(option->behavior_->checkInvocationCondition(time) || option->behavior_->checkCommitmentCondition(time)){
+            if (option->behavior_->checkInvocationCondition(time) ||
+                option->behavior_->checkCommitmentCondition(time)) {
                 subcommand_conjunction &= option->behavior_->getCommand(time);
             }
         }
@@ -144,9 +145,8 @@ public:
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-            if (isActive_ &&
-                (option->behavior_->checkInvocationCondition(time) ||
-                 option->behavior_->checkCommitmentCondition(time))) {
+            if (isActive_ && (option->behavior_->checkInvocationCondition(time) ||
+                              option->behavior_->checkCommitmentCondition(time))) {
                 output << suffix << std::endl << prefix << " -> ";
             } else {
                 output << suffix << std::endl << prefix << "    ";
