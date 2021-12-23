@@ -74,24 +74,13 @@ public:
         this->behaviorOptions_.push_back(option);
     }
 
-    // Combine all the subcommands if any of the sub-behaviors is invocated or is active right now and can be committed
+    // Combine all the subcommands if any of the sub-behaviors is invocated or can be committed
     CommandT getCommand(const Time& time) override {
         SubCommandT subcommand_conjunction;
 
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-
-            // Not exacly what isActiveAndCanBeContinued represents in other arbitrators:
-            // Normally, isActiveAndCanBeContinued says that the _one_ active behavior option has true commitment
-            // condition.
-            // Here, isActiveAndCanBeContinued says that the JointCoordinator is active (meaning many of its
-            // options are active) and this particular option has true commitment condition (though itself might yet not
-            // be active).
-            // In order to be consistent with the normal interpretation of isActiveAndCanBeContinued, we would need to
-            // track which of the options are currently active and which not.
-            bool isActiveAndCanBeContinued = isActive_ && option->behavior_->checkCommitmentCondition(time);
-
-            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
+        for (auto& option_base : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
+            if(option->behavior_->checkInvocationCondition(time) || option->behavior_->checkCommitmentCondition(time)){
                 subcommand_conjunction &= option->behavior_->getCommand(time);
             }
         }
@@ -155,8 +144,9 @@ public:
 
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-
-            if (isActive_) {
+            if (isActive_ &&
+                (option->behavior_->checkInvocationCondition(time) ||
+                 option->behavior_->checkCommitmentCondition(time))) {
                 output << suffix << std::endl << prefix << " -> ";
             } else {
                 output << suffix << std::endl << prefix << "    ";

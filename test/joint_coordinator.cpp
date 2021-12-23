@@ -130,23 +130,22 @@ TEST_F(JointCoordinatorTest, Printout) {
                                     "    - " + invocationFalseString + commitmentFalseString + "A\n"
                                     "    - " + invocationTrueString + commitmentFalseString + "B\n"
                                     "    - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                                  "    - " + invocationTrueString + commitmentFalseString + "B";
+                                    "    - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
 
     EXPECT_EQ(expected_printout, actual_printout);
 
-    testBehaviorA->invocationCondition_ = true;
     testJointCoordinator.gainControl(time);
-    EXPECT_EQ("ABCB", testJointCoordinator.getCommand(time));
+    EXPECT_EQ("BCB", testJointCoordinator.getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
-                        " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                        "    - " + invocationFalseString + commitmentFalseString + "A\n"
                         " -> - " + invocationTrueString + commitmentFalseString + "B\n"
                         " -> - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                   " -> - " + invocationTrueString + commitmentFalseString + "B";
+                        " -> - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
