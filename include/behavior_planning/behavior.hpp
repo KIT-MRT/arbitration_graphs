@@ -143,14 +143,14 @@ public:
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const {
         if (checkInvocationCondition(time)) {
-            output << "\033[32mINVOCATION\033[0m ";
+            output << "\033[32mINVOCATION\033[39m ";
         } else {
-            output << "\033[31mInvocation\033[0m ";
+            output << "\033[31mInvocation\033[39m ";
         }
         if (checkCommitmentCondition(time)) {
-            output << "\033[32mCOMMITMENT\033[0m ";
+            output << "\033[32mCOMMITMENT\033[39m ";
         } else {
-            output << "\033[31mCommitment\033[0m ";
+            output << "\033[31mCommitment\033[39m ";
         }
 
         output << name_;

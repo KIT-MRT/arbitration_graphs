@@ -163,13 +163,31 @@ TEST_F(JointCoordinatorTest, DummyVerification) {
     verifyingJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
     verifyingJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
 
+    testBehaviorA->invocationCondition_ = true;
+
     EXPECT_TRUE(verifyingJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(verifyingJointCoordinator.checkCommitmentCondition(time));
 
     verifyingJointCoordinator.gainControl(time);
 
     // B1, C and B2 are invocable, A is not, but B1 and B2 fail verification
-    EXPECT_EQ("C", verifyingJointCoordinator.getCommand(time));
+    EXPECT_EQ("AC", verifyingJointCoordinator.getCommand(time));
+
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
+                        " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                        " -> - " + strikeThroughOn
+                                 + invocationTrueString + commitmentFalseString + "B"
+                                 + strikeThroughOff + "\n"
+                        " -> - " + invocationTrueString + commitmentTrueString + "C\n"
+                        " -> - " + strikeThroughOn
+                                 + invocationTrueString + commitmentFalseString + "B"
+                                 + strikeThroughOff;
+    // clang-format on
+    std::string actual_printout = verifyingJointCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout);
 }
 
 TEST_F(JointCoordinatorTest, RejectingVerification) {
@@ -201,7 +219,7 @@ TEST_F(JointCoordinatorTest, Printout) {
                                     "    - " + invocationFalseString + commitmentFalseString + "A\n"
                                     "    - " + invocationTrueString + commitmentFalseString + "B\n"
                                     "    - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                                  "    - " + invocationTrueString + commitmentFalseString + "B";
+                                    "    - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
@@ -217,7 +235,7 @@ TEST_F(JointCoordinatorTest, Printout) {
                         " -> - " + invocationTrueString + commitmentFalseString + "A\n"
                         " -> - " + invocationTrueString + commitmentFalseString + "B\n"
                         " -> - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                   " -> - " + invocationTrueString + commitmentFalseString + "B";
+                        " -> - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;

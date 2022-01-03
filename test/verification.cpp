@@ -117,6 +117,20 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_->isOk());
     EXPECT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_->isOk());
 
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "    3. " + strikeThroughOn
+                                  + invocationTrueString + commitmentFalseString + "MidPriority"
+                                  + strikeThroughOff + "\n"
+                        " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
+    std::string actual_printout = testPriorityArbitrator.to_str(time);
+    std::cout << actual_printout << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout);
+
 
     testPriorityArbitrator.loseControl(time);
 
@@ -154,6 +168,20 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
 
     EXPECT_FALSE(testCostArbitrator.options().at(2)->verificationResult_->isOk());
     EXPECT_TRUE(testCostArbitrator.options().at(3)->verificationResult_->isOk());
+
+    // clang-format off
+    std::string expectedPrintout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
+                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
+                        "    - (cost: 0.500) " + strikeThroughOn
+                                  + invocationTrueString + commitmentFalseString + "MidPriority"
+                                  + strikeThroughOff + "\n"
+                        " -> - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "LowPriority";
+    // clang-format on
+    std::string actualPrintout = testCostArbitrator.to_str(time);
+    std::cout << actualPrintout << std::endl;
+
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     testCostArbitrator.loseControl(time);

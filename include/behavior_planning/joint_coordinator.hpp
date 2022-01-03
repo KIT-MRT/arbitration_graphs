@@ -167,6 +167,7 @@ public:
         for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
 
+            /// \todo Put arrow only in front of active options, not to all if JointCoordinator is active
             if (isActive_) {
                 output << suffix << std::endl << prefix << " -> ";
             } else {

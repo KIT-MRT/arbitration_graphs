@@ -82,7 +82,19 @@ public:
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
-            behavior_->to_stream(output, time, prefix, suffix);
+            if (verificationResult_ && !verificationResult_->isOk()) {
+                // ANSI backspace: \010
+                // ANSI strikethrough on: \033[9m
+                output << "×××\010\010\010\033[9m";
+                behavior_->to_stream(output, time, prefix, suffix);
+                // ANSI strikethrough off: \033[29m
+                // ANSI hide on: \033[8m
+                // ANSI hide off: \033[28m
+                output << "\033[29m\033[8m×××\033[28m";
+            } else {
+                behavior_->to_stream(output, time, prefix, suffix);
+            }
+
             return output;
         }
 
