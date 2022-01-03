@@ -122,7 +122,8 @@ public:
     using ConstOptions = std::vector<typename Option::ConstPtr>;
 
 
-    Arbitrator(const std::string& name = "Arbitrator") : Behavior<CommandT>(name){};
+    Arbitrator(const std::string& name = "Arbitrator", const VerifierT& verifier = VerifierT())
+            : Behavior<CommandT>(name), verifier_{verifier} {};
 
 
     virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {

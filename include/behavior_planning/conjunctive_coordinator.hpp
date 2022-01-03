@@ -60,7 +60,8 @@ public:
         }
     };
 
-    ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator") : ArbitratorBase(name) {
+    ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier) {
     }
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {

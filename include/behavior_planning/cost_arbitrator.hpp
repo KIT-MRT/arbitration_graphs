@@ -90,7 +90,8 @@ public:
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : ArbitratorBase(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier){};
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,

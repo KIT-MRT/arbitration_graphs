@@ -56,7 +56,8 @@ public:
         }
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : ArbitratorBase(name){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier){};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
