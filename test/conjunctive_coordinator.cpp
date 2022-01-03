@@ -142,17 +142,18 @@ struct DummyResult {
     bool isOk_;
 };
 struct DummyVerifier {
-    static DummyResult analyze(const Time& /*time*/, const DummyCommand& data) {
-        if (data == "B") {
+    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+        if (data == wrong_) {
             return DummyResult{false};
         }
         return DummyResult{true};
     };
+    std::string wrong_{"B"};
 };
 
 TEST_F(ConjunctiveCoordinatorTest, Verification) {
-    using OptionFlags = ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier>::Option::Flags;
-    ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier> verifyingConjunctiveCoordinator;
+    using OptionFlags = ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingConjunctiveCoordinator;
 
     verifyingConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     verifyingConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);

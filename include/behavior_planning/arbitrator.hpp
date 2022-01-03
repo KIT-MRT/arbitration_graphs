@@ -23,16 +23,18 @@ namespace behavior_planning {
  * \note If CommandT != SubCommandT either
  *       - override getCommand() in your specialized Arbitrator or
  *       - provide a CommandT(const SubCommandT&) constructor
+ *
+ * \note As long as VerifierT::analyze() is static the VerificationResultT type can be deduced by the compiler,
+ *       otherwise you have to pass it as template argument
  */
 template <typename CommandT,
           typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
 class Arbitrator : public Behavior<CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
-
-    using VerificationResult = typename decltype(std::function{VerifierT::analyze})::result_type;
 
     /*!
      * \brief The Option struct
@@ -59,7 +61,7 @@ public:
 
         typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
-        mutable std::optional<VerificationResult> verificationResult_;
+        mutable std::optional<VerificationResultT> verificationResult_;
 
         bool hasFlag(const FlagsT& flag_to_check) const {
             return flags_ & flag_to_check;
@@ -296,7 +298,7 @@ protected:
     std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const {
         try {
             const SubCommandT command = option->behavior_->getCommand(time);
-            const VerificationResult verificationResult = verifier_.analyze(time, command);
+            const VerificationResultT verificationResult = verifier_.analyze(time, command);
             option->verificationResult_ = verificationResult;
             if (verificationResult.isOk()) {
                 return command;

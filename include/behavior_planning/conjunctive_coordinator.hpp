@@ -14,10 +14,13 @@ namespace behavior_planning {
 /*!
  * \brief The ConjunctiveCoordinator class combines all sub-commands by conjunction, using the operator&()
  */
-template <typename CommandT, typename SubCommandT, typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
-class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT> {
+template <typename CommandT,
+          typename SubCommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<ConjunctiveCoordinator>;
     using ConstPtr = std::shared_ptr<const ConjunctiveCoordinator>;

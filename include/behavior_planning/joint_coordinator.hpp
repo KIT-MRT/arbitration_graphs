@@ -16,10 +16,13 @@ namespace behavior_planning {
  *  Difference to ConjunctiveCoordinator is that it is invocated if any of the sub-behaviors has true
  *  invocationCondition
  */
-template <typename CommandT, typename SubCommandT, typename VerifierT = verification::PlaceboVerifier<SubCommandT>>
-class JointCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT> {
+template <typename CommandT,
+          typename SubCommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+class JointCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<JointCoordinator>;
     using ConstPtr = std::shared_ptr<const JointCoordinator>;

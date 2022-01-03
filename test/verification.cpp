@@ -25,12 +25,16 @@ struct DummyResult {
     bool isOk_;
 };
 struct DummyVerifier {
-    static DummyResult analyze(const Time& /*time*/, const DummyCommand& data) {
-        if (data == "MidPriority") {
+    // This could be made static here, but we want to challenge the compiler in deducing VerificationResultT.
+    // Unfortunately in such non-static cases VerificationResultT cannot be deduced
+    // and has to be passed on as template argument, see e.g. the DummyVerifierInPriorityArbitrator test
+    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+        if (data == wrong_) {
             return DummyResult{false};
         }
         return DummyResult{true};
     };
+    std::string wrong_{"MidPriority"};
 };
 
 class CommandVerificationTest : public ::testing::Test {
@@ -95,9 +99,9 @@ TEST_F(CommandVerificationTest, PlaceboVerifier) {
 
 // Now DummyVerifier classifies the "MidPriority" command as invalid
 TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
-    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier>::Option::Flags;
+    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
 
-    PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier> testPriorityArbitrator;
+    PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> testPriorityArbitrator;
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -144,9 +148,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
 
 
 TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
-    using OptionFlags = CostArbitrator<DummyCommand, DummyCommand, DummyVerifier>::Option::Flags;
+    using OptionFlags = CostArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
 
-    CostArbitrator<DummyCommand, DummyCommand, DummyVerifier> testCostArbitrator;
+    CostArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> testCostArbitrator;
 
     CostEstimatorFromCostMap::CostMap costMap{{"HighPriority", 0}, {"MidPriority", 0.5}, {"LowPriority", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
