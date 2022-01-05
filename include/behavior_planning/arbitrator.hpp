@@ -9,6 +9,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <util_caching/cache.hpp>
+
 #include "behavior.hpp"
 #include "exceptions.hpp"
 #include "verification.hpp"
@@ -61,7 +63,7 @@ public:
 
         typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
-        mutable std::optional<VerificationResultT> verificationResult_;
+        mutable util_caching::Cache<Time, VerificationResultT> verificationResult_;
 
         bool hasFlag(const FlagsT& flag_to_check) const {
             return flags_ & flag_to_check;
@@ -84,7 +86,7 @@ public:
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const {
-            if (verificationResult_ && !verificationResult_->isOk()) {
+            if (verificationResult_.cached(time) && !verificationResult_.cached(time)->isOk()) {
                 // ANSI backspace: \010
                 // ANSI strikethrough on: \033[9m
                 output << "×××\010\010\010\033[9m";
@@ -110,8 +112,8 @@ public:
             YAML::Node node;
             node["type"] = "Option";
             node["behavior"] = behavior_->toYaml(time);
-            if (verificationResult_) {
-                node["verificationResult"] = verificationResult_->isOk() ? "passed" : "failed";
+            if (verificationResult_.cached(time)) {
+                node["verificationResult"] = verificationResult_.cached(time)->isOk() ? "passed" : "failed";
             }
             if (hasFlag(Option::Flags::INTERRUPTABLE)) {
                 node["flags"].push_back("INTERRUPTABLE");
@@ -302,7 +304,7 @@ protected:
         try {
             const SubCommandT command = option->behavior_->getCommand(time);
             const VerificationResultT verificationResult = verifier_.analyze(time, command);
-            option->verificationResult_ = verificationResult;
+            option->verificationResult_.cache(time, verificationResult);
             if (verificationResult.isOk()) {
                 return command;
             }
