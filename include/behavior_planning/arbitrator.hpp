@@ -110,7 +110,9 @@ public:
             YAML::Node node;
             node["type"] = "Option";
             node["behavior"] = behavior_->toYaml(time);
-
+            if (verificationResult_) {
+                node["verificationResult"] = verificationResult_->isOk() ? "passed" : "failed";
+            }
             if (hasFlag(Option::Flags::INTERRUPTABLE)) {
                 node["flags"].push_back("INTERRUPTABLE");
             }

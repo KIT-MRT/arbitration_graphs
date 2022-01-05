@@ -136,6 +136,16 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     EXPECT_EQ(expected_printout, actual_printout);
 
 
+    YAML::Node yaml = testPriorityArbitrator.toYaml(time);
+    EXPECT_FALSE(yaml["options"][0]["verificationResult"].IsDefined());
+    EXPECT_FALSE(yaml["options"][1]["verificationResult"].IsDefined());
+    ASSERT_TRUE(yaml["options"][2]["verificationResult"].IsDefined());
+    ASSERT_TRUE(yaml["options"][3]["verificationResult"].IsDefined());
+
+    EXPECT_EQ("failed", yaml["options"][2]["verificationResult"].as<std::string>());
+    EXPECT_EQ("passed", yaml["options"][3]["verificationResult"].as<std::string>());
+
+
     testPriorityArbitrator.loseControl(time);
 
     testBehaviorLowPriority->invocationCondition_ = false;
