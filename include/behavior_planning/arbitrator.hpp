@@ -265,13 +265,11 @@ protected:
      * @return  Vector of applicable behavior options
      */
     Options applicableOptions(const Time& time) const {
-        using namespace std::placeholders;
-
         Options options;
         std::copy_if(behaviorOptions_.begin(),
                      behaviorOptions_.end(),
                      std::back_inserter(options),
-                     std::bind(&Arbitrator::isApplicable, this, _1, time));
+                     std::bind(&Arbitrator::isApplicable, this, std::placeholders::_1, time));
         return options;
     };
 
