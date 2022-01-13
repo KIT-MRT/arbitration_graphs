@@ -85,22 +85,7 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            if (verificationResult_.cached(time) && !verificationResult_.cached(time)->isOk()) {
-                // ANSI backspace: \010
-                // ANSI strikethrough on: \033[9m
-                output << "×××\010\010\010\033[9m";
-                behavior_->to_stream(output, time, prefix, suffix);
-                // ANSI strikethrough off: \033[29m
-                // ANSI hide on: \033[8m
-                // ANSI hide off: \033[28m
-                output << "\033[29m\033[8m×××\033[28m";
-            } else {
-                behavior_->to_stream(output, time, prefix, suffix);
-            }
-
-            return output;
-        }
+                                        const std::string& suffix = "") const;
 
         /*!
          * \brief Returns a yaml representation of this option with its current state
@@ -108,19 +93,7 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time) const {
-            YAML::Node node;
-            node["type"] = "Option";
-            node["behavior"] = behavior_->toYaml(time);
-            if (verificationResult_.cached(time)) {
-                node["verificationResult"] = verificationResult_.cached(time)->isOk() ? "passed" : "failed";
-            }
-            if (hasFlag(Option::Flags::INTERRUPTABLE)) {
-                node["flags"].push_back("INTERRUPTABLE");
-            }
-
-            return node;
-        }
+        virtual YAML::Node toYaml(const Time& time) const;
     };
     using Options = std::vector<typename Option::Ptr>;
     using ConstOptions = std::vector<typename Option::ConstPtr>;
@@ -207,22 +180,7 @@ public:
     virtual std::ostream& to_stream(std::ostream& output,
                                     const Time& time,
                                     const std::string& prefix = "",
-                                    const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, time, prefix, suffix);
-
-        for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-            const typename Option::Ptr& option = behaviorOptions_.at(i);
-            bool isActive = activeBehavior_ && (option == activeBehavior_);
-
-            if (isActive) {
-                output << suffix << std::endl << prefix << " -> ";
-            } else {
-                output << suffix << std::endl << prefix << "    ";
-            }
-            option->to_stream(output, time, i, "    " + prefix, suffix);
-        }
-        return output;
-    }
+                                    const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -230,20 +188,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Behavior<CommandT>::toYaml(time);
-
-        node["type"] = "Arbitrator";
-        for (const typename Option::Ptr& option : behaviorOptions_) {
-            YAML::Node yaml = option->toYaml(time);
-            node["options"].push_back(yaml);
-        }
-        if (activeBehavior_) {
-            node["activeBehavior"] = getOptionIndex(activeBehavior_);
-        }
-
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 
 protected:
@@ -264,32 +209,12 @@ protected:
      * @param time  Expected execution time point of this behaviors command
      * @return  Vector of applicable behavior options
      */
-    Options applicableOptions(const Time& time) const {
-        Options options;
-        std::copy_if(behaviorOptions_.begin(),
-                     behaviorOptions_.end(),
-                     std::back_inserter(options),
-                     std::bind(&Arbitrator::isApplicable, this, std::placeholders::_1, time));
-        return options;
-    };
+    Options applicableOptions(const Time& time) const;
 
-    bool isActive(const typename Option::Ptr& option) const {
-        return activeBehavior_ && option == activeBehavior_;
-    }
-    bool isApplicable(const typename Option::Ptr& option, const Time& time) const {
-        const bool isActiveAndCanBeContinued = isActive(option) && option->behavior_->checkCommitmentCondition(time);
-        return isActiveAndCanBeContinued || option->behavior_->checkInvocationCondition(time);
-    }
+    bool isActive(const typename Option::Ptr& option) const;
+    bool isApplicable(const typename Option::Ptr& option, const Time& time) const;
 
-    std::size_t getOptionIndex(const typename Option::ConstPtr& behaviorOption) const {
-        const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
-
-        if (it != behaviorOptions_.end()) {
-            return std::distance(behaviorOptions_.begin(), it);
-        }
-        throw InvalidArgumentsError(
-            "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
-    }
+    std::size_t getOptionIndex(const typename Option::ConstPtr& behaviorOption) const;
 
     /*!
      * @brief Call getCommand on the given option and verify its returned command
@@ -298,24 +223,7 @@ protected:
      * @param time      Expected execution time point of this behaviors command
      * @return Command of the given option, if it passed verification, otherwise nullopt
      */
-    std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const {
-        try {
-            const SubCommandT command = option->behavior_->getCommand(time);
-            const VerificationResultT verificationResult = verifier_.analyze(time, command);
-            option->verificationResult_.cache(time, verificationResult);
-            if (verificationResult.isOk()) {
-                return command;
-            }
-            // given option is applicable, but not safe
-            /// \todo log this somewhere?
-        } catch (VerificationError& e) {
-            // given option is arbitrator without safe applicable option
-            option->verificationResult_.reset();
-
-            /// \todo log this somewhere?
-        }
-        return std::nullopt;
-    }
+    std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const;
 
     /*!
      * @brief Get and verify the command from the active behavior, if there is an active one
@@ -324,30 +232,7 @@ protected:
      * @return Command of the active option, if it exists, can be continued and it passed verification,
      *         otherwise nullopt
      */
-    std::optional<SubCommandT> getAndVerifyCommandFromActive(const Time& time) {
-        bool activeBehaviorCanBeContinued =
-            activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
-
-        if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-            activeBehavior_->behavior_->loseControl(time);
-            activeBehavior_.reset();
-        }
-
-        bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
-
-        // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
-        if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
-            const std::optional<SubCommandT> command = getAndVerifyCommand(activeBehavior_, time);
-            if (command) {
-                return command.value();
-            }
-
-            activeBehavior_->behavior_->loseControl(time);
-            activeBehavior_ = nullptr;
-        }
-
-        return std::nullopt;
-    }
+    std::optional<SubCommandT> getAndVerifyCommandFromActive(const Time& time);
 
     /*!
      * @brief Get and verify the command from the best option that passes verification
@@ -356,32 +241,7 @@ protected:
      * @param time      Expected execution time point of this behaviors command
      * @return Command of best option passing verification, throws if none passes
      */
-    SubCommandT getAndVerifyCommandFromApplicable(const Options& options, const Time& time) {
-        for (const auto& bestOption : options) {
-            if (!activeBehavior_ || bestOption != activeBehavior_) {
-                // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
-                // if bestOption passes verification
-                bestOption->behavior_->gainControl(time);
-            }
-            // otherwise we have bestOption == activeBehavior_ which already gained control
-
-            // an arbitrator as option might not return a command, if its applicable options fail verification:
-            const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
-
-            if (command) {
-                if (activeBehavior_ && bestOption != activeBehavior_) {
-                    // finally, prevent two behaviors from having control
-                    activeBehavior_->behavior_->loseControl(time);
-                }
-                activeBehavior_ = bestOption;
-                return command.value();
-            }
-            bestOption->behavior_->loseControl(time);
-        }
-
-        throw NoApplicableOptionPassedVerificationError("None of the " + std::to_string(options.size()) +
-                                                        " applicable options passed the verification step!");
-    }
+    SubCommandT getAndVerifyCommandFromApplicable(const Options& options, const Time& time);
 
     Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;
@@ -389,3 +249,6 @@ protected:
     VerifierT verifier_;
 };
 } // namespace behavior_planning
+
+#include "internal/arbitrator_impl.hpp"
+#include "internal/arbitrator_io.hpp"
