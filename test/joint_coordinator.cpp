@@ -76,7 +76,7 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
 
-    // otherwise the invocationCondition is true if all of the option have true invocationCondition
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
@@ -87,8 +87,20 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
 
+    testJointCoordinator.gainControl(time);
+    EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
+
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
+
+
+    // if any active option has true commitmentCondition and the coordinator is active, i.e. gained control
+    // -> the coordinators commitmentCondition should also be true
+    EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
+    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
+
+    EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
+
 
     // make all options invocationCondition false now -> the coordinators invocationCondition should also be false
     testBehaviorB1->invocationCondition_ = false;
@@ -102,15 +114,6 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
                  MultipleReferencesToSameInstanceError);
     EXPECT_NO_THROW(testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS));
 
-    // if any option has true commitmentCondition and the coordinator is active, i.e. gained control
-    // -> the coordinators commitmentCondition should also be true
-    testBehaviorB1->invocationCondition_ = true;
-    testBehaviorC->invocationCondition_ = true;
-    testBehaviorC->commitmentCondition_ = true;
-
-    testJointCoordinator.gainControl(time);
-    EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
-    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
 
     // ConjunctiveCoordinators loseControl(time) should also call loseControl(time) for all its sub-behaviors
     testJointCoordinator.loseControl(time);
