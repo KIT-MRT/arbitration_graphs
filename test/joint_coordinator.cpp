@@ -102,6 +102,25 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
 
 
+    // lets make it a little more complicated...
+    testBehaviorA->commitmentCondition_ = true;
+    testBehaviorB1->invocationCondition_ = false;
+    testBehaviorC->invocationCondition_ = false;
+    EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
+    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
+
+    // A should not be selected:
+    // - it has false invocation condition and
+    // - was inactive before (thus, its true commitment condition should have no effect)
+    // B should not be selected:
+    // - it has false invocation condition and
+    // - was active before, but has false commitment condition
+    // C should be selected:
+    // - it has false invocation condition, but
+    // - it was active before and has true commitment condition
+    EXPECT_EQ("C", testJointCoordinator.getCommand(time));
+
+
     // make all options invocationCondition false now -> the coordinators invocationCondition should also be false
     testBehaviorB1->invocationCondition_ = false;
     testBehaviorC->invocationCondition_ = false;
@@ -117,7 +136,7 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
 
     // ConjunctiveCoordinators loseControl(time) should also call loseControl(time) for all its sub-behaviors
     testJointCoordinator.loseControl(time);
-    EXPECT_EQ(1, testBehaviorA->loseControlCounter_);
+    EXPECT_EQ(0, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
 }
