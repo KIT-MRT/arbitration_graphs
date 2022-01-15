@@ -49,11 +49,7 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            output << option_index + 1 << ". ";
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
     };
 
     PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
@@ -70,11 +66,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = ArbitratorBase::toYaml(time);
-        node["type"] = "PriorityArbitrator";
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 protected:
     /*!
@@ -89,3 +81,5 @@ protected:
     }
 };
 } // namespace behavior_planning
+
+#include "internal/priority_arbitrator_io.hpp"
