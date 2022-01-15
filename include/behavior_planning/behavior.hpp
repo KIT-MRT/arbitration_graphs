@@ -109,11 +109,7 @@ public:
      *
      * \see to_stream()
      */
-    virtual std::string to_str(const Time& time, const std::string& prefix = "", const std::string& suffix = "") const {
-        std::stringstream ss;
-        to_stream(ss, time, prefix, suffix);
-        return ss.str();
-    }
+    virtual std::string to_str(const Time& time, const std::string& prefix = "", const std::string& suffix = "") const;
 
     /*!
      * \brief Writes a string representation of the behavior object with its current state to the given output stream.
@@ -141,21 +137,7 @@ public:
     virtual std::ostream& to_stream(std::ostream& output,
                                     const Time& time,
                                     const std::string& prefix = "",
-                                    const std::string& suffix = "") const {
-        if (checkInvocationCondition(time)) {
-            output << "\033[32mINVOCATION\033[39m ";
-        } else {
-            output << "\033[31mInvocation\033[39m ";
-        }
-        if (checkCommitmentCondition(time)) {
-            output << "\033[32mCOMMITMENT\033[39m ";
-        } else {
-            output << "\033[31mCommitment\033[39m ";
-        }
-
-        output << name_;
-        return output;
-    }
+                                    const std::string& suffix = "") const;
 
     /*!
      * \brief Returns a yaml representation of the behavior object with its current state
@@ -163,15 +145,10 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const {
-        YAML::Node node;
-        node["type"] = "Behavior";
-        node["name"] = name_;
-        node["invocationCondition"] = checkInvocationCondition(time);
-        node["commitmentCondition"] = checkCommitmentCondition(time);
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const;
 
     const std::string name_;
 };
 } // namespace behavior_planning
+
+#include "internal/behavior_io.hpp"
