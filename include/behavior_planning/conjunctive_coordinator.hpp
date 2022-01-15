@@ -53,11 +53,7 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            output << "- ";
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
     };
 
     ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator", const VerifierT& verifier = VerifierT())
@@ -146,21 +142,7 @@ public:
     virtual std::ostream& to_stream(std::ostream& output,
                                     const Time& time,
                                     const std::string& prefix = "",
-                                    const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, time, prefix, suffix);
-
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-
-            if (isActive_) {
-                output << suffix << std::endl << prefix << " -> ";
-            } else {
-                output << suffix << std::endl << prefix << "    ";
-            }
-            option->to_stream(output, time, i, "    " + prefix, suffix);
-        }
-        return output;
-    }
+                                    const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -168,11 +150,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = ArbitratorBase::toYaml(time);
-        node["type"] = "ConjunctiveCoordinator";
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 protected:
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
@@ -183,3 +161,5 @@ protected:
     bool isActive_{false};
 };
 } // namespace behavior_planning
+
+#include "internal/conjunctive_coordinator_io.hpp"
