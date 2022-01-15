@@ -60,16 +60,7 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            if (last_estimated_cost_) {
-                output << std::fixed << std::setprecision(3) << "- (cost: " << *last_estimated_cost_ << ") ";
-            } else {
-                output << "- (cost:  n.a.) ";
-            }
-
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
 
         /*!
          * \brief Returns a yaml representation of this option with its current state
@@ -77,13 +68,7 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time) const override {
-            YAML::Node node = ArbitratorBase::Option::toYaml(time);
-            if (last_estimated_cost_) {
-                node["cost"] = *last_estimated_cost_;
-            }
-            return node;
-        }
+        virtual YAML::Node toYaml(const Time& time) const override;
 
         typename CostEstimator<SubCommandT>::Ptr costEstimator_;
         mutable std::optional<double> last_estimated_cost_;
@@ -107,17 +92,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = ArbitratorBase::toYaml(time);
-
-        node["type"] = "CostArbitrator";
-        node["options"] = YAML::Null;
-        for (const auto& option : this->behaviorOptions_) {
-            node["options"].push_back(option->toYaml(time));
-        }
-
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 private:
     /*!
@@ -159,3 +134,5 @@ private:
     }
 };
 } // namespace behavior_planning
+
+#include "internal/cost_arbitrator_io.hpp"
