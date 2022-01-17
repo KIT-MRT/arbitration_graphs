@@ -76,7 +76,7 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
 
-    // otherwise the invocationCondition is true if all of the option have true invocationCondition
+    // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
@@ -87,8 +87,39 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
     EXPECT_FALSE(testJointCoordinator.checkCommitmentCondition(time));
 
+    testJointCoordinator.gainControl(time);
+    EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
+
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
+
+
+    // if any active option has true commitmentCondition and the coordinator is active, i.e. gained control
+    // -> the coordinators commitmentCondition should also be true
+    EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
+    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
+
+    EXPECT_EQ("BC", testJointCoordinator.getCommand(time));
+
+
+    // lets make it a little more complicated...
+    testBehaviorA->commitmentCondition_ = true;
+    testBehaviorB1->invocationCondition_ = false;
+    testBehaviorC->invocationCondition_ = false;
+    EXPECT_FALSE(testJointCoordinator.checkInvocationCondition(time));
+    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
+
+    // A should not be selected:
+    // - it has false invocation condition and
+    // - was inactive before (thus, its true commitment condition should have no effect)
+    // B should not be selected:
+    // - it has false invocation condition and
+    // - was active before, but has false commitment condition
+    // C should be selected:
+    // - it has false invocation condition, but
+    // - it was active before and has true commitment condition
+    EXPECT_EQ("C", testJointCoordinator.getCommand(time));
+
 
     // make all options invocationCondition false now -> the coordinators invocationCondition should also be false
     testBehaviorB1->invocationCondition_ = false;
@@ -102,19 +133,10 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
                  MultipleReferencesToSameInstanceError);
     EXPECT_NO_THROW(testJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS));
 
-    // if any option has true commitmentCondition and the coordinator is active, i.e. gained control
-    // -> the coordinators commitmentCondition should also be true
-    testBehaviorB1->invocationCondition_ = true;
-    testBehaviorC->invocationCondition_ = true;
-    testBehaviorC->commitmentCondition_ = true;
-
-    testJointCoordinator.gainControl(time);
-    EXPECT_TRUE(testJointCoordinator.checkInvocationCondition(time));
-    EXPECT_TRUE(testJointCoordinator.checkCommitmentCondition(time));
 
     // ConjunctiveCoordinators loseControl(time) should also call loseControl(time) for all its sub-behaviors
     testJointCoordinator.loseControl(time);
-    EXPECT_EQ(1, testBehaviorA->loseControlCounter_);
+    EXPECT_EQ(0, testBehaviorA->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorB1->loseControlCounter_);
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
 }
@@ -130,23 +152,22 @@ TEST_F(JointCoordinatorTest, Printout) {
                                     "    - " + invocationFalseString + commitmentFalseString + "A\n"
                                     "    - " + invocationTrueString + commitmentFalseString + "B\n"
                                     "    - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                                  "    - " + invocationTrueString + commitmentFalseString + "B";
+                                    "    - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     std::string actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
 
     EXPECT_EQ(expected_printout, actual_printout);
 
-    testBehaviorA->invocationCondition_ = true;
     testJointCoordinator.gainControl(time);
-    EXPECT_EQ("ABCB", testJointCoordinator.getCommand(time));
+    EXPECT_EQ("BCB", testJointCoordinator.getCommand(time));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
-                        " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                        "    - " + invocationFalseString + commitmentFalseString + "A\n"
                         " -> - " + invocationTrueString + commitmentFalseString + "B\n"
                         " -> - " + invocationTrueString + commitmentTrueString + "C\n"
-                                                                                                                                                                                                                                                   " -> - " + invocationTrueString + commitmentFalseString + "B";
+                        " -> - " + invocationTrueString + commitmentFalseString + "B";
     // clang-format on
     actual_printout = testJointCoordinator.to_str(time);
     std::cout << actual_printout << std::endl;
