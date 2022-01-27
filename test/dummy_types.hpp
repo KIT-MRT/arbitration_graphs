@@ -62,4 +62,12 @@ public:
     int loseControlCounter_;
 };
 
+struct DummyResult {
+    bool isOk() const {
+        return isOk_;
+    };
+
+    bool isOk_;
+};
+
 } // namespace behavior_planning_tests

@@ -134,13 +134,6 @@ TEST_F(ConjunctiveCoordinatorTest, BasicFunctionality) {
 }
 
 
-struct DummyResult {
-    bool isOk() const {
-        return isOk_;
-    };
-
-    bool isOk_;
-};
 struct DummyVerifier {
     DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
         if (data == wrong_) {

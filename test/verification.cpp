@@ -17,13 +17,6 @@ using namespace behavior_planning_tests;
 
 using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyCommand>;
 
-struct DummyResult {
-    bool isOk() const {
-        return isOk_;
-    };
-
-    bool isOk_;
-};
 struct DummyVerifier {
     // This could be made static here, but we want to challenge the compiler in deducing VerificationResultT.
     // Unfortunately in such non-static cases VerificationResultT cannot be deduced
