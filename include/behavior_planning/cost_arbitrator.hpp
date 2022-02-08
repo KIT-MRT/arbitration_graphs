@@ -36,7 +36,7 @@ public:
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,

@@ -52,9 +52,12 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
     const typename Option::Ptr& option, const Time& time) const {
     try {
         const SubCommandT command = option->behavior_->getCommand(time);
+
         const VerificationResultT verificationResult = verifier_.analyze(time, command);
         option->verificationResult_.cache(time, verificationResult);
-        if (verificationResult.isOk()) {
+
+        // options explicitly flagged as fallback do not need to pass verification
+        if (verificationResult.isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
             return command;
         }
         // given option is applicable, but not safe
