@@ -103,7 +103,7 @@ public:
             : Behavior<CommandT>(name), verifier_{verifier} {};
 
 
-    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }

@@ -80,7 +80,7 @@ public:
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
-                   const typename Option::Flags& flags,
+                   const typename Option::FlagsT& flags,
                    const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);

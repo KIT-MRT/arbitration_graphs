@@ -60,7 +60,7 @@ public:
             : ArbitratorBase(name, verifier) {
     }
 
-    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
         for (auto option : this->behaviorOptions_) {
             if (option->behavior_ == behavior) {
                 throw MultipleReferencesToSameInstanceError(
