@@ -116,10 +116,14 @@ private:
 
             const bool isActive = this->isActive(option);
 
-            option->behavior_->gainControl(time);
-            const double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
-            option->behavior_->loseControl(time);
-
+            double cost;
+            if (isActive) {
+                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+            } else {
+                option->behavior_->gainControl(time);
+                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                option->behavior_->loseControl(time);
+            }
             option->last_estimated_cost_ = cost;
             sortedOptionsMap.insert({cost, option});
         }
