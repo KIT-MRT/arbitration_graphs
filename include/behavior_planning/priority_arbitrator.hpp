@@ -10,10 +10,13 @@
 
 namespace behavior_planning {
 
-template <typename CommandT, typename SubCommandT = CommandT>
-class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT,
+          typename SubCommandT = CommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
@@ -46,14 +49,11 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            output << option_index + 1 << ". ";
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator") : ArbitratorBase(name){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier){};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
@@ -66,28 +66,20 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = ArbitratorBase::toYaml(time);
-        node["type"] = "PriorityArbitrator";
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 protected:
     /*!
-     * Find behavior option with highest priority and true invocation condition
+     * @brief   Sort behavior options by priority
      *
-     * @return  Applicable option with highest priority (can also be the currently active option)
+     * @return  Behavior options sorted by priority
      */
-    typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        for (auto& option : this->behaviorOptions_) {
-            bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
-            bool isActiveAndCanBeContinued =
-                isActive && this->activeBehavior_->behavior_->checkCommitmentCondition(time);
-            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                return option;
-            }
-        }
-        return nullptr;
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
+        return options;
     }
 };
 } // namespace behavior_planning
+
+#include "internal/priority_arbitrator_io.hpp"

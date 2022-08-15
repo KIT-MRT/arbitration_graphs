@@ -7,11 +7,13 @@ namespace behavior_planning_tests {
 
 using namespace behavior_planning;
 
+const std::string strikeThroughOn = "×××\010\010\010\033[9m";
+const std::string strikeThroughOff = "\033[29m\033[8m×××\033[28m";
 
-const std::string invocationTrueString = "\033[32mINVOCATION\033[0m ";
-const std::string invocationFalseString = "\033[31mInvocation\033[0m ";
-const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[0m ";
-const std::string commitmentFalseString = "\033[31mCommitment\033[0m ";
+const std::string invocationTrueString = "\033[32mINVOCATION\033[39m ";
+const std::string invocationFalseString = "\033[31mInvocation\033[39m ";
+const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
+const std::string commitmentFalseString = "\033[31mCommitment\033[39m ";
 
 
 using DummyCommand = std::string;

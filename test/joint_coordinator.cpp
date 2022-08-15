@@ -141,6 +141,83 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
 }
 
+
+struct DummyResult {
+    bool isOk() const {
+        return isOk_;
+    };
+
+    bool isOk_;
+};
+struct DummyVerifier {
+    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+        if (data == wrong_) {
+            return DummyResult{false};
+        }
+        return DummyResult{true};
+    };
+    std::string wrong_{"B"};
+};
+struct RejectingVerifier {
+    static DummyResult analyze(const Time& /*time*/, const DummyCommand& /*data*/) {
+        return DummyResult{false};
+    };
+};
+
+TEST_F(JointCoordinatorTest, DummyVerification) {
+    using OptionFlags = JointCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    JointCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingJointCoordinator;
+
+    verifyingJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    testBehaviorA->invocationCondition_ = true;
+
+    EXPECT_TRUE(verifyingJointCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(verifyingJointCoordinator.checkCommitmentCondition(time));
+
+    verifyingJointCoordinator.gainControl(time);
+
+    // B1, C and B2 are invocable, A is not, but B1 and B2 fail verification
+    EXPECT_EQ("AC", verifyingJointCoordinator.getCommand(time));
+
+    // clang-format off
+    std::string expected_printout = invocationTrueString + commitmentTrueString + "JointCoordinator\n"
+                        " -> - " + invocationTrueString + commitmentFalseString + "A\n"
+                        "    - " + strikeThroughOn
+                                 + invocationTrueString + commitmentFalseString + "B"
+                                 + strikeThroughOff + "\n"
+                        " -> - " + invocationTrueString + commitmentTrueString + "C\n"
+                        "    - " + strikeThroughOn
+                                 + invocationTrueString + commitmentFalseString + "B"
+                                 + strikeThroughOff;
+    // clang-format on
+    std::string actual_printout = verifyingJointCoordinator.to_str(time);
+    std::cout << actual_printout << std::endl;
+
+    EXPECT_EQ(expected_printout, actual_printout);
+}
+
+TEST_F(JointCoordinatorTest, RejectingVerification) {
+    using OptionFlags = JointCoordinator<DummyCommand, DummyCommand, RejectingVerifier>::Option::Flags;
+    JointCoordinator<DummyCommand, DummyCommand, RejectingVerifier> verifyingJointCoordinator;
+
+    verifyingJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    verifyingJointCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    EXPECT_TRUE(verifyingJointCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(verifyingJointCoordinator.checkCommitmentCondition(time));
+
+    verifyingJointCoordinator.gainControl(time);
+
+    EXPECT_THROW(verifyingJointCoordinator.getCommand(time), NoApplicableOptionPassedVerificationError);
+}
+
+
 TEST_F(JointCoordinatorTest, Printout) {
     testJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     testJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);

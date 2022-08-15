@@ -133,6 +133,44 @@ TEST_F(ConjunctiveCoordinatorTest, BasicFunctionality) {
     EXPECT_EQ(1, testBehaviorC->loseControlCounter_);
 }
 
+
+struct DummyResult {
+    bool isOk() const {
+        return isOk_;
+    };
+
+    bool isOk_;
+};
+struct DummyVerifier {
+    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+        if (data == wrong_) {
+            return DummyResult{false};
+        }
+        return DummyResult{true};
+    };
+    std::string wrong_{"B"};
+};
+
+TEST_F(ConjunctiveCoordinatorTest, Verification) {
+    using OptionFlags = ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingConjunctiveCoordinator;
+
+    verifyingConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
+    verifyingConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
+    verifyingConjunctiveCoordinator.addOption(testBehaviorC, OptionFlags::NO_FLAGS);
+    verifyingConjunctiveCoordinator.addOption(testBehaviorB2, OptionFlags::NO_FLAGS);
+
+    testBehaviorA->invocationCondition_ = true;
+
+    EXPECT_TRUE(verifyingConjunctiveCoordinator.checkInvocationCondition(time));
+    EXPECT_FALSE(verifyingConjunctiveCoordinator.checkCommitmentCondition(time));
+
+    verifyingConjunctiveCoordinator.gainControl(time);
+
+    EXPECT_THROW(verifyingConjunctiveCoordinator.getCommand(time), ApplicableOptionFailedVerificationError);
+}
+
+
 TEST_F(ConjunctiveCoordinatorTest, Printout) {
     testConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     testConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);

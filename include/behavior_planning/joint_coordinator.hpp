@@ -17,10 +17,13 @@ namespace behavior_planning {
  *  Difference to ConjunctiveCoordinator is that it is invocated if any of the sub-behaviors has true
  *  invocationCondition
  */
-template <typename CommandT, typename SubCommandT>
-class JointCoordinator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT,
+          typename SubCommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+class JointCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<JointCoordinator>;
     using ConstPtr = std::shared_ptr<const JointCoordinator>;
@@ -53,14 +56,11 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            output << "- ";
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
     };
 
-    explicit JointCoordinator(const std::string& name = "JointCoordinator") : ArbitratorBase(name) {
+    explicit JointCoordinator(const std::string& name = "JointCoordinator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier) {
     }
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
@@ -79,6 +79,7 @@ public:
     // Combine all the subcommands of the sub-behaviors that are invocated or active right now and are committed
     CommandT getCommand(const Time& time) override {
         SubCommandT subcommand_conjunction;
+        bool isAnyApplicableOptionSafe = false;
 
         for (auto& optionBase : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
@@ -90,14 +91,28 @@ public:
                 if (!isBehaviorOptionActive_[option]) {
                     option->behavior_->gainControl(time);
                 }
-                subcommand_conjunction &= option->behavior_->getCommand(time);
-                isBehaviorOptionActive_[option] = true;
+
+                const std::optional<SubCommandT> command = this->getAndVerifyCommand(option, time);
+                if (command) {
+                    isAnyApplicableOptionSafe = true;
+                    subcommand_conjunction &= command.value();
+                    isBehaviorOptionActive_[option] = true;
+                } else {
+                    option->behavior_->loseControl(time);
+                    isBehaviorOptionActive_[option] = false;
+                }
             } else {
                 if (isBehaviorOptionActive_[option]) {
                     option->behavior_->loseControl(time);
                 }
                 isBehaviorOptionActive_[option] = false;
             }
+        }
+
+        if (!isAnyApplicableOptionSafe) {
+            throw NoApplicableOptionPassedVerificationError("None of the " +
+                                                            std::to_string(this->behaviorOptions_.size()) +
+                                                            " applicable options passed the verification step!");
         }
 
         return CommandT(subcommand_conjunction);
@@ -168,21 +183,7 @@ public:
     std::ostream& to_stream(std::ostream& output,
                             const Time& time,
                             const std::string& prefix = "",
-                            const std::string& suffix = "") const override {
-        Behavior<CommandT>::to_stream(output, time, prefix, suffix);
-
-        for (int i = 0; i < (int)this->behaviorOptions_.size(); ++i) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(this->behaviorOptions_.at(i));
-
-            if (isBehaviorOptionActive_.find(option)->second) {
-                output << suffix << std::endl << prefix << " -> ";
-            } else {
-                output << suffix << std::endl << prefix << "    ";
-            }
-            option->to_stream(output, time, i, "    " + prefix, suffix);
-        }
-        return output;
-    }
+                            const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -190,28 +191,17 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = Behavior<CommandT>::toYaml(time);
-
-        node["type"] = "JointCoordinator";
-        for (auto& optionBase : this->behaviorOptions_) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-
-            YAML::Node yaml = option->toYaml(time);
-            node["options"].push_back(yaml);
-            if (isBehaviorOptionActive_.find(option)->second) {
-                node["activeBehaviors"].push_back(this->getOptionIndex(option));
-            }
-        }
-        return node;
-    }
+    YAML::Node toYaml(const Time& time) const override;
 
 
 protected:
-    virtual typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        return nullptr;
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        return {};
     }
 
     std::map<typename Option::Ptr, bool> isBehaviorOptionActive_;
 };
 } // namespace behavior_planning
+
+#include "internal/joint_coordinator_io.hpp"

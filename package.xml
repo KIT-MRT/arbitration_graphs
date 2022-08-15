@@ -33,6 +33,8 @@
   <depend>boost</depend>
   <depend>yaml-cpp</depend>
 
+  <depend>util_caching</depend>
+
   <export>
     <!-- Other tools can request additional information be placed here -->
   </export>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <iomanip>
 #include <memory>
 #include <optional>
@@ -19,10 +20,13 @@ struct CostEstimator {
     virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
 };
 
-template <typename CommandT, typename SubCommandT = CommandT>
-class CostArbitrator : public Arbitrator<CommandT, SubCommandT> {
+template <typename CommandT,
+          typename SubCommandT = CommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+class CostArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
@@ -56,16 +60,7 @@ public:
                                         const Time& time,
                                         const int& option_index,
                                         const std::string& prefix = "",
-                                        const std::string& suffix = "") const {
-            if (last_estimated_cost_) {
-                output << std::fixed << std::setprecision(3) << "- (cost: " << *last_estimated_cost_ << ") ";
-            } else {
-                output << "- (cost:  n.a.) ";
-            }
-
-            ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
-            return output;
-        }
+                                        const std::string& suffix = "") const;
 
         /*!
          * \brief Returns a yaml representation of this option with its current state
@@ -73,20 +68,15 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time) const override {
-            YAML::Node node = ArbitratorBase::Option::toYaml(time);
-            if (last_estimated_cost_) {
-                node["cost"] = *last_estimated_cost_;
-            }
-            return node;
-        }
+        virtual YAML::Node toYaml(const Time& time) const override;
 
         typename CostEstimator<SubCommandT>::Ptr costEstimator_;
         mutable std::optional<double> last_estimated_cost_;
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator") : ArbitratorBase(name){};
+    CostArbitrator(const std::string& name = "CostArbitrator", const VerifierT& verifier = VerifierT())
+            : ArbitratorBase(name, verifier){};
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
@@ -102,17 +92,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override {
-        YAML::Node node = ArbitratorBase::toYaml(time);
-
-        node["type"] = "CostArbitrator";
-        node["options"] = YAML::Null;
-        for (const auto& option : this->behaviorOptions_) {
-            node["options"].push_back(option->toYaml(time));
-        }
-
-        return node;
-    }
+    virtual YAML::Node toYaml(const Time& time) const override;
 
 private:
     /*!
@@ -120,36 +100,39 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    typename ArbitratorBase::Option::Ptr findBestOption(const Time& time) const override {
-        double costOfBestOption = std::numeric_limits<double>::max();
-        typename Option::Ptr bestOption;
-
-        for (auto& option_base : this->behaviorOptions_) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
-
-            bool isActive = this->activeBehavior_ && (option == this->activeBehavior_);
-            bool isActiveAndCanBeContinued =
-                isActive && this->activeBehavior_->behavior_->checkCommitmentCondition(time);
-            if (option->behavior_->checkInvocationCondition(time) || isActiveAndCanBeContinued) {
-                double cost;
-                if (isActive) {
-                    cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
-                } else {
-                    option->behavior_->gainControl(time);
-                    cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
-                    option->behavior_->loseControl(time);
-                }
-                option->last_estimated_cost_ = cost;
-
-                if (cost < costOfBestOption) {
-                    costOfBestOption = cost;
-                    bestOption = option;
-                }
-            } else {
-                option->last_estimated_cost_ = std::nullopt;
-            }
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
+                                                              const Time& time) const override {
+        // reset last_estimated_cost_ for all behaviorOptions_
+        for (const auto& optionBase : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+            option->last_estimated_cost_ = std::nullopt;
         }
-        return bestOption;
+
+        // sort given options by using a multiset
+        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
+
+        for (auto& optionBase : options) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+
+            const bool isActive = this->isActive(option);
+
+            option->behavior_->gainControl(time);
+            const double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+            option->behavior_->loseControl(time);
+
+            option->last_estimated_cost_ = cost;
+            sortedOptionsMap.insert({cost, option});
+        }
+
+        // copy back to vector (these are pointers anyway, so copying is cheap)
+        typename ArbitratorBase::Options sortedOptionsVector;
+        sortedOptionsVector.reserve(options.size());
+        for (const auto& sortedOption : sortedOptionsMap) {
+            sortedOptionsVector.push_back(sortedOption.second);
+        }
+        return sortedOptionsVector;
     }
 };
 } // namespace behavior_planning
+
+#include "internal/cost_arbitrator_io.hpp"
