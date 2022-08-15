@@ -62,4 +62,18 @@ public:
     int loseControlCounter_;
 };
 
+struct DummyResult {
+    bool isOk() const {
+        return isOk_;
+    };
+
+    bool isOk_;
+};
+
 } // namespace behavior_planning_tests
+
+
+inline std::ostream& operator<<(std::ostream& out, const behavior_planning_tests::DummyResult& result) {
+    out << (result.isOk() ? "is okay" : "is not okay");
+    return out;
+}

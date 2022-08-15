@@ -2,6 +2,8 @@
 
 #include "../arbitrator.hpp"
 
+#include <glog/logging.h>
+
 
 namespace behavior_planning {
 
@@ -50,18 +52,22 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
     const typename Option::Ptr& option, const Time& time) const {
     try {
         const SubCommandT command = option->behavior_->getCommand(time);
+
         const VerificationResultT verificationResult = verifier_.analyze(time, command);
         option->verificationResult_.cache(time, verificationResult);
-        if (verificationResult.isOk()) {
+
+        // options explicitly flagged as fallback do not need to pass verification
+        if (verificationResult.isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
             return command;
         }
         // given option is applicable, but not safe
-        /// \todo log this somewhere?
+        VLOG(1) << "Given option " << option->behavior_->name_ << " is applicable, but not safe";
+        VLOG(2) << "verification result: " << verificationResult;
     } catch (VerificationError& e) {
         // given option is arbitrator without safe applicable option
         option->verificationResult_.reset();
 
-        /// \todo log this somewhere?
+        VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
     }
     return std::nullopt;
 }

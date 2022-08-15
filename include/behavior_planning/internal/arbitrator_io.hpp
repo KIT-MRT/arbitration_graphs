@@ -44,6 +44,9 @@ YAML::Node Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Op
     if (hasFlag(Option::Flags::INTERRUPTABLE)) {
         node["flags"].push_back("INTERRUPTABLE");
     }
+    if (hasFlag(Option::Flags::FALLBACK)) {
+        node["flags"].push_back("FALLBACK");
+    }
 
     return node;
 }

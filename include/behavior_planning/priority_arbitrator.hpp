@@ -27,7 +27,7 @@ public:
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : ArbitratorBase::Option(behavior, flags) {
@@ -55,7 +55,7 @@ public:
     PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
             : ArbitratorBase(name, verifier){};
 
-    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }

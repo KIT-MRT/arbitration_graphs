@@ -36,7 +36,7 @@ public:
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
@@ -80,7 +80,7 @@ public:
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
-                   const typename Option::Flags& flags,
+                   const typename Option::FlagsT& flags,
                    const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
@@ -116,10 +116,14 @@ private:
 
             const bool isActive = this->isActive(option);
 
-            option->behavior_->gainControl(time);
-            const double cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
-            option->behavior_->loseControl(time);
-
+            double cost;
+            if (isActive) {
+                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+            } else {
+                option->behavior_->gainControl(time);
+                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                option->behavior_->loseControl(time);
+            }
             option->last_estimated_cost_ = cost;
             sortedOptionsMap.insert({cost, option});
         }

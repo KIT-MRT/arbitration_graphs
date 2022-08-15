@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include "types.hpp"
 
 
@@ -24,3 +26,16 @@ struct PlaceboVerifier {
 };
 
 } // namespace behavior_planning::verification
+
+
+/**
+ * @brief Output stream operator, allows to print a Result object to e.g. std::cout
+ *
+ * @code {.cpp}
+ * std::cout << result << std::endl;
+ * @endcode
+ */
+inline std::ostream& operator<<(std::ostream& out, const behavior_planning::verification::PlaceboResult& result) {
+    out << (result.isOk() ? "is okay" : "is not okay");
+    return out;
+}

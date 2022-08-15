@@ -52,7 +52,7 @@ public:
         using Ptr = std::shared_ptr<Option>;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1 };
+        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
         using FlagsT = std::underlying_type_t<Flags>;
 
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
@@ -103,7 +103,7 @@ public:
             : Behavior<CommandT>(name), verifier_{verifier} {};
 
 
-    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::Flags& flags) {
+    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }
