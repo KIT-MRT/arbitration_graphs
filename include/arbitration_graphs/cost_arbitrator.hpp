@@ -10,7 +10,7 @@
 #include "arbitrator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 template <typename SubCommandT>
 struct CostEstimator {
@@ -137,6 +137,6 @@ private:
         return sortedOptionsVector;
     }
 };
-} // namespace behavior_planning
+} // namespace arbitration_graphs
 
 #include "internal/cost_arbitrator_io.hpp"

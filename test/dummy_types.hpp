@@ -3,9 +3,9 @@
 #include "behavior.hpp"
 
 
-namespace behavior_planning_tests {
+namespace arbitration_graphs_tests {
 
-using namespace behavior_planning;
+using namespace arbitration_graphs;
 
 const std::string strikeThroughOn = "×××\010\010\010\033[9m";
 const std::string strikeThroughOff = "\033[29m\033[8m×××\033[28m";
@@ -70,10 +70,10 @@ struct DummyResult {
     bool isOk_;
 };
 
-} // namespace behavior_planning_tests
+} // namespace arbitration_graphs_tests
 
 
-inline std::ostream& operator<<(std::ostream& out, const behavior_planning_tests::DummyResult& result) {
+inline std::ostream& operator<<(std::ostream& out, const arbitration_graphs_tests::DummyResult& result) {
     out << (result.isOk() ? "is okay" : "is not okay");
     return out;
 }

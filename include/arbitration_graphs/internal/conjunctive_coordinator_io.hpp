@@ -3,7 +3,7 @@
 #include "../conjunctive_coordinator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 //////////////////////////////////////////
 //    ConjunctiveCoordinator::Option    //
@@ -55,4 +55,4 @@ YAML::Node ConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, Verification
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

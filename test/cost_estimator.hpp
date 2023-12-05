@@ -6,9 +6,9 @@
 #include "cost_arbitrator.hpp"
 
 
-namespace behavior_planning_tests {
+namespace arbitration_graphs_tests {
 
-using namespace behavior_planning;
+using namespace arbitration_graphs;
 
 
 struct CostEstimatorFromCostMap : public CostEstimator<DummyCommand> {
@@ -30,4 +30,4 @@ private:
     double activationCosts_;
 };
 
-} // namespace behavior_planning_tests
+} // namespace arbitration_graphs_tests

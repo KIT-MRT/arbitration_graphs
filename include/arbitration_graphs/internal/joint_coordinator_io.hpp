@@ -3,7 +3,7 @@
 #include "../joint_coordinator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 ////////////////////////////////////
 //    JointCoordinator::Option    //
@@ -62,4 +62,4 @@ YAML::Node JointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResult
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

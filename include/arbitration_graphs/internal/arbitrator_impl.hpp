@@ -5,7 +5,7 @@
 #include <glog/logging.h>
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
 typename Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Options Arbitrator<
@@ -127,4 +127,4 @@ SubCommandT Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::g
                                                     " applicable options passed the verification step!");
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

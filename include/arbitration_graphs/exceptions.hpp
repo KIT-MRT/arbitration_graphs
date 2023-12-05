@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 class GetCommandCalledWithoutGainControlError : public std::runtime_error {
     using std::runtime_error::runtime_error;
@@ -32,4 +32,4 @@ class ApplicableOptionFailedVerificationError : public VerificationError {
     using VerificationError::VerificationError;
 };
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

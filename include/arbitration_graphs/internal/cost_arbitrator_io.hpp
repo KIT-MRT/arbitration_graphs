@@ -3,7 +3,7 @@
 #include "../cost_arbitrator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 //////////////////////////////////
 //    CostArbitrator::Option    //
@@ -55,4 +55,4 @@ YAML::Node CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

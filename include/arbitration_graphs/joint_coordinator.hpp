@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 
@@ -9,21 +10,23 @@
 #include "exceptions.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 /*!
- * \brief The ConjunctiveCoordinator class combines all sub-commands by conjunction, using the operator&()
+ * \brief The JointCoordinator class combines all sub-commands by conjunction, using the operator&()
+ *  Difference to ConjunctiveCoordinator is that it is invocated if any of the sub-behaviors has true
+ *  invocationCondition
  */
 template <typename CommandT,
           typename SubCommandT,
           typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
           typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class ConjunctiveCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+class JointCoordinator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
     using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
-    using Ptr = std::shared_ptr<ConjunctiveCoordinator>;
-    using ConstPtr = std::shared_ptr<const ConjunctiveCoordinator>;
+    using Ptr = std::shared_ptr<JointCoordinator>;
+    using ConstPtr = std::shared_ptr<const JointCoordinator>;
 
     struct Option : public ArbitratorBase::Option {
     public:
@@ -56,7 +59,7 @@ public:
                                         const std::string& suffix = "") const;
     };
 
-    ConjunctiveCoordinator(const std::string& name = "ConjunctiveCoordinator", const VerifierT& verifier = VerifierT())
+    explicit JointCoordinator(const std::string& name = "JointCoordinator", const VerifierT& verifier = VerifierT())
             : ArbitratorBase(name, verifier) {
     }
 
@@ -70,22 +73,46 @@ public:
 
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
+        isBehaviorOptionActive_[option] = false;
     }
 
+    // Combine all the subcommands of the sub-behaviors that are invocated or active right now and are committed
     CommandT getCommand(const Time& time) override {
         SubCommandT subcommand_conjunction;
+        bool isAnyApplicableOptionSafe = false;
 
-        for (auto& option_base : this->behaviorOptions_) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(option_base);
+        for (auto& optionBase : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
 
-            const std::optional<SubCommandT> command = this->getAndVerifyCommand(option, time);
-            if (!command) {
-                throw ApplicableOptionFailedVerificationError("One of the " +
-                                                              std::to_string(this->behaviorOptions_.size()) +
-                                                              " applicable options failed the verification step!");
+            const bool isOptionActiveAndCanBeContinued =
+                isBehaviorOptionActive_[option] && option->behavior_->checkCommitmentCondition(time);
+
+            if (option->behavior_->checkInvocationCondition(time) || isOptionActiveAndCanBeContinued) {
+                if (!isBehaviorOptionActive_[option]) {
+                    option->behavior_->gainControl(time);
+                }
+
+                const std::optional<SubCommandT> command = this->getAndVerifyCommand(option, time);
+                if (command) {
+                    isAnyApplicableOptionSafe = true;
+                    subcommand_conjunction &= command.value();
+                    isBehaviorOptionActive_[option] = true;
+                } else {
+                    option->behavior_->loseControl(time);
+                    isBehaviorOptionActive_[option] = false;
+                }
+            } else {
+                if (isBehaviorOptionActive_[option]) {
+                    option->behavior_->loseControl(time);
+                }
+                isBehaviorOptionActive_[option] = false;
             }
+        }
 
-            subcommand_conjunction &= command.value();
+        if (!isAnyApplicableOptionSafe) {
+            throw NoApplicableOptionPassedVerificationError("None of the " +
+                                                            std::to_string(this->behaviorOptions_.size()) +
+                                                            " applicable options passed the verification step!");
         }
 
         return CommandT(subcommand_conjunction);
@@ -96,36 +123,50 @@ public:
             return false;
         }
         for (auto& option : this->behaviorOptions_) {
-            if (!option->behavior_->checkInvocationCondition(time)) {
-                return false;
+            if (option->behavior_->checkInvocationCondition(time)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
     bool checkCommitmentCondition(const Time& time) const override {
-        if (!isActive_) {
-            return false;
-        }
-        for (auto& option : this->behaviorOptions_) {
-            if (option->behavior_->checkCommitmentCondition(time)) {
+        for (auto& optionBase : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+
+            if (isBehaviorOptionActive_.find(option)->second && option->behavior_->checkCommitmentCondition(time)) {
                 return true;
             }
         }
         return false;
     }
 
-    virtual void gainControl(const Time& time) override {
-        for (auto& option : this->behaviorOptions_) {
-            option->behavior_->gainControl(time);
+    void gainControl(const Time& time) override {
+        for (auto& optionBase : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+
+            if (option->behavior_->checkInvocationCondition(time)) {
+                option->behavior_->gainControl(time);
+                isBehaviorOptionActive_[option] = true;
+            }
         }
-        isActive_ = true;
     }
 
-    virtual void loseControl(const Time& time) override {
-        isActive_ = false;
-        for (auto& option : this->behaviorOptions_) {
-            option->behavior_->loseControl(time);
+    void loseControl(const Time& time) override {
+        for (auto& optionBase : this->behaviorOptions_) {
+            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+
+            if (isBehaviorOptionActive_[option]) {
+                option->behavior_->loseControl(time);
+                isBehaviorOptionActive_[option] = false;
+            }
         }
+    }
+
+    virtual bool isActive() const {
+        const bool isAnyBehaviorOptionActive = std::any_of(isBehaviorOptionActive_.cbegin(),
+                                                           isBehaviorOptionActive_.cend(),
+                                                           [](const auto& pair) { return pair.second; });
+        return isAnyBehaviorOptionActive;
     }
 
     /*!
@@ -139,10 +180,10 @@ public:
      *
      * \see Behavior::to_stream()
      */
-    virtual std::ostream& to_stream(std::ostream& output,
-                                    const Time& time,
-                                    const std::string& prefix = "",
-                                    const std::string& suffix = "") const override;
+    std::ostream& to_stream(std::ostream& output,
+                            const Time& time,
+                            const std::string& prefix = "",
+                            const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -150,7 +191,8 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override;
+    YAML::Node toYaml(const Time& time) const override;
+
 
 protected:
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
@@ -158,8 +200,8 @@ protected:
         return {};
     }
 
-    bool isActive_{false};
+    std::map<typename Option::Ptr, bool> isBehaviorOptionActive_;
 };
-} // namespace behavior_planning
+} // namespace arbitration_graphs
 
-#include "internal/conjunctive_coordinator_io.hpp"
+#include "internal/joint_coordinator_io.hpp"

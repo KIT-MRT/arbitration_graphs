@@ -46,8 +46,8 @@
 #include "dummy_types.hpp"
 
 
-using namespace behavior_planning;
-using namespace behavior_planning_tests;
+using namespace arbitration_graphs;
+using namespace arbitration_graphs_tests;
 
 
 class PriorityArbitratorTest : public ::testing::Test {
