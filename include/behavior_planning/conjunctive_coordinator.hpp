@@ -9,7 +9,7 @@
 #include "exceptions.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 /*!
  * \brief The ConjunctiveCoordinator class combines all sub-commands by conjunction, using the operator&()
@@ -160,6 +160,6 @@ protected:
 
     bool isActive_{false};
 };
-} // namespace behavior_planning
+} // namespace arbitration_graphs
 
 #include "internal/conjunctive_coordinator_io.hpp"

@@ -3,7 +3,7 @@
 #include "../arbitrator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 //////////////////////////////
 //    Arbitrator::Option    //
@@ -92,4 +92,4 @@ YAML::Node Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::to
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

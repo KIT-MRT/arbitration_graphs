@@ -3,7 +3,7 @@
 #include "../behavior.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 template <typename CommandT>
 std::string Behavior<CommandT>::to_str(const Time& time, const std::string& prefix, const std::string& suffix) const {
@@ -42,4 +42,4 @@ YAML::Node Behavior<CommandT>::toYaml(const Time& time) const {
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

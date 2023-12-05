@@ -3,7 +3,7 @@
 #include "../priority_arbitrator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 
 //////////////////////////////////////
@@ -35,4 +35,4 @@ YAML::Node PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResu
     return node;
 }
 
-} // namespace behavior_planning
+} // namespace arbitration_graphs

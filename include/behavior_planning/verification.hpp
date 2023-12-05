@@ -5,7 +5,7 @@
 #include "types.hpp"
 
 
-namespace behavior_planning::verification {
+namespace arbitration_graphs::verification {
 
 /*!
  * @brief The PlaceboResult is always okay, thus is the PlaceboVerifier a placebo (you probably guessed it).
@@ -25,7 +25,7 @@ struct PlaceboVerifier {
     };
 };
 
-} // namespace behavior_planning::verification
+} // namespace arbitration_graphs::verification
 
 
 /**
@@ -35,7 +35,7 @@ struct PlaceboVerifier {
  * std::cout << result << std::endl;
  * @endcode
  */
-inline std::ostream& operator<<(std::ostream& out, const behavior_planning::verification::PlaceboResult& result) {
+inline std::ostream& operator<<(std::ostream& out, const arbitration_graphs::verification::PlaceboResult& result) {
     out << (result.isOk() ? "is okay" : "is not okay");
     return out;
 }

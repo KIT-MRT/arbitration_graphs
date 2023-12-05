@@ -8,7 +8,7 @@
 #include "arbitrator.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 template <typename CommandT,
           typename SubCommandT = CommandT,
@@ -80,6 +80,6 @@ protected:
         return options;
     }
 };
-} // namespace behavior_planning
+} // namespace arbitration_graphs
 
 #include "internal/priority_arbitrator_io.hpp"

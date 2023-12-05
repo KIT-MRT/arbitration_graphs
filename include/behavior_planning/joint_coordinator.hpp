@@ -10,7 +10,7 @@
 #include "exceptions.hpp"
 
 
-namespace behavior_planning {
+namespace arbitration_graphs {
 
 /*!
  * \brief The JointCoordinator class combines all sub-commands by conjunction, using the operator&()
@@ -202,6 +202,6 @@ protected:
 
     std::map<typename Option::Ptr, bool> isBehaviorOptionActive_;
 };
-} // namespace behavior_planning
+} // namespace arbitration_graphs
 
 #include "internal/joint_coordinator_io.hpp"
