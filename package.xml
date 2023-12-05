@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <package format="2">
-  <name>behavior_planning</name>
+  <name>arbitration_graphs</name>
   <version>0.0.0</version>
-  <description>behavior planning based on simple atomic behaviors that are combined to more complex behaviors using arbitrators</description>
+  <description>combine simple atomic behaviors into a more complex arbitration graph for behavior planning</description>
 
   <license>MRT</license>
   <maintainer email="nick.lelarge@kit.edu">Nick Le Large</maintainer>
   <author email="christoph.burger@kit.edu">burger</author>
-  <url type="repository">https://gitlab.mrt.uni-karlsruhe.de/MRT/draft/behavior_planning</url>
+  <url type="repository">https://gitlab.mrt.kit.edu/MRT/private/lelarge/arbitration_graphs/arbitration_graphs</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>mrt_cmake_modules</build_depend>
