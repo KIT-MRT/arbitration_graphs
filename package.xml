@@ -2,7 +2,7 @@
 <package format="2">
   <name>arbitration_graphs</name>
   <version>0.0.0</version>
-  <description>combine simple atomic behaviors into a more complex arbitration graph for behavior planning</description>
+  <description>Arbitration graphs combine simple atomic behavior blocks to more complex behaviors for decision making and behavior generation</description>
 
   <license>MRT</license>
   <maintainer email="orzechow@posteo.de">Piotr Spieker</maintainer>
