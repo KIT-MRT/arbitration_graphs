@@ -6,9 +6,10 @@
 
   <license>MRT</license>
   <maintainer email="orzechow@posteo.de">Piotr Spieker</maintainer>
+  <maintainer email="burger.christop89@gmail.com">Christoph Burger</maintainer>
   <maintainer email="nick.lelarge@kit.edu">Nick Le Large</maintainer>
   <author email="orzechow@posteo.de">Piotr Spieker</author>
-  <author email="christoph.burger@kit.edu">Christoph Burger</author>
+  <author email="burger.christop89@gmail.com">Christoph Burger</author>
   <url type="repository">https://gitlab.mrt.kit.edu/MRT/private/lelarge/arbitration_graphs/arbitration_graphs</url>
 
   <buildtool_depend>catkin</buildtool_depend>
