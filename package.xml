@@ -15,7 +15,6 @@
   <build_depend>mrt_cmake_modules</build_depend>
   <test_depend>gtest</test_depend>
 
-  <depend>boost</depend>
   <depend>libgoogle-glog-dev</depend>
   <depend>yaml-cpp</depend>
 
