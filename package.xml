@@ -10,7 +10,7 @@
   <maintainer email="nick.lelarge@kit.edu">Nick Le Large</maintainer>
   <author email="orzechow@posteo.de">Piotr Spieker</author>
   <author email="burger.christop89@gmail.com">Christoph Burger</author>
-  <url type="repository">https://gitlab.mrt.kit.edu/MRT/private/lelarge/arbitration_graphs/arbitration_graphs</url>
+  <url type="repository">https://github.com/KIT-MRT/arbitration_graphs</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>mrt_cmake_modules</build_depend>
