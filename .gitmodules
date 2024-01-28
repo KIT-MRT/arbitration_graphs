@@ -1,0 +1,3 @@
+[submodule "thirdparty/util_caching"]
+	path = thirdparty/util_caching
+	url = https://github.com/KIT-MRT/util_caching.git
