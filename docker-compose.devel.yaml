@@ -1,0 +1,7 @@
+services:
+  arbitration_graphs_devel:
+    extends:
+      file: docker-compose.yaml
+      service: arbitration_graphs
+    volumes:
+      - .:/home/blinky/arbitration_graphs

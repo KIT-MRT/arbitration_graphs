@@ -5,6 +5,34 @@ Arbitration graphs combine simple atomic behavior blocks to more complex behavio
 
 ## Installation
 
+First, clone this repository, including its submodules:
+
+```bash
+git clone https://github.com/KIT-MRT/arbitration_graphs.git
+cd arbitration_graphs
+git submodule update --init --recursive
+```
+
+
+### Using Docker image
+
+We provide a [`Dockerfile`](./Dockerfile) with the library already installed globally.
+
+In the source directory, build and run the docker image with `docker compose`:
+
+```bash
+docker compose build
+docker compose run --rm arbitration_graphs
+```
+
+The library is installed in the Docker image under `/usr/local/include/arbitration_graphs/` and `/usr/local/lib/cmake/arbitration_graphs/`.
+So, it can be easily loaded with CMake:
+
+```cmake
+find_package(arbitration_graphs REQUIRED)
+```
+
+
 ### Building from source using CMake
 
 First make sure all dependencies are installed:
@@ -27,6 +55,20 @@ sudo cmake --install .
 
 
 ## Development
+
+### Using Docker image
+
+Follow the steps above to setup the Docker image.
+Then, run the development image.
+
+```bash
+docker compose -f docker-compose.devel.yaml build
+docker compose -f docker-compose.devel.yaml run --rm arbitration_graphs_devel
+```
+
+This mounts the source into the container's `/home/blinky/arbitration_graphs` folder.
+There, you can edit the source code, compile and run the tests etc.
+
 
 ### Compiling unit tests
 

@@ -1,0 +1,3 @@
+services:
+  arbitration_graphs:
+    build: .
