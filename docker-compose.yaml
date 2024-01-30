@@ -1,3 +1,4 @@
 services:
   arbitration_graphs:
+    image: arbitration_graphs
     build: .
