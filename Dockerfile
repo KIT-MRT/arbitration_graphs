@@ -14,22 +14,22 @@ RUN apt-get update && \
 
 # Install util_caching
 COPY thirdparty/util_caching /tmp/util_caching
-RUN mkdir /tmp/util_caching_build && \
-    cd /tmp/util_caching_build && \
-    cmake /tmp/util_caching && \
+RUN mkdir /tmp/util_caching/build && \
+    cd /tmp/util_caching/build && \
+    cmake .. && \
     cmake --build . && \
     cmake --install . && \
-    rm -rf /tmp/util_caching_build /tmp/util_caching
+    rm -rf /tmp/util_caching
 
 
 # Install arbitration_graphs
 COPY . /tmp/arbitration_graphs
-RUN mkdir /tmp/arbitration_graphs_build && \
-    cd /tmp/arbitration_graphs_build && \
-    cmake /tmp/arbitration_graphs && \
+RUN mkdir /tmp/arbitration_graphs/build && \
+    cd /tmp/arbitration_graphs/build && \
+    cmake .. && \
     cmake --build . && \
     cmake --install . && \
-    rm -rf /tmp/arbitration_graphs_build /tmp/arbitration_graphs
+    rm -rf /tmp/arbitration_graphs
 
 RUN useradd --create-home --uid 1000 blinky
 USER blinky
