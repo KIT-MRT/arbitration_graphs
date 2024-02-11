@@ -7,14 +7,15 @@ RUN apt-get update && \
     apt-get install -y \
       build-essential \
       cmake \
+      git \
       libgoogle-glog-dev \
       libgtest-dev \
       libyaml-cpp-dev && \
     apt-get clean
 
 # Install util_caching
-COPY thirdparty/util_caching /tmp/util_caching
-RUN mkdir /tmp/util_caching/build && \
+RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
+    mkdir /tmp/util_caching/build && \
     cd /tmp/util_caching/build && \
     cmake .. && \
     cmake --build . && \
