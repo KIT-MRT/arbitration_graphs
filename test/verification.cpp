@@ -56,8 +56,8 @@ TEST_F(CommandVerificationTest, DefaultVerifier) {
     testPriorityArbitrator.gainControl(time);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
     // LowPriority could have been verified or not, so don't test it here
 
@@ -81,8 +81,8 @@ TEST_F(CommandVerificationTest, PlaceboVerifier) {
     testPriorityArbitrator.gainControl(time);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
     // LowPriority could have been verified or not, so don't test it here
 
@@ -106,8 +106,8 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     testPriorityArbitrator.gainControl(time);
 
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
 
@@ -172,11 +172,11 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
     testPriorityArbitrator.gainControl(time);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testPriorityArbitrator.options().at(4)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(4)->verificationResult_.cached(time));
 
     EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time)->isOk());
     EXPECT_FALSE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time)->isOk());
@@ -234,8 +234,8 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     testCostArbitrator.gainControl(time);
 
     EXPECT_EQ("LowPriority", testCostArbitrator.getCommand(time));
-    EXPECT_EQ(std::nullopt, testCostArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_EQ(std::nullopt, testCostArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult_.cached(time));
+    EXPECT_FALSE(testCostArbitrator.options().at(1)->verificationResult_.cached(time));
     ASSERT_TRUE(testCostArbitrator.options().at(2)->verificationResult_.cached(time));
     ASSERT_TRUE(testCostArbitrator.options().at(3)->verificationResult_.cached(time));
 
