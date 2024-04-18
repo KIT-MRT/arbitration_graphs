@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - add_ci_docker_deployment
 
 jobs:
   build-and-push-image:
