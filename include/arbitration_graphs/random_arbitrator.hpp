@@ -95,6 +95,7 @@ protected:
         std::random_device randomDevice;
         std::mt19937 randomGenerator(randomDevice());
 
+        // A weighted shuffle is equivalent to a weighted sampling of options without replacement.
         while (!weights.empty()) {
             std::discrete_distribution<int> discreteDistribution(weights.begin(), weights.end());
             auto index = discreteDistribution(randomGenerator);
