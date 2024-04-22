@@ -75,9 +75,9 @@ public:
 
 protected:
     /*!
-     * @brief   Sort behavior options randomly considering their respective weights
+     * \brief   Sort behavior options randomly considering their respective weights
      *
-     * @return  Behavior options sorted randomly considering their respective weights
+     * \return  Behavior options sorted randomly considering their respective weights
      */
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
                                                               const Time& time) const override {
