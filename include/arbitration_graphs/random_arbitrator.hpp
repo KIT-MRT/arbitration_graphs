@@ -82,10 +82,6 @@ protected:
      */
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
                                                               const Time& time) const override {
-        return weightedShuffle(options);
-    }
-
-    static typename ArbitratorBase::Options weightedShuffle(const typename ArbitratorBase::Options& options) {
         typename ArbitratorBase::Options shuffledOptions;
         shuffledOptions.reserve(options.size());
 
