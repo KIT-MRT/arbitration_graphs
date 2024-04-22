@@ -51,6 +51,7 @@ public:
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const;
 
+        //! The option has a chance of weight_ divided by the sum of all options' weights to be selected.
         double weight_;
     };
     using Options = std::vector<typename Option::Ptr>;
