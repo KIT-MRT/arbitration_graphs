@@ -18,7 +18,7 @@ std::ostream& RandomArbitrator<CommandT, SubCommandT, VerifierT, VerificationRes
     const std::string& prefix,
     const std::string& suffix) const {
 
-    output << option_index + 1 << ". ";
+    output << std::fixed << std::setprecision(3) << "- (weight: " << weight_ << ") ";
     ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
     return output;
 }
