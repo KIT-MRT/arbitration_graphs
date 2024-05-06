@@ -1,8 +1,10 @@
 services:
   arbitration_graphs_pacman_demo:
-    extends:
-      file: ../docker-compose.yaml
-      service: arbitration_graphs
+    build: .
     image: arbitration_graphs_pacman_demo
     volumes:
       - .:/home/blinky/demo
+      - $HOME/.Xauthority:/home/blinky/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY

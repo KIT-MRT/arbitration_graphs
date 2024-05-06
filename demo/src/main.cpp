@@ -1,8 +1,11 @@
 #include <cstdlib>
 
+#include <pacman/core/app.hpp>
+
 
 int main() {
   // Initialization Game Engine
+  Application app;
 
   // Initialization Behaviors / Arbitration Graph
 
