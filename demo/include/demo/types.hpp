@@ -2,20 +2,25 @@
 
 #include <map>
 
+#include <comp/position.hpp>
+#include <entt/entity/registry.hpp>
 #include <SDL_scancode.h>
 
 namespace demo {
 
+namespace entt {
+    using Position = ::Position;
+    using registry = ::entt::registry;
+}
 
+enum class Direction { UP, DOWN, LEFT, RIGHT, NONE };
+
+struct Position {
+    int x;
+    int y;
+};
 class Command {
 public:
-    enum class Direction {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-    };
-
     Command(Direction direction) : direction(direction) {
     }
     SDL_Scancode scancode() const {
@@ -30,5 +35,6 @@ public:
         {Direction::RIGHT, SDL_SCANCODE_RIGHT},
     };
 };
+
 
 } // namespace demo

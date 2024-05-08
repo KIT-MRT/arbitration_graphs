@@ -5,13 +5,13 @@
 
 #include <exception>
 #include <iostream>
-#include <../EnTT-Pacman/src/core/app.hpp>
-#include <../EnTT-Pacman/src/core/constants.hpp>
-#include <../EnTT-Pacman/src/core/game.hpp>
-#include <../EnTT-Pacman/src/util/frame_cap.hpp>
-#include <../EnTT-Pacman/src/util/sdl_check.hpp>
-#include <../EnTT-Pacman/src/util/sdl_delete.hpp>
-#include <../EnTT-Pacman/src/util/sdl_load_texture.hpp>
+#include <core/app.hpp>
+#include <core/constants.hpp>
+#include <core/game.hpp>
+#include <util/frame_cap.hpp>
+#include <util/sdl_check.hpp>
+#include <util/sdl_delete.hpp>
+#include <util/sdl_load_texture.hpp>
 
 #include "demo/pacman_arbitrator.hpp"
 
@@ -61,8 +61,9 @@ int main() {
         while (!quit) {
             FrameCap sync{fps};
 
-            // Get environment state from game engine
             // Update environment model
+            arbitrator.updateEnvironmentModel(game.reg);
+
             // Get command for ego player \todo find his name
 
             // Send command to game engine
