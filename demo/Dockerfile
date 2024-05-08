@@ -1,4 +1,4 @@
-FROM arbitration_graphs
+FROM ghcr.io/kit-mrt/arbitration_graphs:latest
 
 USER root
 
