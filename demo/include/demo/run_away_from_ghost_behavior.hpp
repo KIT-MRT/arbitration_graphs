@@ -7,6 +7,12 @@
 
 namespace demo {
 
+struct NextMove {
+    Direction direction;
+    Position deltaPosition;
+};
+using NextMoves = std::vector<NextMove>;
+
 class RunAwayFromGhostBehavior : public arbitration_graphs::Behavior<Command> {
 public:
     using Ptr = std::shared_ptr<RunAwayFromGhostBehavior>;
@@ -34,6 +40,9 @@ public:
 private:
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
+
+    NextMoves possibleNextMoves_{
+        {Direction::UP, {0, -1}}, {Direction::DOWN, {0, 1}}, {Direction::LEFT, {-1, 0}}, {Direction::RIGHT, {1, 0}}};
 
     bool isActive_{false};
 };

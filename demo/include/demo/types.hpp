@@ -3,11 +3,11 @@
 #include <map>
 #include <vector>
 
+#include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
 #include <comp/position.hpp>
 #include <core/maze.hpp>
 #include <entt/entity/registry.hpp>
-#include <SDL_scancode.h>
 
 namespace demo {
 
@@ -28,6 +28,9 @@ struct Position {
 
     double distance(const Position& other) const {
         return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
+    }
+    Position operator+(const Position& other) {
+        return {x + other.x, y + other.y};
     }
 };
 using Positions = std::vector<Position>;

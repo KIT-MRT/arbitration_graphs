@@ -1,4 +1,5 @@
 #include "demo/run_away_from_ghost_behavior.hpp"
+#include "demo/types.hpp"
 
 namespace demo {
 
@@ -7,17 +8,17 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
     auto ghostPosition = environmentModel_->closestGhostPosition();
     auto direction = Direction::NONE;
 
-    if (pacmanPosition.x < ghostPosition.x) {
-        direction = Direction::LEFT;
-    } else if (pacmanPosition.x > ghostPosition.x) {
-        direction = Direction::RIGHT;
-    } else if (pacmanPosition.y < ghostPosition.y) {
-        direction = Direction::DOWN;
-    } else if (pacmanPosition.y > ghostPosition.y) {
-        direction = Direction::UP;
+    double maxDistance = pacmanPosition.distance(ghostPosition);
+    for (const auto& nextMove : possibleNextMoves_) {
+        auto nextPosition = pacmanPosition + nextMove.deltaPosition;
+        auto nextDistance = nextPosition.distance(ghostPosition);
+        if (nextDistance > maxDistance) {
+            direction = nextMove.direction;
+            maxDistance = nextDistance;
+        }
     }
 
-    return Command{direction};
+    return {direction};
 }
 
 bool RunAwayFromGhostBehavior::checkInvocationCondition(const Time& time) const {

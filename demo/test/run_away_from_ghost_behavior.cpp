@@ -1,4 +1,5 @@
 #include "demo/run_away_from_ghost_behavior.hpp"
+
 #include <memory>
 
 #include <gtest/gtest.h>
@@ -73,6 +74,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
+    auto positions = environmentModel_->positions();
+    positions.pacman = {0, 2};
+    environmentModel_->setPositions(positions);
+
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
     ASSERT_EQ(command.direction, Direction::LEFT);
@@ -80,7 +85,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {6, 6};
+    positions.pacman = {6, 5};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -90,7 +95,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {2, 0};
+    positions.pacman = {2, 4};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -100,7 +105,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandUp) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {5, 6};
+    positions.pacman = {5, 3};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
