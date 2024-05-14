@@ -22,13 +22,18 @@ protected:
 };
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionTrue) {
+    auto positions = environmentModel_->positions();
+    positions.pacman = {0, 0};
+    positions.blinky = {1, 2};
+    environmentModel_->setPositions(positions);
+
     Time time = Clock::now();
     ASSERT_TRUE(runAwayFromGhostBehavior_.checkInvocationCondition(time));
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionFalse) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {100, 100};
+    positions.pacman = {0, 0};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -36,13 +41,18 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionFalse) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionTrue) {
+    auto positions = environmentModel_->positions();
+    positions.pacman = {0, 0};
+    positions.blinky = {1, 2};
+    environmentModel_->setPositions(positions);
+
     Time time = Clock::now();
     ASSERT_TRUE(runAwayFromGhostBehavior_.checkCommitmentCondition(time));
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {100, 100};
+    positions.pacman = {0,0};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -51,7 +61,8 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0, 2};
+    positions.pacman = {4, 4};
+    positions.blinky = {5, 4};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -61,7 +72,8 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {6, 5};
+    positions.pacman = {4, 4};
+    positions.blinky = {3, 4};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -71,7 +83,8 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {2, 4};
+    positions.pacman = {4, 4};
+    positions.blinky = {4, 2};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -81,7 +94,8 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandUp) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {5, 3};
+    positions.pacman = {4, 4};
+    positions.blinky = {4, 5};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();

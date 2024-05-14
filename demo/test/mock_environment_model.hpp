@@ -1,5 +1,7 @@
 #pragma once
 
+#include <core/maze.hpp>
+
 #include "demo/environment_model.hpp"
 
 namespace demo {
@@ -10,11 +12,8 @@ public:
     using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
 
     MockEnvironmentModel() : EnvironmentModel() {
-        entityPositions_.pacman = {1, 1};
-        entityPositions_.blinky = {2, 2};
-        entityPositions_.pinky = {3, 3};
-        entityPositions_.inky = {4, 4};
-        entityPositions_.clyde = {5, 5};
+        setPositionsFarAway();
+        setEmptyMaze();
     }
 
     PositionStore positions() const {
@@ -22,6 +21,28 @@ public:
     }
     void setPositions(const PositionStore& positions) {
         entityPositions_ = positions;
+    }
+
+    void setPositionsFarAway() {
+        entityPositions_.pacman = {100, 100};
+        entityPositions_.blinky = {100, 100};
+        entityPositions_.pinky = {100, 100};
+        entityPositions_.inky = {100, 100};
+        entityPositions_.clyde = {100, 100};
+    }
+
+    void setEmptyMaze() {
+        const char str[] = {"##########"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "#        #"
+                            "##########"};
+        mazeState_ = makeCustomMazeState({10, 10}, str);
     }
 };
 
