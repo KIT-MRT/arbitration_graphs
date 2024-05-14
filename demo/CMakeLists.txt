@@ -15,6 +15,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 find_package(SDL2 REQUIRED)
 find_package(Glog)
 find_package(arbitration_graphs REQUIRED)
+find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
 
@@ -58,6 +59,8 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
     lib${PROJECT_NAME}
+    arbitration_graphs
+    util_caching
     EnTT_Pacman
     ${SDL2_LIBRARY}
 )

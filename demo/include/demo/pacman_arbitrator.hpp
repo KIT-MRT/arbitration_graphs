@@ -2,8 +2,10 @@
 
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
+#include "do_nothing_behavior.hpp"
 #include "environment_model.hpp"
 #include "types.hpp"
+#include "demo/do_nothing_behavior.hpp"
 #include "demo/run_away_from_ghost_behavior.hpp"
 
 namespace demo {
@@ -23,6 +25,11 @@ public:
 
         runAwayFromGhostBehavior_ =
             std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, RunAwayFromGhostBehavior::Parameters{});
+        doNothingBehavior_ = std::make_shared<DoNothingBehavior>();
+
+        rootArbitrator_ = std::make_shared<PriorityArbitrator>();
+        rootArbitrator_->addOption(runAwayFromGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(doNothingBehavior_, PriorityArbitrator::Option::Flags::NO_FLAGS);
     }
 
     Command getCommand(const Time& time) {
@@ -46,6 +53,7 @@ private:
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 
+    DoNothingBehavior::Ptr doNothingBehavior_;
     RunAwayFromGhostBehavior::Ptr runAwayFromGhostBehavior_;
 
     PriorityArbitrator::Ptr rootArbitrator_;
