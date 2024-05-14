@@ -14,6 +14,7 @@
 #include <util/sdl_load_texture.hpp>
 
 #include "demo/pacman_arbitrator.hpp"
+#include "demo/types.hpp"
 
 int getScaleFactor() {
     // Make the largest window possible with an integer scale factor
@@ -54,6 +55,7 @@ int main() {
 
         // Initialize Arbitration Graph
         demo::PacmanArbitrator arbitrator;
+        std::cout << "Arbitration Graph initialized\n";
 
         // Loop
         int frame = 0;
@@ -62,12 +64,14 @@ int main() {
             FrameCap sync{fps};
 
             // Update environment model
-            arbitrator.updateEnvironmentModel(game.reg);
+            arbitrator.updateEnvironmentModel(game.reg, game.maze);
 
             // Get command for ego player \todo find his name
 
             // Send command to game engine
-            game.input(arbitrator.getCommand().scancode());
+            demo::Command command = arbitrator.getCommand(demo::Clock::now());
+            std::cout << arbitrator.to_str(demo::Clock::now()) << '\n';
+            game.input(command.scancode());
 
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
