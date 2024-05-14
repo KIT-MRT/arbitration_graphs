@@ -9,8 +9,8 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
     auto direction = Direction::NONE;
 
     double maxDistance = -1;
-    for (const auto& nextMove : possibleNextMoves_) {
-        auto nextPosition = pacmanPosition + nextMove.deltaPosition;
+    for (const auto& move : possibleMoves) {
+        auto nextPosition = pacmanPosition + move.deltaPosition;
 
         if (environmentModel_->isWall(nextPosition)) {
             continue;
@@ -19,6 +19,7 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
         auto nextDistance = nextPosition.distance(ghostPosition);
         if (nextDistance > maxDistance) {
             direction = nextMove.direction;
+            direction = move.direction;
             maxDistance = nextDistance;
         }
     }

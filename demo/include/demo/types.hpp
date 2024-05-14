@@ -32,6 +32,9 @@ struct Position {
     Position operator+(const Position& other) {
         return {x + other.x, y + other.y};
     }
+    bool operator==(const Position& other) const {
+        return x == other.x && y == other.y;
+    }
 };
 using Positions = std::vector<Position>;
 
@@ -53,4 +56,11 @@ struct Command {
 };
 
 
+struct Move {
+    Direction direction;
+    Position deltaPosition;
+};
+using Moves = std::vector<Move>;
+const Moves possibleMoves{
+    {Direction::UP, {0, -1}}, {Direction::DOWN, {0, 1}}, {Direction::LEFT, {-1, 0}}, {Direction::RIGHT, {1, 0}}};
 } // namespace demo
