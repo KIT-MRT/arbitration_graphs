@@ -9,38 +9,39 @@ namespace demo {
 
 class EnvironmentModel {
 public:
-    struct Positions {
-        Position player;
+    using Ptr = std::shared_ptr<EnvironmentModel>;
+    using ConstPtr = std::shared_ptr<const EnvironmentModel>;
+
+    struct PositionStore {
+        Positions ghostPositions() const {
+            return {blinky, pinky, inky, clyde};
+        }
+
+        Position pacman;
         Position blinky;
         Position pinky;
         Position inky;
         Position clyde;
     };
 
-    void update(entt::registry& registry) {
-        auto view = registry.view<entt::Position>();
-        for (auto entity : view) {
-            if (registry.has<Player>(entity)) {
-                auto& playerPosition = registry.get<entt::Position>(entity);
-                entityPositions.player = {playerPosition.p.x, playerPosition.p.y};
-            } else if (registry.has<BlinkyChaseTarget>(entity)) {
-                auto& blinkyPosition = registry.get<entt::Position>(entity);
-                entityPositions.blinky = {blinkyPosition.p.x, blinkyPosition.p.y};
-            } else if (registry.has<PinkyChaseTarget>(entity)) {
-                auto& pinkyPosition = registry.get<entt::Position>(entity);
-                entityPositions.pinky = {pinkyPosition.p.x, pinkyPosition.p.y};
-            } else if (registry.has<InkyChaseTarget>(entity)) {
-                auto& inkyPosition = registry.get<entt::Position>(entity);
-                entityPositions.inky = {inkyPosition.p.x, inkyPosition.p.y};
-            } else if (registry.has<ClydeChaseTarget>(entity)) {
-                auto& clydePosition = registry.get<entt::Position>(entity);
-                entityPositions.clyde = {clydePosition.p.x, clydePosition.p.y};
-            }
-        }
+    void update(entt::registry& registry, const entt::MazeState& mazeState) {
+        updatePositions(registry);
+        mazeState_ = mazeState;
     }
 
-private:
-    Positions entityPositions;
+    Position pacmanPosition() const {
+        return entityPositions_.pacman;
+    }
+    Position closestGhostPosition() const;
+    double closestGhostDistance() const {
+        return pacmanPosition().distance(closestGhostPosition());
+    }
+
+protected:
+    void updatePositions(entt::registry& registry);
+
+    PositionStore entityPositions_;
+    entt::MazeState mazeState_;
 };
 
 } // namespace demo
