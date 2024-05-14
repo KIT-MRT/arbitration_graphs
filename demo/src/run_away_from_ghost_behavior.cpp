@@ -16,9 +16,8 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
             continue;
         }
 
-        auto nextDistance = nextPosition.distance(ghostPosition);
+        auto nextDistance = environmentModel_->distance(nextPosition, ghostPosition);
         if (nextDistance > maxDistance) {
-            direction = nextMove.direction;
             direction = move.direction;
             maxDistance = nextDistance;
         }

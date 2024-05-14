@@ -5,6 +5,7 @@
 
 #include "types.hpp"
 #include "core/maze.hpp"
+#include "demo/astar.hpp"
 
 namespace demo {
 
@@ -28,14 +29,19 @@ public:
     void update(entt::registry& registry, const entt::MazeState& mazeState) {
         updatePositions(registry);
         mazeState_ = mazeState;
+        astar_ = AStar(mazeState_);
     }
 
     Position pacmanPosition() const {
         return entityPositions_.pacman;
     }
     Position closestGhostPosition() const;
+
+    int distance(const Position& start, const Position& goal) const {
+        return astar_.distance(start, goal);
+    }
     double closestGhostDistance() const {
-        return pacmanPosition().distance(closestGhostPosition());
+        return distance(pacmanPosition(), closestGhostPosition());
     }
 
     bool isWall(const Position& position) const {
@@ -47,6 +53,7 @@ protected:
 
     PositionStore entityPositions_;
     entt::MazeState mazeState_;
+    AStar astar_;
 };
 
 } // namespace demo

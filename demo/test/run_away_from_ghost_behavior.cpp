@@ -23,8 +23,8 @@ protected:
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionTrue) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0, 0};
-    positions.blinky = {1, 2};
+    positions.pacman = {1, 1};
+    positions.blinky = {2, 3};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -33,7 +33,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionTrue) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionFalse) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0, 0};
+    positions.pacman = {1, 1};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -42,8 +42,8 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionFalse) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionTrue) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0, 0};
-    positions.blinky = {1, 2};
+    positions.pacman = {1, 1};
+    positions.blinky = {2, 3};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -52,7 +52,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionTrue) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0, 0};
+    positions.pacman = {1, 1};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -60,9 +60,14 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
+    const char str[] = {"###"
+                        "   "
+                        "###"};
+    environmentModel_->setMaze({3, 3}, str);
+
     auto positions = environmentModel_->positions();
-    positions.pacman = {4, 4};
-    positions.blinky = {5, 4};
+    positions.pacman = {1, 1};
+    positions.blinky = {2, 1};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -71,9 +76,14 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
+    const char str[] = {"###"
+                        "   "
+                        "###"};
+    environmentModel_->setMaze({3, 3}, str);
+
     auto positions = environmentModel_->positions();
-    positions.pacman = {4, 4};
-    positions.blinky = {3, 4};
+    positions.pacman = {1, 1};
+    positions.blinky = {0, 1};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -82,9 +92,14 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
+    const char str[] = {"# #"
+                        "# #"
+                        "# #"};
+    environmentModel_->setMaze({3, 3}, str);
+
     auto positions = environmentModel_->positions();
-    positions.pacman = {4, 4};
-    positions.blinky = {4, 2};
+    positions.pacman = {1, 1};
+    positions.blinky = {1, 0};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -93,9 +108,14 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, getCommandUp) {
+    const char str[] = {"# #"
+                        "# #"
+                        "# #"};
+    environmentModel_->setMaze({3, 3}, str);
+
     auto positions = environmentModel_->positions();
-    positions.pacman = {4, 4};
-    positions.blinky = {4, 5};
+    positions.pacman = {1, 1};
+    positions.blinky = {1, 2};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();

@@ -31,6 +31,7 @@ add_subdirectory(EnTT-Pacman)
 ## Build ##
 ###########
 add_library(lib${PROJECT_NAME} STATIC
+  src/astar.cpp
   src/environment_model.cpp
   src/run_away_from_ghost_behavior.cpp
 )
