@@ -4,40 +4,16 @@
 
 #include <gtest/gtest.h>
 
-#include "demo/environment_model.hpp"
+#include "mock_environment_model.hpp"
 
 namespace demo {
 
-class MockEnvironmentModel : public EnvironmentModel {
-public:
-    using Ptr = std::shared_ptr<MockEnvironmentModel>;
-    using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
-
-    MockEnvironmentModel() : EnvironmentModel() {
-        entityPositions_.pacman = {1, 1};
-        entityPositions_.blinky = {2, 2};
-        entityPositions_.pinky = {3, 3};
-        entityPositions_.inky = {4, 4};
-        entityPositions_.clyde = {5, 5};
-    }
-
-    PositionStore positions() const {
-        return entityPositions_;
-    }
-    void setPositions(const PositionStore& positions) {
-        entityPositions_ = positions;
-    }
-};
-
-
 class RunAwayFromGhostBehaviorTest : public ::testing::Test {
-
 protected:
     RunAwayFromGhostBehaviorTest()
             : parameters_{}, environmentModel_(std::make_shared<MockEnvironmentModel>()),
               runAwayFromGhostBehavior_{environmentModel_, parameters_} {
     }
-
 
     RunAwayFromGhostBehavior::Parameters parameters_;
     MockEnvironmentModel::Ptr environmentModel_;
