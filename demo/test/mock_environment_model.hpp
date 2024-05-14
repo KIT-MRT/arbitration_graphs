@@ -31,6 +31,11 @@ public:
         entityPositions_.clyde = {100, 100};
     }
 
+    template <std::size_t Size>
+    void setMaze(const Position& size, const char (&str)[Size]) {
+        mazeState_ = makeCustomMazeState({size.x, size.y}, str);
+    }
+
     void setEmptyMaze() {
         const char str[] = {"##########"
                             "#        #"
@@ -42,7 +47,7 @@ public:
                             "#        #"
                             "#        #"
                             "##########"};
-        mazeState_ = makeCustomMazeState({10, 10}, str);
+        setMaze({10, 10}, str);
     }
 };
 

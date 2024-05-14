@@ -4,6 +4,7 @@
 #include <comp/player.hpp>
 
 #include "types.hpp"
+#include "core/maze.hpp"
 
 namespace demo {
 
@@ -35,6 +36,10 @@ public:
     Position closestGhostPosition() const;
     double closestGhostDistance() const {
         return pacmanPosition().distance(closestGhostPosition());
+    }
+
+    bool isWall(const Position& position) const {
+        return mazeState_[{position.x,position.y}] == Tile::wall;
     }
 
 protected:

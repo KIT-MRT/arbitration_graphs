@@ -52,7 +52,7 @@ TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionTrue) {
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
     auto positions = environmentModel_->positions();
-    positions.pacman = {0,0};
+    positions.pacman = {0, 0};
     environmentModel_->setPositions(positions);
 
     Time time = Clock::now();
@@ -101,6 +101,23 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandUp) {
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
     ASSERT_EQ(command.direction, Direction::UP);
+}
+
+TEST_F(RunAwayFromGhostBehaviorTest, getCommandAwayFromWall) {
+    const char str[] = {"###"
+                        "#  "
+                        "###"};
+    environmentModel_->setMaze({3, 3}, str);
+
+    auto positions = environmentModel_->positions();
+    positions.pacman = {1, 1};
+    positions.blinky = {2, 1};
+    environmentModel_->setPositions(positions);
+
+    // Even though there is a ghost, pacman should not move towards a wall.
+    Time time = Clock::now();
+    Command command = runAwayFromGhostBehavior_.getCommand(time);
+    ASSERT_EQ(command.direction, Direction::RIGHT);
 }
 
 } // namespace demo
