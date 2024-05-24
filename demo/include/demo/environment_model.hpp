@@ -9,6 +9,12 @@
 
 namespace demo {
 
+/**
+ * @class EnvironmentModel
+ * @brief Represents the environment model for a game.
+ *
+ * The EnvironmentModel class serves as a centralized location for individual behaviors to query the current state of
+ * the world. */
 class EnvironmentModel {
 public:
     using Ptr = std::shared_ptr<EnvironmentModel>;
@@ -26,6 +32,12 @@ public:
         Position clyde;
     };
 
+    /**
+     * @brief Update the environment model to reflect the current state of the world.
+     *
+     * @param registry The EnTT registry containing the current state of the world.
+     * @param mazeState The current state of the maze.
+     */
     void update(entt::registry& registry, const entt::MazeState& mazeState) {
         updatePositions(registry);
         mazeState_ = mazeState;
@@ -37,6 +49,16 @@ public:
     }
     Position closestGhostPosition() const;
 
+    /**
+     * @brief Calculates the Manhattan distance between two positions using A*.
+     *
+     * A distance of 1 is the distance between two adjacent positions in the maze.
+     * Will consider walls when calculating the distance.
+     *
+     * @param start
+     * @param goal
+     * @return int
+     */
     int distance(const Position& start, const Position& goal) const {
         return astar_.distance(start, goal);
     }
@@ -45,7 +67,7 @@ public:
     }
 
     bool isWall(const Position& position) const {
-        return mazeState_[{position.x,position.y}] == Tile::wall;
+        return mazeState_[{position.x, position.y}] == Tile::wall;
     }
 
 protected:

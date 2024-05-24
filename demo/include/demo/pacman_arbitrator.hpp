@@ -10,7 +10,13 @@
 
 namespace demo {
 
-
+/**
+ * @brief The main arbitrator class for the Pacman demo.
+ *
+ * The PacmanArbitrator class defines the arbitration graph by adding the individual behaviors.
+ * It is the represents the top level of the hierarchy and will be called in each time step to return the command that
+ * Pacman should execute.
+ */
 class PacmanArbitrator {
 public:
     using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;

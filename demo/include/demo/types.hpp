@@ -55,7 +55,6 @@ struct Command {
     };
 };
 
-
 struct Move {
     Direction direction;
     Position deltaPosition;
