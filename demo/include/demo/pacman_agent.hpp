@@ -53,6 +53,14 @@ public:
         to_stream(ss, time);
         return ss.str();
     }
+    std::string yamlString(const Time& time) const {
+        YAML::Node node;
+        node["type"] = "PacmanArbitrator";
+        node["arbitration"] = rootArbitrator_->toYaml(time);
+        std::stringstream yamlString;
+        yamlString << node;
+        return yamlString.str();
+    }
 
 private:
     EnvironmentModel::Ptr environmentModel_;
