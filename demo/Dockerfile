@@ -1,4 +1,4 @@
-FROM ghcr.io/kit-mrt/arbitration_graphs:latest
+FROM ghcr.io/kit-mrt/arbitration_graphs:latest AS tutorial
 
 USER root
 
@@ -19,6 +19,21 @@ RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_gr
 
 USER blinky
 
-WORKDIR /home/blinky
+WORKDIR /home/blinky/demo
 
 CMD [ "/bin/bash" ]
+
+FROM tutorial AS demo
+
+COPY --chown=blinky:blinky cmake /home/blinky/demo/cmake
+COPY --chown=blinky:blinky include /home/blinky/demo/include
+COPY --chown=blinky:blinky src /home/blinky/demo/src
+COPY --chown=blinky:blinky CMakeLists.txt /home/blinky/demo/CMakeLists.txt
+
+WORKDIR /home/blinky/demo/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    cmake --build .
+
+CMD [ "/home/blinky/demo/build/arbitration_graphs_pacman_demo_exe" ]
+
