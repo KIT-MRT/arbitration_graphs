@@ -23,36 +23,34 @@ find_package(Yaml-cpp REQUIRED)
 ## Build ##
 ###########
 
-add_library(lib${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} STATIC
   src/astar.cpp
   src/environment_model.cpp
   src/run_away_from_ghost_behavior.cpp
 )
-target_include_directories(lib${PROJECT_NAME}
-    PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
 )
-target_link_libraries(lib${PROJECT_NAME}
-    PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    arbitration_graphs
+    EnTT_Pacman
+    util_caching
     ${SDL2_LIBRARY}
     ${YAML_CPP_LIBRARIES}
-    EnTT_Pacman
 )
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
+add_executable(${PROJECT_NAME}_exe src/main.cpp)
+target_include_directories(${PROJECT_NAME}_exe PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
 )
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-    lib${PROJECT_NAME}
-    arbitration_graphs
-    util_caching
+target_link_libraries(${PROJECT_NAME}_exe PRIVATE
+    ${PROJECT_NAME}
     EnTT_Pacman
+    util_caching
     ${SDL2_LIBRARY}
+    ${YAML_CPP_LIBRARIES}
 )
 
 #############
@@ -84,7 +82,7 @@ if(GTEST_FOUND)
       target_link_libraries(${TEST_TARGET_NAME}
           PRIVATE
           ${GTEST_BOTH_LIBRARIES} pthread
-          lib${PROJECT_NAME}
+          ${PROJECT_NAME}
           EnTT_Pacman
       )
     endforeach()
