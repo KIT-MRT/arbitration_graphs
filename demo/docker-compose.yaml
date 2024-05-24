@@ -7,6 +7,8 @@ services:
         - VERSION=$VERSION
       target: tutorial
     env_file: .env
+    ports:
+      - "1256:1256"
     volumes:
       - .:/home/blinky/demo
       - $HOME/.Xauthority:/home/blinky/.Xauthority
@@ -15,7 +17,7 @@ services:
       - DISPLAY=$DISPLAY
     #
     # This makes sure `docker compose up` only runs the demo service
-    # Use `docker compose run --rm tutorial` to run the tutorial
+    # Use `docker compose run --rm --service-ports tutorial` to run the tutorial
     profiles: ["tutorial"]
 
   demo:
@@ -26,6 +28,8 @@ services:
         - VERSION=$VERSION
       target: demo
     env_file: .env
+    ports:
+      - "1256:1256"
     volumes:
       - $HOME/.Xauthority:/home/blinky/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix

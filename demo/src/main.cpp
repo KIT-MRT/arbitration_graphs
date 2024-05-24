@@ -1,5 +1,8 @@
 #include <exception>
 #include <iostream>
+#include <thread>
+
+#include <arbitration_graphs/gui/websocket_server.hpp>
 
 #include "demo/pacman_agent.hpp"
 #include "demo/types.hpp"
@@ -7,17 +10,24 @@
 
 using namespace demo;
 using namespace utils;
+using namespace arbitration_graphs;
 
 int main() {
     try {
         PacmanWrapper demo;
         PacmanAgent agent(demo.game());
 
+        gui::WebSocketServer server(1256, true);
+
         while (!demo.quit()) {
             agent.updateEnvironmentModel(demo.game());
 
-            Command command = agent.getCommand(Clock::now());
-            std::cout << agent.to_str(Clock::now()) << '\n';
+            const Time time = Clock::now();
+
+            Command command = agent.getCommand(time);
+            std::cout << agent.to_str(time) << '\n';
+
+            server.broadcast(agent.yamlString(time));
 
             demo.progressGame(command, agent.environmentModel());
         }
