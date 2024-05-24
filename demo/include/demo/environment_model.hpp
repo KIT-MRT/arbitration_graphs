@@ -1,10 +1,10 @@
 #pragma once
 
-#include <comp/chase_target.hpp>
-#include <comp/player.hpp>
+#include <pacman/comp/chase_target.hpp>
+#include <pacman/comp/player.hpp>
+#include <pacman/core/maze.hpp>
 
 #include "types.hpp"
-#include "core/maze.hpp"
 #include "demo/astar.hpp"
 
 namespace demo {

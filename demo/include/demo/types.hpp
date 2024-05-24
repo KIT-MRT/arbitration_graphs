@@ -5,9 +5,9 @@
 
 #include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
-#include <comp/position.hpp>
-#include <core/maze.hpp>
 #include <entt/entity/registry.hpp>
+#include <pacman/comp/position.hpp>
+#include <pacman/core/maze.hpp>
 
 namespace demo {
 

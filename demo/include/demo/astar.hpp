@@ -4,8 +4,9 @@
 #include <queue>
 #include <vector>
 
+#include <pacman/util/grid.hpp>
+
 #include "types.hpp"
-#include "util/grid.hpp"
 
 namespace demo {
 

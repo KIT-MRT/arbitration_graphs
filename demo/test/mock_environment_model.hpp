@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/maze.hpp>
+#include <pacman/core/maze.hpp>
 
 #include "demo/environment_model.hpp"
 

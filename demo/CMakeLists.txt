@@ -12,24 +12,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ###################
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
-find_package(SDL2 REQUIRED)
-find_package(Glog)
 find_package(arbitration_graphs REQUIRED)
+find_package(EnTT_Pacman REQUIRED)
+find_package(Glog)
+find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
-
-
-
-########################
-## Build dependencies ##
-########################
-add_subdirectory(EnTT-Pacman)
-# find_package(EnTT_Pacman REQUIRED)
-
 
 ###########
 ## Build ##
 ###########
+
 add_library(lib${PROJECT_NAME} STATIC
   src/astar.cpp
   src/environment_model.cpp
@@ -38,23 +31,19 @@ add_library(lib${PROJECT_NAME} STATIC
 target_include_directories(lib${PROJECT_NAME}
     PRIVATE
     include
-    EnTT-Pacman/src
-    EnTT-Pacman/third_party
     ${SDL2_INCLUDE_DIR}
 )
 target_link_libraries(lib${PROJECT_NAME}
     PRIVATE
-    EnTT_Pacman
     ${SDL2_LIBRARY}
     ${YAML_CPP_LIBRARIES}
+    EnTT_Pacman
 )
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_include_directories(${PROJECT_NAME}
     PRIVATE
     include
-    EnTT-Pacman/src
-    EnTT-Pacman/third_party
     ${SDL2_INCLUDE_DIR}
 )
 target_link_libraries(${PROJECT_NAME}
@@ -90,8 +79,6 @@ if(GTEST_FOUND)
       target_include_directories(${TEST_TARGET_NAME}
           PRIVATE
           include
-          EnTT-Pacman/src
-          EnTT-Pacman/third_party
           ${SDL2_INCLUDE_DIR}
       )
       target_link_libraries(${TEST_TARGET_NAME}

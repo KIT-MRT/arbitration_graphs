@@ -5,13 +5,13 @@
 
 #include <exception>
 #include <iostream>
-#include <core/app.hpp>
-#include <core/constants.hpp>
-#include <core/game.hpp>
-#include <util/frame_cap.hpp>
-#include <util/sdl_check.hpp>
-#include <util/sdl_delete.hpp>
-#include <util/sdl_load_texture.hpp>
+#include <pacman/core/app.hpp>
+#include <pacman/core/constants.hpp>
+#include <pacman/core/game.hpp>
+#include <pacman/util/frame_cap.hpp>
+#include <pacman/util/sdl_check.hpp>
+#include <pacman/util/sdl_delete.hpp>
+#include <pacman/util/sdl_load_texture.hpp>
 
 #include "demo/pacman_arbitrator.hpp"
 #include "demo/types.hpp"
