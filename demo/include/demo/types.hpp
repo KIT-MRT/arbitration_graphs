@@ -7,6 +7,7 @@
 #include <arbitration_graphs/types.hpp>
 #include <entt/entity/registry.hpp>
 #include <pacman/comp/position.hpp>
+#include <pacman/core/game.hpp>
 #include <pacman/core/maze.hpp>
 
 namespace demo {
@@ -15,6 +16,7 @@ using Clock = arbitration_graphs::Clock;
 using Time = arbitration_graphs::Time;
 
 namespace entt {
+using Game = ::Game;
 using Position = ::Position;
 using registry = ::entt::registry;
 using MazeState = ::MazeState;

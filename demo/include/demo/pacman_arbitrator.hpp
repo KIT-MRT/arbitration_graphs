@@ -42,8 +42,8 @@ public:
         return rootArbitrator_->getCommand(time);
     }
 
-    void updateEnvironmentModel(entt::registry& registry, const entt::MazeState& mazeState) {
-        environmentModel_->update(registry, mazeState);
+    void updateEnvironmentModel(entt::Game& game) {
+        environmentModel_->update(game.reg, game.maze);
     }
 
     std::ostream& to_stream(std::ostream& output, const Time& time) const {

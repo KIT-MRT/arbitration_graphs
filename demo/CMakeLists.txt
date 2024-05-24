@@ -40,7 +40,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${YAML_CPP_LIBRARIES}
 )
 
-add_executable(${PROJECT_NAME}_exe src/main.cpp)
+add_executable(${PROJECT_NAME}_exe
+  src/main.cpp
+  src/pacman_wrapper.cpp
+)
 target_include_directories(${PROJECT_NAME}_exe PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
