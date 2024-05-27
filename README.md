@@ -5,12 +5,11 @@ Arbitration graphs combine simple atomic behavior blocks to more complex behavio
 
 ## Installation
 
-First, clone this repository, including its submodules:
+First, clone this repository:
 
 ```bash
 git clone https://github.com/KIT-MRT/arbitration_graphs.git
 cd arbitration_graphs
-git submodule update --init --recursive
 ```
 
 
@@ -85,3 +84,4 @@ Run all unit tests:
 ```bash
 find -executable -type f -name '*-gtest-*' -exec {} \;
 ```
+
