@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Based on FontAwesome 6.0 random.svg -->
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. -->
+<path id="path1306" d="m 32,76.029297 c -17.69,0 -32,14.3 -32,32.000003 0,17.7 14.83818,27.70954 32,32 H 132 L 228.47852,256.01562 132,372 H 32 c -17.689999,0 -32,14.3 -32,32 0,17.7 14.31,32 32,32 h 116 c 10.1,0 17.56591,-6.84598 25.59961,-12.80078 L 296,288 h 88 v 48.0293 c 0,21.396 24.96961,32.0907 40.09961,16.9707 l 79.96094,-79.99023 c 9.387,-9.38 9.387,-24.58371 0,-33.97071 l -79.09961,-79.97851 c -15.13,-15.12 -40.99024,-4.39 -40.99024,17 V 224 H 295.96094 L 173.59961,88.828125 C 165.56591,82.873321 158.1,76.029297 148,76.029297 Z" />
+</svg>

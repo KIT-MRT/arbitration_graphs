@@ -1,0 +1,13 @@
+<filter style="color-interpolation-filters:sRGB;" id="dropShadow" x="-0.076363636" y="-0.42" width="1.1527273" height="1.915">
+    <feFlood flood-opacity="0.121569" flood-color="rgb(0,0,0)" result="flood" id="feFlood1119" />
+    <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1" id="feComposite1121" />
+    <feGaussianBlur in="composite1" stdDeviation="2" result="blur" id="feGaussianBlur1123" />
+    <feOffset dx="0" dy="2" result="offset" id="feOffset1125" />
+    <feComposite in="SourceGraphic" in2="offset" operator="over" result="fbSourceGraphic" id="feComposite1127" />
+    <feColorMatrix result="fbSourceGraphicAlpha" in="fbSourceGraphic" values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0" id="feColorMatrix1149" />
+    <feFlood id="feFlood1151" flood-opacity="0.121569" flood-color="rgb(0,0,0)" result="flood" in="fbSourceGraphic" />
+    <feComposite in2="fbSourceGraphic" id="feComposite1153" in="flood" operator="in" result="composite1" />
+    <feGaussianBlur id="feGaussianBlur1155" in="composite1" stdDeviation="5" result="blur" />
+    <feOffset id="feOffset1157" dx="0" dy="1" result="offset" />
+    <feComposite in2="offset" id="feComposite1159" in="fbSourceGraphic" operator="over" result="composite2" />
+</filter>

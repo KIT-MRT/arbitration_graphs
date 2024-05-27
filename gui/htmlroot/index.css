@@ -1,0 +1,114 @@
+body {
+    margin: 5vh 5vw;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#header {
+    position: absolute;
+    height: 10vh;
+    margin: 0;
+    font-family: "Ubuntu";
+}
+.frame {
+    height: 70vh;
+    padding: 10vh 0;
+}
+#arbitration-frame svg {
+    width: 100%;
+    height: 100%;
+}
+a {
+    color: black !important;
+    text-decoration: none;
+}
+#links {
+    position: absolute;
+    top: 5vh;
+    right: 5vw;
+}
+#links>div {
+    float: left;
+}
+#links a, #file-upload-form {
+    display: block;
+    margin-left: 15px;
+    line-height: 1.3em;
+}
+#file-upload-form {
+    cursor: pointer;
+}
+#file-upload-form input {
+    display: none;
+}
+
+#browser-warning {
+    position: absolute;
+    bottom: 4vh;
+    left: 5vw;
+    font-size: 20px;
+    line-height: 10px;
+    color: red;
+}
+#status {
+    position: absolute;
+    bottom: 10px;
+    left: 5vw;
+    font-size: 10px;
+    line-height: 10px;
+}
+#hover-status {
+    position: absolute;
+    bottom: 10px;
+    right: 5vw;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: right;
+}
+#hover-bar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: 3px solid #e0e0e0;
+    border-radius: 1px;
+    height: 0px;
+    width: 100%;
+}
+.hoverBarAnimation {
+    animation: shrink-width 5s linear 0s 1 normal forwards;
+}
+@keyframes shrink-width {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0%;
+    }
+}
+
+#loading-frame {
+    background-color: navy;
+    opacity: 0.8;
+}
+#loading-frame div {
+    margin-top: 10px;
+    color: white;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+.spin {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
+}
+@keyframes spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}

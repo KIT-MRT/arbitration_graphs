@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Behavior Planning GUI</title>
+</head>
+
+<body>
+    <div id="hello-vue">
+        <h1 id="header" v-show="showTitle">Behavior Planning GUI</h1>
+        <div id="links" v-show="showButtons">
+            <div>
+                <a v-if="arbitrationGraph" class="yaml-download" href="javascript:downloadYaml();">
+                    <i class="fas fa-download"></i> Download YAML
+                </a>
+                <a v-if="arbitrationGraph" class="svg-download" href="javascript:downloadSvg();">
+                    <i class="fas fa-download"></i> Download SVG
+                </a>
+            </div>
+            <div v-if="!arbitrationGraph || offlineMode">
+                <a class="load-yaml" href="javascript:loadExample('example.yaml');">
+                    <i class="fas fa-file-image"></i> Simple example
+                </a>
+                <a class="load-yaml" href="javascript:loadExample('example_nested.yaml');">
+                    <i class="fas fa-file-image"></i> Nested example
+                </a>
+            </div>
+            <div v-if="!arbitrationGraph || offlineMode">
+                <label id="file-upload-form" class="load-yaml">
+                    <input type="file" />
+                    <i class="fas fa-folder-open"></i> Upload file
+                </label>
+                <a href="javascript:window.location.reload();">
+                    <i class="fas fa-sync-alt"></i> Reload GUI
+                </a>
+            </div>
+        </div>
+
+        <div v-if="arbitrationGraph && (isConnected || offlineMode)" id="arbitration-frame" class="frame"
+            @mousemove="mouseMovedOnSvg" @click="clickOnSvg">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" style="font-family: Helvetica;">
+                <defs id="svgFilters" v-html="svgFilters" />
+
+                <g id="root-svg-group">
+                    <arbitrator-option
+                        id="root-arbitrator"
+                        :name="arbitrationGraph.name"
+                        :type="arbitrationGraph.type"
+                        :is-active="arbitrationGraph.activeBehavior != null"
+                        :is-invocable="arbitrationGraph.invocationCondition"
+                        :is-committed="arbitrationGraph.commitmentCondition"
+                        :flags="arbitrationGraph.flags"
+                        :options="arbitrationGraph.options"
+                        :active-option="arbitrationGraph.activeBehavior"
+                        :active-options="arbitrationGraph.activeBehaviors" />
+                </g>
+            </svg>
+            <div id="browser-warning" v-if="!browser.isChrome">
+                This browser seems to be {{ browser.which }}.
+                Use Chrome/Chromium for proper rendering!
+            </div>
+            <div id="status" v-show="showStatus">{{ status }}</div>
+            <div id="hover-status" v-show="hoverTimeout">Headless mode → hiding soon…</div>
+            <div id="hover-bar" :class="{hoverBarAnimation: animateHoverBar}" v-show="hoverTimeout"></div>
+        </div>
+
+        <div v-else id="loading-frame" class="frame center" >
+            <div>
+                <div class="spin"></div>
+                <div>{{ status }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue.js Templates -->
+    <script type="text/x-template" id="arbitrator-option-template">
+        <g transform="translate(0,0)">
+            <template v-for="(option, index) in options">
+                <!-- arrow path from option to corresponding arbitrator -->
+                <path class="arrow"
+                    :class="{active: isOptionActive(option), invocable: isOptionInvocable(option), committed: isOptionCommitted(option), failed: optionFailedVerification(option), delayed: isOptionDelayed(option), deactivated: isOptionDeactivated(option)}"
+                    :d="'M -' + optionMarginX + ' ' + (optionY(index)+optionInnerHeight/2) +
+                        'C -' + optionMarginX/2 + ' ' + (optionY(index)+optionInnerHeight/2) +
+                         ' -' + optionMarginX/2 + ' ' + optionInnerHeight/2 +
+                         ' 0 ' + optionInnerHeight/2" />
+                <!-- option -->
+                <g :transform="'translate(-' + optionOuterWidth + ',' + optionY(index) + ')'">
+                    <arbitrator-option
+                        :name="option.behavior.name"
+                        :type="option.behavior.type"
+                        :is-active="isOptionActive(option)"
+                        :is-invocable="option.behavior.invocationCondition"
+                        :is-committed="option.behavior.commitmentCondition"
+                        :verification-result="option.verificationResult"
+                        :flags="option.flags"
+                        :utility="normalizedUtility(option.cost, minOptionsCost, maxOptionsCost)"
+                        :options="option.behavior.options"
+                        :active-option="option.behavior.activeBehavior"
+                        :active-options="option.behavior.activeBehaviors" />
+                </g>
+            </template>
+
+            <g :class="{ active: isActive, invocable: isInvocable, committed: isCommitted, failed: failedVerification, delayed: isDelayed, deactivated: isDeactivated, arbitrator: options, utility: utility }">
+                <!-- one arrow marker for all arrow paths -->
+                <path v-if="options" class="arrow-marker"
+                    :transform="'translate(0,' + optionInnerHeight/2 + ') rotate(180) scale(1.2)'"
+                    d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z" />
+
+                <!-- behavior block background -->
+                <rect class="behavior-block-background" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" />
+
+                <!-- behavior block cost -->
+                <rect v-if="utility" class="behavior-block-utility" x="0" y="0" :width="utility ? optionInnerWidth*utility : optionInnerWidth" :height="optionInnerHeight" />
+
+                <!-- behavior block frame -->
+                <rect class="behavior-block-frame" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" />
+
+                <!-- behavior block icon -->
+                <g class="behavior-block-icon" transform="translate(10,10)">
+                    <icon-priority v-if="type=='PriorityArbitrator'" />
+                    <icon-sequence v-if="type=='SequenceArbitrator'" />
+                    <icon-cost v-if="type=='CostArbitrator'" />
+                    <icon-random v-if="type=='RandomArbitrator'" />
+                    <icon-merging v-if="type=='JointCoordinator'" />
+                </g>
+
+                <!-- behavior block extra icon for failed options -->
+                <g class="behavior-block-icon-failed" transform="translate(225,-5) scale(.8)">
+                    <icon-failed v-if="failedVerification" />
+                </g>
+
+                <!-- behavior block extra icon for delayed options -->
+                <g class="behavior-block-icon-delayed" transform="translate(225,-5) scale(.8)">
+                    <icon-delayed v-if="isDelayed" />
+                </g>
+
+                <!-- behavior block extra icon for rebooting options -->
+                <g class="behavior-block-icon-reboot" transform="translate(187,-7)">
+                    <icon-reboot v-if="isRebooting" />
+                </g>
+
+                <!-- behavior block extra icon for fallback options -->
+                <g class="behavior-block-icon-fallback" transform="translate(187,-7)">
+                    <icon-fallback v-if="isFallbackOption" />
+                </g>
+
+                <!-- behavior block label -->
+                <text class="behavior-block-label" :x="optionInnerHeight/2 + (options ? 15 : 0)" :y="2+optionInnerHeight/2" dominant-baseline="middle">{{ beautifiedName }}</text>
+            </g>
+        </g>
+    </script>
+
+    <script type="text/x-template" id="icon-priority-template">
+        <path transform="translate(0,-1) scale(.045)" d="M304 96h16v64h-16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h96a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-16V48a16 16 0 0 0-16-16h-48a16 16 0 0 0-14.29 8.83l-16 32A16 16 0 0 0 304 96zm26.15 162.91a79 79 0 0 0-55 54.17c-14.25 51.05 21.21 97.77 68.85 102.53a84.07 84.07 0 0 1-20.85 12.91c-7.57 3.4-10.8 12.47-8.18 20.34l9.9 20c2.87 8.63 12.53 13.49 20.9 9.91 58-24.76 86.25-61.61 86.25-132V336c-.02-51.21-48.4-91.34-101.85-77.09zM352 356a20 20 0 1 1 20-20 20 20 0 0 1-20 20zm-176-4h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352z"></path>
+    </script>
+    <script type="text/x-template" id="icon-sequence-template">
+        <path transform="translate(-1,-1) scale(.045)" d="M139.61 35.5a12 12 0 0 0-17 0L58.93 98.81l-22.7-22.12a12 12 0 0 0-17 0L3.53 92.41a12 12 0 0 0 0 17l47.59 47.4a12.78 12.78 0 0 0 17.61 0l15.59-15.62L156.52 69a12.09 12.09 0 0 0 .09-17zm0 159.19a12 12 0 0 0-17 0l-63.68 63.72-22.7-22.1a12 12 0 0 0-17 0L3.53 252a12 12 0 0 0 0 17L51 316.5a12.77 12.77 0 0 0 17.6 0l15.7-15.69 72.2-72.22a12 12 0 0 0 .09-16.9zM64 368c-26.49 0-48.59 21.5-48.59 48S37.53 464 64 464a48 48 0 0 0 0-96zm432 16H208a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h288a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H208a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h288a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16zm0 160H208a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h288a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z"></path>
+    </script>
+    <script type="text/x-template" id="icon-cost-template">
+        <path transform="translate(3,-1) scale(.045)" d="M209.2 233.4l-108-31.6C88.7 198.2 80 186.5 80 173.5c0-16.3 13.2-29.5 29.5-29.5h66.3c12.2 0 24.2 3.7 34.2 10.5 6.1 4.1 14.3 3.1 19.5-2l34.8-34c7.1-6.9 6.1-18.4-1.8-24.5C238 74.8 207.4 64.1 176 64V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48h-2.5C45.8 64-5.4 118.7.5 183.6c4.2 46.1 39.4 83.6 83.8 96.6l102.5 30c12.5 3.7 21.2 15.3 21.2 28.3 0 16.3-13.2 29.5-29.5 29.5h-66.3C100 368 88 364.3 78 357.5c-6.1-4.1-14.3-3.1-19.5 2l-34.8 34c-7.1 6.9-6.1 18.4 1.8 24.5 24.5 19.2 55.1 29.9 86.5 30v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-48.2c46.6-.9 90.3-28.6 105.7-72.7 21.5-61.6-14.6-124.8-72.5-141.7z"></path>
+    </script>
+    <script type="text/x-template" id="icon-random-template">
+        <path transform="translate(-5,-1) scale(.045)" d="M592 192H473.26c12.69 29.59 7.12 65.2-17 89.32L320 417.58V464c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48V240c0-26.51-21.49-48-48-48zM480 376c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm-46.37-186.7L258.7 14.37c-19.16-19.16-50.23-19.16-69.39 0L14.37 189.3c-19.16 19.16-19.16 50.23 0 69.39L189.3 433.63c19.16 19.16 50.23 19.16 69.39 0L433.63 258.7c19.16-19.17 19.16-50.24 0-69.4zM96 248c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm128 128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm0-128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm0-128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm128 128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z"></path>
+    </script>
+    <script type="text/x-template" id="icon-merging-template">
+        <path transform="translate(-2,-1) scale(.045)" d="m 32,76.029297 c -17.69,0 -32,14.3 -32,32.000003 0,17.7 14.83818,27.70954 32,32 H 132 L 228.47852,256.01562 132,372 H 32 c -17.689999,0 -32,14.3 -32,32 0,17.7 14.31,32 32,32 h 116 c 10.1,0 17.56591,-6.84598 25.59961,-12.80078 L 296,288 h 88 v 48.0293 c 0,21.396 24.96961,32.0907 40.09961,16.9707 l 79.96094,-79.99023 c 9.387,-9.38 9.387,-24.58371 0,-33.97071 l -79.09961,-79.97851 c -15.13,-15.12 -40.99024,-4.39 -40.99024,17 V 224 H 295.96094 L 173.59961,88.828125 C 165.56591,82.873321 158.1,76.029297 148,76.029297 Z"></path>
+    </script>
+    <script type="text/x-template" id="icon-failed-template">
+        <path transform="translate(2,-1) scale(.045)" d="M296 160H180.6l42.6-129.8C227.2 15 215.7 0 200 0H56C44 0 33.8 8.9 32.2 20.8l-32 240C-1.7 275.2 9.5 288 24 288h118.7L96.6 482.5c-3.6 15.2 8 29.5 23.3 29.5 8.4 0 16.4-4.4 20.8-12l176-304c9.3-15.9-2.2-36-20.7-36z"></path>
+    </script>
+    <script type="text/x-template" id="icon-delayed-template">
+        <path transform="translate(2,-1) scale(.045)" d="M352 0C369.7 0 384 14.33 384 32C384 49.67 369.7 64 352 64V74.98C352 117.4 335.1 158.1 305.1 188.1L237.3 256L305.1 323.9C335.1 353.9 352 394.6 352 437V448C369.7 448 384 462.3 384 480C384 497.7 369.7 512 352 512H32C14.33 512 0 497.7 0 480C0 462.3 14.33 448 32 448V437C32 394.6 48.86 353.9 78.86 323.9L146.7 256L78.86 188.1C48.86 158.1 32 117.4 32 74.98V64C14.33 64 0 49.67 0 32C0 14.33 14.33 0 32 0H352zM124.1 142.9L192 210.7L259.9 142.9C277.9 124.9 288 100.4 288 74.98V64H96V74.98C96 100.4 106.1 124.9 124.1 142.9z"></path>
+    </script>
+    <script type="text/x-template" id="icon-reboot-template">
+        <g transform="translate(2,-1) scale(.045)" >
+            <circle cx="250" cy="250" r="150" style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;" />
+            <path style="fill:#ffffff;stroke:#ffffff;stroke-width:150px;" transform="translate(20,20) scale(.9)" d="M464 16c-17.67 0-32 14.31-32 32v74.09C392.1 66.52 327.4 32 256 32C161.5 32 78.59 92.34 49.58 182.2c-5.438 16.81 3.797 34.88 20.61 40.28c16.89 5.5 34.88-3.812 40.3-20.59C130.9 138.5 189.4 96 256 96c50.5 0 96.26 24.55 124.4 64H336c-17.67 0-32 14.31-32 32s14.33 32 32 32h128c17.67 0 32-14.31 32-32V48C496 30.31 481.7 16 464 16zM441.8 289.6c-16.92-5.438-34.88 3.812-40.3 20.59C381.1 373.5 322.6 416 256 416c-50.5 0-96.25-24.55-124.4-64H176c17.67 0 32-14.31 32-32s-14.33-32-32-32h-128c-17.67 0-32 14.31-32 32v144c0 17.69 14.33 32 32 32s32-14.31 32-32v-74.09C119.9 445.5 184.6 480 255.1 480c94.45 0 177.4-60.34 206.4-150.2C467.9 313 458.6 294.1 441.8 289.6z"></path>
+            <path transform="translate(20,20) scale(.9)" d="M464 16c-17.67 0-32 14.31-32 32v74.09C392.1 66.52 327.4 32 256 32C161.5 32 78.59 92.34 49.58 182.2c-5.438 16.81 3.797 34.88 20.61 40.28c16.89 5.5 34.88-3.812 40.3-20.59C130.9 138.5 189.4 96 256 96c50.5 0 96.26 24.55 124.4 64H336c-17.67 0-32 14.31-32 32s14.33 32 32 32h128c17.67 0 32-14.31 32-32V48C496 30.31 481.7 16 464 16zM441.8 289.6c-16.92-5.438-34.88 3.812-40.3 20.59C381.1 373.5 322.6 416 256 416c-50.5 0-96.25-24.55-124.4-64H176c17.67 0 32-14.31 32-32s-14.33-32-32-32h-128c-17.67 0-32 14.31-32 32v144c0 17.69 14.33 32 32 32s32-14.31 32-32v-74.09C119.9 445.5 184.6 480 255.1 480c94.45 0 177.4-60.34 206.4-150.2C467.9 313 458.6 294.1 441.8 289.6z"></path>
+        </g>
+    </script>
+    <script type="text/x-template" id="icon-fallback-template">
+        <g transform="translate(2,-1) scale(.045)" >
+            <circle cx="256" cy="256" r="290" style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;" />
+            <path d="M 256,504 C 392.967,504 504,392.967 504,256 504,119.033 392.967,8 256,8 119.033,8 8,119.033 8,256 8,392.967 119.033,504 256,504 Z m -103.398,-76.72 53.411,-53.411 c 31.806,13.506 68.128,13.522 99.974,0 l 53.411,53.411 c -63.217,38.319 -143.579,38.319 -206.796,0 z M 336,256 c 0,44.112 -35.888,80 -80,80 -44.112,0 -80,-35.888 -80,-80 0,-44.112 35.888,-80 80,-80 44.112,0 80,35.888 80,80 z m 91.28,103.398 -53.411,-53.411 c 13.505,-31.806 13.522,-68.128 0,-99.974 l 53.411,-53.411 c 38.319,63.217 38.319,143.579 0,206.796 z M 359.397,84.72 305.986,138.131 c -31.806,-13.505 -68.128,-13.522 -99.973,0 L 152.602,84.72 c 63.217,-38.319 143.579,-38.319 206.795,0 z m -274.677,67.882 53.411,53.411 c -13.506,31.806 -13.522,68.128 0,99.974 L 84.72,359.398 c -38.319,-63.217 -38.319,-143.579 0,-206.796 z"></path>
+        </g>
+    </script>
+
+    <!-- Include Vue.js -->
+    <script src="thirdparty/vue.global.js"></script>
+
+    <!-- Include Fontawesome Icons -->
+    <link href="thirdparty/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <!-- Include roslib.js -->
+    <script type="text/javascript" src="thirdparty/roslib.min.js"></script>
+
+    <!-- JavaScript & Stylesheet for this root HTML file -->
+    <script src="thirdparty/js-yaml.min.js"></script>
+    <script src="thirdparty/browser_detect.js"></script>
+    <script src="ros.js"></script>
+    <script src="icons.js"></script>
+    <script src="arbitrator_option.js"></script>
+    <script src="inline_style.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="svg.css">
+</body>
+
+</html>
