@@ -37,10 +37,6 @@ public:
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
-     *
-     * @param start
-     * @param goal
-     * @return int
      */
     int distance(const Position& start, const Position& goal) const;
 

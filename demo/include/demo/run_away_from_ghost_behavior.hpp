@@ -35,15 +35,9 @@ public:
     bool checkInvocationCondition(const Time& time) const override;
     bool checkCommitmentCondition(const Time& time) const override;
 
-    void gainControl(const Time& time) override;
-    void loseControl(const Time& time) override;
-
 private:
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
-
-
-    bool isActive_{false};
 };
 
 } // namespace demo

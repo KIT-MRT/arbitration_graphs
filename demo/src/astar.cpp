@@ -50,8 +50,16 @@ void AStar::expandCell(Set& openSet, Grid<Cell>& cells, const Position& goal) co
 
     cells[{current.position.x, current.position.y}].visited = true;
 
-    for (const auto& move : possibleMoves) {
+    for (const auto& move : Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
+
+        // If we are about to step of the maze and both the left and right end of the cell are passable,
+        // we assume they are connected by a tunnel.
+        if (nextPosition.x == -1 && isPassableCell({cells.width() - 1, nextPosition.y})) {
+            nextPosition.x = cells.width() - 1;
+        } else if (nextPosition.x == cells.width() && isPassableCell({0, nextPosition.y})) {
+            nextPosition.x = 0;
+        }
 
         if (!isPassableCell(nextPosition)) {
             continue;
@@ -65,7 +73,11 @@ void AStar::expandCell(Set& openSet, Grid<Cell>& cells, const Position& goal) co
         int newDistance = current.distanceFromStart + 1;
         if (newDistance < neighbor.distanceFromStart) {
             neighbor.distanceFromStart = newDistance;
-            neighbor.heuristic = neighbor.distance(goal);
+            // The heuristic must always underestimate the actual distance.
+            // The first term is just the euclidian distance.
+            // The second term estimates the distance through the tunnel.
+            int heuristic = std::min(neighbor.distance(goal), cells.width() - neighbor.distance(goal));
+            neighbor.heuristic = heuristic;
             openSet.push(neighbor);
         }
     }

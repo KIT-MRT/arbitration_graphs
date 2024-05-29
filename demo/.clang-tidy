@@ -1,7 +1,5 @@
-# clang tidy file installed by mrt_tools. Do not modify: This file will be overwritten.
 Checks: >
   -*,
-  mrt*,
   bugprone-*,
   clang-analyzer-apiModeling*,
   clang-analyzer-core*,clang-analyzer-deadcode*,

@@ -6,10 +6,10 @@ namespace demo {
 Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
     auto pacmanPosition = environmentModel_->pacmanPosition();
     auto ghostPosition = environmentModel_->closestGhostPosition();
-    auto direction = Direction::NONE;
+    auto direction = Direction::LAST;
 
     double maxDistance = -1;
-    for (const auto& move : possibleMoves) {
+    for (const auto& move : Move::possibleMoves()) {
         auto nextPosition = pacmanPosition + move.deltaPosition;
 
         if (environmentModel_->isWall(nextPosition)) {
@@ -32,14 +32,6 @@ bool RunAwayFromGhostBehavior::checkInvocationCondition(const Time& time) const 
 
 bool RunAwayFromGhostBehavior::checkCommitmentCondition(const Time& time) const {
     return environmentModel_->closestGhostDistance() < parameters_.commitmentMinDistance;
-}
-
-void RunAwayFromGhostBehavior::gainControl(const Time& time) {
-    isActive_ = true;
-}
-
-void RunAwayFromGhostBehavior::loseControl(const Time& time) {
-    isActive_ = false;
 }
 
 } // namespace demo

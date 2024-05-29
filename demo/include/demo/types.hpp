@@ -22,7 +22,7 @@ using registry = ::entt::registry;
 using MazeState = ::MazeState;
 } // namespace entt
 
-enum class Direction { UP, DOWN, LEFT, RIGHT, NONE };
+enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
 
 struct Position {
     int x;
@@ -53,15 +53,20 @@ struct Command {
         {Direction::DOWN, SDL_SCANCODE_DOWN},
         {Direction::LEFT, SDL_SCANCODE_LEFT},
         {Direction::RIGHT, SDL_SCANCODE_RIGHT},
-        {Direction::NONE, SDL_SCANCODE_UNKNOWN},
+        {Direction::LAST, SDL_SCANCODE_UNKNOWN},
     };
 };
 
 struct Move {
     Direction direction;
     Position deltaPosition;
+
+    static std::vector<Move> possibleMoves() {
+        return {{Direction::UP, {0, -1}},
+                {Direction::DOWN, {0, 1}},
+                {Direction::LEFT, {-1, 0}},
+                {Direction::RIGHT, {1, 0}}};
+    }
 };
 using Moves = std::vector<Move>;
-const Moves possibleMoves{
-    {Direction::UP, {0, -1}}, {Direction::DOWN, {0, 1}}, {Direction::LEFT, {-1, 0}}, {Direction::RIGHT, {1, 0}}};
 } // namespace demo

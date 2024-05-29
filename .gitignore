@@ -3,4 +3,3 @@ setup.py
 *.pyc
 CMakeLists.txt.user
 build
-.vscode

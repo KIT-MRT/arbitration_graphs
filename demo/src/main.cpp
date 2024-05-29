@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 
-#include "demo/pacman_arbitrator.hpp"
+#include "demo/pacman_agent.hpp"
 #include "demo/pacman_wrapper.hpp"
 #include "demo/types.hpp"
 
@@ -10,13 +10,13 @@ using namespace demo;
 int main() {
     try {
         PacmanWrapper demo;
-        PacmanArbitrator arbitrator;
+        PacmanAgent agent;
 
         while (!demo.quit()) {
-            arbitrator.updateEnvironmentModel(demo.game());
+            agent.updateEnvironmentModel(demo.game());
 
-            Command command = arbitrator.getCommand(Clock::now());
-            std::cout << arbitrator.to_str(Clock::now()) << '\n';
+            Command command = agent.getCommand(Clock::now());
+            std::cout << agent.to_str(Clock::now()) << '\n';
 
             demo.progressGame(command);
         }

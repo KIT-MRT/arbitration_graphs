@@ -19,7 +19,7 @@ TEST(DoNothingBehaviorTest, getCommand) {
 
     Time time = Clock::now();
     Command command = doNothingBehavior.getCommand(time);
-    ASSERT_EQ(command.direction, Direction::NONE);
+    ASSERT_EQ(command.direction, Direction::LAST);
 }
 
 } // namespace demo

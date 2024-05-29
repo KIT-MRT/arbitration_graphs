@@ -23,7 +23,7 @@ public:
     }
 
     Command getCommand(const Time& time) override {
-        return {Direction::NONE};
+        return {Direction::LAST};
     }
 
     bool checkInvocationCondition(const Time& time) const override {
@@ -34,14 +34,9 @@ public:
     }
 
     void gainControl(const Time& time) override {
-        isActive_ = true;
     }
     void loseControl(const Time& time) override {
-        isActive_ = false;
     }
-
-private:
-    bool isActive_{false};
 };
 
 } // namespace demo

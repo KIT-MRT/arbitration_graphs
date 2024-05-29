@@ -35,4 +35,19 @@ TEST_F(AStarTest, distanceWithWalls) {
     EXPECT_EQ(astar.distance({1, 2}, {3, 2}), 4);
 }
 
+TEST_F(AStarTest, distanceWithTunnel) {
+    const char str[] = {"#####"
+                        "#   #"
+                        "     "
+                        "#   #"
+                        "#####"};
+    environmentModel_->setMaze({5, 5}, str);
+
+    AStar astar(environmentModel_->maze());
+    EXPECT_EQ(astar.distance({0, 2}, {4, 2}), 1);
+    EXPECT_EQ(astar.distance({4, 2}, {0, 2}), 1);
+    EXPECT_EQ(astar.distance({1, 1}, {3, 3}), 4);
+    EXPECT_EQ(astar.distance({1, 3}, {4, 2}), 3);
+}
+
 } // namespace demo

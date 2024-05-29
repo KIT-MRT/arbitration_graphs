@@ -4,8 +4,8 @@
 #include <pacman/comp/player.hpp>
 #include <pacman/core/maze.hpp>
 
+#include "astar.hpp"
 #include "types.hpp"
-#include "demo/astar.hpp"
 
 namespace demo {
 
@@ -54,10 +54,6 @@ public:
      *
      * A distance of 1 is the distance between two adjacent positions in the maze.
      * Will consider walls when calculating the distance.
-     *
-     * @param start
-     * @param goal
-     * @return int
      */
     int distance(const Position& start, const Position& goal) const {
         return astar_.distance(start, goal);

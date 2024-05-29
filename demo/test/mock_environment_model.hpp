@@ -36,6 +36,7 @@ public:
     template <std::size_t Size>
     void setMaze(const Position& size, const char (&str)[Size]) {
         mazeState_ = makeCustomMazeState({size.x, size.y}, str);
+        astar_ = AStar(mazeState_);
     }
     void setEmptyMaze() {
         const char str[] = {"##########"

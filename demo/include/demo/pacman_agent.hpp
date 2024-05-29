@@ -4,9 +4,8 @@
 
 #include "do_nothing_behavior.hpp"
 #include "environment_model.hpp"
+#include "run_away_from_ghost_behavior.hpp"
 #include "types.hpp"
-#include "demo/do_nothing_behavior.hpp"
-#include "demo/run_away_from_ghost_behavior.hpp"
 
 namespace demo {
 
@@ -17,7 +16,7 @@ namespace demo {
  * It is the represents the top level of the hierarchy and will be called in each time step to return the command that
  * Pacman should execute.
  */
-class PacmanArbitrator {
+class PacmanAgent {
 public:
     using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
 
@@ -25,7 +24,7 @@ public:
         RunAwayFromGhostBehavior::Parameters runAwayFromGhostBehavior;
     };
 
-    PacmanArbitrator() {
+    PacmanAgent() {
         parameters_ = Parameters{};
         environmentModel_ = std::make_shared<EnvironmentModel>();
 
