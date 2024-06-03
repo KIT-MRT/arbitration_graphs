@@ -10,7 +10,7 @@ using namespace demo;
 int main() {
     try {
         PacmanWrapper demo;
-        PacmanAgent agent;
+        PacmanAgent agent(demo.game());
 
         while (!demo.quit()) {
             agent.updateEnvironmentModel(demo.game());

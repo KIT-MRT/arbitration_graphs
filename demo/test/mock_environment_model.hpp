@@ -3,6 +3,7 @@
 #include <pacman/core/maze.hpp>
 
 #include "demo/environment_model.hpp"
+#include "demo/types.hpp"
 
 namespace demo {
 
@@ -11,7 +12,7 @@ public:
     using Ptr = std::shared_ptr<MockEnvironmentModel>;
     using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
 
-    MockEnvironmentModel() : EnvironmentModel() {
+    MockEnvironmentModel() : EnvironmentModel(dummyGame_) {
         setPositionsInOppositeCorners();
         setEmptyMaze();
     }
@@ -30,7 +31,7 @@ public:
         entityPositions_.clyde = {8, 8};
     }
 
-    MazeState maze() const {
+    entt::MazeState maze() const {
         return mazeState_;
     }
     template <std::size_t Size>
@@ -51,6 +52,9 @@ public:
                             "##########"};
         setMaze({10, 10}, str);
     }
+
+private:
+    Game dummyGame_; // We just need this to initialize the base environment model
 };
 
 } // namespace demo

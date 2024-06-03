@@ -1,10 +1,9 @@
 #include "demo/environment_model.hpp"
-#include <algorithm>
 
 namespace demo {
 
-void EnvironmentModel::updatePositions(entt::registry& registry) {
-    auto view = registry.view<entt::Position>();
+void EnvironmentModel::updatePositions(const entt::registry& registry) {
+    auto view = registry.view<const entt::Position>();
     for (auto entity : view) {
         if (registry.has<Player>(entity)) {
             auto& pacmanPosition = registry.get<entt::Position>(entity);

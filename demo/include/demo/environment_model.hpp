@@ -33,16 +33,16 @@ public:
         Position clyde;
     };
 
+    EnvironmentModel(const Game& game) : mazeState_(game.maze), astar_(game.maze) {
+        updatePositions(game.reg);
+    };
+
     /**
      * @brief Update the environment model to reflect the current state of the world.
-     *
-     * @param registry The EnTT registry containing the current state of the world.
-     * @param mazeState The current state of the maze.
      */
-    void update(entt::registry& registry, const entt::MazeState& mazeState) {
-        updatePositions(registry);
-        mazeState_ = mazeState;
-        astar_ = AStar(mazeState_);
+    void update(const Game& game) {
+        mazeState_ = game.maze;
+        updatePositions(game.reg);
     }
 
     Position pacmanPosition() const {
@@ -70,7 +70,7 @@ public:
     }
 
 protected:
-    void updatePositions(entt::registry& registry);
+    void updatePositions(const entt::registry& registry);
 
     PositionStore entityPositions_;
     entt::MazeState mazeState_;

@@ -24,9 +24,9 @@ public:
         RunAwayFromGhostBehavior::Parameters runAwayFromGhostBehavior;
     };
 
-    PacmanAgent() {
+    PacmanAgent(const entt::Game& game) {
         parameters_ = Parameters{};
-        environmentModel_ = std::make_shared<EnvironmentModel>();
+        environmentModel_ = std::make_shared<EnvironmentModel>(game);
 
         runAwayFromGhostBehavior_ =
             std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, RunAwayFromGhostBehavior::Parameters{});
@@ -41,8 +41,8 @@ public:
         return rootArbitrator_->getCommand(time);
     }
 
-    void updateEnvironmentModel(entt::Game& game) {
-        environmentModel_->update(game.reg, game.maze);
+    void updateEnvironmentModel(const entt::Game& game) {
+        environmentModel_->update(game);
     }
 
     std::ostream& to_stream(std::ostream& output, const Time& time) const {
