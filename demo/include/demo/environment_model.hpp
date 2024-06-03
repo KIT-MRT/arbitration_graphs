@@ -1,5 +1,6 @@
 #pragma once
 
+#include <util_caching/cache.hpp>
 #include <pacman/comp/chase_target.hpp>
 #include <pacman/comp/player.hpp>
 #include <pacman/core/maze.hpp>
@@ -47,7 +48,12 @@ public:
     Position pacmanPosition() const {
         return entityPositions_.pacman;
     }
-    Position closestGhostPosition() const;
+    /**
+     * @brief The position and manhattan distance to the closest ghost.
+     *
+     * This function uses the A* distance function so walls will be considered.
+     */
+    PositionWithDistance closestGhost(const Time& time) const;
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -57,9 +63,6 @@ public:
      */
     int distance(const Position& start, const Position& goal) const {
         return astar_.distance(start, goal);
-    }
-    double closestGhostDistance() const {
-        return distance(pacmanPosition(), closestGhostPosition());
     }
 
     bool isWall(const Position& position) const {
@@ -71,7 +74,9 @@ protected:
 
     PositionStore entityPositions_;
     entt::MazeState mazeState_;
+
     AStar astar_;
+    mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
 };
 
 } // namespace demo
