@@ -7,6 +7,7 @@
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/type_adapter.hpp"
 
 namespace demo {
 
@@ -47,6 +48,12 @@ public:
 
     Position pacmanPosition() const {
         return entityPoses_.pacman.position;
+    }
+    Position nextPacmanPosition() const {
+        Position currentPosition = entityPoses_.pacman.position;
+        Direction currentDirection = entityPoses_.pacman.direction;
+        Position deltaPosition = utils::MoveAdapter().getDeltaPosition(currentDirection);
+        return currentPosition + deltaPosition;
     }
     /**
      * @brief The position and manhattan distance to the closest ghost.
