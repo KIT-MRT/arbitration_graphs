@@ -1,4 +1,4 @@
-#include "demo/pacman_wrapper.hpp"
+#include "utils/pacman_wrapper.hpp"
 
 #include <SDL_main.h>
 
@@ -7,7 +7,7 @@
 #include <pacman/util/sdl_check.hpp>
 #include <pacman/util/sdl_load_texture.hpp>
 
-namespace demo {
+namespace utils {
 
 int getScaleFactor() {
     // Make the largest window possible with an integer scale factor
@@ -69,4 +69,4 @@ void PacmanWrapper::progressGame(const demo::Command& command) {
     FrameCap sync{fps};
 }
 
-} // namespace demo
+} // namespace utils

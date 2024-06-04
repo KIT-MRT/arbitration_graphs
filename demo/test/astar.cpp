@@ -1,10 +1,12 @@
-#include "demo/astar.hpp"
+#include "utils/astar.hpp"
 
 #include <gtest/gtest.h>
 
 #include "mock_environment_model.hpp"
 
-namespace demo {
+namespace utils {
+
+using namespace demo;
 
 class AStarTest : public ::testing::Test {
 protected:
@@ -50,4 +52,4 @@ TEST_F(AStarTest, distanceWithTunnel) {
     EXPECT_EQ(astar.distance({1, 3}, {4, 2}), 3);
 }
 
-} // namespace demo
+} // namespace utils

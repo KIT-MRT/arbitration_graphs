@@ -8,7 +8,7 @@
 
 #include "demo/types.hpp"
 
-namespace demo {
+namespace utils {
 
 class PacmanWrapper {
 public:
@@ -38,4 +38,4 @@ private:
     bool quit_{false};
 };
 
-} // namespace demo
+} // namespace utils

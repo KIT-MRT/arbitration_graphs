@@ -6,12 +6,16 @@
 #include <queue>
 #include <vector>
 
+#include <comp/position.hpp>
 #include <util_caching/cache.hpp>
 #include <pacman/util/grid.hpp>
 
-#include "types.hpp"
+#include "demo/types.hpp"
 
-namespace demo {
+namespace utils {
+
+using Position = demo::Position;
+using MazeState = demo::entt::MazeState;
 
 struct Cell {
     struct CompareCells {
@@ -35,7 +39,7 @@ struct Cell {
 
 class MazeAdapter {
 public:
-    using MazeStateConstPtr = std::shared_ptr<const entt::MazeState>;
+    using MazeStateConstPtr = std::shared_ptr<const MazeState>;
 
     MazeAdapter(const MazeStateConstPtr& mazeState)
             : mazeState_(mazeState), cells_({mazeState_->width(), mazeState_->height()}) {};
@@ -73,7 +77,7 @@ public:
 
     constexpr static int NO_PATH_FOUND = std::numeric_limits<int>::max();
 
-    AStar(const entt::MazeState mazeState) : mazeState_(std::make_shared<const entt::MazeState>(mazeState)) {};
+    AStar(const MazeState mazeState) : mazeState_(std::make_shared<const MazeState>(mazeState)) {};
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -90,4 +94,4 @@ private:
     MazeAdapter::MazeStateConstPtr mazeState_;
 };
 
-} // namespace demo
+} // namespace utils

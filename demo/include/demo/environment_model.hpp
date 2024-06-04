@@ -5,8 +5,8 @@
 #include <pacman/comp/player.hpp>
 #include <pacman/core/maze.hpp>
 
-#include "astar.hpp"
 #include "types.hpp"
+#include "utils/astar.hpp"
 
 namespace demo {
 
@@ -75,7 +75,7 @@ protected:
     PositionStore entityPositions_;
     entt::MazeState mazeState_;
 
-    AStar astar_;
+    utils::AStar astar_;
     mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
 };
 

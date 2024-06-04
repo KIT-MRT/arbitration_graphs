@@ -1,7 +1,6 @@
-#include "demo/astar.hpp"
-#include "demo/types.hpp"
+#include "utils/astar.hpp"
 
-namespace demo {
+namespace utils {
 
 int AStar::distance(const Position& start, const Position& goal) const {
     if (distanceCache.cached({start, goal})) {
@@ -41,7 +40,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
 
     mazeAdapter.cell(current.position).visited = true;
 
-    for (const auto& move : Move::possibleMoves()) {
+    for (const auto& move : demo::Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
 
         // If we are about to step of the maze and both the left and right end of the cell are passable,
@@ -74,4 +73,4 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
     }
 }
 
-} // namespace demo
+} // namespace utils

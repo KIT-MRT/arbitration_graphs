@@ -2,10 +2,11 @@
 #include <iostream>
 
 #include "demo/pacman_agent.hpp"
-#include "demo/pacman_wrapper.hpp"
 #include "demo/types.hpp"
+#include "utils/pacman_wrapper.hpp"
 
 using namespace demo;
+using namespace utils;
 
 int main() {
     try {
