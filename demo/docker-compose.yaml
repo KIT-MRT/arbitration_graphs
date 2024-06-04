@@ -1,10 +1,24 @@
 services:
-  arbitration_graphs_pacman_demo:
-    build: .
-    image: arbitration_graphs_pacman_demo
+  tutorial:
+    build:
+      context: .
+      target: tutorial
+    image: arbitration_graphs_pacman_tutorial
     volumes:
       - .:/home/blinky/demo
       - $HOME/.Xauthority:/home/blinky/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - DISPLAY=$DISPLAY
+
+  demo:
+    build:
+      context: .
+      target: demo
+    image: arbitration_graphs_pacman_demo
+    volumes:
+      - $HOME/.Xauthority:/home/blinky/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY
+

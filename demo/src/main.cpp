@@ -1,23 +1,30 @@
-#include <cstdlib>
+#include <exception>
+#include <iostream>
 
-#include <pacman/core/app.hpp>
+#include "demo/pacman_agent.hpp"
+#include "demo/types.hpp"
+#include "utils/pacman_wrapper.hpp"
 
+using namespace demo;
+using namespace utils;
 
 int main() {
-  // Initialization Game Engine
-  Application app;
+    try {
+        PacmanWrapper demo;
+        PacmanAgent agent(demo.game());
 
-  // Initialization Behaviors / Arbitration Graph
+        while (!demo.quit()) {
+            agent.updateEnvironmentModel(demo.game());
 
-  // Loop
+            Command command = agent.getCommand(Clock::now());
+            std::cout << agent.to_str(Clock::now()) << '\n';
 
-  //// Get environment state from game engine
-  //// Update environment model
+            demo.progressGame(command);
+        }
+    } catch (std::exception& e) {
+        std::cout << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
 
-  //// Get command for ego player \todo find his name
-
-  //// Send command to game engine
-  //// Update game state
-
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
