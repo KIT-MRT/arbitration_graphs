@@ -22,38 +22,38 @@ protected:
 };
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionTrue) {
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {2, 3};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {2, 3};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     ASSERT_TRUE(runAwayFromGhostBehavior_.checkInvocationCondition(time));
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkInvocationConditionFalse) {
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     ASSERT_FALSE(runAwayFromGhostBehavior_.checkInvocationCondition(time));
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionTrue) {
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {2, 3};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {2, 3};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     ASSERT_TRUE(runAwayFromGhostBehavior_.checkCommitmentCondition(time));
 }
 
 TEST_F(RunAwayFromGhostBehaviorTest, checkCommitmentConditionFalse) {
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     ASSERT_FALSE(runAwayFromGhostBehavior_.checkCommitmentCondition(time));
@@ -65,10 +65,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandLeft) {
                         "###"};
     environmentModel_->setMaze({3, 3}, str);
 
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {2, 1};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {2, 1};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
@@ -81,10 +81,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandRight) {
                         "###"};
     environmentModel_->setMaze({3, 3}, str);
 
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {0, 1};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {0, 1};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
@@ -97,10 +97,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandDown) {
                         "# #"};
     environmentModel_->setMaze({3, 3}, str);
 
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {1, 0};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {1, 0};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
@@ -113,10 +113,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandUp) {
                         "# #"};
     environmentModel_->setMaze({3, 3}, str);
 
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {1, 2};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {1, 2};
+    environmentModel_->setPoses(poses);
 
     Time time = Clock::now();
     Command command = runAwayFromGhostBehavior_.getCommand(time);
@@ -129,10 +129,10 @@ TEST_F(RunAwayFromGhostBehaviorTest, getCommandAwayFromWall) {
                         "###"};
     environmentModel_->setMaze({3, 3}, str);
 
-    auto positions = environmentModel_->positions();
-    positions.pacman = {1, 1};
-    positions.blinky = {2, 1};
-    environmentModel_->setPositions(positions);
+    auto poses = environmentModel_->poses();
+    poses.pacman.position = {1, 1};
+    poses.blinky.position = {2, 1};
+    environmentModel_->setPoses(poses);
 
     // Even though there is a ghost, pacman should not move towards a wall.
     Time time = Clock::now();

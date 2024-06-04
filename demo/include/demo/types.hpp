@@ -5,10 +5,13 @@
 
 #include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
+#include <entt/entity/entity.hpp>
 #include <entt/entity/registry.hpp>
+#include <pacman/comp/dir.hpp>
 #include <pacman/comp/position.hpp>
 #include <pacman/core/game.hpp>
 #include <pacman/core/maze.hpp>
+#include <pacman/util/dir.hpp>
 
 namespace demo {
 
@@ -18,8 +21,11 @@ using Time = arbitration_graphs::Time;
 namespace entt {
 using Game = ::Game;
 using Position = ::Position;
-using registry = ::entt::registry;
+using Direction = ::Dir;
+using ActualDirection = ::ActualDir;
 using MazeState = ::MazeState;
+using registry = ::entt::registry;
+using entity = ::entt::entity;
 } // namespace entt
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
@@ -39,6 +45,11 @@ struct Position {
     }
 };
 using Positions = std::vector<Position>;
+
+struct Pose {
+    Position position;
+    Direction direction{Direction::LAST};
+};
 
 struct PositionWithDistance {
     Position position;

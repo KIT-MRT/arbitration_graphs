@@ -21,20 +21,20 @@ public:
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
 
-    struct PositionStore {
+    struct PoseStore {
         Positions ghostPositions() const {
-            return {blinky, pinky, inky, clyde};
+            return {blinky.position, pinky.position, inky.position, clyde.position};
         }
 
-        Position pacman;
-        Position blinky;
-        Position pinky;
-        Position inky;
-        Position clyde;
+        Pose pacman;
+        Pose blinky;
+        Pose pinky;
+        Pose inky;
+        Pose clyde;
     };
 
     EnvironmentModel(const Game& game) : mazeState_(game.maze), astar_(game.maze) {
-        updatePositions(game.reg);
+        updatePoses(game.reg);
     };
 
     /**
@@ -42,11 +42,11 @@ public:
      */
     void update(const Game& game) {
         mazeState_ = game.maze;
-        updatePositions(game.reg);
+        updatePoses(game.reg);
     }
 
     Position pacmanPosition() const {
-        return entityPositions_.pacman;
+        return entityPoses_.pacman.position;
     }
     /**
      * @brief The position and manhattan distance to the closest ghost.
@@ -70,9 +70,9 @@ public:
     }
 
 protected:
-    void updatePositions(const entt::registry& registry);
+    void updatePoses(const entt::registry& registry);
 
-    PositionStore entityPositions_;
+    PoseStore entityPoses_;
     entt::MazeState mazeState_;
 
     utils::AStar astar_;

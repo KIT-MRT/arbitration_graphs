@@ -1,25 +1,30 @@
 #include "demo/environment_model.hpp"
 
+#include "utils/type_adapter.hpp"
+
 namespace demo {
 
-void EnvironmentModel::updatePositions(const entt::registry& registry) {
-    auto view = registry.view<const entt::Position>();
+Pose poseFromRegistry(const entt::registry& registry, const entt::entity& entity) {
+    auto& enttPosition = registry.get<entt::Position>(entity);
+    Position position = {enttPosition.p.x, enttPosition.p.y};
+    auto& enttDirection = registry.get<entt::ActualDirection>(entity).d;
+    Direction direction = utils::DirectionAdapter().fromEnttDirection(enttDirection);
+    return {position, direction};
+}
+
+void EnvironmentModel::updatePoses(const entt::registry& registry) {
+    auto view = registry.view<const entt::Position, const entt::ActualDirection>();
     for (auto entity : view) {
         if (registry.has<Player>(entity)) {
-            auto& pacmanPosition = registry.get<entt::Position>(entity);
-            entityPositions_.pacman = {pacmanPosition.p.x, pacmanPosition.p.y};
+            entityPoses_.pacman = poseFromRegistry(registry, entity);
         } else if (registry.has<BlinkyChaseTarget>(entity)) {
-            auto& blinkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.blinky = {blinkyPosition.p.x, blinkyPosition.p.y};
+            entityPoses_.blinky = poseFromRegistry(registry, entity);
         } else if (registry.has<PinkyChaseTarget>(entity)) {
-            auto& pinkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.pinky = {pinkyPosition.p.x, pinkyPosition.p.y};
+            entityPoses_.pinky = poseFromRegistry(registry, entity);
         } else if (registry.has<InkyChaseTarget>(entity)) {
-            auto& inkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.inky = {inkyPosition.p.x, inkyPosition.p.y};
+            entityPoses_.inky = poseFromRegistry(registry, entity);
         } else if (registry.has<ClydeChaseTarget>(entity)) {
-            auto& clydePosition = registry.get<entt::Position>(entity);
-            entityPositions_.clyde = {clydePosition.p.x, clydePosition.p.y};
+            entityPoses_.clyde = poseFromRegistry(registry, entity);
         }
     }
 }
@@ -31,7 +36,7 @@ PositionWithDistance EnvironmentModel::closestGhost(const Time& time) const {
 
     int minDistance = std::numeric_limits<int>::max();
     Position closestGhostPosition;
-    for (const auto& ghostPosition : entityPositions_.ghostPositions()) {
+    for (const auto& ghostPosition : entityPoses_.ghostPositions()) {
         double distance = ghostPosition.distance(pacmanPosition());
         if (distance < minDistance) {
             minDistance = distance;
