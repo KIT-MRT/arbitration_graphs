@@ -4,6 +4,10 @@
 namespace demo {
 
 int AStar::distance(const Position& start, const Position& goal) const {
+    if (distanceCache.cached({start, goal})) {
+        return distanceCache.cached({start, goal}).value();
+    }
+
     MazeAdapter mazeAdapter(mazeState_);
     Set openSet;
 
@@ -17,14 +21,18 @@ int AStar::distance(const Position& start, const Position& goal) const {
 
     openSet.push(startCell);
 
+    int result = NO_PATH_FOUND;
     while (!openSet.empty()) {
         if (openSet.top().position == goal) {
-            return openSet.top().distanceFromStart;
+            result = openSet.top().distanceFromStart;
+            break;
         }
         expandCell(openSet, mazeAdapter, goal);
     }
 
-    return std::numeric_limits<int>::max();
+
+    distanceCache.cache({start, goal}, result);
+    return result;
 }
 
 void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const {

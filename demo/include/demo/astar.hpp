@@ -6,6 +6,7 @@
 #include <queue>
 #include <vector>
 
+#include <util_caching/cache.hpp>
 #include <pacman/util/grid.hpp>
 
 #include "types.hpp"
@@ -61,7 +62,6 @@ public:
         return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
     }
 
-
 private:
     const MazeStateConstPtr mazeState_;
     mutable Grid<std::optional<Cell>> cells_;
@@ -70,6 +70,8 @@ private:
 class AStar {
 public:
     using Set = std::priority_queue<Cell, std::vector<Cell>, Cell::CompareCells>;
+
+    constexpr static int NO_PATH_FOUND = std::numeric_limits<int>::max();
 
     AStar(const entt::MazeState mazeState) : mazeState_(std::make_shared<const entt::MazeState>(mazeState)) {};
 
@@ -83,6 +85,7 @@ public:
 
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
+    mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache;
 
     MazeAdapter::MazeStateConstPtr mazeState_;
 };
