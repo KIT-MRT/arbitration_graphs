@@ -4,7 +4,7 @@
 namespace demo {
 
 Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
-    auto pacmanPosition = environmentModel_->pacmanPosition();
+    auto pacmanPosition = environmentModel_->nextPacmanPosition();
     auto ghostPosition = environmentModel_->closestGhost(time).position;
     auto direction = Direction::LAST;
 
