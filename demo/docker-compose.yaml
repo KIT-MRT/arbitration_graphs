@@ -3,14 +3,9 @@ services:
     build:
       context: .
       target: tutorial
-    devices:
-      - /dev/dri:/dev/dri
-    environment:
-      - DISPLAY=$DISPLAY
     image: arbitration_graphs_pacman_tutorial
     ports:
       - "1256:1256"
-      - "1337:1337"
     volumes:
       - .:/home/blinky/demo
       - $HOME/.Xauthority:/home/blinky/.Xauthority
@@ -22,14 +17,9 @@ services:
     build:
       context: .
       target: demo
-    devices:
-      - /dev/dri:/dev/dri
-    environment:
-      - DISPLAY=$DISPLAY
     image: arbitration_graphs_pacman_demo
     ports:
       - "1256:1256"
-      - "1337:1337"
     volumes:
       - $HOME/.Xauthority:/home/blinky/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix
