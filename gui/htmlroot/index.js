@@ -24,7 +24,7 @@ app = Vue.createApp({
     },
     methods: {
         connectToWebSocket() {
-            const wsUrl = 'ws://localhost:8080';
+            const wsUrl = 'ws://localhost:1256';
             this.websocket = new WebSocket(wsUrl);
 
             this.websocket.onopen = () => {
