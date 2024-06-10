@@ -52,4 +52,21 @@ TEST_F(AStarTest, distanceWithTunnel) {
     EXPECT_EQ(astar.distance({1, 3}, {4, 2}), 3);
 }
 
+TEST_F(AStarTest, cachedDistance) {
+    AStar astar(environmentModel_->maze());
+
+    // In the first run, we need to compute distance the hard way
+    Time startWithoutCaching = Clock::now();
+    EXPECT_EQ(astar.distance({1, 1}, {8, 8}), 14);
+    Time endWithoutCaching = Clock::now();
+
+    // In the second run, the cached distance can be returned which should of course be the same value...
+    Time startWithCaching = Clock::now();
+    EXPECT_EQ(astar.distance({1, 1}, {8, 8}), 14);
+    Time endWithCaching = Clock::now();
+
+    // ...but we should get it faster
+    EXPECT_LT((endWithCaching - startWithCaching).count(), (endWithoutCaching - startWithoutCaching).count());
+}
+
 } // namespace utils
