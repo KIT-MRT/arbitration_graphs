@@ -11,11 +11,11 @@
 #include <pacman/util/grid.hpp>
 
 #include "demo/types.hpp"
+#include "utils/maze.hpp"
 
 namespace utils {
 
 using Position = demo::Position;
-using MazeState = demo::entt::MazeState;
 
 struct Cell {
     struct CompareCells {
@@ -41,33 +41,18 @@ class MazeAdapter {
 public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
 
-    MazeAdapter(const MazeStateConstPtr& mazeState)
-            : mazeState_(mazeState), cells_({mazeState_->width(), mazeState_->height()}) {};
+    MazeAdapter(const Maze::ConstPtr& maze) : maze_(maze), cells_({maze_->width(), maze_->height()}) {};
 
     Cell& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
-            cells_[{position.x, position.y}] =
-                Cell(position, mazeState_->operator[]({position.x, position.y}) == Tile::wall);
+            cells_[{position.x, position.y}] = Cell(position, maze_->isWall(position));
         }
 
         return cells_[{position.x, position.y}].value();
     }
 
-    int width() const {
-        return mazeState_->width();
-    }
-    int height() const {
-        return mazeState_->height();
-    }
-    bool isPassableCell(const Position& position) const {
-        return isInBounds(position) && !cell(position).isWall;
-    }
-    bool isInBounds(const Position& position) const {
-        return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
-    }
-
 private:
-    const MazeStateConstPtr mazeState_;
+    Maze::ConstPtr maze_;
     mutable Grid<std::optional<Cell>> cells_;
 };
 
@@ -77,7 +62,7 @@ public:
 
     constexpr static int NO_PATH_FOUND = std::numeric_limits<int>::max();
 
-    AStar(const MazeState mazeState) : mazeState_(std::make_shared<const MazeState>(mazeState)) {};
+    AStar(const Maze::ConstPtr maze) : maze_(maze) {};
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -89,9 +74,9 @@ public:
 
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
-    mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache;
+    mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache_;
 
-    MazeAdapter::MazeStateConstPtr mazeState_;
+    Maze::ConstPtr maze_;
 };
 
 } // namespace utils

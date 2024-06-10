@@ -3,11 +3,11 @@
 namespace utils {
 
 int AStar::distance(const Position& start, const Position& goal) const {
-    if (distanceCache.cached({start, goal})) {
-        return distanceCache.cached({start, goal}).value();
+    if (distanceCache_.cached({start, goal})) {
+        return distanceCache_.cached({start, goal}).value();
     }
 
-    MazeAdapter mazeAdapter(mazeState_);
+    MazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(start);
@@ -30,7 +30,7 @@ int AStar::distance(const Position& start, const Position& goal) const {
     }
 
 
-    distanceCache.cache({start, goal}, result);
+    distanceCache_.cache({start, goal}, result);
     return result;
 }
 
@@ -45,13 +45,13 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
 
         // If we are about to step of the maze and both the left and right end of the cell are passable,
         // we assume they are connected by a tunnel.
-        if (nextPosition.x == -1 && mazeAdapter.isPassableCell({mazeAdapter.width() - 1, nextPosition.y})) {
-            nextPosition.x = mazeAdapter.width() - 1;
-        } else if (nextPosition.x == mazeAdapter.width() && mazeAdapter.isPassableCell({0, nextPosition.y})) {
+        if (nextPosition.x == -1 && maze_->isPassableCell({maze_->width() - 1, nextPosition.y})) {
+            nextPosition.x = maze_->width() - 1;
+        } else if (nextPosition.x == maze_->width() && maze_->isPassableCell({0, nextPosition.y})) {
             nextPosition.x = 0;
         }
 
-        if (!mazeAdapter.isPassableCell(nextPosition)) {
+        if (!maze_->isPassableCell(nextPosition)) {
             continue;
         }
 
@@ -66,7 +66,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
             // The heuristic must always underestimate the actual distance.
             // The first term is just the euclidian distance.
             // The second term estimates the distance through the tunnel.
-            int heuristic = std::min(neighbor.distance(goal), mazeAdapter.width() - neighbor.distance(goal));
+            int heuristic = std::min(neighbor.distance(goal), maze_->width() - neighbor.distance(goal));
             neighbor.heuristic = heuristic;
             openSet.push(neighbor);
         }

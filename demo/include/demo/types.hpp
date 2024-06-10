@@ -20,6 +20,7 @@ using Game = ::Game;
 using Position = ::Position;
 using registry = ::entt::registry;
 using MazeState = ::MazeState;
+using Tile = ::Tile;
 } // namespace entt
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
