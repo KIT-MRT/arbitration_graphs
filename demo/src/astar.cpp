@@ -43,13 +43,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
     for (const auto& move : demo::Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
 
-        // If we are about to step of the maze and both the left and right end of the cell are passable,
-        // we assume they are connected by a tunnel.
-        if (nextPosition.x == -1 && maze_->isPassableCell({maze_->width() - 1, nextPosition.y})) {
-            nextPosition.x = maze_->width() - 1;
-        } else if (nextPosition.x == maze_->width() && maze_->isPassableCell({0, nextPosition.y})) {
-            nextPosition.x = 0;
-        }
+        nextPosition = positionConsideringTunnel(nextPosition);
 
         if (!maze_->isPassableCell(nextPosition)) {
             continue;
@@ -71,6 +65,16 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
             openSet.push(neighbor);
         }
     }
+}
+
+Position AStar::positionConsideringTunnel(const Position& position) const {
+    if (enteringTunnelOnTheLeft(position)) {
+        return {maze_->width() - 1, position.y};
+    }
+    if (enteringTunnelOnTheRight(position)) {
+        return {0, position.y};
+    }
+    return position;
 }
 
 } // namespace utils
