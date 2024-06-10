@@ -76,6 +76,17 @@ private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
 
     /**
+     * @brief Computes the heuristic of the given cell considering the goal.
+     *
+     * The heuristic must always underestimate the actual distance.
+     * The first term is just the euclidian distance.
+     * The second term estimates the distance through the tunnel.
+     */
+    double computeHeuristic(const Cell& cell, const Position& goal) const {
+        return std::min(cell.distance(goal), maze_->width() - cell.distance(goal));
+    }
+
+    /**
      * @brief If we are about to step of the maze and both the left and right end of the cell are passable,
      * we assume they are connected by a tunnel and adjust the x position accordingly.
      */

@@ -57,11 +57,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
         int newDistance = current.distanceFromStart + 1;
         if (newDistance < neighbor.distanceFromStart) {
             neighbor.distanceFromStart = newDistance;
-            // The heuristic must always underestimate the actual distance.
-            // The first term is just the euclidian distance.
-            // The second term estimates the distance through the tunnel.
-            int heuristic = std::min(neighbor.distance(goal), maze_->width() - neighbor.distance(goal));
-            neighbor.heuristic = heuristic;
+            neighbor.heuristic = computeHeuristic(neighbor, goal);
             openSet.push(neighbor);
         }
     }
