@@ -31,7 +31,7 @@ private:
     SDL::Window window_;
     SDL::Renderer renderer_;
     SDL::Texture maze_;
-    SDL::QuadWriter writer_{nullptr, nullptr};
+    SDL::QuadWriter writer_;
 
     Game game_;
     int frame_{0};
