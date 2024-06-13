@@ -51,12 +51,34 @@ PacmanWrapper::PacmanWrapper()
     game_.init();
 }
 
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) {
+void PacmanWrapper::handleUserInput() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        if (event.type == SDL_QUIT) {
             quit_ = true;
             break;
         }
+
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                pause_ = !pause_;
+                break;
+            }
+            if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
+                quit_ = true;
+                break;
+            }
+        }
+    }
+}
+
+void PacmanWrapper::progressGame(const demo::Command& command) {
+    handleUserInput();
+
+    game_.input(command.scancode());
+
+    if (pause_) {
+        return;
     }
 
     // Update game state
