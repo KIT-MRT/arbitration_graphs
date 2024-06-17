@@ -3,10 +3,10 @@
 #include <util_caching/cache.hpp>
 #include <pacman/comp/chase_target.hpp>
 #include <pacman/comp/player.hpp>
-#include <pacman/core/maze.hpp>
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/maze.hpp"
 
 namespace demo {
 
@@ -18,6 +18,8 @@ namespace demo {
  * the world. */
 class EnvironmentModel {
 public:
+    using Maze = utils::Maze;
+
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
 
@@ -33,7 +35,7 @@ public:
         Position clyde;
     };
 
-    EnvironmentModel(const Game& game) : mazeState_(game.maze), astar_(game.maze) {
+    EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updatePositions(game.reg);
     };
 
@@ -41,7 +43,7 @@ public:
      * @brief Update the environment model to reflect the current state of the world.
      */
     void update(const Game& game) {
-        mazeState_ = game.maze;
+        maze_ = std::make_shared<Maze>(game.maze);
         updatePositions(game.reg);
     }
 
@@ -66,14 +68,14 @@ public:
     }
 
     bool isWall(const Position& position) const {
-        return mazeState_[{position.x, position.y}] == Tile::wall;
+        return maze_->isWall(position);
     }
 
 protected:
     void updatePositions(const entt::registry& registry);
 
     PositionStore entityPositions_;
-    entt::MazeState mazeState_;
+    Maze::ConstPtr maze_;
 
     utils::AStar astar_;
     mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;

@@ -11,11 +11,11 @@
 #include <pacman/util/grid.hpp>
 
 #include "demo/types.hpp"
+#include "utils/maze.hpp"
 
 namespace utils {
 
 using Position = demo::Position;
-using MazeState = demo::entt::MazeState;
 
 struct Cell {
     struct CompareCells {
@@ -41,33 +41,18 @@ class MazeAdapter {
 public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
 
-    MazeAdapter(const MazeStateConstPtr& mazeState)
-            : mazeState_(mazeState), cells_({mazeState_->width(), mazeState_->height()}) {};
+    MazeAdapter(const Maze::ConstPtr& maze) : maze_(maze), cells_({maze_->width(), maze_->height()}) {};
 
     Cell& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
-            cells_[{position.x, position.y}] =
-                Cell(position, mazeState_->operator[]({position.x, position.y}) == Tile::wall);
+            cells_[{position.x, position.y}] = Cell(position, maze_->isWall(position));
         }
 
         return cells_[{position.x, position.y}].value();
     }
 
-    int width() const {
-        return mazeState_->width();
-    }
-    int height() const {
-        return mazeState_->height();
-    }
-    bool isPassableCell(const Position& position) const {
-        return isInBounds(position) && !cell(position).isWall;
-    }
-    bool isInBounds(const Position& position) const {
-        return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
-    }
-
 private:
-    const MazeStateConstPtr mazeState_;
+    Maze::ConstPtr maze_;
     mutable Grid<std::optional<Cell>> cells_;
 };
 
@@ -77,7 +62,7 @@ public:
 
     constexpr static int NO_PATH_FOUND = std::numeric_limits<int>::max();
 
-    AStar(const MazeState mazeState) : mazeState_(std::make_shared<const MazeState>(mazeState)) {};
+    AStar(const Maze::ConstPtr maze) : maze_(maze) {};
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -89,9 +74,26 @@ public:
 
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
-    mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache;
 
-    MazeAdapter::MazeStateConstPtr mazeState_;
+    /**
+     * @brief Computes the heuristic of the given cell considering the goal.
+     *
+     * The heuristic must always underestimate the actual distance.
+     * The first term is just the euclidian distance.
+     * The second term estimates the distance through the tunnel.
+     */
+    double computeHeuristic(const Cell& cell, const Position& goal) const {
+        return std::min(cell.distance(goal), maze_->width() - cell.distance(goal));
+    }
+
+    /**
+     * @brief If we are about to step of the maze and the opposite end is passable as well,
+     * we assume they are connected by a tunnel and adjust the position accordingly.
+     */
+    Position positionConsideringTunnel(const Position& position) const;
+
+    Maze::ConstPtr maze_;
+    mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache_;
 };
 
 } // namespace utils

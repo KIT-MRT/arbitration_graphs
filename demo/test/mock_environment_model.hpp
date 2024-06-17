@@ -1,9 +1,8 @@
 #pragma once
 
-#include <pacman/core/maze.hpp>
-
 #include "demo/environment_model.hpp"
 #include "demo/types.hpp"
+#include "utils/maze.hpp"
 
 namespace demo {
 
@@ -31,13 +30,13 @@ public:
         entityPositions_.clyde = {8, 8};
     }
 
-    entt::MazeState maze() const {
-        return mazeState_;
+    Maze::ConstPtr maze() const {
+        return maze_;
     }
     template <std::size_t Size>
     void setMaze(const Position& size, const char (&str)[Size]) {
-        mazeState_ = makeCustomMazeState({size.x, size.y}, str);
-        astar_ = utils::AStar(mazeState_);
+        maze_ = std::make_shared<Maze>(makeCustomMazeState({size.x, size.y}, str));
+        astar_ = utils::AStar(maze_);
     }
     void setEmptyMaze() {
         const char str[] = {"##########"

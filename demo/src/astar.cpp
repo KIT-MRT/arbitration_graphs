@@ -2,12 +2,27 @@
 
 namespace utils {
 
+/**
+ * @brief Computes the modulus of a given numerator and denominator, ensuring a non-negative result when the denominator
+ * is positive.
+ *
+ * This function calculates the result of the modulus operation. If the denominator is positive, the result is
+ * non-negative and in the range [0, denominator - 1].
+ *
+ * @param numerator The value to be divided (dividend).
+ * @param denominator The value by which the numerator is divided (divisor).
+ * @return An integer representing the modulus of the division.
+ */
+int nonNegativeModulus(const int& numerator, const int& denominator) {
+    return (denominator + (numerator % denominator)) % denominator;
+}
+
 int AStar::distance(const Position& start, const Position& goal) const {
-    if (distanceCache.cached({start, goal})) {
-        return distanceCache.cached({start, goal}).value();
+    if (distanceCache_.cached({start, goal})) {
+        return distanceCache_.cached({start, goal}).value();
     }
 
-    MazeAdapter mazeAdapter(mazeState_);
+    MazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(start);
@@ -30,7 +45,7 @@ int AStar::distance(const Position& start, const Position& goal) const {
     }
 
 
-    distanceCache.cache({start, goal}, result);
+    distanceCache_.cache({start, goal}, result);
     return result;
 }
 
@@ -43,15 +58,9 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
     for (const auto& move : demo::Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
 
-        // If we are about to step of the maze and both the left and right end of the cell are passable,
-        // we assume they are connected by a tunnel.
-        if (nextPosition.x == -1 && mazeAdapter.isPassableCell({mazeAdapter.width() - 1, nextPosition.y})) {
-            nextPosition.x = mazeAdapter.width() - 1;
-        } else if (nextPosition.x == mazeAdapter.width() && mazeAdapter.isPassableCell({0, nextPosition.y})) {
-            nextPosition.x = 0;
-        }
+        nextPosition = positionConsideringTunnel(nextPosition);
 
-        if (!mazeAdapter.isPassableCell(nextPosition)) {
+        if (!maze_->isPassableCell(nextPosition)) {
             continue;
         }
 
@@ -63,14 +72,19 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
         int newDistance = current.distanceFromStart + 1;
         if (newDistance < neighbor.distanceFromStart) {
             neighbor.distanceFromStart = newDistance;
-            // The heuristic must always underestimate the actual distance.
-            // The first term is just the euclidian distance.
-            // The second term estimates the distance through the tunnel.
-            int heuristic = std::min(neighbor.distance(goal), mazeAdapter.width() - neighbor.distance(goal));
-            neighbor.heuristic = heuristic;
+            neighbor.heuristic = computeHeuristic(neighbor, goal);
             openSet.push(neighbor);
         }
     }
+}
+
+Position AStar::positionConsideringTunnel(const Position& position) const {
+    Position wrappedPosition{nonNegativeModulus(position.x, maze_->width()),
+                             nonNegativeModulus(position.y, maze_->height())};
+    if (maze_->isPassableCell(wrappedPosition)) {
+        return wrappedPosition;
+    }
+    return position;
 }
 
 } // namespace utils
