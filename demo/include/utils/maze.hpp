@@ -19,7 +19,7 @@ public:
     explicit Maze(MazeState mazeState) : mazeState_(std::move(mazeState)) {
     }
 
-    Tile operator()(const Position& position) const {
+    Tile operator[](const Position& position) const {
         return mazeState_[{position.x, position.y}];
     }
 
@@ -31,7 +31,7 @@ public:
     }
 
     bool isWall(const Position& position) const {
-        return operator()(position) == Tile::wall;
+        return operator[](position) == Tile::wall;
     }
     bool isInBounds(const Position& position) const {
         return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
