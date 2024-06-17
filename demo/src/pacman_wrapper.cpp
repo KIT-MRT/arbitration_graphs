@@ -64,7 +64,7 @@ void PacmanWrapper::handleUserInput() {
                 pause_ = !pause_;
                 break;
             }
-            if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
+            if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
                 quit_ = true;
                 break;
             }
