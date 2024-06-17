@@ -87,16 +87,10 @@ private:
     }
 
     /**
-     * @brief If we are about to step of the maze and both the left and right end of the cell are passable,
-     * we assume they are connected by a tunnel and adjust the x position accordingly.
+     * @brief If we are about to step of the maze and the opposite end is passable as well,
+     * we assume they are connected by a tunnel and adjust the position accordingly.
      */
     Position positionConsideringTunnel(const Position& position) const;
-    bool enteringTunnelOnTheLeft(const Position& position) const {
-        return position.x == -1 && maze_->isPassableCell({maze_->width() - 1, position.y});
-    }
-    bool enteringTunnelOnTheRight(const Position& position) const {
-        return position.x == maze_->width() && maze_->isPassableCell({0, position.y});
-    }
 
     Maze::ConstPtr maze_;
     mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache_;
