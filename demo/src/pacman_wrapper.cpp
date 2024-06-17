@@ -23,34 +23,62 @@ int getScaleFactor() {
     return std::max(1, std::min(scaleX, scaleY));
 }
 
-PacmanWrapper::PacmanWrapper() {
+int initVideoAndGetScaleFactor() {
     SDL_CHECK(SDL_Init(SDL_INIT_VIDEO));
-    scaleFactor_ = getScaleFactor();
-    window_ = SDL::Window{SDL_CHECK(SDL_CreateWindow("Pacman",
-                                                     SDL_WINDOWPOS_CENTERED,
-                                                     SDL_WINDOWPOS_CENTERED,
-                                                     tilesPx.x * scaleFactor_,
-                                                     tilesPx.y * scaleFactor_,
-                                                     SDL_WINDOW_SHOWN))};
-    renderer_ = SDL::Renderer{
-        SDL_CHECK(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))};
-    SDL_CHECK(SDL_RenderSetLogicalSize(renderer_.get(), tilesPx.x, tilesPx.y));
+    return getScaleFactor();
+}
 
-    maze_ = SDL::loadTexture(renderer_.get(), animera::getTextureInfo());
-    writer_ = {renderer_.get(), maze_.get()};
+SDL::Window createWindow(int scaleFactor) {
+    return SDL::Window{SDL_CHECK(SDL_CreateWindow("Pacman",
+                                                  SDL_WINDOWPOS_CENTERED,
+                                                  SDL_WINDOWPOS_CENTERED,
+                                                  tilesPx.x * scaleFactor,
+                                                  tilesPx.y * scaleFactor,
+                                                  SDL_WINDOW_SHOWN))};
+}
 
+SDL::Renderer createRendererAndSetLogicalSize(const SDL::Window& window) {
+    auto renderer = SDL::Renderer{
+        SDL_CHECK(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))};
+    SDL_CHECK(SDL_RenderSetLogicalSize(renderer.get(), tilesPx.x, tilesPx.y));
+    return renderer;
+}
+
+PacmanWrapper::PacmanWrapper()
+        : scaleFactor_(initVideoAndGetScaleFactor()), window_(createWindow(scaleFactor_)),
+          renderer_(createRendererAndSetLogicalSize(window_)),
+          maze_(SDL::loadTexture(renderer_.get(), animera::getTextureInfo())), writer_({renderer_.get(), maze_.get()}) {
     game_.init();
 }
 
-void PacmanWrapper::progressGame(const demo::Command& command) {
-    game_.input(command.scancode());
-
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) {
+void PacmanWrapper::handleUserInput() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event) != 0) {
+        if (event.type == SDL_QUIT) {
             quit_ = true;
             break;
         }
+
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                pause_ = !pause_;
+                break;
+            }
+            if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
+                quit_ = true;
+                break;
+            }
+        }
+    }
+}
+
+void PacmanWrapper::progressGame(const demo::Command& command) {
+    handleUserInput();
+
+    game_.input(command.scancode());
+
+    if (pause_) {
+        return;
     }
 
     // Update game state
