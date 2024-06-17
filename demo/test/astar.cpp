@@ -1,5 +1,7 @@
 #include "utils/astar.hpp"
 
+#include <ctime>
+
 #include <gtest/gtest.h>
 
 #include "mock_environment_model.hpp"
@@ -56,17 +58,17 @@ TEST_F(AStarTest, cachedDistance) {
     AStar astar(environmentModel_->maze());
 
     // In the first run, we need to compute distance the hard way
-    Time startWithoutCaching = Clock::now();
+    std::clock_t startWithoutCaching = std::clock();
     EXPECT_EQ(astar.distance({1, 1}, {8, 8}), 14);
-    Time endWithoutCaching = Clock::now();
+    std::clock_t endWithoutCaching = std::clock();
 
     // In the second run, the cached distance can be returned which should of course be the same value...
-    Time startWithCaching = Clock::now();
+    std::clock_t startWithCaching = std::clock();
     EXPECT_EQ(astar.distance({1, 1}, {8, 8}), 14);
-    Time endWithCaching = Clock::now();
+    std::clock_t endWithCaching = std::clock();
 
     // ...but we should get it faster
-    EXPECT_LT((endWithCaching - startWithCaching).count(), (endWithoutCaching - startWithoutCaching).count());
+    EXPECT_LT((endWithCaching - startWithCaching), (endWithoutCaching - startWithoutCaching));
 }
 
 } // namespace utils
