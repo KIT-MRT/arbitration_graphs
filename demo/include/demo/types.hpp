@@ -18,7 +18,7 @@ using Time = arbitration_graphs::Time;
 namespace entt {
 using Game = ::Game;
 using Position = ::Position;
-using registry = ::entt::registry;
+using Registry = ::entt::registry;
 using MazeState = ::MazeState;
 using Tile = ::Tile;
 } // namespace entt

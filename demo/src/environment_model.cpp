@@ -2,7 +2,7 @@
 
 namespace demo {
 
-void EnvironmentModel::updatePositions(const entt::registry& registry) {
+void EnvironmentModel::updatePositions(const entt::Registry& registry) {
     auto view = registry.view<const entt::Position>();
     for (auto entity : view) {
         if (registry.has<Player>(entity)) {
