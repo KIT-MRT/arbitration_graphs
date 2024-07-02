@@ -6,6 +6,7 @@
 #include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
 #include <entt/entity/registry.hpp>
+#include <pacman/comp/ghost_mode.hpp>
 #include <pacman/comp/position.hpp>
 #include <pacman/core/game.hpp>
 #include <pacman/core/maze.hpp>
@@ -20,6 +21,7 @@ using Game = ::Game;
 using Position = ::Position;
 using Registry = ::entt::registry;
 using MazeState = ::MazeState;
+using ScaredMode = ::ScaredMode;
 using Tile = ::Tile;
 } // namespace entt
 

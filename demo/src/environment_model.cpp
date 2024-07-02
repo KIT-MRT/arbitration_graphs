@@ -24,6 +24,12 @@ void EnvironmentModel::updatePositions(const entt::Registry& registry) {
     }
 }
 
+void EnvironmentModel::updateGhostMode(const entt::Registry& registry) {
+    ///@todo Check all ghosts not just blinky. He could also be in the eaten state
+    auto view = registry.view<const BlinkyChaseTarget>();
+    ghostsScared_ = registry.has<entt::ScaredMode>(view.front());
+}
+
 PositionWithDistance EnvironmentModel::closestGhost(const Time& time) const {
     if (closestGhostCache_.cached(time)) {
         return closestGhostCache_.cached(time).value();

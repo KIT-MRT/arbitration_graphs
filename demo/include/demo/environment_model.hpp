@@ -37,6 +37,7 @@ public:
 
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updatePositions(game.reg);
+        updateGhostMode(game.reg);
     };
 
     /**
@@ -45,6 +46,7 @@ public:
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
         updatePositions(game.reg);
+        updateGhostMode(game.reg);
     }
 
     Position pacmanPosition() const {
@@ -56,6 +58,10 @@ public:
      * This function uses the A* distance function so walls will be considered.
      */
     PositionWithDistance closestGhost(const Time& time) const;
+
+    bool ghostsScared() const {
+        return ghostsScared_;
+    }
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -72,10 +78,12 @@ public:
     }
 
 protected:
-    void updatePositions(const entt::registry& registry);
+    void updatePositions(const entt::Registry& registry);
+    void updateGhostMode(const entt::Registry& registry);
 
     PositionStore entityPositions_;
     Maze::ConstPtr maze_;
+    bool ghostsScared_;
 
     utils::AStar astar_;
     mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
