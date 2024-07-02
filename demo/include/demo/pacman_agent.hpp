@@ -2,6 +2,7 @@
 
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
+#include "chase_ghost_behavior.hpp"
 #include "do_nothing_behavior.hpp"
 #include "environment_model.hpp"
 #include "run_away_from_ghost_behavior.hpp"
@@ -28,11 +29,13 @@ public:
         parameters_ = Parameters{};
         environmentModel_ = std::make_shared<EnvironmentModel>(game);
 
+        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, ChaseGhostBehavior::Parameters{});
         runAwayFromGhostBehavior_ =
             std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, RunAwayFromGhostBehavior::Parameters{});
         doNothingBehavior_ = std::make_shared<DoNothingBehavior>();
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
+        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(runAwayFromGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(doNothingBehavior_, PriorityArbitrator::Option::Flags::NO_FLAGS);
     }
@@ -58,6 +61,7 @@ private:
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 
+    ChaseGhostBehavior::Ptr chaseGhostBehavior_;
     DoNothingBehavior::Ptr doNothingBehavior_;
     RunAwayFromGhostBehavior::Ptr runAwayFromGhostBehavior_;
 
