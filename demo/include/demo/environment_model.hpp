@@ -6,6 +6,7 @@
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/entities.hpp"
 #include "utils/maze.hpp"
 
 namespace demo {
@@ -23,6 +24,19 @@ public:
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
 
+    struct Entities {
+        Positions ghostPositions() const {
+            return {blinky.position, pinky.position, inky.position, clyde.position};
+        }
+
+        utils::Pacman pacman;
+
+        utils::Ghost blinky;
+        utils::Ghost pinky;
+        utils::Ghost inky;
+        utils::Ghost clyde;
+    };
+
     struct PositionStore {
         Positions ghostPositions() const {
             return {blinky, pinky, inky, clyde};
@@ -37,7 +51,7 @@ public:
 
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updatePositions(game.reg);
-        updateGhostMode(game.reg);
+        updateEntities(game.reg);
     };
 
     /**
@@ -46,7 +60,7 @@ public:
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
         updatePositions(game.reg);
-        updateGhostMode(game.reg);
+        updateEntities(game.reg);
     }
 
     Position pacmanPosition() const {
@@ -58,10 +72,6 @@ public:
      * This function uses the A* distance function so walls will be considered.
      */
     PositionWithDistance closestGhost(const Time& time) const;
-
-    bool ghostsScared() const {
-        return ghostsScared_;
-    }
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -79,11 +89,11 @@ public:
 
 protected:
     void updatePositions(const entt::Registry& registry);
-    void updateGhostMode(const entt::Registry& registry);
+    void updateEntities(const entt::Registry& registry);
 
     PositionStore entityPositions_;
+    Entities entities_;
     Maze::ConstPtr maze_;
-    bool ghostsScared_;
 
     utils::AStar astar_;
     mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;

@@ -17,6 +17,7 @@ using Clock = arbitration_graphs::Clock;
 using Time = arbitration_graphs::Time;
 
 namespace entt {
+using Entity = ::entt::entity;
 using Game = ::Game;
 using Position = ::Position;
 using Registry = ::entt::registry;
@@ -26,6 +27,7 @@ using Tile = ::Tile;
 } // namespace entt
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
+enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
 
 struct Position {
     int x;
