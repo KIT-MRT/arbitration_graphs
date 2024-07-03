@@ -1,12 +1,16 @@
 #include "demo/chase_ghost_behavior.hpp"
-#include "demo/types.hpp"
 
 namespace demo {
 
 Command ChaseGhostBehavior::getCommand(const Time& time) {
     auto pacmanPosition = environmentModel_->pacmanPosition();
-    ///@todo Make sure the closest ghost has not been eaten
-    auto ghostPosition = environmentModel_->closestGhost(time).position;
+
+    auto closestScaredGost = environmentModel_->closestScaredGhost(time);
+    if (!closestScaredGost) {
+        throw std::runtime_error("Can not compute command to chase ghost because there are no scared ghosts.");
+    }
+
+    auto ghostPosition = closestScaredGost->ghost.position;
     auto direction = Direction::LAST;
 
     double minDistance = std::numeric_limits<double>::max();
@@ -28,11 +32,11 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
-    return environmentModel_->closestScaredGhost(time).has_value();
+    return environmentModel_->closestScaredGhost(time).has_value() &&
+           environmentModel_->closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft;
 }
 
 bool ChaseGhostBehavior::checkCommitmentCondition(const Time& time) const {
-    ///@todo Commit until timer starts running out → Timer needs to be extracted first
     return checkInvocationCondition(time);
 }
 

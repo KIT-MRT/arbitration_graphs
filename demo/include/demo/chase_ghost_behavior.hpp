@@ -18,7 +18,10 @@ public:
     using Ptr = std::shared_ptr<ChaseGhostBehavior>;
     using ConstPtr = std::shared_ptr<const ChaseGhostBehavior>;
 
-    struct Parameters {};
+    struct Parameters {
+        ///@brief The number of ticks the ghosts should be scared for this behavior to be applicable
+        int minScaredTicksLeft{5};
+    };
 
     ChaseGhostBehavior(EnvironmentModel::Ptr environmentModel,
                        const Parameters& parameters,

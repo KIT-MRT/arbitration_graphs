@@ -19,18 +19,18 @@ void EnvironmentModel::updateEntities(const entt::Registry& registry) {
     }
 }
 
-PositionWithDistance EnvironmentModel::closestGhost(const Time& time) const {
+EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Time& time) const {
     if (closestGhostCache_.cached(time)) {
         return closestGhostCache_.cached(time).value();
     }
 
-    PositionWithDistance currentlyClosestGhost = closestGhost(entities_.ghosts());
+    GhostWithDistance currentlyClosestGhost = closestGhost(entities_.ghosts());
     closestGhostCache_.cache(time, currentlyClosestGhost);
 
     return currentlyClosestGhost;
 }
 
-std::optional<PositionWithDistance> EnvironmentModel::closestScaredGhost(const Time& time) const {
+std::optional<EnvironmentModel::GhostWithDistance> EnvironmentModel::closestScaredGhost(const Time& time) const {
     Ghosts scaredGhosts = entities_.scaredGhosts();
     if (scaredGhosts.empty()) {
         return std::nullopt;
@@ -40,26 +40,26 @@ std::optional<PositionWithDistance> EnvironmentModel::closestScaredGhost(const T
         return closestScaredGhostCache_.cached(time).value();
     }
 
-    PositionWithDistance currentlyClosestScaredGhost = closestGhost(scaredGhosts);
+    GhostWithDistance currentlyClosestScaredGhost = closestGhost(scaredGhosts);
     closestScaredGhostCache_.cache(time, currentlyClosestScaredGhost);
 
     return currentlyClosestScaredGhost;
 }
 
 
-PositionWithDistance EnvironmentModel::closestGhost(const Ghosts& ghosts) const {
+EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Ghosts& ghosts) const {
     int minGhostDistance = std::numeric_limits<int>::max();
-    Position closestGhostPosition;
+    Ghost closestGhost;
 
     for (const auto& ghost : ghosts) {
         int ghostDistance = distance(pacmanPosition(), ghost.position);
         if (ghostDistance < minGhostDistance) {
             minGhostDistance = ghostDistance;
-            closestGhostPosition = ghost.position;
+            closestGhost = ghost;
         }
     }
 
-    return {closestGhostPosition, minGhostDistance};
+    return {closestGhost, minGhostDistance};
 }
 
 } // namespace demo

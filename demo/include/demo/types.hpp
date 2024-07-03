@@ -45,11 +45,6 @@ struct Position {
 };
 using Positions = std::vector<Position>;
 
-struct PositionWithDistance {
-    Position position;
-    int distance;
-};
-
 struct Command {
     Command(Direction direction) : direction(direction) {
     }

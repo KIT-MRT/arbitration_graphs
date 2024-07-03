@@ -27,6 +27,11 @@ public:
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
 
+    struct GhostWithDistance {
+        Ghost ghost;
+        int distance;
+    };
+
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updateEntities(game.reg);
     };
@@ -43,18 +48,19 @@ public:
         return entities_.pacman.position;
     }
     /**
-     * @brief The position and manhattan distance to the closest ghost.
+     * @brief The currently closest ghost and the corresponding manhattan distance.
      *
      * This function uses the A* distance function so walls will be considered.
      */
-    PositionWithDistance closestGhost(const Time& time) const;
+    GhostWithDistance closestGhost(const Time& time) const;
 
     /**
-     * @brief The position and manhatten distance to the closest scared ghost if there is one. std::nullopt otherwise.
+     * @brief The closest scared ghost and the corresponding and manhatten distance. Returns std::nullopt if there is no
+     * scared ghost.
      *
      * Very similar to closestGhost() but only considering ghosts that are in the scared mode.
      */
-    std::optional<PositionWithDistance> closestScaredGhost(const Time& time) const;
+    std::optional<GhostWithDistance> closestScaredGhost(const Time& time) const;
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -74,14 +80,14 @@ protected:
     void updatePositions(const entt::Registry& registry);
     void updateEntities(const entt::Registry& registry);
 
-    PositionWithDistance closestGhost(const Ghosts& ghosts) const;
+    GhostWithDistance closestGhost(const Ghosts& ghosts) const;
 
     Entities entities_;
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
-    mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
-    mutable util_caching::Cache<Time, PositionWithDistance> closestScaredGhostCache_;
+    mutable util_caching::Cache<Time, GhostWithDistance> closestGhostCache_;
+    mutable util_caching::Cache<Time, GhostWithDistance> closestScaredGhostCache_;
 };
 
 } // namespace demo
