@@ -36,6 +36,19 @@ public:
         setGhostPositions({8, 8});
     }
 
+    void setGhostMode(const GhostMode& mode) {
+        entities_.blinky.mode = mode;
+        entities_.pinky.mode = mode;
+        entities_.inky.mode = mode;
+        entities_.clyde.mode = mode;
+    }
+    void setScaredCountdown(const std::optional<int> countdown) {
+        entities_.blinky.scaredCountdown = countdown;
+        entities_.pinky.scaredCountdown = countdown;
+        entities_.inky.scaredCountdown = countdown;
+        entities_.clyde.scaredCountdown = countdown;
+    }
+
     Maze::ConstPtr maze() const {
         return maze_;
     }
