@@ -20,4 +20,25 @@ struct Pacman {
     demo::Position position;
 };
 
+struct Entities {
+    using Ghosts = std::vector<Ghost>;
+    using Position = demo::Position;
+    using Positions = demo::Positions;
+
+    Ghosts ghosts() const {
+        return {blinky, pinky, inky, clyde};
+    }
+    Positions ghostPositions() const {
+        return {blinky.position, pinky.position, inky.position, clyde.position};
+    }
+    Ghosts scaredGhosts() const;
+
+    utils::Pacman pacman;
+
+    Ghost blinky;
+    Ghost pinky;
+    Ghost inky;
+    Ghost clyde;
+};
+
 } // namespace utils

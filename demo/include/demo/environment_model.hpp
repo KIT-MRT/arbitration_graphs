@@ -19,23 +19,12 @@ namespace demo {
  * the world. */
 class EnvironmentModel {
 public:
+    using Entities = utils::Entities;
     using Maze = utils::Maze;
+    using Ghost = utils::Ghost;
 
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
-
-    struct Entities {
-        Positions ghostPositions() const {
-            return {blinky.position, pinky.position, inky.position, clyde.position};
-        }
-
-        utils::Pacman pacman;
-
-        utils::Ghost blinky;
-        utils::Ghost pinky;
-        utils::Ghost inky;
-        utils::Ghost clyde;
-    };
 
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updateEntities(game.reg);

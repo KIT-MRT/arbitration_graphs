@@ -34,4 +34,14 @@ void Pacman::update(const demo::entt::Registry& registry, const demo::entt::Enti
     const auto& enttPosition = registry.get<demo::entt::Position>(entity);
     position = {enttPosition.p.x, enttPosition.p.y};
 }
+
+Entities::Ghosts Entities::scaredGhosts() const {
+    std::vector<Ghost> scaredGhosts = ghosts();
+    scaredGhosts.erase(std::remove_if(scaredGhosts.begin(),
+                                      scaredGhosts.end(),
+                                      [](const Ghost& ghost) { return ghost.mode != demo::GhostMode::SCARED; }),
+                       scaredGhosts.end());
+    return scaredGhosts;
+}
+
 } // namespace utils
