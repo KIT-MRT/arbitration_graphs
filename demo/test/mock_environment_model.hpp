@@ -16,18 +16,18 @@ public:
         setEmptyMaze();
     }
 
-    PositionStore positions() const {
-        return entityPositions_;
+    Entities entities() const {
+        return entities_;
     }
-    void setPositions(const PositionStore& positions) {
-        entityPositions_ = positions;
+    void setEntities(const Entities& entities) {
+        entities_ = entities;
     }
     void setPositionsInOppositeCorners() {
-        entityPositions_.pacman = {1, 1};
-        entityPositions_.blinky = {8, 8};
-        entityPositions_.pinky = {8, 8};
-        entityPositions_.inky = {8, 8};
-        entityPositions_.clyde = {8, 8};
+        entities_.pacman.position = {1, 1};
+        entities_.blinky.position = {8, 8};
+        entities_.pinky.position = {8, 8};
+        entities_.inky.position = {8, 8};
+        entities_.clyde.position = {8, 8};
     }
 
     Maze::ConstPtr maze() const {

@@ -37,20 +37,7 @@ public:
         utils::Ghost clyde;
     };
 
-    struct PositionStore {
-        Positions ghostPositions() const {
-            return {blinky, pinky, inky, clyde};
-        }
-
-        Position pacman;
-        Position blinky;
-        Position pinky;
-        Position inky;
-        Position clyde;
-    };
-
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
-        updatePositions(game.reg);
         updateEntities(game.reg);
     };
 
@@ -59,12 +46,11 @@ public:
      */
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
-        updatePositions(game.reg);
         updateEntities(game.reg);
     }
 
     Position pacmanPosition() const {
-        return entityPositions_.pacman;
+        return entities_.pacman.position;
     }
     /**
      * @brief The position and manhattan distance to the closest ghost.
@@ -91,7 +77,6 @@ protected:
     void updatePositions(const entt::Registry& registry);
     void updateEntities(const entt::Registry& registry);
 
-    PositionStore entityPositions_;
     Entities entities_;
     Maze::ConstPtr maze_;
 
