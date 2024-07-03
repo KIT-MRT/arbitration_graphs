@@ -22,6 +22,7 @@ public:
     using Entities = utils::Entities;
     using Maze = utils::Maze;
     using Ghost = utils::Ghost;
+    using Ghosts = utils::Entities::Ghosts;
 
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
@@ -49,6 +50,13 @@ public:
     PositionWithDistance closestGhost(const Time& time) const;
 
     /**
+     * @brief The position and manhatten distance to the closest scared ghost if there is one. std::nullopt otherwise.
+     *
+     * Very similar to closestGhost() but only considering ghosts that are in the scared mode.
+     */
+    std::optional<PositionWithDistance> closestScaredGhost(const Time& time) const;
+
+    /**
      * @brief Calculates the Manhattan distance between two positions using A*.
      *
      * A distance of 1 is the distance between two adjacent positions in the maze.
@@ -66,11 +74,14 @@ protected:
     void updatePositions(const entt::Registry& registry);
     void updateEntities(const entt::Registry& registry);
 
+    PositionWithDistance closestGhost(const Ghosts& ghosts) const;
+
     Entities entities_;
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
     mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
+    mutable util_caching::Cache<Time, PositionWithDistance> closestScaredGhostCache_;
 };
 
 } // namespace demo

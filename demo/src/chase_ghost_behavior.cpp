@@ -28,8 +28,7 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
-    ///@todo
-    return false;
+    return environmentModel_->closestScaredGhost(time).has_value();
 }
 
 bool ChaseGhostBehavior::checkCommitmentCondition(const Time& time) const {
