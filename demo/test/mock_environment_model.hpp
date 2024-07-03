@@ -22,12 +22,18 @@ public:
     void setEntities(const Entities& entities) {
         entities_ = entities;
     }
+    void setPacmanPosition(const Position& position) {
+        entities_.pacman.position = position;
+    }
+    void setGhostPositions(const Position& position) {
+        entities_.blinky.position = position;
+        entities_.pinky.position = position;
+        entities_.inky.position = position;
+        entities_.clyde.position = position;
+    }
     void setPositionsInOppositeCorners() {
         entities_.pacman.position = {1, 1};
-        entities_.blinky.position = {8, 8};
-        entities_.pinky.position = {8, 8};
-        entities_.inky.position = {8, 8};
-        entities_.clyde.position = {8, 8};
+        setGhostPositions({8, 8});
     }
 
     Maze::ConstPtr maze() const {

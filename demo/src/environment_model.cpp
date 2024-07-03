@@ -24,16 +24,16 @@ PositionWithDistance EnvironmentModel::closestGhost(const Time& time) const {
         return closestGhostCache_.cached(time).value();
     }
 
-    int minDistance = std::numeric_limits<int>::max();
+    int minGhostDistance = std::numeric_limits<int>::max();
     Position closestGhostPosition;
     for (const auto& ghostPosition : entities_.ghostPositions()) {
-        double distance = ghostPosition.distance(pacmanPosition());
-        if (distance < minDistance) {
-            minDistance = distance;
+        int ghostDistance = distance(pacmanPosition(), ghostPosition);
+        if (ghostDistance < minGhostDistance) {
+            minGhostDistance = ghostDistance;
             closestGhostPosition = ghostPosition;
         }
     }
-    PositionWithDistance closestGhost{closestGhostPosition, minDistance};
+    PositionWithDistance closestGhost{closestGhostPosition, minGhostDistance};
     closestGhostCache_.cache(time, closestGhost);
     return closestGhost;
 }
