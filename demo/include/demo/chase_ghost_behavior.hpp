@@ -19,7 +19,9 @@ public:
     using ConstPtr = std::shared_ptr<const ChaseGhostBehavior>;
 
     struct Parameters {
-        ///@brief The number of ticks the ghosts should be scared for this behavior to be applicable
+        double invocationMinDistance{5};
+
+        ///@brief The minimum number of ticks the ghosts should be scared for for this behavior to be applicable
         int minScaredTicksLeft{5};
     };
 

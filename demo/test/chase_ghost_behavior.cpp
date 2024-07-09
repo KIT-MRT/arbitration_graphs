@@ -22,6 +22,8 @@ protected:
 };
 
 TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionTrue) {
+    environmentModel_->setPacmanPosition({1, 1});
+    environmentModel_->setGhostPositions({2, 2});
     environmentModel_->setGhostMode(GhostMode::SCARED);
     environmentModel_->setScaredCountdown(40);
 
@@ -35,13 +37,21 @@ TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionFalse) {
     Time time = Clock::now();
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
 
-    // We don't want to chase ghosts when they are about to chase us again
+    // We don't want to chase ghosts when they are far away
     environmentModel_->setGhostMode(GhostMode::SCARED);
+    environmentModel_->setPacmanPosition({1, 1});
+    environmentModel_->setGhostPositions({8, 8});
+    ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
+
+    // We don't want to chase ghosts when they are about to chase us again
     environmentModel_->setScaredCountdown(2);
+    environmentModel_->setGhostPositions({2, 2});
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
 }
 
 TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionTrue) {
+    environmentModel_->setPacmanPosition({1, 1});
+    environmentModel_->setGhostPositions({2, 2});
     environmentModel_->setGhostMode(GhostMode::SCARED);
     environmentModel_->setScaredCountdown(40);
 
@@ -53,12 +63,18 @@ TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionFalse) {
     environmentModel_->setGhostMode(GhostMode::CHASING);
 
     Time time = Clock::now();
-    ASSERT_FALSE(chaseGhostBehavior_.checkCommitmentCondition(time));
+    ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
+
+    // We don't want to chase ghosts when they are far away
+    environmentModel_->setGhostMode(GhostMode::SCARED);
+    environmentModel_->setPacmanPosition({1, 1});
+    environmentModel_->setGhostPositions({8, 8});
+    ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
 
     // We don't want to chase ghosts when they are about to chase us again
-    environmentModel_->setGhostMode(GhostMode::SCARED);
     environmentModel_->setScaredCountdown(2);
-    ASSERT_FALSE(chaseGhostBehavior_.checkCommitmentCondition(time));
+    environmentModel_->setGhostPositions({2, 2});
+    ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
