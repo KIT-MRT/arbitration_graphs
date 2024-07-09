@@ -18,34 +18,39 @@ int nonNegativeModulus(const int& numerator, const int& denominator) {
 }
 
 int AStar::distance(const Position& start, const Position& goal) const {
-    if (distanceCache_.cached({start, goal})) {
-        return distanceCache_.cached({start, goal}).value();
+    // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
+    // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
+    // tunnel.
+    Position wrappedStart = positionConsideringTunnel(start);
+    Position wrappedGoal = positionConsideringTunnel(goal);
+    if (distanceCache_.cached({wrappedStart, wrappedGoal})) {
+        return distanceCache_.cached({wrappedStart, wrappedGoal}).value();
     }
 
     MazeAdapter mazeAdapter(maze_);
     Set openSet;
 
-    Cell& startCell = mazeAdapter.cell(start);
-    Cell& goalCell = mazeAdapter.cell(goal);
+    Cell& startCell = mazeAdapter.cell(wrappedStart);
+    Cell& goalCell = mazeAdapter.cell(wrappedGoal);
     if (startCell.isWall || goalCell.isWall) {
         throw std::runtime_error("Can't compute distance from/to wall cell");
     }
     startCell.distanceFromStart = 0;
-    startCell.heuristic = start.distance(goal);
+    startCell.heuristic = computeHeuristic(startCell, wrappedGoal);
 
     openSet.push(startCell);
 
     int result = NO_PATH_FOUND;
     while (!openSet.empty()) {
-        if (openSet.top().position == goal) {
+        if (openSet.top().position == wrappedGoal) {
             result = openSet.top().distanceFromStart;
             break;
         }
-        expandCell(openSet, mazeAdapter, goal);
+        expandCell(openSet, mazeAdapter, wrappedGoal);
     }
 
 
-    distanceCache_.cache({start, goal}, result);
+    distanceCache_.cache({wrappedStart, wrappedGoal}, result);
     return result;
 }
 
