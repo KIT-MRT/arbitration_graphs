@@ -6,6 +6,7 @@
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/entities.hpp"
 #include "utils/maze.hpp"
 
 namespace demo {
@@ -18,25 +19,21 @@ namespace demo {
  * the world. */
 class EnvironmentModel {
 public:
+    using Entities = utils::Entities;
     using Maze = utils::Maze;
+    using Ghost = utils::Ghost;
+    using Ghosts = utils::Entities::Ghosts;
 
     using Ptr = std::shared_ptr<EnvironmentModel>;
     using ConstPtr = std::shared_ptr<const EnvironmentModel>;
 
-    struct PositionStore {
-        Positions ghostPositions() const {
-            return {blinky, pinky, inky, clyde};
-        }
-
-        Position pacman;
-        Position blinky;
-        Position pinky;
-        Position inky;
-        Position clyde;
+    struct GhostWithDistance {
+        Ghost ghost;
+        int distance;
     };
 
     EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
-        updatePositions(game.reg);
+        updateEntities(game.reg);
     };
 
     /**
@@ -44,18 +41,26 @@ public:
      */
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
-        updatePositions(game.reg);
+        updateEntities(game.reg);
     }
 
     Position pacmanPosition() const {
-        return entityPositions_.pacman;
+        return entities_.pacman.position;
     }
     /**
-     * @brief The position and manhattan distance to the closest ghost.
+     * @brief The currently closest ghost and the corresponding manhattan distance.
      *
      * This function uses the A* distance function so walls will be considered.
      */
-    PositionWithDistance closestGhost(const Time& time) const;
+    GhostWithDistance closestGhost(const Time& time) const;
+
+    /**
+     * @brief The closest scared ghost and the corresponding and manhattan distance. 
+     *        Returns std::nullopt if there is no scared ghost.
+     *
+     * Very similar to closestGhost() but only considering ghosts that are in the scared mode.
+     */
+    std::optional<GhostWithDistance> closestScaredGhost(const Time& time) const;
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -72,13 +77,17 @@ public:
     }
 
 protected:
-    void updatePositions(const entt::registry& registry);
+    void updatePositions(const entt::Registry& registry);
+    void updateEntities(const entt::Registry& registry);
 
-    PositionStore entityPositions_;
+    GhostWithDistance closestGhost(const Ghosts& ghosts) const;
+
+    Entities entities_;
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
-    mutable util_caching::Cache<Time, PositionWithDistance> closestGhostCache_;
+    mutable util_caching::Cache<Time, GhostWithDistance> closestGhostCache_;
+    mutable util_caching::Cache<Time, GhostWithDistance> closestScaredGhostCache_;
 };
 
 } // namespace demo

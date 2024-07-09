@@ -6,6 +6,7 @@
 #include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
 #include <entt/entity/registry.hpp>
+#include <pacman/comp/ghost_mode.hpp>
 #include <pacman/comp/position.hpp>
 #include <pacman/core/game.hpp>
 #include <pacman/core/maze.hpp>
@@ -16,14 +17,17 @@ using Clock = arbitration_graphs::Clock;
 using Time = arbitration_graphs::Time;
 
 namespace entt {
+using Entity = ::entt::entity;
 using Game = ::Game;
 using Position = ::Position;
-using registry = ::entt::registry;
+using Registry = ::entt::registry;
 using MazeState = ::MazeState;
+using ScaredMode = ::ScaredMode;
 using Tile = ::Tile;
 } // namespace entt
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
+enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
 
 struct Position {
     int x;
@@ -40,11 +44,6 @@ struct Position {
     }
 };
 using Positions = std::vector<Position>;
-
-struct PositionWithDistance {
-    Position position;
-    int distance;
-};
 
 struct Command {
     Command(Direction direction) : direction(direction) {

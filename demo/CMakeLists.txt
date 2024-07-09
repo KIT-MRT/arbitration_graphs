@@ -25,6 +25,8 @@ find_package(Yaml-cpp REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
   src/astar.cpp
+  src/chase_ghost_behavior.cpp
+  src/entities.cpp
   src/environment_model.cpp
   src/run_away_from_ghost_behavior.cpp
 )

@@ -31,7 +31,6 @@ Checks: >
   misc-*,
   -misc-non-private-member-variables-in-classes
 
-AnalyzeTemporaryDtors: false
 CheckOptions:
   ##############
   ### Google ###

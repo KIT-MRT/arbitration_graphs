@@ -2,45 +2,64 @@
 
 namespace demo {
 
-void EnvironmentModel::updatePositions(const entt::registry& registry) {
+void EnvironmentModel::updateEntities(const entt::Registry& registry) {
     auto view = registry.view<const entt::Position>();
     for (auto entity : view) {
         if (registry.has<Player>(entity)) {
-            auto& pacmanPosition = registry.get<entt::Position>(entity);
-            entityPositions_.pacman = {pacmanPosition.p.x, pacmanPosition.p.y};
+            entities_.pacman.update(registry, entity);
         } else if (registry.has<BlinkyChaseTarget>(entity)) {
-            auto& blinkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.blinky = {blinkyPosition.p.x, blinkyPosition.p.y};
+            entities_.blinky.update(registry, entity);
         } else if (registry.has<PinkyChaseTarget>(entity)) {
-            auto& pinkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.pinky = {pinkyPosition.p.x, pinkyPosition.p.y};
+            entities_.pinky.update(registry, entity);
         } else if (registry.has<InkyChaseTarget>(entity)) {
-            auto& inkyPosition = registry.get<entt::Position>(entity);
-            entityPositions_.inky = {inkyPosition.p.x, inkyPosition.p.y};
+            entities_.inky.update(registry, entity);
         } else if (registry.has<ClydeChaseTarget>(entity)) {
-            auto& clydePosition = registry.get<entt::Position>(entity);
-            entityPositions_.clyde = {clydePosition.p.x, clydePosition.p.y};
+            entities_.clyde.update(registry, entity);
         }
     }
 }
 
-PositionWithDistance EnvironmentModel::closestGhost(const Time& time) const {
+EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Time& time) const {
     if (closestGhostCache_.cached(time)) {
         return closestGhostCache_.cached(time).value();
     }
 
-    int minDistance = std::numeric_limits<int>::max();
-    Position closestGhostPosition;
-    for (const auto& ghostPosition : entityPositions_.ghostPositions()) {
-        double distance = ghostPosition.distance(pacmanPosition());
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestGhostPosition = ghostPosition;
+    GhostWithDistance currentlyClosestGhost = closestGhost(entities_.ghosts());
+    closestGhostCache_.cache(time, currentlyClosestGhost);
+
+    return currentlyClosestGhost;
+}
+
+std::optional<EnvironmentModel::GhostWithDistance> EnvironmentModel::closestScaredGhost(const Time& time) const {
+    Ghosts scaredGhosts = entities_.scaredGhosts();
+    if (scaredGhosts.empty()) {
+        return std::nullopt;
+    }
+
+    if (closestScaredGhostCache_.cached(time)) {
+        return closestScaredGhostCache_.cached(time).value();
+    }
+
+    GhostWithDistance currentlyClosestScaredGhost = closestGhost(scaredGhosts);
+    closestScaredGhostCache_.cache(time, currentlyClosestScaredGhost);
+
+    return currentlyClosestScaredGhost;
+}
+
+
+EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Ghosts& ghosts) const {
+    int minGhostDistance = std::numeric_limits<int>::max();
+    Ghost closestGhost;
+
+    for (const auto& ghost : ghosts) {
+        int ghostDistance = distance(pacmanPosition(), ghost.position);
+        if (ghostDistance < minGhostDistance) {
+            minGhostDistance = ghostDistance;
+            closestGhost = ghost;
         }
     }
-    PositionWithDistance closestGhost{closestGhostPosition, minDistance};
-    closestGhostCache_.cache(time, closestGhost);
-    return closestGhost;
+
+    return {closestGhost, minGhostDistance};
 }
 
 } // namespace demo
