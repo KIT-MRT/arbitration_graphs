@@ -36,7 +36,7 @@ int AStar::distance(const Position& start, const Position& goal) const {
         throw std::runtime_error("Can't compute distance from/to wall cell");
     }
     startCell.distanceFromStart = 0;
-    startCell.heuristic = wrappedStart.distance(wrappedGoal);
+    startCell.heuristic = computeHeuristic(startCell, wrappedGoal);
 
     openSet.push(startCell);
 
