@@ -5,12 +5,12 @@ namespace demo {
 Command ChaseGhostBehavior::getCommand(const Time& time) {
     auto pacmanPosition = environmentModel_->pacmanPosition();
 
-    auto closestScaredGost = environmentModel_->closestScaredGhost(time);
-    if (!closestScaredGost) {
+    auto closestScaredGhost = environmentModel_->closestScaredGhost(time);
+    if (!closestScaredGhost) {
         throw std::runtime_error("Can not compute command to chase ghost because there are no scared ghosts.");
     }
 
-    auto ghostPosition = closestScaredGost->ghost.position;
+    auto ghostPosition = closestScaredGhost->ghost.position;
     auto direction = Direction::LAST;
 
     double minDistance = std::numeric_limits<double>::max();
@@ -21,6 +21,7 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
             continue;
         }
 
+        // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
         auto nextDistance = environmentModel_->distance(nextPosition, ghostPosition);
         if (nextDistance < minDistance) {
             direction = move.direction;

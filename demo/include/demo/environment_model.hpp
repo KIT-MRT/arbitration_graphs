@@ -55,8 +55,8 @@ public:
     GhostWithDistance closestGhost(const Time& time) const;
 
     /**
-     * @brief The closest scared ghost and the corresponding and manhatten distance. Returns std::nullopt if there is no
-     * scared ghost.
+     * @brief The closest scared ghost and the corresponding and manhattan distance. 
+     *        Returns std::nullopt if there is no scared ghost.
      *
      * Very similar to closestGhost() but only considering ghosts that are in the scared mode.
      */
