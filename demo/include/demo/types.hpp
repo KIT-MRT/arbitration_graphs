@@ -14,6 +14,7 @@
 namespace demo {
 
 using Clock = arbitration_graphs::Clock;
+using Duration = arbitration_graphs::Duration;
 using Time = arbitration_graphs::Time;
 
 namespace entt {
