@@ -36,11 +36,12 @@ void Pacman::update(const demo::entt::Registry& registry, const demo::entt::Enti
 }
 
 Entities::Ghosts Entities::scaredGhosts() const {
-    std::vector<Ghost> scaredGhosts = ghosts();
-    scaredGhosts.erase(std::remove_if(scaredGhosts.begin(),
-                                      scaredGhosts.end(),
-                                      [](const Ghost& ghost) { return ghost.mode != demo::GhostMode::SCARED; }),
-                       scaredGhosts.end());
+    std::vector<Ghost> scaredGhosts;
+    for (const auto& ghost : ghosts()) {
+        if (ghost.mode == demo::GhostMode::SCARED) {
+            scaredGhosts.push_back(ghost);
+        }
+    }
     return scaredGhosts;
 }
 
