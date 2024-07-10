@@ -27,7 +27,7 @@ public:
         RunAwayFromGhostBehavior::Parameters runAwayFromGhostBehavior;
     };
 
-    PacmanAgent(const entt::Game& game) {
+    explicit PacmanAgent(const entt::Game& game) {
         parameters_ = Parameters{};
         environmentModel_ = std::make_shared<EnvironmentModel>(game);
 
@@ -56,9 +56,9 @@ public:
         return rootArbitrator_->to_stream(output, time);
     }
     std::string to_str(const Time& time) const {
-        std::stringstream ss;
-        to_stream(ss, time);
-        return ss.str();
+        std::stringstream stringStream;
+        to_stream(stringStream, time);
+        return stringStream.str();
     }
 
 private:
