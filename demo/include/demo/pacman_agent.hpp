@@ -23,6 +23,7 @@ public:
     using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
 
     struct Parameters {
+        ChaseGhostBehavior::Parameters chaseGhostBehavior;
         RandomWalkBehavior::Parameters randomWalkBehavior;
         RunAwayFromGhostBehavior::Parameters runAwayFromGhostBehavior;
     };
@@ -31,10 +32,10 @@ public:
         parameters_ = Parameters{};
         environmentModel_ = std::make_shared<EnvironmentModel>(game);
 
-        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, ChaseGhostBehavior::Parameters{});
+        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
         runAwayFromGhostBehavior_ =
-            std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, parameters_.randomWalkBehavior);
+            std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, parameters_.runAwayFromGhostBehavior);
         doNothingBehavior_ = std::make_shared<DoNothingBehavior>();
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
