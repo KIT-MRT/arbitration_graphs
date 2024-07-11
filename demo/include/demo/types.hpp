@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <utility>
 #include <vector>
 
 #include <SDL_scancode.h>
@@ -30,6 +31,8 @@ using Tile = ::Tile;
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
 enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
 
+using Path = std::vector<Direction>;
+
 struct Position {
     int x;
     int y;
@@ -47,13 +50,15 @@ struct Position {
 using Positions = std::vector<Position>;
 
 struct Command {
-    Command(Direction direction) : direction(direction) {
+    explicit Command(const Direction& direction) : path({direction}) {
+    }
+    explicit Command(Path path) : path(std::move(path)) {
     }
     SDL_Scancode scancode() const {
-        return scancodeMap.at(direction);
+        return scancodeMap.at(path.front());
     }
 
-    Direction direction;
+    Path path;
     const std::map<Direction, SDL_Scancode> scancodeMap{
         {Direction::UP, SDL_SCANCODE_UP},
         {Direction::DOWN, SDL_SCANCODE_DOWN},
