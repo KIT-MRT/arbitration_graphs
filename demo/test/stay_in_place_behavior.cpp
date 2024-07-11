@@ -2,23 +2,53 @@
 
 #include <gtest/gtest.h>
 
+#include "mock_environment_model.hpp"
+
 namespace demo {
 
-TEST(DoNothingBehaviorTest, checkInvocationConditionTrue) {
-    StayInPlaceBehavior stayInPlaceBehavior;
-    ASSERT_TRUE(stayInPlaceBehavior.checkInvocationCondition(Clock::now()));
+
+class StayInPlaceBehaviorTest : public ::testing::Test {
+protected:
+    StayInPlaceBehaviorTest()
+            : environmentModel_(std::make_shared<MockEnvironmentModel>()), stayInPlaceBehavior_{environmentModel_} {
+    }
+
+    MockEnvironmentModel::Ptr environmentModel_;
+
+    StayInPlaceBehavior stayInPlaceBehavior_;
+};
+
+TEST_F(StayInPlaceBehaviorTest, checkInvocationConditionTrue) {
+    ASSERT_TRUE(stayInPlaceBehavior_.checkInvocationCondition(Clock::now()));
 }
 
-TEST(DoNothingBehaviorTest, checkCommitmentConditionFalse) {
-    StayInPlaceBehavior stayInPlaceBehavior;
-    ASSERT_FALSE(stayInPlaceBehavior.checkCommitmentCondition(Clock::now()));
+TEST_F(StayInPlaceBehaviorTest, checkCommitmentConditionFalse) {
+    ASSERT_FALSE(stayInPlaceBehavior_.checkCommitmentCondition(Clock::now()));
 }
 
-TEST(DoNothingBehaviorTest, getCommand) {
-    StayInPlaceBehavior stayInPlaceBehavior;
-
+TEST_F(StayInPlaceBehaviorTest, getCommand) {
     Time time = Clock::now();
-    Command command = stayInPlaceBehavior.getCommand(time);
+
+    environmentModel_->setPacmanDirection(Direction::LEFT);
+    Command command = stayInPlaceBehavior_.getCommand(time);
+    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+
+    environmentModel_->setPacmanDirection(Direction::RIGHT);
+    command = stayInPlaceBehavior_.getCommand(time);
+    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
+
+    environmentModel_->setPacmanDirection(Direction::UP);
+    command = stayInPlaceBehavior_.getCommand(time);
+    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
+
+    environmentModel_->setPacmanDirection(Direction::DOWN);
+    command = stayInPlaceBehavior_.getCommand(time);
+    ASSERT_EQ(command.nextDirection(), Direction::UP);
+
+    // This case should never occur but we should be able to
+    // handle it in a defined way and not crash anyway
+    environmentModel_->setPacmanDirection(Direction::LAST);
+    command = stayInPlaceBehavior_.getCommand(time);
     ASSERT_EQ(command.nextDirection(), Direction::LAST);
 }
 

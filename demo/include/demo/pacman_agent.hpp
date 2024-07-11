@@ -36,7 +36,7 @@ public:
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
         runAwayFromGhostBehavior_ =
             std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, parameters_.runAwayFromGhostBehavior);
-        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
+        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);

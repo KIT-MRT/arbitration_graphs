@@ -2,6 +2,7 @@
 
 #include <arbitration_graphs/behavior.hpp>
 
+#include "environment_model.hpp"
 #include "types.hpp"
 
 namespace demo {
@@ -19,11 +20,14 @@ public:
     using Ptr = std::shared_ptr<StayInPlaceBehavior>;
     using ConstPtr = std::shared_ptr<const StayInPlaceBehavior>;
 
-    explicit StayInPlaceBehavior(const std::string& name = "StayInPlaceBehavior") : Behavior(name) {
+    explicit StayInPlaceBehavior(EnvironmentModel::Ptr environmentModel,
+                                 const std::string& name = "StayInPlaceBehavior")
+            : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 
     Command getCommand(const Time& time) override {
-        return Command{Direction::LAST};
+        Direction currentDirection = environmentModel_->pacmanDirection();
+        return Command{oppositeDirection(currentDirection)};
     }
 
     bool checkInvocationCondition(const Time& time) const override {
@@ -36,6 +40,18 @@ public:
     void gainControl(const Time& time) override {
     }
     void loseControl(const Time& time) override {
+    }
+
+private:
+    EnvironmentModel::Ptr environmentModel_;
+
+    static Direction oppositeDirection(const Direction& direction) {
+        const std::map<Direction, Direction> oppositeDirectionMap{{Direction::UP, Direction::DOWN},
+                                                                  {Direction::DOWN, Direction::UP},
+                                                                  {Direction::LEFT, Direction::RIGHT},
+                                                                  {Direction::RIGHT, Direction::LEFT},
+                                                                  {Direction::LAST, Direction::LAST}};
+        return oppositeDirectionMap.at(direction);
     }
 };
 
