@@ -10,6 +10,7 @@ struct Ghost {
     void update(const demo::entt::Registry& registry, const demo::entt::Entity& entity);
 
     demo::Position position;
+    demo::Direction direction;
     demo::GhostMode mode;
     std::optional<int> scaredCountdown;
 };
@@ -18,6 +19,7 @@ struct Pacman {
     void update(const demo::entt::Registry& registry, const demo::entt::Entity& entity);
 
     demo::Position position;
+    demo::Direction direction;
 };
 
 struct Entities {
