@@ -40,7 +40,7 @@ struct Position {
     double distance(const Position& other) const {
         return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
     }
-    Position operator+(const Position& other) {
+    Position operator+(const Position& other) const {
         return {x + other.x, y + other.y};
     }
     bool operator==(const Position& other) const {
@@ -62,14 +62,17 @@ struct Command {
         return scancodeMap().at(nextDirection());
     }
 
-    Path path;
-    const std::map<Direction, SDL_Scancode> scancodeMap{
-        {Direction::UP, SDL_SCANCODE_UP},
-        {Direction::DOWN, SDL_SCANCODE_DOWN},
-        {Direction::LEFT, SDL_SCANCODE_LEFT},
-        {Direction::RIGHT, SDL_SCANCODE_RIGHT},
-        {Direction::LAST, SDL_SCANCODE_UNKNOWN},
+    static std::map<Direction, SDL_Scancode> scancodeMap() {
+        return {
+            {Direction::UP, SDL_SCANCODE_UP},
+            {Direction::DOWN, SDL_SCANCODE_DOWN},
+            {Direction::LEFT, SDL_SCANCODE_LEFT},
+            {Direction::RIGHT, SDL_SCANCODE_RIGHT},
+            {Direction::LAST, SDL_SCANCODE_UNKNOWN},
+        };
     };
+
+    Path path;
 };
 
 struct Move {
@@ -84,4 +87,5 @@ struct Move {
     }
 };
 using Moves = std::vector<Move>;
+
 } // namespace demo

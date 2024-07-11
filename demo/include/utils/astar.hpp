@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <utility>
 #include <vector>
 
 #include <comp/position.hpp>
@@ -19,8 +20,8 @@ using Position = demo::Position;
 
 struct Cell {
     struct CompareCells {
-        bool operator()(const Cell& c1, const Cell& c2) {
-            return (c1.distanceFromStart + c1.heuristic) > (c2.distanceFromStart + c2.heuristic);
+        bool operator()(const Cell& left, const Cell& right) {
+            return (left.distanceFromStart + left.heuristic) > (right.distanceFromStart + right.heuristic);
         }
     };
 
@@ -41,7 +42,7 @@ class MazeAdapter {
 public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
 
-    MazeAdapter(const Maze::ConstPtr& maze) : maze_(maze), cells_({maze_->width(), maze_->height()}) {};
+    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}) {};
 
     Cell& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
@@ -60,9 +61,9 @@ class AStar {
 public:
     using Set = std::priority_queue<Cell, std::vector<Cell>, Cell::CompareCells>;
 
-    constexpr static int NO_PATH_FOUND = std::numeric_limits<int>::max();
+    constexpr static int NoPathFound = std::numeric_limits<int>::max();
 
-    AStar(const Maze::ConstPtr maze) : maze_(maze) {};
+    explicit AStar(Maze::ConstPtr maze) : maze_(std::move(maze)) {};
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.

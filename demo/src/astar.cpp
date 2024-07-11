@@ -40,7 +40,7 @@ int AStar::distance(const Position& start, const Position& goal) const {
 
     openSet.push(startCell);
 
-    int result = NO_PATH_FOUND;
+    int result = NoPathFound;
     while (!openSet.empty()) {
         if (openSet.top().position == wrappedGoal) {
             result = openSet.top().distanceFromStart;
