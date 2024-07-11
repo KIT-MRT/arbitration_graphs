@@ -1,24 +1,24 @@
-#include "demo/do_nothing_behavior.hpp"
+#include "demo/stay_in_place_behavior.hpp"
 
 #include <gtest/gtest.h>
 
 namespace demo {
 
 TEST(DoNothingBehaviorTest, checkInvocationConditionTrue) {
-    demo::DoNothingBehavior doNothingBehavior;
-    ASSERT_TRUE(doNothingBehavior.checkInvocationCondition(Clock::now()));
+    StayInPlaceBehavior stayInPlaceBehavior;
+    ASSERT_TRUE(stayInPlaceBehavior.checkInvocationCondition(Clock::now()));
 }
 
 TEST(DoNothingBehaviorTest, checkCommitmentConditionFalse) {
-    demo::DoNothingBehavior doNothingBehavior;
-    ASSERT_FALSE(doNothingBehavior.checkCommitmentCondition(Clock::now()));
+    StayInPlaceBehavior stayInPlaceBehavior;
+    ASSERT_FALSE(stayInPlaceBehavior.checkCommitmentCondition(Clock::now()));
 }
 
 TEST(DoNothingBehaviorTest, getCommand) {
-    demo::DoNothingBehavior doNothingBehavior;
+    StayInPlaceBehavior stayInPlaceBehavior;
 
     Time time = Clock::now();
-    Command command = doNothingBehavior.getCommand(time);
+    Command command = stayInPlaceBehavior.getCommand(time);
     ASSERT_EQ(command.nextDirection(), Direction::LAST);
 }
 

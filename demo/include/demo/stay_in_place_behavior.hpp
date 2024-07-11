@@ -14,12 +14,12 @@ namespace demo {
  * Due to the fact that Pacman will never stop moving, this means that when this behavior is called, Pacman will keep
  * moving in the same direction as before.
  */
-class DoNothingBehavior : public arbitration_graphs::Behavior<Command> {
+class StayInPlaceBehavior : public arbitration_graphs::Behavior<Command> {
 public:
-    using Ptr = std::shared_ptr<DoNothingBehavior>;
-    using ConstPtr = std::shared_ptr<const DoNothingBehavior>;
+    using Ptr = std::shared_ptr<StayInPlaceBehavior>;
+    using ConstPtr = std::shared_ptr<const StayInPlaceBehavior>;
 
-    explicit DoNothingBehavior(const std::string& name = "DoNothingBehavior") : Behavior(name) {
+    explicit StayInPlaceBehavior(const std::string& name = "StayInPlaceBehavior") : Behavior(name) {
     }
 
     Command getCommand(const Time& time) override {
