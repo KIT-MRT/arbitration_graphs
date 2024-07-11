@@ -47,6 +47,9 @@ public:
     Position pacmanPosition() const {
         return entities_.pacman.position;
     }
+    Direction pacmanDirection() const {
+        return entities_.pacman.direction;
+    }
     /**
      * @brief The currently closest ghost and the corresponding manhattan distance.
      *
