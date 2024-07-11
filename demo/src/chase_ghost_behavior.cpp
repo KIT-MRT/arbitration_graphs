@@ -29,7 +29,7 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
         }
     }
 
-    return {direction};
+    return Command{direction};
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {

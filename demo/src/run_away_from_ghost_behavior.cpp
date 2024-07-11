@@ -23,7 +23,7 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
         }
     }
 
-    return {direction};
+    return Command{direction};
 }
 
 bool RunAwayFromGhostBehavior::checkInvocationCondition(const Time& time) const {

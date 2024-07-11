@@ -23,7 +23,7 @@ public:
     }
 
     Command getCommand(const Time& time) override {
-        return {Direction::LAST};
+        return Command{Direction::LAST};
     }
 
     bool checkInvocationCondition(const Time& time) const override {
