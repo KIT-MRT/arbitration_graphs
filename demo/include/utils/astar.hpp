@@ -71,7 +71,7 @@ public:
      * A distance of 1 is the distance between two adjacent positions in the maze.
      * Will consider walls when calculating the distance.
      */
-    int distance(const Position& start, const Position& goal) const;
+    int manhattanDistance(const Position& start, const Position& goal) const;
 
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;

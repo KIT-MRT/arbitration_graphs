@@ -52,7 +52,7 @@ EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Ghosts&
     Ghost closestGhost;
 
     for (const auto& ghost : ghosts) {
-        int ghostDistance = distance(pacmanPosition(), ghost.position);
+        int ghostDistance = manhattanDistance(pacmanPosition(), ghost.position);
         if (ghostDistance < minGhostDistance) {
             minGhostDistance = ghostDistance;
             closestGhost = ghost;

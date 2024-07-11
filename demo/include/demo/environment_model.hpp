@@ -68,8 +68,8 @@ public:
      * A distance of 1 is the distance between two adjacent positions in the maze.
      * Will consider walls when calculating the distance.
      */
-    int distance(const Position& start, const Position& goal) const {
-        return astar_.distance(start, goal);
+    int manhattanDistance(const Position& start, const Position& goal) const {
+        return astar_.manhattanDistance(start, goal);
     }
 
     bool isWall(const Position& position) const {
