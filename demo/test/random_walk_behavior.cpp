@@ -25,7 +25,7 @@ TEST(RandomWalkBehaviorTest, getCachedCommand) {
     Command secondCommand = randomWalkBehavior.getCommand(time);
 
     // We return the first selection until after selectionValidFor so the commands should be identical
-    ASSERT_EQ(firstCommand.direction, secondCommand.direction);
+    ASSERT_EQ(firstCommand.nextDirection(), secondCommand.nextDirection());
 }
 
 TEST(RandomWalkBehaviorTest, getRandomCommand) {
@@ -39,7 +39,7 @@ TEST(RandomWalkBehaviorTest, getRandomCommand) {
         {Direction::UP, 0}, {Direction::DOWN, 0}, {Direction::LEFT, 0}, {Direction::RIGHT, 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        Direction direction = randomWalkBehavior.getCommand(time).direction;
+        Direction direction = randomWalkBehavior.getCommand(time).nextDirection();
         directionCounter[direction]++;
 
         // We need to progress time to force a re-selection of a new direction

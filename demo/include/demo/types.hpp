@@ -54,8 +54,12 @@ struct Command {
     }
     explicit Command(Path path) : path(std::move(path)) {
     }
+
+    Direction nextDirection() const {
+        return path.front();
+    }
     SDL_Scancode scancode() const {
-        return scancodeMap.at(path.front());
+        return scancodeMap().at(nextDirection());
     }
 
     Path path;
