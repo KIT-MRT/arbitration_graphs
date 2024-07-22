@@ -4,7 +4,7 @@ namespace demo {
 
 Command RandomWalkBehavior::getCommand(const Time& time) {
     util_caching::policies::ApproximateTime<Time, std::chrono::seconds> approximateTimePolicy{
-        parameters_.selectionValidFor.count()};
+        parameters_.selectionFixedFor.count()};
     if (directionCache_.cached(time, approximateTimePolicy)) {
         return directionCache_.cached(time, approximateTimePolicy).value();
     }
@@ -17,7 +17,7 @@ Command RandomWalkBehavior::getCommand(const Time& time) {
 
 Direction RandomWalkBehavior::selectRandomDirection() {
     int randomIndex = discreteRandomDistribution_(randomGenerator_);
-    Move randomMove = Move::possibleMoves()[randomIndex];
+    Move randomMove = Move::possibleMoves().at(randomIndex);
 
     return randomMove.direction;
 }

@@ -41,8 +41,8 @@ public:
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(runAwayFromGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::NO_FLAGS);
-        rootArbitrator_->addOption(doNothingBehavior_, PriorityArbitrator::Option::Flags::NO_FLAGS);
+        rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(doNothingBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     }
 
     Command getCommand(const Time& time) {

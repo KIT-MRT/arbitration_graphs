@@ -11,7 +11,7 @@ namespace demo {
  * @brief The RandomWalkBehavior moves Pacman in a random direction.
  *
  * This behavior will not consider ghosts or walls. Once a direction is selected, it will be returned for a defined
- * amount of time to avoid changing the direction too often.
+ * amount of time to avoid changing the direction too frequently.
  *
  */
 class RandomWalkBehavior : public arbitration_graphs::Behavior<Command> {
@@ -20,12 +20,11 @@ public:
     using ConstPtr = std::shared_ptr<const RandomWalkBehavior>;
 
     struct Parameters {
-        Duration selectionValidFor{std::chrono::seconds(1)};
+        Duration selectionFixedFor{std::chrono::seconds(1)};
     };
 
     explicit RandomWalkBehavior(const Parameters& parameters, const std::string& name = "RandomWalkBehavior")
-            : Behavior(name), parameters_(parameters), randomGenerator_(randomDevice_()),
-              discreteRandomDistribution_(0, static_cast<int>(Move::possibleMoves().size()) - 1) {
+            : Behavior{name}, parameters_{parameters} {
     }
 
     Command getCommand(const Time& time) override;
@@ -51,8 +50,8 @@ private:
     Parameters parameters_;
 
     std::random_device randomDevice_;
-    std::mt19937 randomGenerator_;
-    std::uniform_int_distribution<> discreteRandomDistribution_;
+    std::mt19937 randomGenerator_{randomDevice_()};
+    std::uniform_int_distribution<> discreteRandomDistribution_{0, static_cast<int>(Move::possibleMoves().size()) - 1};
 };
 
 } // namespace demo
