@@ -50,26 +50,24 @@ struct Position {
 using Positions = std::vector<Position>;
 
 struct Command {
-    explicit Command(const Direction& direction) : path({direction}) {
+    explicit Command(const Direction& direction) : path{direction} {
     }
-    explicit Command(Path path) : path(std::move(path)) {
+    explicit Command(Path path) : path{std::move(path)} {
     }
 
     Direction nextDirection() const {
         return path.front();
     }
     SDL_Scancode scancode() const {
-        return scancodeMap().at(nextDirection());
+        return scancodeMap.at(nextDirection());
     }
 
-    static std::map<Direction, SDL_Scancode> scancodeMap() {
-        return {
-            {Direction::UP, SDL_SCANCODE_UP},
-            {Direction::DOWN, SDL_SCANCODE_DOWN},
-            {Direction::LEFT, SDL_SCANCODE_LEFT},
-            {Direction::RIGHT, SDL_SCANCODE_RIGHT},
-            {Direction::LAST, SDL_SCANCODE_UNKNOWN},
-        };
+    const std::map<Direction, SDL_Scancode> scancodeMap{
+        {Direction::UP, SDL_SCANCODE_UP},
+        {Direction::DOWN, SDL_SCANCODE_DOWN},
+        {Direction::LEFT, SDL_SCANCODE_LEFT},
+        {Direction::RIGHT, SDL_SCANCODE_RIGHT},
+        {Direction::LAST, SDL_SCANCODE_UNKNOWN},
     };
 
     Path path;
