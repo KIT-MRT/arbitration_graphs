@@ -3,7 +3,7 @@
 
 namespace demo {
 
-Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
+Command AvoidGhostBehavior::getCommand(const Time& time) {
     auto pacmanPosition = environmentModel_->pacmanPosition();
     auto ghostPosition = environmentModel_->closestGhost(time).ghost.position;
     auto direction = Direction::LAST;
@@ -26,11 +26,11 @@ Command RunAwayFromGhostBehavior::getCommand(const Time& time) {
     return Command{direction};
 }
 
-bool RunAwayFromGhostBehavior::checkInvocationCondition(const Time& time) const {
+bool AvoidGhostBehavior::checkInvocationCondition(const Time& time) const {
     return environmentModel_->closestGhost(time).distance < parameters_.invocationMinDistance;
 }
 
-bool RunAwayFromGhostBehavior::checkCommitmentCondition(const Time& time) const {
+bool AvoidGhostBehavior::checkCommitmentCondition(const Time& time) const {
     return environmentModel_->closestGhost(time).distance < parameters_.commitmentMinDistance;
 }
 

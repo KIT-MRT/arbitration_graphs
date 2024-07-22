@@ -23,24 +23,23 @@ public:
     using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
 
     struct Parameters {
+        AvoidGhostBehavior::Parameters avoidGhostBehavior;
         ChaseGhostBehavior::Parameters chaseGhostBehavior;
         RandomWalkBehavior::Parameters randomWalkBehavior;
-        RunAwayFromGhostBehavior::Parameters runAwayFromGhostBehavior;
     };
 
     explicit PacmanAgent(const entt::Game& game) {
         parameters_ = Parameters{};
         environmentModel_ = std::make_shared<EnvironmentModel>(game);
 
+        avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
-        runAwayFromGhostBehavior_ =
-            std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, parameters_.runAwayFromGhostBehavior);
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(runAwayFromGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(stayInPlaceBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     }
@@ -66,9 +65,9 @@ private:
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 
+    AvoidGhostBehavior::Ptr avoidGhostBehavior_;
     ChaseGhostBehavior::Ptr chaseGhostBehavior_;
     RandomWalkBehavior::Ptr randomWalkBehavior_;
-    RunAwayFromGhostBehavior::Ptr runAwayFromGhostBehavior_;
     StayInPlaceBehavior::Ptr stayInPlaceBehavior_;
 
     PriorityArbitrator::Ptr rootArbitrator_;
