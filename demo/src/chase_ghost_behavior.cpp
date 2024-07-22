@@ -22,14 +22,14 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
         }
 
         // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
-        auto nextDistance = environmentModel_->distance(nextPosition, ghostPosition);
+        auto nextDistance = environmentModel_->manhattanDistance(nextPosition, ghostPosition);
         if (nextDistance < minDistance) {
             direction = move.direction;
             minDistance = nextDistance;
         }
     }
 
-    return {direction};
+    return Command{direction};
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {

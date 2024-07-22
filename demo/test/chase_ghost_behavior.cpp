@@ -90,7 +90,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time);
-    ASSERT_EQ(command.direction, Direction::LEFT);
+    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
@@ -106,7 +106,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time);
-    ASSERT_EQ(command.direction, Direction::RIGHT);
+    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
@@ -122,7 +122,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time);
-    ASSERT_EQ(command.direction, Direction::DOWN);
+    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
@@ -138,7 +138,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time);
-    ASSERT_EQ(command.direction, Direction::UP);
+    ASSERT_EQ(command.nextDirection(), Direction::UP);
 }
 
 } // namespace demo

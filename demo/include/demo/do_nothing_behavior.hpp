@@ -19,11 +19,11 @@ public:
     using Ptr = std::shared_ptr<DoNothingBehavior>;
     using ConstPtr = std::shared_ptr<const DoNothingBehavior>;
 
-    DoNothingBehavior(const std::string& name = "DoNothingBehavior") : Behavior(name) {
+    explicit DoNothingBehavior(const std::string& name = "DoNothingBehavior") : Behavior(name) {
     }
 
     Command getCommand(const Time& time) override {
-        return {Direction::LAST};
+        return Command{Direction::LAST};
     }
 
     bool checkInvocationCondition(const Time& time) const override {

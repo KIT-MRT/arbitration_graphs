@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <utility>
 #include <vector>
 
 #include <SDL_scancode.h>
@@ -30,6 +31,8 @@ using Tile = ::Tile;
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
 enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
 
+using Path = std::vector<Direction>;
+
 struct Position {
     int x;
     int y;
@@ -37,7 +40,7 @@ struct Position {
     double distance(const Position& other) const {
         return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
     }
-    Position operator+(const Position& other) {
+    Position operator+(const Position& other) const {
         return {x + other.x, y + other.y};
     }
     bool operator==(const Position& other) const {
@@ -47,13 +50,18 @@ struct Position {
 using Positions = std::vector<Position>;
 
 struct Command {
-    Command(Direction direction) : direction(direction) {
+    explicit Command(const Direction& direction) : path{direction} {
     }
-    SDL_Scancode scancode() const {
-        return scancodeMap.at(direction);
+    explicit Command(Path path) : path{std::move(path)} {
     }
 
-    Direction direction;
+    Direction nextDirection() const {
+        return path.front();
+    }
+    SDL_Scancode scancode() const {
+        return scancodeMap.at(nextDirection());
+    }
+
     const std::map<Direction, SDL_Scancode> scancodeMap{
         {Direction::UP, SDL_SCANCODE_UP},
         {Direction::DOWN, SDL_SCANCODE_DOWN},
@@ -61,6 +69,8 @@ struct Command {
         {Direction::RIGHT, SDL_SCANCODE_RIGHT},
         {Direction::LAST, SDL_SCANCODE_UNKNOWN},
     };
+
+    Path path;
 };
 
 struct Move {
@@ -75,4 +85,5 @@ struct Move {
     }
 };
 using Moves = std::vector<Move>;
+
 } // namespace demo

@@ -6,13 +6,13 @@ Command RandomWalkBehavior::getCommand(const Time& time) {
     util_caching::policies::ApproximateTime<Time, std::chrono::seconds> approximateTimePolicy{
         parameters_.selectionFixedFor.count()};
     if (directionCache_.cached(time, approximateTimePolicy)) {
-        return directionCache_.cached(time, approximateTimePolicy).value();
+        return Command{directionCache_.cached(time, approximateTimePolicy).value()};
     }
 
     Direction randomDirection = selectRandomDirection();
 
     directionCache_.cache(time, randomDirection);
-    return randomDirection;
+    return Command{randomDirection};
 }
 
 Direction RandomWalkBehavior::selectRandomDirection() {

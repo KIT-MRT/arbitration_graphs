@@ -32,7 +32,7 @@ public:
         int distance;
     };
 
-    EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
+    explicit EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
         updateEntities(game.reg);
     };
 
@@ -55,7 +55,7 @@ public:
     GhostWithDistance closestGhost(const Time& time) const;
 
     /**
-     * @brief The closest scared ghost and the corresponding and manhattan distance. 
+     * @brief The closest scared ghost and the corresponding and manhattan distance.
      *        Returns std::nullopt if there is no scared ghost.
      *
      * Very similar to closestGhost() but only considering ghosts that are in the scared mode.
@@ -68,8 +68,8 @@ public:
      * A distance of 1 is the distance between two adjacent positions in the maze.
      * Will consider walls when calculating the distance.
      */
-    int distance(const Position& start, const Position& goal) const {
-        return astar_.distance(start, goal);
+    int manhattanDistance(const Position& start, const Position& goal) const {
+        return astar_.manhattanDistance(start, goal);
     }
 
     bool isWall(const Position& position) const {

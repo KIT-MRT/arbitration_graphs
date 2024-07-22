@@ -17,7 +17,7 @@ int nonNegativeModulus(const int& numerator, const int& denominator) {
     return (denominator + (numerator % denominator)) % denominator;
 }
 
-int AStar::distance(const Position& start, const Position& goal) const {
+int AStar::manhattanDistance(const Position& start, const Position& goal) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
@@ -40,7 +40,7 @@ int AStar::distance(const Position& start, const Position& goal) const {
 
     openSet.push(startCell);
 
-    int result = NO_PATH_FOUND;
+    int result = NoPathFound;
     while (!openSet.empty()) {
         if (openSet.top().position == wrappedGoal) {
             result = openSet.top().distanceFromStart;
