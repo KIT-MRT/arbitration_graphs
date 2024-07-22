@@ -1,4 +1,4 @@
-#include "demo/run_away_from_ghost_behavior.hpp"
+#include "demo/avoid_ghost_behavior.hpp"
 #include "demo/types.hpp"
 
 namespace demo {

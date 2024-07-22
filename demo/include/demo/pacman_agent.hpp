@@ -2,10 +2,10 @@
 
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
+#include "avoid_ghost_behavior.hpp"
 #include "chase_ghost_behavior.hpp"
 #include "environment_model.hpp"
 #include "random_walk_behavior.hpp"
-#include "run_away_from_ghost_behavior.hpp"
 #include "stay_in_place_behavior.hpp"
 #include "types.hpp"
 
