@@ -78,7 +78,9 @@ Path AStar::pathToClosestDot(const Position& start) const {
     openSet.push(startCell);
 
     while (!openSet.empty()) {
-        if (openSet.top().type == TileType::DOT) {
+        // Unfortunately, the pacman simulation will handle the dot consumption after the move, therefore we need to
+        // explicitely exclude the start position from the search.
+        if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
             return pathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, wrappedStart);
