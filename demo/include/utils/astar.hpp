@@ -67,7 +67,7 @@ public:
 
     constexpr static int NoPathFound = std::numeric_limits<int>::max();
 
-    explicit AStar(Maze::ConstPtr maze) : maze_(std::move(maze)) {};
+    explicit AStar(Maze::ConstPtr maze) : maze_{std::move(maze)} {};
 
     /**
      * @brief Calculates the Manhattan distance between two positions using A*.
@@ -88,6 +88,10 @@ public:
      * If there is no dot or no path can be found, the returned path will be empty.
      */
     Path pathToClosestDot(const Position& start) const;
+
+    void updateMaze(const Maze::ConstPtr& maze) {
+        maze_ = maze;
+    }
 
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;

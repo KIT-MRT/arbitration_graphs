@@ -41,15 +41,18 @@ public:
      */
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
+        astar_.updateMaze(maze_);
         updateEntities(game.reg);
     }
 
     Position pacmanPosition() const {
         return entities_.pacman.position;
     }
+
     Direction pacmanDirection() const {
         return entities_.pacman.direction;
     }
+
     /**
      * @brief The currently closest ghost and the corresponding manhattan distance.
      *
@@ -80,7 +83,6 @@ public:
     }
 
 protected:
-    void updatePositions(const entt::Registry& registry);
     void updateEntities(const entt::Registry& registry);
 
     GhostWithDistance closestGhost(const Ghosts& ghosts) const;
