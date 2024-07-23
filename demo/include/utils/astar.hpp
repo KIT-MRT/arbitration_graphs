@@ -37,8 +37,8 @@ struct Cell {
     TileType type;
     std::optional<Move> moveFromPredecessor;
 
-    double distance(const Position& other) const {
-        return std::sqrt(std::pow(position.x - other.x, 2) + std::pow(position.y - other.y, 2));
+    double manhattanDistance(const Position& other) const {
+        return std::abs(position.x - other.x) + std::abs(position.y - other.y);
     }
 };
 
@@ -63,6 +63,7 @@ private:
 
 class AStar {
 public:
+    using HeuristicFunction = std::function<int(const Cell&)>;
     using Set = std::priority_queue<Cell, std::vector<Cell>, Cell::CompareCells>;
 
     constexpr static int NoPathFound = std::numeric_limits<int>::max();
@@ -94,7 +95,7 @@ public:
     }
 
 private:
-    void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
+    void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const;
 
     /**
      * @brief Create a path by traversing predecessor relationships up to a goal position.
@@ -105,14 +106,14 @@ private:
     Path pathTo(const MazeAdapter& maze, const Position& goal) const;
 
     /**
-     * @brief Computes the heuristic of the given cell considering the goal.
+     * @brief Approximates the distance of a given cell to a goal while considering a shortcut via the tunnel.
      *
-     * The heuristic must always underestimate the actual distance.
-     * The first term is just the euclidian distance.
-     * The second term estimates the distance through the tunnel.
+     * Always underestimate the actual distance making it suitable for an A* heuristic
+     * The first term is the direct manhattan distance.
+     * The second term approximates the distance through the tunnel.
      */
-    double computeHeuristic(const Cell& cell, const Position& goal) const {
-        return std::min(cell.distance(goal), maze_->width() - cell.distance(goal));
+    double optimisticDistanceToGoal(const Cell& cell, const Position& goal) const {
+        return std::min(cell.manhattanDistance(goal), maze_->width() - cell.manhattanDistance(goal));
     }
 
     /**

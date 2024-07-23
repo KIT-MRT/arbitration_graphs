@@ -45,7 +45,10 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
         throw std::runtime_error("Can't compute path from/to wall cell");
     }
     startCell.distanceFromStart = 0;
-    startCell.heuristic = computeHeuristic(startCell, wrappedGoal);
+    HeuristicFunction heuristic = [this, &wrappedGoal](const Cell& cell) {
+        return optimisticDistanceToGoal(cell, wrappedGoal);
+    };
+    startCell.heuristic = heuristic(startCell);
 
     openSet.push(startCell);
 
@@ -53,7 +56,7 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
         if (openSet.top().position == wrappedGoal) {
             return pathTo(mazeAdapter, openSet.top().position);
         }
-        expandCell(openSet, mazeAdapter, wrappedGoal);
+        expandCell(openSet, mazeAdapter, heuristic);
     }
 
     return {};
@@ -73,6 +76,7 @@ Path AStar::pathToClosestDot(const Position& start) const {
         throw std::runtime_error("Can't compute path from wall cell");
     }
     startCell.distanceFromStart = 0;
+    HeuristicFunction heuristic = [](const Cell&) { return 0; };
     startCell.heuristic = 0;
 
     openSet.push(startCell);
@@ -83,13 +87,13 @@ Path AStar::pathToClosestDot(const Position& start) const {
         if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
             return pathTo(mazeAdapter, openSet.top().position);
         }
-        expandCell(openSet, mazeAdapter, wrappedStart);
+        expandCell(openSet, mazeAdapter, heuristic);
     }
 
     return {};
 }
 
-void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const {
+void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
     Cell current = openSet.top();
     openSet.pop();
 
@@ -112,7 +116,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
         int newDistance = current.distanceFromStart + 1;
         if (newDistance < neighbor.distanceFromStart) {
             neighbor.distanceFromStart = newDistance;
-            neighbor.heuristic = computeHeuristic(neighbor, goal);
+            neighbor.heuristic = heuristic(neighbor);
             neighbor.moveFromPredecessor = move;
             openSet.push(neighbor);
         }
