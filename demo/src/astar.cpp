@@ -32,7 +32,7 @@ int AStar::manhattanDistance(const Position& start, const Position& goal) const 
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
     Cell& goalCell = mazeAdapter.cell(wrappedGoal);
-    if (startCell.isWall || goalCell.isWall) {
+    if (startCell.type == TileType::WALL || goalCell.type == TileType::WALL) {
         throw std::runtime_error("Can't compute distance from/to wall cell");
     }
     startCell.distanceFromStart = 0;

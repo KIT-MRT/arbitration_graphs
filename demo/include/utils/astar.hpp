@@ -17,6 +17,7 @@
 namespace utils {
 
 using Position = demo::Position;
+using TileType = demo::TileType;
 
 struct Cell {
     struct CompareCells {
@@ -25,13 +26,13 @@ struct Cell {
         }
     };
 
-    Cell(const Position& position, const bool& isWall) : position(position), isWall(isWall) {};
+    Cell(const Position& position, const TileType& type) : position(position), type(type) {};
 
     Position position;
     int distanceFromStart{std::numeric_limits<int>::max()};
     double heuristic{std::numeric_limits<int>::max()};
     bool visited{false};
-    bool isWall;
+    TileType type;
 
     double distance(const Position& other) const {
         return std::sqrt(std::pow(position.x - other.x, 2) + std::pow(position.y - other.y, 2));
@@ -46,7 +47,7 @@ public:
 
     Cell& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
-            cells_[{position.x, position.y}] = Cell(position, maze_->isWall(position));
+            cells_[{position.x, position.y}] = Cell(position, maze_->operator[](position));
         }
 
         return cells_[{position.x, position.y}].value();
