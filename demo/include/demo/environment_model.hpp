@@ -69,13 +69,12 @@ public:
     std::optional<GhostWithDistance> closestScaredGhost(const Time& time) const;
 
     /**
-     * @brief Calculates the Manhattan distance between two positions using A*.
+     * @brief Calculates the Manhattan distance between two positions using A* considering the maze geometry.
      *
      * A distance of 1 is the distance between two adjacent positions in the maze.
-     * Will consider walls when calculating the distance.
      */
-    int manhattanDistance(const Position& start, const Position& goal) const {
-        return astar_.manhattanDistance(start, goal);
+    int mazeDistance(const Position& start, const Position& goal) const {
+        return astar_.mazeDistance(start, goal);
     }
 
     Path pathToClosestDot(const Position& position) const {

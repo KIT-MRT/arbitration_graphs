@@ -17,7 +17,7 @@ int nonNegativeModulus(const int& numerator, const int& denominator) {
     return (denominator + (numerator % denominator)) % denominator;
 }
 
-int AStar::manhattanDistance(const Position& start, const Position& goal) const {
+int AStar::mazeDistance(const Position& start, const Position& goal) const {
     if (distanceCache_.cached({start, goal})) {
         return distanceCache_.cached({start, goal}).value();
     }

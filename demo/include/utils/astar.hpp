@@ -75,7 +75,7 @@ public:
      * A distance of 1 is the distance between two adjacent positions in the maze.
      * Will consider walls when calculating the distance.
      */
-    int manhattanDistance(const Position& start, const Position& goal) const;
+    int mazeDistance(const Position& start, const Position& goal) const;
 
     /**
      * @brief Returns the shortest path from the start to the goal position considering the maze geometry.

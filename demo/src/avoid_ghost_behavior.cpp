@@ -16,7 +16,7 @@ Command AvoidGhostBehavior::getCommand(const Time& time) {
             continue;
         }
 
-        auto nextDistance = environmentModel_->manhattanDistance(nextPosition, ghostPosition);
+        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
         if (nextDistance > maxDistance) {
             direction = move.direction;
             maxDistance = nextDistance;
