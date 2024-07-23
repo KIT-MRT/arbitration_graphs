@@ -16,6 +16,8 @@
 
 namespace utils {
 
+using Move = demo::Move;
+using Path = demo::Path;
 using Position = demo::Position;
 using TileType = demo::TileType;
 
@@ -33,6 +35,7 @@ struct Cell {
     double heuristic{std::numeric_limits<int>::max()};
     bool visited{false};
     TileType type;
+    std::optional<Move> moveFromPredecessor;
 
     double distance(const Position& other) const {
         return std::sqrt(std::pow(position.x - other.x, 2) + std::pow(position.y - other.y, 2));
@@ -74,8 +77,21 @@ public:
      */
     int manhattanDistance(const Position& start, const Position& goal) const;
 
+    /**
+     * @brief Returns the shortest path from the start to the goal position considering the maze geometry.
+     */
+    Path shortestPath(const Position& start, const Position& goal) const;
+
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
+
+    /**
+     * @brief Create a path by traversing predecessor relationships up to a goal position.
+     *
+     * Will expand the path backwards until no more predecessor relationship is available. If the cell at the goal
+     * position does not have a predecessor, the path will be empty.
+     */
+    Path pathTo(const MazeAdapter& maze, const Position& goal) const;
 
     /**
      * @brief Computes the heuristic of the given cell considering the goal.
