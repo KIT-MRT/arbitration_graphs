@@ -34,9 +34,9 @@ using Tile = ::Tile;
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
 enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
+enum class TileType { EMPTY, DOT, ENGERIZER, WALL, DOOR };
 
 using Path = std::vector<Direction>;
-
 struct Position {
     int x;
     int y;
