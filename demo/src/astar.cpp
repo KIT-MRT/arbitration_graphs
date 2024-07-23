@@ -59,6 +59,34 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
     return {};
 }
 
+Path AStar::pathToClosestDot(const Position& start) const {
+    // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
+    // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
+    // tunnel.
+    Position wrappedStart = positionConsideringTunnel(start);
+
+    MazeAdapter mazeAdapter(maze_);
+    Set openSet;
+
+    Cell& startCell = mazeAdapter.cell(wrappedStart);
+    if (startCell.type == TileType::WALL) {
+        throw std::runtime_error("Can't compute path from wall cell");
+    }
+    startCell.distanceFromStart = 0;
+    startCell.heuristic = 0;
+
+    openSet.push(startCell);
+
+    while (!openSet.empty()) {
+        if (openSet.top().type == TileType::DOT) {
+            return pathTo(mazeAdapter, openSet.top().position);
+        }
+        expandCell(openSet, mazeAdapter, wrappedStart);
+    }
+
+    return {};
+}
+
 void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const {
     Cell current = openSet.top();
     openSet.pop();

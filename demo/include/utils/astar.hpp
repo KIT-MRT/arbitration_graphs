@@ -82,6 +82,13 @@ public:
      */
     Path shortestPath(const Position& start, const Position& goal) const;
 
+    /**
+     * @brief Returns the path from a given start position to the closest dot.
+     *
+     * If there is no dot or no path can be found, the returned path will be empty.
+     */
+    Path pathToClosestDot(const Position& start) const;
+
 private:
     void expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const;
 

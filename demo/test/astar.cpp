@@ -120,4 +120,26 @@ TEST_F(AStarTest, pathWithTunnel) {
     ASSERT_EQ(path.size(), 1);
     EXPECT_EQ(path.front(), demo::Direction::RIGHT);
 }
+
+TEST_F(AStarTest, pathToClosestDot) {
+    const char str[] = {"#####"
+                        "#  .#"
+                        "# ###"
+                        "#   #"
+                        "#  .#"
+                        "#####"};
+    environmentModel_->setMaze({5, 6}, str);
+
+    AStar astar(environmentModel_->maze());
+    Path path = astar.pathToClosestDot({1, 2});
+    Path targetPath = {Direction::UP, Direction::RIGHT, Direction::RIGHT};
+    ASSERT_EQ(path.size(), targetPath.size());
+    for (int i = 0; i < targetPath.size(); i++) {
+        EXPECT_EQ(path.at(i), targetPath.at(i));
+    }
+
+    path = astar.pathToClosestDot({1, 3});
+    ASSERT_EQ(path.size(), 3);
+}
+
 } // namespace utils
