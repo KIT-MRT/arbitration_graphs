@@ -4,6 +4,7 @@
 
 #include "avoid_ghost_behavior.hpp"
 #include "chase_ghost_behavior.hpp"
+#include "eat_cloest_dot_behavior.hpp"
 #include "environment_model.hpp"
 #include "random_walk_behavior.hpp"
 #include "stay_in_place_behavior.hpp"
@@ -34,12 +35,14 @@ public:
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
+        eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(eatClosestDotBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(stayInPlaceBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     }
@@ -67,6 +70,7 @@ private:
 
     AvoidGhostBehavior::Ptr avoidGhostBehavior_;
     ChaseGhostBehavior::Ptr chaseGhostBehavior_;
+    EatClosestDotBehavior::Ptr eatClosestDotBehavior_;
     RandomWalkBehavior::Ptr randomWalkBehavior_;
     StayInPlaceBehavior::Ptr stayInPlaceBehavior_;
 

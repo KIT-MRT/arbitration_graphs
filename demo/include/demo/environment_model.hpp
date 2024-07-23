@@ -78,6 +78,10 @@ public:
         return astar_.manhattanDistance(start, goal);
     }
 
+    Path pathToClosestDot(const Position& position) const {
+        return astar_.pathToClosestDot(position);
+    }
+
     bool isWall(const Position& position) const {
         return maze_->isWall(position);
     }
