@@ -36,7 +36,7 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
     Position wrappedStart = positionConsideringTunnel(start);
     Position wrappedGoal = positionConsideringTunnel(goal);
 
-    MazeAdapter mazeAdapter(maze_);
+    AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
@@ -68,7 +68,7 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     // tunnel.
     Position wrappedStart = positionConsideringTunnel(start);
 
-    MazeAdapter mazeAdapter(maze_);
+    AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
@@ -93,7 +93,7 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     return {};
 }
 
-void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
+void AStar::expandCell(Set& openSet, AStarMazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
     Cell current = openSet.top();
     openSet.pop();
 
@@ -123,7 +123,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFu
     }
 }
 
-Path AStar::pathTo(const MazeAdapter& maze, const Position& goal) const {
+Path AStar::pathTo(const AStarMazeAdapter& maze, const Position& goal) const {
     Path path;
     Cell current = maze.cell(goal);
     while (current.moveFromPredecessor) {

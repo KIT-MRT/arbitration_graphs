@@ -1,6 +1,8 @@
 #pragma once
 
+#include <optional>
 #include <utility>
+
 #include <pacman/core/maze.hpp>
 
 #include "demo/types.hpp"
@@ -53,6 +55,41 @@ private:
         {demo::entt::Tile::wall, TileType::WALL},
         {demo::entt::Tile::door, TileType::DOOR},
     };
+};
+
+struct BaseCell {
+    using TileType = demo::TileType;
+    using Position = demo::Position;
+
+    BaseCell(const Position& position, const TileType& type) : position(position), type(type) {};
+
+    double manhattanDistance(const Position& other) const {
+        return std::abs(position.x - other.x) + std::abs(position.y - other.y);
+    }
+
+    Position position;
+    TileType type;
+};
+
+template <typename CellType>
+class MazeAdapter {
+public:
+    using MazeStateConstPtr = std::shared_ptr<const MazeState>;
+    using Position = demo::Position;
+
+    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}) {};
+
+    CellType& cell(const Position& position) const {
+        if (!cells_[{position.x, position.y}]) {
+            cells_[{position.x, position.y}] = CellType(position, maze_->operator[](position));
+        }
+
+        return cells_[{position.x, position.y}].value();
+    }
+
+private:
+    Maze::ConstPtr maze_;
+    mutable Grid<std::optional<CellType>> cells_;
 };
 
 } // namespace utils

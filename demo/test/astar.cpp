@@ -6,7 +6,7 @@
 
 #include "mock_environment_model.hpp"
 
-namespace utils {
+namespace utils::a_star {
 
 using namespace demo;
 
@@ -145,4 +145,4 @@ TEST_F(AStarTest, pathToClosestDot) {
     ASSERT_EQ(path->size(), 3);
 }
 
-} // namespace utils
+} // namespace utils::a_star
