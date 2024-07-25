@@ -95,12 +95,6 @@ private:
         return std::min(cell.manhattanDistance(goal), maze_->width() - cell.manhattanDistance(goal));
     }
 
-    /**
-     * @brief If we are about to step of the maze and the opposite end is passable as well,
-     * we assume they are connected by a tunnel and adjust the position accordingly.
-     */
-    Position positionConsideringTunnel(const Position& position) const;
-
     Maze::ConstPtr maze_;
     mutable util_caching::Cache<std::pair<Position, Position>, int> distanceCache_;
 };

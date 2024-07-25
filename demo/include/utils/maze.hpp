@@ -9,6 +9,21 @@
 
 namespace utils {
 
+/**
+ * @brief Computes the modulus of a given numerator and denominator, ensuring a non-negative result when the denominator
+ * is positive.
+ *
+ * This function calculates the result of the modulus operation. If the denominator is positive, the result is
+ * non-negative and in the range [0, denominator - 1].
+ *
+ * @param numerator The value to be divided (dividend).
+ * @param denominator The value by which the numerator is divided (divisor).
+ * @return An integer representing the modulus of the division.
+ */
+inline int nonNegativeModulus(const int& numerator, const int& denominator) {
+    return (denominator + (numerator % denominator)) % denominator;
+}
+
 class Maze {
 public:
     using MazeState = demo::entt::MazeState;
@@ -34,6 +49,14 @@ public:
     }
     int height() const {
         return mazeState_.height();
+    }
+
+    Position positionConsideringTunnel(const Position& position) const {
+        Position wrappedPosition{nonNegativeModulus(position.x, width()), nonNegativeModulus(position.y, height())};
+        if (isPassableCell(wrappedPosition)) {
+            return wrappedPosition;
+        }
+        return position;
     }
 
     bool isWall(const Position& position) const {

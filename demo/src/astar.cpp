@@ -2,21 +2,6 @@
 
 namespace utils {
 
-/**
- * @brief Computes the modulus of a given numerator and denominator, ensuring a non-negative result when the denominator
- * is positive.
- *
- * This function calculates the result of the modulus operation. If the denominator is positive, the result is
- * non-negative and in the range [0, denominator - 1].
- *
- * @param numerator The value to be divided (dividend).
- * @param denominator The value by which the numerator is divided (divisor).
- * @return An integer representing the modulus of the division.
- */
-int nonNegativeModulus(const int& numerator, const int& denominator) {
-    return (denominator + (numerator % denominator)) % denominator;
-}
-
 int AStar::mazeDistance(const Position& start, const Position& goal) const {
     if (distanceCache_.cached({start, goal})) {
         return distanceCache_.cached({start, goal}).value();
@@ -33,8 +18,8 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
-    Position wrappedStart = positionConsideringTunnel(start);
-    Position wrappedGoal = positionConsideringTunnel(goal);
+    Position wrappedStart = maze_->positionConsideringTunnel(start);
+    Position wrappedGoal = maze_->positionConsideringTunnel(goal);
 
     AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
@@ -66,7 +51,7 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
-    Position wrappedStart = positionConsideringTunnel(start);
+    Position wrappedStart = maze_->positionConsideringTunnel(start);
 
     AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
@@ -102,7 +87,7 @@ void AStar::expandCell(Set& openSet, AStarMazeAdapter& mazeAdapter, const Heuris
     for (const auto& move : demo::Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
 
-        nextPosition = positionConsideringTunnel(nextPosition);
+        nextPosition = maze_->positionConsideringTunnel(nextPosition);
 
         if (!maze_->isPassableCell(nextPosition)) {
             continue;
@@ -129,21 +114,12 @@ Path AStar::pathTo(const AStarMazeAdapter& maze, const Position& goal) const {
     while (current.moveFromPredecessor) {
         path.push_back(current.moveFromPredecessor->direction);
         Position predecessorPosition = current.position - current.moveFromPredecessor->deltaPosition;
-        predecessorPosition = positionConsideringTunnel(predecessorPosition);
+        predecessorPosition = maze_->positionConsideringTunnel(predecessorPosition);
         current = maze.cell(predecessorPosition);
     }
 
     std::reverse(path.begin(), path.end());
     return path;
-}
-
-Position AStar::positionConsideringTunnel(const Position& position) const {
-    Position wrappedPosition{nonNegativeModulus(position.x, maze_->width()),
-                             nonNegativeModulus(position.y, maze_->height())};
-    if (maze_->isPassableCell(wrappedPosition)) {
-        return wrappedPosition;
-    }
-    return position;
 }
 
 } // namespace utils
