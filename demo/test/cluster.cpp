@@ -18,7 +18,7 @@ protected:
 
 TEST_F(ClusterTest, dotClusters) {
     const char str[] = {"#####"
-                        "#...#"
+                        "#o..#"
                         "     "
                         "#.. #"
                         "#####"};

@@ -89,6 +89,9 @@ struct BaseCell {
     double manhattanDistance(const Position& other) const {
         return std::abs(position.x - other.x) + std::abs(position.y - other.y);
     }
+    bool isConsumable() const {
+        return type == TileType::DOT || type == TileType::ENGERIZER;
+    }
 
     Position position;
     TileType type;

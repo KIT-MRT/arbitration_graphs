@@ -74,8 +74,9 @@ public:
     /**
      * @brief Returns a vector of dots representing the centers of all dot clusters.
      *
-     * A dot cluster is a set of dots that can be connected by a path passing through neither walls nor empty space.
-     * The center of a cluster is the dot closest to the average position of all dots of the cluster.
+     * A dot cluster is a set of dots (including power pellets) that can be connected by a path passing through neither
+     * walls nor empty space. The center of a cluster is the dot closest to the average position of all dots of the
+     * cluster.
      */
     Positions dotClusterCenters() const {
         return clusterFinder_.dotClusterCenters();

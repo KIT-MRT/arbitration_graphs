@@ -50,7 +50,7 @@ ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
             Position start{column, row};
             ClusterCell& startCell = mazeAdapter.cell(start);
 
-            if (startCell.type != TileType::DOT || startCell.visited) {
+            if (!startCell.isConsumable() || startCell.visited) {
                 continue;
             }
             Positions dots = expandDot(startCell, mazeAdapter);
@@ -86,7 +86,7 @@ Positions ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& 
             }
             ClusterCell& neighbor = mazeAdapter.cell(nextPosition);
 
-            if (neighbor.type == TileType::DOT && !neighbor.visited) {
+            if (neighbor.isConsumable() && !neighbor.visited) {
                 bfsQueue.push(nextPosition);
             }
         }
