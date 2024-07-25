@@ -34,17 +34,24 @@ private:
 
 class ClusterFinder {
 public:
+    using Clusters = std::vector<Cluster>;
     using ClusterMazeAdapter = MazeAdapter<ClusterCell>;
     using Cell = ClusterCell;
-    explicit ClusterFinder(Maze::ConstPtr maze) : maze_(std::move(maze)) {
-    }
 
-    std::vector<Cluster> findDotClusters() const;
+    explicit ClusterFinder(Maze::ConstPtr maze) : maze_(std::move(maze)), clusters_{findDotClusters()} {
+    }
+    Clusters clusters() const {
+        return clusters_;
+    }
+    std::vector<Position> clusterCenters() const;
+
 
 private:
     std::vector<Position> expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const;
+    Clusters findDotClusters() const;
 
     Maze::ConstPtr maze_;
+    Clusters clusters_;
 };
 
 } // namespace utils

@@ -32,10 +32,17 @@ Position Cluster::findClusterCenter() const {
     return closestDot;
 }
 
+std::vector<Position> ClusterFinder::clusterCenters() const {
+    std::vector<Position> centerDots;
+    for (const auto& cluster : clusters_) {
+        centerDots.push_back(cluster.center);
+    }
+    return centerDots;
+}
 
-std::vector<Cluster> ClusterFinder::findDotClusters() const {
+ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
     ClusterMazeAdapter mazeAdapter(maze_);
-    std::vector<Cluster> clusters;
+    Clusters clusters;
     int clusterId = 0;
 
     for (int row = 0; row < maze_->height(); row++) {
