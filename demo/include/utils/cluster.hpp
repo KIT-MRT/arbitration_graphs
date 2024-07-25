@@ -22,6 +22,9 @@ struct Cluster {
     explicit Cluster(const int& clusterId, const std::vector<Position>& dots)
             : id(clusterId), dots(dots), center{findClusterCenter()} {
     }
+    bool isInCluster(const Position& target) const {
+        return std::any_of(dots.begin(), dots.end(), [target](Position dot) { return dot == target; });
+    }
 
     int id;
     std::vector<Position> dots;
