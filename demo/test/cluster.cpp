@@ -25,11 +25,18 @@ TEST_F(ClusterTest, findDotClusters) {
     environmentModel_->setMaze({5, 5}, str);
 
     ClusterFinder clusterFinder(environmentModel_->maze());
-    std::vector<Cluster> cluster = clusterFinder.findDotClusters();
+    std::vector<Cluster> clusters = clusterFinder.findDotClusters();
 
-    EXPECT_EQ(cluster.size(), 2);
-    EXPECT_EQ(cluster.front().dots.size(), 3);
-    EXPECT_EQ(cluster.back().dots.size(), 2);
+    EXPECT_EQ(clusters.size(), 2);
+    EXPECT_EQ(clusters.front().dots.size(), 3);
+    EXPECT_EQ(clusters.front().center.x, 2);
+    EXPECT_EQ(clusters.front().center.y, 1);
+
+    EXPECT_EQ(clusters.back().dots.size(), 2);
+    // We are using std::floor when computing the cluster center so in this
+    // case the center should be the left of two dots
+    EXPECT_EQ(clusters.back().center.x, 1);
+    EXPECT_EQ(clusters.back().center.y, 3);
 }
 
 } // namespace utils::a_star

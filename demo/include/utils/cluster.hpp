@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "demo/types.hpp"
 #include "utils/maze.hpp"
 
@@ -16,11 +18,18 @@ struct ClusterCell : public BaseCell {
 };
 
 struct Cluster {
-    explicit Cluster(int clusterId) : id(clusterId) {
+    explicit Cluster(const int& clusterId, const std::vector<Position>& dots)
+            : id(clusterId), dots(dots), center{findClusterCenter()} {
     }
 
     int id;
     std::vector<Position> dots;
+
+    /// @brief The dot closest to the average position of all the dots of this cluster
+    Position center;
+
+private:
+    Position findClusterCenter() const;
 };
 
 class ClusterFinder {
@@ -33,7 +42,7 @@ public:
     std::vector<Cluster> findDotClusters() const;
 
 private:
-    Cluster expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter, const int& clusterID) const;
+    std::vector<Position> expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const;
 
     Maze::ConstPtr maze_;
 };

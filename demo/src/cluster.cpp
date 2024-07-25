@@ -1,8 +1,37 @@
 #include "utils/cluster.hpp"
 
+#include <cmath>
 #include <queue>
 
 namespace utils {
+
+Position Cluster::findClusterCenter() const {
+    int sumX = 0;
+    int sumY = 0;
+
+    for (const auto& dot : dots) {
+        sumX += dot.x;
+        sumY += dot.y;
+    }
+
+    int avgX = std::floor(sumX / dots.size());
+    int avgY = std::floor(sumY / dots.size());
+
+    Position avgPosition{avgX, avgY};
+    Position closestDot = dots.front();
+    double minDistance = std::numeric_limits<double>::max();
+
+    for (const auto& dot : dots) {
+        double distance = avgPosition.distance(dot);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestDot = dot;
+        }
+    }
+
+    return closestDot;
+}
+
 
 std::vector<Cluster> ClusterFinder::findDotClusters() const {
     ClusterMazeAdapter mazeAdapter(maze_);
@@ -17,15 +46,15 @@ std::vector<Cluster> ClusterFinder::findDotClusters() const {
             if (startCell.type != TileType::DOT || startCell.visited) {
                 continue;
             }
-            Cluster cluster = expandDot(startCell, mazeAdapter, clusterId++);
-            clusters.push_back(cluster);
+            std::vector<Position> dots = expandDot(startCell, mazeAdapter);
+            clusters.emplace_back(clusterId++, dots);
         }
     }
     return clusters;
 }
 
-Cluster ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter, const int& clusterID) const {
-    Cluster cluster(clusterID);
+std::vector<Position> ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
+    std::vector<Position> dots;
 
     std::queue<Position> bfsQueue;
     bfsQueue.push(start.position);
@@ -39,7 +68,7 @@ Cluster ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& ma
             continue;
         }
         current.visited = true;
-        cluster.dots.push_back(currentPosition);
+        dots.push_back(currentPosition);
 
         for (const auto& move : demo::Move::possibleMoves()) {
             Position nextPosition = currentPosition + move.deltaPosition;
@@ -56,7 +85,7 @@ Cluster ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& ma
         }
     }
 
-    return cluster;
+    return dots;
 }
 
 } // namespace utils
