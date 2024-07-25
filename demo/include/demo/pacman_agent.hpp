@@ -4,7 +4,7 @@
 
 #include "avoid_ghost_behavior.hpp"
 #include "chase_ghost_behavior.hpp"
-#include "eat_cloest_dot_behavior.hpp"
+#include "eat_closest_dot_behavior.hpp"
 #include "environment_model.hpp"
 #include "random_walk_behavior.hpp"
 #include "stay_in_place_behavior.hpp"
