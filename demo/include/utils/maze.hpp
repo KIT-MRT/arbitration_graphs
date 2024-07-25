@@ -39,7 +39,7 @@ public:
     TileType at(const Position& position) const {
         return tileTypeMap_.at(mazeState_[{position.x, position.y}]);
     }
-    
+
     TileType operator[](const Position& position) const {
         return at(position);
     }
@@ -59,6 +59,9 @@ public:
         return position;
     }
 
+    bool isDot(const Position& position) const {
+        return at(position) == TileType::DOT;
+    }
     bool isWall(const Position& position) const {
         return at(position) == TileType::WALL;
     }
