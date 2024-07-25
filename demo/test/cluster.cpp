@@ -26,12 +26,12 @@ TEST_F(ClusterTest, dotClusters) {
 
     ClusterFinder clusterFinder(environmentModel_->maze());
 
-    std::vector<Cluster> clusters = clusterFinder.clusters();
+    std::vector<Cluster> clusters = clusterFinder.dotClusters();
     ASSERT_EQ(clusters.size(), 2);
     EXPECT_EQ(clusters.front().dots.size(), 3);
     EXPECT_EQ(clusters.back().dots.size(), 2);
 
-    Positions clusterCenter = clusterFinder.clusterCenters();
+    Positions clusterCenter = clusterFinder.dotClusterCenters();
     ASSERT_EQ(clusterCenter.size(), 2);
     EXPECT_EQ(clusterCenter.front().x, 2);
     EXPECT_EQ(clusterCenter.front().y, 1);

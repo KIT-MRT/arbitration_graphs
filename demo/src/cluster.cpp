@@ -32,7 +32,7 @@ Position Cluster::findClusterCenter() const {
     return closestDot;
 }
 
-Positions ClusterFinder::clusterCenters() const {
+Positions ClusterFinder::dotClusterCenters() const {
     Positions centerDots;
     for (const auto& cluster : clusters_) {
         centerDots.push_back(cluster.center);

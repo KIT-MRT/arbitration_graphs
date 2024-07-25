@@ -41,10 +41,10 @@ public:
 
     explicit ClusterFinder(Maze::ConstPtr maze) : maze_(std::move(maze)), clusters_{findDotClusters()} {
     }
-    Clusters clusters() const {
+    Clusters dotClusters() const {
         return clusters_;
     }
-    Positions clusterCenters() const;
+    Positions dotClusterCenters() const;
 
 
 private:
