@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME} STATIC
   src/avoid_ghost_behavior.cpp
   src/change_dot_cluster_behavior.cpp
   src/chase_ghost_behavior.cpp
+  src/cost_estimator.cpp
   src/cluster.cpp
   src/entities.cpp
   src/environment_model.cpp
