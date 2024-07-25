@@ -15,7 +15,7 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
 
     double minDistance = std::numeric_limits<double>::max();
     for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = pacmanPosition + move.deltaPosition;
+        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
         if (environmentModel_->isWall(nextPosition)) {
             continue;

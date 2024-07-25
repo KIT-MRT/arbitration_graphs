@@ -103,6 +103,9 @@ public:
     bool isWall(const Position& position) const {
         return maze_->isWall(position);
     }
+    Position positionConsideringTunnel(const Position& position) const {
+        return maze_->positionConsideringTunnel(position);
+    }
 
 protected:
     void updateEntities(const entt::Registry& registry);
