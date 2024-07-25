@@ -1,4 +1,5 @@
 #include "demo/chase_ghost_behavior.hpp"
+#include "demo/types.hpp"
 
 namespace demo {
 
@@ -11,8 +12,8 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
     }
 
     auto ghostPosition = closestScaredGhost->ghost.position;
-    auto direction = Direction::LAST;
 
+    std::optional<Direction> direction;
     double minDistance = std::numeric_limits<double>::max();
     for (const auto& move : Move::possibleMoves()) {
         auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
@@ -29,7 +30,11 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
         }
     }
 
-    return Command{direction};
+    if (!direction) {
+        throw std::runtime_error("Failed to compute direction to chase the closest ghost.");
+    }
+
+    return Command{direction.value()};
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {

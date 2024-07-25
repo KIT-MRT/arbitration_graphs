@@ -8,7 +8,6 @@ demo::Direction toDemoDirection(const demo::entt::Direction& enttDirection) {
         {demo::entt::Direction::down, demo::Direction::DOWN},
         {demo::entt::Direction::left, demo::Direction::LEFT},
         {demo::entt::Direction::right, demo::Direction::RIGHT},
-        {demo::entt::Direction::none, demo::Direction::LAST},
     };
 
     return typeMap.at(enttDirection);

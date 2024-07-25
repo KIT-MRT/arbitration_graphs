@@ -32,7 +32,7 @@ using ScaredMode = ::ScaredMode;
 using Tile = ::Tile;
 } // namespace entt
 
-enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
+enum class Direction { UP, DOWN, LEFT, RIGHT };
 enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
 enum class TileType { EMPTY, DOT, ENGERIZER, WALL, DOOR };
 
@@ -77,7 +77,6 @@ struct Command {
         {Direction::DOWN, SDL_SCANCODE_DOWN},
         {Direction::LEFT, SDL_SCANCODE_LEFT},
         {Direction::RIGHT, SDL_SCANCODE_RIGHT},
-        {Direction::LAST, SDL_SCANCODE_UNKNOWN},
     };
 
     Path path;

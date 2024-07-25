@@ -44,12 +44,6 @@ TEST_F(StayInPlaceBehaviorTest, getCommand) {
     environmentModel_->setPacmanDirection(Direction::DOWN);
     command = stayInPlaceBehavior_.getCommand(time);
     ASSERT_EQ(command.nextDirection(), Direction::UP);
-
-    // This case should never occur but we should be able to
-    // handle it in a defined way and not crash anyway
-    environmentModel_->setPacmanDirection(Direction::LAST);
-    command = stayInPlaceBehavior_.getCommand(time);
-    ASSERT_EQ(command.nextDirection(), Direction::LAST);
 }
 
 } // namespace demo

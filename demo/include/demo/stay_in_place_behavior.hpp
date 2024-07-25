@@ -49,8 +49,7 @@ private:
         const std::map<Direction, Direction> oppositeDirectionMap{{Direction::UP, Direction::DOWN},
                                                                   {Direction::DOWN, Direction::UP},
                                                                   {Direction::LEFT, Direction::RIGHT},
-                                                                  {Direction::RIGHT, Direction::LEFT},
-                                                                  {Direction::LAST, Direction::LAST}};
+                                                                  {Direction::RIGHT, Direction::LEFT}};
         return oppositeDirectionMap.at(direction);
     }
 };
