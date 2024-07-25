@@ -32,14 +32,6 @@ Position Cluster::findClusterCenter() const {
     return closestDot;
 }
 
-Positions ClusterFinder::dotClusterCenters() const {
-    Positions centerDots;
-    for (const auto& cluster : clusters_) {
-        centerDots.push_back(cluster.center);
-    }
-    return centerDots;
-}
-
 ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
     ClusterMazeAdapter mazeAdapter(maze_);
     Clusters clusters;

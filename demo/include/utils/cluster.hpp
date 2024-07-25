@@ -44,8 +44,6 @@ public:
     Clusters dotClusters() const {
         return clusters_;
     }
-    Positions dotClusterCenters() const;
-
 
 private:
     Positions expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const;

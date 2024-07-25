@@ -27,19 +27,15 @@ TEST_F(ClusterTest, dotClusters) {
     ClusterFinder clusterFinder(environmentModel_->maze());
 
     std::vector<Cluster> clusters = clusterFinder.dotClusters();
+
     ASSERT_EQ(clusters.size(), 2);
     EXPECT_EQ(clusters.front().dots.size(), 3);
+    EXPECT_EQ(clusters.front().center.x, 2);
+    EXPECT_EQ(clusters.front().center.y, 1);
+
     EXPECT_EQ(clusters.back().dots.size(), 2);
-
-    Positions clusterCenter = clusterFinder.dotClusterCenters();
-    ASSERT_EQ(clusterCenter.size(), 2);
-    EXPECT_EQ(clusterCenter.front().x, 2);
-    EXPECT_EQ(clusterCenter.front().y, 1);
-
-    // We are using std::floor when computing the cluster center so in this
-    // case the center should be the left of two dots
-    EXPECT_EQ(clusterCenter.back().x, 1);
-    EXPECT_EQ(clusterCenter.back().y, 3);
+    EXPECT_EQ(clusters.back().center.x, 1);
+    EXPECT_EQ(clusters.back().center.y, 3);
 }
 
 } // namespace utils::a_star
