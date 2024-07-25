@@ -21,7 +21,7 @@ namespace demo {
 class EnvironmentModel {
 public:
     using Cluster = utils::Cluster;
-    using Clusters = utils::ClusterFinder::Clusters;
+    using Clusters = utils::DotClusterFinder::Clusters;
     using Entities = utils::Entities;
     using Maze = utils::Maze;
     using Ghost = utils::Ghost;
@@ -46,7 +46,7 @@ public:
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
         astar_.updateMaze(maze_);
-        clusterFinder_ = utils::ClusterFinder{maze_};
+        clusterFinder_ = utils::DotClusterFinder{maze_};
         updateEntities(game.reg);
     }
 
@@ -80,7 +80,7 @@ public:
      * walls nor empty space.
      */
     Clusters dotCluster() const {
-        return clusterFinder_.dotClusters();
+        return clusterFinder_.clusters();
     }
 
     /**
@@ -116,7 +116,7 @@ protected:
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
-    utils::ClusterFinder clusterFinder_;
+    utils::DotClusterFinder clusterFinder_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestGhostCache_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestScaredGhostCache_;
 };

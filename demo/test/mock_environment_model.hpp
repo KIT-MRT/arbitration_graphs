@@ -67,7 +67,7 @@ public:
     void setMaze(const Position& size, const char (&str)[Size]) {
         maze_ = std::make_shared<Maze>(makeCustomMazeState({size.x, size.y}, str));
         astar_ = utils::AStar(maze_);
-        clusterFinder_ = utils::ClusterFinder(maze_);
+        clusterFinder_ = utils::DotClusterFinder(maze_);
     }
     void setEmptyMaze() {
         const char str[] = {"##########"

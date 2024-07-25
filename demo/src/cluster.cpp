@@ -9,9 +9,9 @@ Position Cluster::findClusterCenter() const {
     int sumX = 0;
     int sumY = 0;
 
-    for (const auto& dot : dots) {
-        sumX += dot.x;
-        sumY += dot.y;
+    for (const auto& point : dots) {
+        sumX += point.x;
+        sumY += point.y;
     }
 
     int avgX = std::floor(sumX / dots.size());
@@ -32,7 +32,7 @@ Position Cluster::findClusterCenter() const {
     return closestDot;
 }
 
-ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
+DotClusterFinder::Clusters DotClusterFinder::findDotClusters() const {
     ClusterMazeAdapter mazeAdapter(maze_);
     Clusters clusters;
     int clusterId = 0;
@@ -52,7 +52,7 @@ ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
     return clusters;
 }
 
-Positions ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
+Positions DotClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
     Positions dots;
 
     std::queue<Position> bfsQueue;

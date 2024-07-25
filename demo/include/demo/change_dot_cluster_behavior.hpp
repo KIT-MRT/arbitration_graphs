@@ -9,7 +9,8 @@
 namespace demo {
 
 /**
- * @brief The ChangeDotClusterBehavior makes pacman move towards another cluster of duts.
+ * @brief The ChangeDotClusterBehavior makes pacman move towards the closest dot cluster
+ * that he is not currently inside of.
  */
 class ChangeDotClusterBehavior : public arbitration_graphs::Behavior<Command> {
 public:
@@ -17,7 +18,7 @@ public:
     using ConstPtr = std::shared_ptr<const ChangeDotClusterBehavior>;
 
     using Cluster = utils::Cluster;
-    using Clusters = utils::ClusterFinder::Clusters;
+    using Clusters = utils::DotClusterFinder::Clusters;
 
     explicit ChangeDotClusterBehavior(EnvironmentModel::Ptr environmentModel,
                                       const std::string& name = "ChangeDotClusterBehavior")

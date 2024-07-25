@@ -18,33 +18,39 @@ struct ClusterCell : public BaseCell {
     bool visited{false};
 };
 
+/**
+ * @brief A cluster is defined by a set of points that can be connected by a path which passes through neither walls nor
+ * empty space.
+ */
 struct Cluster {
-    explicit Cluster(const int& clusterId, const std::vector<Position>& dots)
-            : id(clusterId), dots(dots), center{findClusterCenter()} {
+    explicit Cluster(const int& clusterId, const std::vector<Position>& points)
+            : id(clusterId), dots(points), center{findClusterCenter()} {
     }
     bool isInCluster(const Position& target) const {
         return std::any_of(dots.begin(), dots.end(), [target](Position dot) { return dot == target; });
     }
 
     int id;
-    std::vector<Position> dots;
+    Positions dots;
 
-    /// @brief The dot closest to the average position of all the dots of this cluster
-    Position center;
+    Position center; ///< The dot closest to the average position of all the dots of this cluster
 
 private:
     Position findClusterCenter() const;
 };
 
-class ClusterFinder {
+/**
+ * @brief Search and store all clusters of dots (including power pellets) given the maze state.
+ */
+class DotClusterFinder {
 public:
+    using Cell = ClusterCell;
     using Clusters = std::vector<Cluster>;
     using ClusterMazeAdapter = MazeAdapter<ClusterCell>;
-    using Cell = ClusterCell;
 
-    explicit ClusterFinder(Maze::ConstPtr maze) : maze_(std::move(maze)), clusters_{findDotClusters()} {
+    explicit DotClusterFinder(Maze::ConstPtr maze) : maze_(std::move(maze)), clusters_{findDotClusters()} {
     }
-    Clusters dotClusters() const {
+    Clusters clusters() const {
         return clusters_;
     }
 
