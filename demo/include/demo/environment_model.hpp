@@ -6,6 +6,7 @@
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/cluster.hpp"
 #include "utils/entities.hpp"
 #include "utils/maze.hpp"
 
@@ -32,7 +33,8 @@ public:
         int distance;
     };
 
-    explicit EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
+    explicit EnvironmentModel(const Game& game)
+            : maze_{std::make_shared<Maze>(game.maze)}, astar_{maze_}, clusterFinder_{maze_} {
         updateEntities(game.reg);
     };
 
@@ -42,6 +44,7 @@ public:
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
         astar_.updateMaze(maze_);
+        clusterFinder_ = utils::ClusterFinder{maze_};
         updateEntities(game.reg);
     }
 
@@ -69,6 +72,16 @@ public:
     std::optional<GhostWithDistance> closestScaredGhost(const Time& time) const;
 
     /**
+     * @brief Returns a vector of dots representing the centers of all dot clusters.
+     *
+     * A dot cluster is a set of dots that can be connected by a path passing through neither walls nor empty space.
+     * The center of a cluster is the dot closest to the average position of all dots of the cluster.
+     */
+    Positions dotClusterCenters() const {
+        return clusterFinder_.dotClusterCenters();
+    }
+
+    /**
      * @brief Calculates the Manhattan distance between two positions using A* considering the maze geometry.
      *
      * A distance of 1 is the distance between two adjacent positions in the maze.
@@ -94,6 +107,7 @@ protected:
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
+    utils::ClusterFinder clusterFinder_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestGhostCache_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestScaredGhostCache_;
 };
