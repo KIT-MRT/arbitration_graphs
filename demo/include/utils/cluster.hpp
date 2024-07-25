@@ -9,6 +9,7 @@ namespace utils {
 
 using Path = demo::Path;
 using Position = demo::Position;
+using Positions = demo::Positions;
 using TileType = demo::TileType;
 
 struct ClusterCell : public BaseCell {
@@ -43,11 +44,11 @@ public:
     Clusters clusters() const {
         return clusters_;
     }
-    std::vector<Position> clusterCenters() const;
+    Positions clusterCenters() const;
 
 
 private:
-    std::vector<Position> expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const;
+    Positions expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const;
     Clusters findDotClusters() const;
 
     Maze::ConstPtr maze_;

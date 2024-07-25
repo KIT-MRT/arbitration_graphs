@@ -32,8 +32,8 @@ Position Cluster::findClusterCenter() const {
     return closestDot;
 }
 
-std::vector<Position> ClusterFinder::clusterCenters() const {
-    std::vector<Position> centerDots;
+Positions ClusterFinder::clusterCenters() const {
+    Positions centerDots;
     for (const auto& cluster : clusters_) {
         centerDots.push_back(cluster.center);
     }
@@ -53,15 +53,15 @@ ClusterFinder::Clusters ClusterFinder::findDotClusters() const {
             if (startCell.type != TileType::DOT || startCell.visited) {
                 continue;
             }
-            std::vector<Position> dots = expandDot(startCell, mazeAdapter);
+            Positions dots = expandDot(startCell, mazeAdapter);
             clusters.emplace_back(clusterId++, dots);
         }
     }
     return clusters;
 }
 
-std::vector<Position> ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
-    std::vector<Position> dots;
+Positions ClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
+    Positions dots;
 
     std::queue<Position> bfsQueue;
     bfsQueue.push(start.position);
