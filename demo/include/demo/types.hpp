@@ -84,15 +84,22 @@ struct Command {
 };
 
 struct Move {
-    Direction direction;
-    Position deltaPosition;
+    explicit Move(const Direction& direction)
+            : direction{direction}, deltaPosition{directionDeltaPositionMap().at(direction)} {
+    }
 
     static std::vector<Move> possibleMoves() {
+        return {Move{Direction::UP}, Move{Direction::DOWN}, Move{Direction::LEFT}, Move{Direction::RIGHT}};
+    }
+    static std::map<Direction, Position> directionDeltaPositionMap() {
         return {{Direction::UP, {0, -1}},
                 {Direction::DOWN, {0, 1}},
                 {Direction::LEFT, {-1, 0}},
                 {Direction::RIGHT, {1, 0}}};
     }
+
+    Direction direction;
+    Position deltaPosition;
 };
 using Moves = std::vector<Move>;
 
