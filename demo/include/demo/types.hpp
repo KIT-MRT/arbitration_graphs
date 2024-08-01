@@ -66,7 +66,7 @@ struct Command {
         return scancodeMap.at(nextDirection());
     }
 
-    const std::map<Direction, SDL_Scancode> scancodeMap{
+    std::map<Direction, SDL_Scancode> scancodeMap{
         {Direction::UP, SDL_SCANCODE_UP},
         {Direction::DOWN, SDL_SCANCODE_DOWN},
         {Direction::LEFT, SDL_SCANCODE_LEFT},
