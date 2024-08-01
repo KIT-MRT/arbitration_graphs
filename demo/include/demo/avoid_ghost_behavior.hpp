@@ -8,25 +8,25 @@
 namespace demo {
 
 /**
- * @brief The RunAwayFromGhostBehavior makes Pacman run away from the ghost.
+ * @brief The AvoidGhostBehavior makes Pacman run away from the closest ghost.
  *
  * The behavior returns the command which increases the distance between Pacman and the ghost that's currently closest
  * to him. It is applicable once a ghost is within a certain distance to Pacman. To prevent oscillating behavior
  * switches, the commitment condition should remain active for longer than the invocation condition.
  */
-class RunAwayFromGhostBehavior : public arbitration_graphs::Behavior<Command> {
+class AvoidGhostBehavior : public arbitration_graphs::Behavior<Command> {
 public:
-    using Ptr = std::shared_ptr<RunAwayFromGhostBehavior>;
-    using ConstPtr = std::shared_ptr<const RunAwayFromGhostBehavior>;
+    using Ptr = std::shared_ptr<AvoidGhostBehavior>;
+    using ConstPtr = std::shared_ptr<const AvoidGhostBehavior>;
 
     struct Parameters {
         double invocationMinDistance{5};
         double commitmentMinDistance{7};
     };
 
-    RunAwayFromGhostBehavior(EnvironmentModel::Ptr environmentModel,
-                             const Parameters& parameters,
-                             const std::string& name = "RunAwayFromGhostBehavior")
+    AvoidGhostBehavior(EnvironmentModel::Ptr environmentModel,
+                       const Parameters& parameters,
+                       const std::string& name = "AvoidGhostBehavior")
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 
