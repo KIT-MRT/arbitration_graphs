@@ -7,10 +7,12 @@
 #include <SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
 #include <entt/entity/registry.hpp>
+#include <pacman/comp/dir.hpp>
 #include <pacman/comp/ghost_mode.hpp>
 #include <pacman/comp/position.hpp>
 #include <pacman/core/game.hpp>
 #include <pacman/core/maze.hpp>
+#include <pacman/util/dir.hpp>
 
 namespace demo {
 
@@ -19,6 +21,8 @@ using Duration = arbitration_graphs::Duration;
 using Time = arbitration_graphs::Time;
 
 namespace entt {
+using Direction = ::Dir;
+using ActualDirection = ::ActualDir;
 using Entity = ::entt::entity;
 using Game = ::Game;
 using Position = ::Position;

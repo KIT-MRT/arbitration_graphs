@@ -12,7 +12,7 @@ public:
     using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
 
     MockEnvironmentModel() : EnvironmentModel(dummyGame_) {
-        setPositionsInOppositeCorners();
+        initializeEntitiesInOppositeCorners();
         setEmptyMaze();
     }
 
@@ -25,17 +25,21 @@ public:
     void setPacmanPosition(const Position& position) {
         entities_.pacman.position = position;
     }
+    void setPacmanDirection(const Direction& direction) {
+        entities_.pacman.direction = direction;
+    }
     void setGhostPositions(const Position& position) {
         entities_.blinky.position = position;
         entities_.pinky.position = position;
         entities_.inky.position = position;
         entities_.clyde.position = position;
     }
-    void setPositionsInOppositeCorners() {
-        entities_.pacman.position = {1, 1};
-        setGhostPositions({8, 8});
+    void setGhostDirections(const Direction& direction) {
+        entities_.blinky.direction = direction;
+        entities_.pinky.direction = direction;
+        entities_.inky.direction = direction;
+        entities_.clyde.direction = direction;
     }
-
     void setGhostMode(const GhostMode& mode) {
         entities_.blinky.mode = mode;
         entities_.pinky.mode = mode;
@@ -47,6 +51,13 @@ public:
         entities_.pinky.scaredCountdown = countdown;
         entities_.inky.scaredCountdown = countdown;
         entities_.clyde.scaredCountdown = countdown;
+    }
+
+    void initializeEntitiesInOppositeCorners() {
+        setPacmanPosition({1, 1});
+        setPacmanDirection(Direction::RIGHT);
+        setGhostPositions({8, 8});
+        setGhostDirections(Direction::LEFT);
     }
 
     Maze::ConstPtr maze() const {

@@ -3,10 +3,10 @@
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
 #include "chase_ghost_behavior.hpp"
-#include "do_nothing_behavior.hpp"
 #include "environment_model.hpp"
 #include "random_walk_behavior.hpp"
 #include "run_away_from_ghost_behavior.hpp"
+#include "stay_in_place_behavior.hpp"
 #include "types.hpp"
 
 namespace demo {
@@ -36,13 +36,13 @@ public:
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
         runAwayFromGhostBehavior_ =
             std::make_shared<RunAwayFromGhostBehavior>(environmentModel_, parameters_.runAwayFromGhostBehavior);
-        doNothingBehavior_ = std::make_shared<DoNothingBehavior>();
+        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>();
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(runAwayFromGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(doNothingBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(stayInPlaceBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     }
 
     Command getCommand(const Time& time) {
@@ -67,9 +67,9 @@ private:
     Parameters parameters_;
 
     ChaseGhostBehavior::Ptr chaseGhostBehavior_;
-    DoNothingBehavior::Ptr doNothingBehavior_;
     RandomWalkBehavior::Ptr randomWalkBehavior_;
     RunAwayFromGhostBehavior::Ptr runAwayFromGhostBehavior_;
+    StayInPlaceBehavior::Ptr stayInPlaceBehavior_;
 
     PriorityArbitrator::Ptr rootArbitrator_;
 };
