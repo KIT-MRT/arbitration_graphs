@@ -1,5 +1,7 @@
 # ARBITRATION GRAPHS
 
+[![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
+
 Arbitration graphs combine simple atomic behavior blocks to more complex behaviors for decision making and behavior generation
 
 
