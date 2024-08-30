@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   style="font-family:Helvetica"
+   id="svg224"
+   sodipodi:docname="pacman_arbitrator_safe.svg"
+   width="1568.1418"
+   height="430.77875"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata228">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1044"
+     id="namedview226"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.295"
+     inkscape:cx="-329.15398"
+     inkscape:cy="530.19366"
+     inkscape:window-x="0"
+     inkscape:window-y="360"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg224" />
+  <defs
+     id="svgFilters">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="dropShadow"
+       x="-0.076363638"
+       y="-0.41999999"
+       width="1.1527272"
+       height="1.915">
+      <feFlood
+         flood-opacity="0.121569"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood1119" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite1121" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="2"
+         result="blur"
+         id="feGaussianBlur1123" />
+      <feOffset
+         dx="0"
+         dy="2"
+         result="offset"
+         id="feOffset1125" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="fbSourceGraphic"
+         id="feComposite1127" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix1149" />
+      <feFlood
+         id="feFlood1151"
+         flood-opacity="0.121569"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         in="fbSourceGraphic" />
+      <feComposite
+         in2="fbSourceGraphic"
+         id="feComposite1153"
+         in="flood"
+         operator="in"
+         result="composite1" />
+      <feGaussianBlur
+         id="feGaussianBlur1155"
+         in="composite1"
+         stdDeviation="5"
+         result="blur" />
+      <feOffset
+         id="feOffset1157"
+         dx="0"
+         dy="1"
+         result="offset" />
+      <feComposite
+         in2="offset"
+         id="feComposite1159"
+         in="fbSourceGraphic"
+         operator="over"
+         result="composite2" />
+    </filter>
+  </defs>
+  <g
+     id="root-svg-group"
+     transform="matrix(1.7874637,0,0,1.7874637,1144.8704,179.6401)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica">
+    <g
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+       id="g221">
+      <!-- arrow path from option to corresponding arbitrator -->
+      <path
+         d="M -100,-80 C -50,-80 -50,20 0,20"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#e0e0e0;stroke-width:2px;stroke-opacity:1"
+         id="path15"
+         inkscape:connector-curvature="0" />
+      <!-- option -->
+      <g
+         transform="translate(-320,-100)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g37">
+        <g
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g35">
+          <g
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g33">
+            <!-- one arrow marker for all arrow paths -->
+            <!--v-if-->
+            <!-- behavior block background -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+               id="rect17" />
+            <!-- behavior block cost -->
+            <!--v-if-->
+            <!-- behavior block frame -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+               id="rect19" />
+            <!-- behavior block icon -->
+            <g
+               transform="translate(10,10)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#8b8b8b;fill-opacity:1"
+               id="g21">
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for failed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g23">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for delayed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g25">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for rebooting options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+               id="g27">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for fallback options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+               id="g29">
+              <!--v-if-->
+            </g>
+            <!-- behavior block label -->
+            <text
+               x="20"
+               y="22"
+               dominant-baseline="middle"
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#8b8b8b;fill-opacity:1"
+               id="text31">Chase Ghost</text>
+          </g>
+        </g>
+      </g>
+      <!-- arrow path from option to corresponding arbitrator -->
+      <path
+         d="m -100,-30 c 50,0 50,50 100,50"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#e0e0e0;stroke-width:2px;stroke-opacity:1"
+         id="path39"
+         inkscape:connector-curvature="0" />
+      <!-- option -->
+      <g
+         transform="translate(-320,-50)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g61">
+        <g
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g59">
+          <g
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g57">
+            <!-- one arrow marker for all arrow paths -->
+            <!--v-if-->
+            <!-- behavior block background -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+               id="rect41" />
+            <!-- behavior block cost -->
+            <!--v-if-->
+            <!-- behavior block frame -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+               id="rect43" />
+            <!-- behavior block icon -->
+            <g
+               transform="translate(10,10)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#8b8b8b;fill-opacity:1"
+               id="g45">
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for failed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g47">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for delayed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g49">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for rebooting options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+               id="g51">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for fallback options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+               id="g53">
+              <!--v-if-->
+            </g>
+            <!-- behavior block label -->
+            <text
+               x="20"
+               y="22"
+               dominant-baseline="middle"
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#8b8b8b;fill-opacity:1"
+               id="text55">Avoid Ghost</text>
+          </g>
+        </g>
+      </g>
+      <!-- arrow path from option to corresponding arbitrator -->
+      <path
+         d="m -100,20 c 50,0 50,0 100,0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#b81f13;stroke-width:2px;stroke-opacity:1"
+         id="path63"
+         inkscape:connector-curvature="0" />
+      <!-- option -->
+      <g
+         transform="translate(-320)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g141">
+        <g
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g139">
+          <!-- arrow path from option to corresponding arbitrator -->
+          <path
+             d="m -100,-5 c 50,0 50,25 100,25"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#b81f13;stroke-width:2px;stroke-opacity:1"
+             id="path65"
+             inkscape:connector-curvature="0" />
+          <!-- option -->
+          <g
+             transform="translate(-320,-25)"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g89">
+            <g
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+               id="g87">
+              <g
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+                 id="g85">
+                <!-- one arrow marker for all arrow paths -->
+                <!--v-if-->
+                <!-- behavior block background -->
+                <rect
+                   x="0"
+                   y="0"
+                   width="220"
+                   height="40"
+                   rx="10"
+                   ry="10"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="rect67" />
+                <!-- behavior block cost -->
+                <!--v-if-->
+                <!-- behavior block frame -->
+                <rect
+                   x="0"
+                   y="0"
+                   width="220"
+                   height="40"
+                   rx="10"
+                   ry="10"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+                   id="rect69" />
+                <!-- behavior block icon -->
+                <g
+                   transform="translate(10,10)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+                   id="g71">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for failed options -->
+                <g
+                   transform="matrix(0.8,0,0,0.8,225,-5)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g75">
+                  <path
+                     transform="matrix(0.045,0,0,0.045,2,-1)"
+                     d="M 296,160 H 180.6 L 223.2,30.2 C 227.2,15 215.7,0 200,0 H 56 C 44,0 33.8,8.9 32.2,20.8 l -32,240 C -1.7,275.2 9.5,288 24,288 H 142.7 L 96.6,482.5 c -3.6,15.2 8,29.5 23.3,29.5 8.4,0 16.4,-4.4 20.8,-12 l 176,-304 C 326,180.1 314.5,160 296,160 Z"
+                     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                     id="path73"
+                     inkscape:connector-curvature="0" />
+                </g>
+                <!-- behavior block extra icon for delayed options -->
+                <g
+                   transform="matrix(0.8,0,0,0.8,225,-5)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g77">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for rebooting options -->
+                <g
+                   transform="translate(187,-7)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g79">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for fallback options -->
+                <g
+                   transform="translate(187,-7)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g81">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block label -->
+                <text
+                   x="20"
+                   y="22"
+                   dominant-baseline="middle"
+                   style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#ffffff;fill-opacity:1"
+                   id="text83">Eat Closest Dot</text>
+              </g>
+            </g>
+          </g>
+          <!-- arrow path from option to corresponding arbitrator -->
+          <path
+             d="M -100,45 C -50,45 -50,20 0,20"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#e0e0e0;stroke-width:2px;stroke-opacity:1"
+             id="path91"
+             inkscape:connector-curvature="0" />
+          <!-- option -->
+          <g
+             transform="translate(-320,25)"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g113">
+            <g
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+               id="g111">
+              <g
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+                 id="g109">
+                <!-- one arrow marker for all arrow paths -->
+                <!--v-if-->
+                <!-- behavior block background -->
+                <rect
+                   x="0"
+                   y="0"
+                   width="220"
+                   height="40"
+                   rx="10"
+                   ry="10"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+                   id="rect93" />
+                <!-- behavior block cost -->
+                <!--v-if-->
+                <!-- behavior block frame -->
+                <rect
+                   x="0"
+                   y="0"
+                   width="220"
+                   height="40"
+                   rx="10"
+                   ry="10"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+                   id="rect95" />
+                <!-- behavior block icon -->
+                <g
+                   transform="translate(10,10)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#8b8b8b;fill-opacity:1"
+                   id="g97">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for failed options -->
+                <g
+                   transform="matrix(0.8,0,0,0.8,225,-5)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g99">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for delayed options -->
+                <g
+                   transform="matrix(0.8,0,0,0.8,225,-5)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                   id="g101">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for rebooting options -->
+                <g
+                   transform="translate(187,-7)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+                   id="g103">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block extra icon for fallback options -->
+                <g
+                   transform="translate(187,-7)"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#e0e0e0;fill-opacity:1"
+                   id="g105">
+                  <!--v-if-->
+                </g>
+                <!-- behavior block label -->
+                <text
+                   x="20"
+                   y="22"
+                   dominant-baseline="middle"
+                   style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#8b8b8b;fill-opacity:1"
+                   id="text107">Change Dot Cluster</text>
+              </g>
+            </g>
+          </g>
+          <g
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g137">
+            <!-- one arrow marker for all arrow paths -->
+            <path
+               transform="matrix(-1.2,0,0,-1.2,0,20)"
+               d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1;stroke:#b81f13;stroke-width:2px;stroke-opacity:1"
+               id="path115"
+               inkscape:connector-curvature="0" />
+            <!-- behavior block background -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="0px"
+               ry="0px"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="rect117" />
+            <!-- behavior block cost -->
+            <!--v-if-->
+            <!-- behavior block frame -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="0px"
+               ry="0px"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+               id="rect119" />
+            <!-- behavior block icon -->
+            <g
+               transform="translate(10,10)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+               id="g123">
+              <!--v-if-->
+              <!--v-if-->
+              <path
+                 transform="matrix(0.045,0,0,0.045,3,-1)"
+                 d="m 209.2,233.4 -108,-31.6 C 88.7,198.2 80,186.5 80,173.5 80,157.2 93.2,144 109.5,144 h 66.3 c 12.2,0 24.2,3.7 34.2,10.5 6.1,4.1 14.3,3.1 19.5,-2 l 34.8,-34 c 7.1,-6.9 6.1,-18.4 -1.8,-24.5 C 238,74.8 207.4,64.1 176,64 V 16 C 176,7.2 168.8,0 160,0 h -32 c -8.8,0 -16,7.2 -16,16 v 48 h -2.5 c -63.7,0 -114.9,54.7 -109,119.6 4.2,46.1 39.4,83.6 83.8,96.6 l 102.5,30 c 12.5,3.7 21.2,15.3 21.2,28.3 0,16.3 -13.2,29.5 -29.5,29.5 H 112.2 C 100,368 88,364.3 78,357.5 c -6.1,-4.1 -14.3,-3.1 -19.5,2 l -34.8,34 c -7.1,6.9 -6.1,18.4 1.8,24.5 24.5,19.2 55.1,29.9 86.5,30 v 48 c 0,8.8 7.2,16 16,16 h 32 c 8.8,0 16,-7.2 16,-16 v -48.2 c 46.6,-0.9 90.3,-28.6 105.7,-72.7 21.5,-61.6 -14.6,-124.8 -72.5,-141.7 z"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+                 id="path121"
+                 inkscape:connector-curvature="0" />
+              <!--v-if-->
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for failed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g127">
+              <path
+                 transform="matrix(0.045,0,0,0.045,2,-1)"
+                 d="M 296,160 H 180.6 L 223.2,30.2 C 227.2,15 215.7,0 200,0 H 56 C 44,0 33.8,8.9 32.2,20.8 l -32,240 C -1.7,275.2 9.5,288 24,288 H 142.7 L 96.6,482.5 c -3.6,15.2 8,29.5 23.3,29.5 8.4,0 16.4,-4.4 20.8,-12 l 176,-304 C 326,180.1 314.5,160 296,160 Z"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                 id="path125"
+                 inkscape:connector-curvature="0" />
+            </g>
+            <!-- behavior block extra icon for delayed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g129">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for rebooting options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g131">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for fallback options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g133">
+              <!--v-if-->
+            </g>
+            <!-- behavior block label -->
+            <text
+               x="35"
+               y="22"
+               dominant-baseline="middle"
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#ffffff;fill-opacity:1"
+               id="text135">Eat Dots</text>
+          </g>
+        </g>
+      </g>
+      <!-- arrow path from option to corresponding arbitrator -->
+      <path
+         d="M -100,70 C -50,70 -50,20 0,20"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#b81f13;stroke-width:2px;stroke-opacity:1"
+         id="path143"
+         inkscape:connector-curvature="0" />
+      <!-- option -->
+      <g
+         transform="translate(-320,50)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g167">
+        <g
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g165">
+          <g
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g163">
+            <!-- one arrow marker for all arrow paths -->
+            <!--v-if-->
+            <!-- behavior block background -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="rect145" />
+            <!-- behavior block cost -->
+            <!--v-if-->
+            <!-- behavior block frame -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+               id="rect147" />
+            <!-- behavior block icon -->
+            <g
+               transform="translate(10,10)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+               id="g149">
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for failed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g153">
+              <path
+                 transform="matrix(0.045,0,0,0.045,2,-1)"
+                 d="M 296,160 H 180.6 L 223.2,30.2 C 227.2,15 215.7,0 200,0 H 56 C 44,0 33.8,8.9 32.2,20.8 l -32,240 C -1.7,275.2 9.5,288 24,288 H 142.7 L 96.6,482.5 c -3.6,15.2 8,29.5 23.3,29.5 8.4,0 16.4,-4.4 20.8,-12 l 176,-304 C 326,180.1 314.5,160 296,160 Z"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+                 id="path151"
+                 inkscape:connector-curvature="0" />
+            </g>
+            <!-- behavior block extra icon for delayed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g155">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for rebooting options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g157">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for fallback options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g159">
+              <!--v-if-->
+            </g>
+            <!-- behavior block label -->
+            <text
+               x="20"
+               y="22"
+               dominant-baseline="middle"
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#ffffff;fill-opacity:1"
+               id="text161">Move Randomly</text>
+          </g>
+        </g>
+      </g>
+      <!-- arrow path from option to corresponding arbitrator -->
+      <path
+         d="M -100,120 C -50,120 -50,20 0,20"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:none;stroke:#006f00;stroke-width:2px;stroke-opacity:1"
+         id="path169"
+         inkscape:connector-curvature="0" />
+      <!-- option -->
+      <g
+         transform="translate(-320,100)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g197">
+        <g
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g195">
+          <g
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+             id="g193">
+            <!-- one arrow marker for all arrow paths -->
+            <!--v-if-->
+            <!-- behavior block background -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1"
+               id="rect171" />
+            <!-- behavior block cost -->
+            <!--v-if-->
+            <!-- behavior block frame -->
+            <rect
+               x="0"
+               y="0"
+               width="220"
+               height="40"
+               rx="10"
+               ry="10"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+               id="rect173" />
+            <!-- behavior block icon -->
+            <g
+               transform="translate(10,10)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+               id="g175">
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for failed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g177">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for delayed options -->
+            <g
+               transform="matrix(0.8,0,0,0.8,225,-5)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+               id="g179">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for rebooting options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+               id="g181">
+              <!--v-if-->
+            </g>
+            <!-- behavior block extra icon for fallback options -->
+            <g
+               transform="translate(187,-7)"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1"
+               id="g189">
+              <g
+                 transform="matrix(0.045,0,0,0.045,2,-1)"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1"
+                 id="g187">
+                <circle
+                   cx="256"
+                   cy="256"
+                   r="290"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+                   id="circle183" />
+                <path
+                   d="M 256,504 C 392.967,504 504,392.967 504,256 504,119.033 392.967,8 256,8 119.033,8 8,119.033 8,256 8,392.967 119.033,504 256,504 Z m -103.398,-76.72 53.411,-53.411 c 31.806,13.506 68.128,13.522 99.974,0 l 53.411,53.411 c -63.217,38.319 -143.579,38.319 -206.796,0 z M 336,256 c 0,44.112 -35.888,80 -80,80 -44.112,0 -80,-35.888 -80,-80 0,-44.112 35.888,-80 80,-80 44.112,0 80,35.888 80,80 z m 91.28,103.398 -53.411,-53.411 c 13.505,-31.806 13.522,-68.128 0,-99.974 l 53.411,-53.411 c 38.319,63.217 38.319,143.579 0,206.796 z M 359.397,84.72 305.986,138.131 c -31.806,-13.505 -68.128,-13.522 -99.973,0 L 152.602,84.72 c 63.217,-38.319 143.579,-38.319 206.795,0 z m -274.677,67.882 53.411,53.411 c -13.506,31.806 -13.522,68.128 0,99.974 L 84.72,359.398 c -38.319,-63.217 -38.319,-143.579 0,-206.796 z"
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1"
+                   id="path185"
+                   inkscape:connector-curvature="0" />
+              </g>
+            </g>
+            <!-- behavior block label -->
+            <text
+               x="20"
+               y="22"
+               dominant-baseline="middle"
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#ffffff;fill-opacity:1"
+               id="text191">Stay In Place</text>
+          </g>
+        </g>
+      </g>
+      <g
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+         id="g219">
+        <!-- one arrow marker for all arrow paths -->
+        <path
+           transform="matrix(-1.2,0,0,-1.2,0,20)"
+           d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1;stroke:#006f00;stroke-width:2px;stroke-opacity:1"
+           id="path199"
+           inkscape:connector-curvature="0" />
+        <!-- behavior block background -->
+        <rect
+           x="0"
+           y="0"
+           width="220"
+           height="40"
+           rx="0px"
+           ry="0px"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1;filter:url(#dropShadow)"
+           id="rect201" />
+        <!-- behavior block cost -->
+        <!--v-if-->
+        <!-- behavior block frame -->
+        <rect
+           x="0"
+           y="0"
+           width="220"
+           height="40"
+           rx="0px"
+           ry="0px"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:0"
+           id="rect203" />
+        <!-- behavior block icon -->
+        <g
+           transform="translate(10,10)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+           id="g207">
+          <path
+             transform="matrix(0.045,0,0,0.045,0,-1)"
+             d="m 304,96 h 16 v 64 h -16 a 16,16 0 0 0 -16,16 v 32 a 16,16 0 0 0 16,16 h 96 a 16,16 0 0 0 16,-16 V 176 A 16,16 0 0 0 400,160 H 384 V 48 A 16,16 0 0 0 368,32 h -48 a 16,16 0 0 0 -14.29,8.83 l -16,32 A 16,16 0 0 0 304,96 Z m 26.15,162.91 a 79,79 0 0 0 -55,54.17 c -14.25,51.05 21.21,97.77 68.85,102.53 a 84.07,84.07 0 0 1 -20.85,12.91 c -7.57,3.4 -10.8,12.47 -8.18,20.34 l 9.9,20 c 2.87,8.63 12.53,13.49 20.9,9.91 58,-24.76 86.25,-61.61 86.25,-132 V 336 C 432,284.79 383.62,244.66 330.17,258.91 Z M 352,356 a 20,20 0 1 1 20,-20 20,20 0 0 1 -20,20 z M 176,352 H 128 V 48 A 16,16 0 0 0 112,32 H 80 A 16,16 0 0 0 64,48 V 352 H 16 C 1.81,352 -5.36,369.24 4.71,379.31 l 80,96 a 16,16 0 0 0 22.62,0 l 80,-96 C 197.35,369.26 190.22,352 176,352 Z"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#ffffff;fill-opacity:1"
+             id="path205"
+             inkscape:connector-curvature="0" />
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+        </g>
+        <!-- behavior block extra icon for failed options -->
+        <g
+           transform="matrix(0.8,0,0,0.8,225,-5)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+           id="g209">
+          <!--v-if-->
+        </g>
+        <!-- behavior block extra icon for delayed options -->
+        <g
+           transform="matrix(0.8,0,0,0.8,225,-5)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#b81f13;fill-opacity:1"
+           id="g211">
+          <!--v-if-->
+        </g>
+        <!-- behavior block extra icon for rebooting options -->
+        <g
+           transform="translate(187,-7)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica"
+           id="g213">
+          <!--v-if-->
+        </g>
+        <!-- behavior block extra icon for fallback options -->
+        <g
+           transform="translate(187,-7)"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:Helvetica;fill:#006f00;fill-opacity:1"
+           id="g215">
+          <!--v-if-->
+        </g>
+        <!-- behavior block label -->
+        <text
+           x="35"
+           y="22"
+           dominant-baseline="middle"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:16px;line-height:normal;font-family:Roboto, sans-serif;letter-spacing:0.5px;dominant-baseline:middle;white-space:nowrap;display:block;fill:#ffffff;fill-opacity:1"
+           id="text217">Pacman Agent</text>
+      </g>
+    </g>
+  </g>
+</svg>

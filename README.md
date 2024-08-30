@@ -4,6 +4,16 @@
 
 Arbitration graphs combine simple atomic behavior blocks to more complex behaviors for decision making and behavior generation
 
+## Demonstration
+
+We are currently working on a demonstration of this library using Pac-Man as an example application.
+
+<p float="left" style="display: flex; justify-content: center; align-items: center; gap: 30px;">
+  <img src="docs/pacman_scenario.png" width="300" />
+  <img src="docs/pacman_arbitrator_safe.svg" width="500" /> 
+</p>
+
+Feel free to take a look at the work in progress in the [pacman-demo branch](https://github.com/KIT-MRT/arbitration_graphs/tree/pacman-demo).
 
 ## Installation
 
