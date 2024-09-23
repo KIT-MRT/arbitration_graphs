@@ -121,7 +121,7 @@ app = Vue.createApp({
         }
     },
     mounted() {
-        this.connectToWebSocket();
+        //        this.connectToWebSocket();
 
         window.onresize = () => {
             this.scaleAndAlignSvg();
