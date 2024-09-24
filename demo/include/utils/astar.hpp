@@ -50,7 +50,7 @@ public:
 
     Cell& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
-            cells_[{position.x, position.y}] = Cell(position, maze_->operator[](position));
+            cells_[{position.x, position.y}] = Cell(position, maze_->at(position));
         }
 
         return cells_[{position.x, position.y}].value();
@@ -86,9 +86,9 @@ public:
     /**
      * @brief Returns the path from a given start position to the closest dot.
      *
-     * If there is no dot or no path can be found, the returned path will be empty.
+     * If there is no dot or no path can be found, std::nullopt will be returned.
      */
-    Path pathToClosestDot(const Position& start) const;
+    std::optional<Path> pathToClosestDot(const Position& start) const;
 
     void updateMaze(const Maze::ConstPtr& maze) {
         maze_ = maze;

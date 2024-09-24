@@ -19,8 +19,12 @@ public:
     explicit Maze(MazeState mazeState) : mazeState_(std::move(mazeState)) {
     }
 
-    TileType operator[](const Position& position) const {
+    TileType at(const Position& position) const {
         return tileTypeMap_.at(mazeState_[{position.x, position.y}]);
+    }
+    
+    TileType operator[](const Position& position) const {
+        return at(position);
     }
 
     int width() const {
@@ -31,7 +35,7 @@ public:
     }
 
     bool isWall(const Position& position) const {
-        return operator[](position) == TileType::WALL;
+        return at(position) == TileType::WALL;
     }
     bool isInBounds(const Position& position) const {
         return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
