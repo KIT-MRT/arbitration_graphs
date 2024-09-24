@@ -17,44 +17,83 @@ int nonNegativeModulus(const int& numerator, const int& denominator) {
     return (denominator + (numerator % denominator)) % denominator;
 }
 
-int AStar::manhattanDistance(const Position& start, const Position& goal) const {
+int AStar::mazeDistance(const Position& start, const Position& goal) const {
+    if (distanceCache_.cached({start, goal})) {
+        return distanceCache_.cached({start, goal}).value();
+    }
+
+    Path path = shortestPath(start, goal);
+    int pathLength = static_cast<int>(path.size());
+
+    distanceCache_.cache({start, goal}, pathLength);
+    return pathLength;
+}
+
+Path AStar::shortestPath(const Position& start, const Position& goal) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
     Position wrappedStart = positionConsideringTunnel(start);
     Position wrappedGoal = positionConsideringTunnel(goal);
-    if (distanceCache_.cached({wrappedStart, wrappedGoal})) {
-        return distanceCache_.cached({wrappedStart, wrappedGoal}).value();
-    }
 
     MazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
     Cell& goalCell = mazeAdapter.cell(wrappedGoal);
-    if (startCell.isWall || goalCell.isWall) {
-        throw std::runtime_error("Can't compute distance from/to wall cell");
+    if (startCell.type == TileType::WALL || goalCell.type == TileType::WALL) {
+        throw std::runtime_error("Can't compute path from/to wall cell");
     }
     startCell.distanceFromStart = 0;
-    startCell.heuristic = computeHeuristic(startCell, wrappedGoal);
+    HeuristicFunction heuristic = [this, &wrappedGoal](const Cell& cell) {
+        return optimisticDistanceToGoal(cell, wrappedGoal);
+    };
+    startCell.heuristic = heuristic(startCell);
 
     openSet.push(startCell);
 
-    int result = NoPathFound;
     while (!openSet.empty()) {
         if (openSet.top().position == wrappedGoal) {
-            result = openSet.top().distanceFromStart;
-            break;
+            return pathTo(mazeAdapter, openSet.top().position);
         }
-        expandCell(openSet, mazeAdapter, wrappedGoal);
+        expandCell(openSet, mazeAdapter, heuristic);
     }
 
-
-    distanceCache_.cache({wrappedStart, wrappedGoal}, result);
-    return result;
+    return {};
 }
 
-void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& goal) const {
+std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
+    // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
+    // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
+    // tunnel.
+    Position wrappedStart = positionConsideringTunnel(start);
+
+    MazeAdapter mazeAdapter(maze_);
+    Set openSet;
+
+    Cell& startCell = mazeAdapter.cell(wrappedStart);
+    if (startCell.type == TileType::WALL) {
+        throw std::runtime_error("Can't compute path from wall cell");
+    }
+    startCell.distanceFromStart = 0;
+    HeuristicFunction heuristic = [](const Cell&) { return 0; };
+    startCell.heuristic = 0;
+
+    openSet.push(startCell);
+
+    while (!openSet.empty()) {
+        // Unfortunately, the pacman simulation will handle the dot consumption after the move, therefore we need to
+        // explicitly exclude the start position from the search.
+        if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
+            return pathTo(mazeAdapter, openSet.top().position);
+        }
+        expandCell(openSet, mazeAdapter, heuristic);
+    }
+
+    return {};
+}
+
+void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
     Cell current = openSet.top();
     openSet.pop();
 
@@ -77,10 +116,25 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const Position& g
         int newDistance = current.distanceFromStart + 1;
         if (newDistance < neighbor.distanceFromStart) {
             neighbor.distanceFromStart = newDistance;
-            neighbor.heuristic = computeHeuristic(neighbor, goal);
+            neighbor.heuristic = heuristic(neighbor);
+            neighbor.moveFromPredecessor = move;
             openSet.push(neighbor);
         }
     }
+}
+
+Path AStar::pathTo(const MazeAdapter& maze, const Position& goal) const {
+    Path path;
+    Cell current = maze.cell(goal);
+    while (current.moveFromPredecessor) {
+        path.push_back(current.moveFromPredecessor->direction);
+        Position predecessorPosition = current.position - current.moveFromPredecessor->deltaPosition;
+        predecessorPosition = positionConsideringTunnel(predecessorPosition);
+        current = maze.cell(predecessorPosition);
+    }
+
+    std::reverse(path.begin(), path.end());
+    return path;
 }
 
 Position AStar::positionConsideringTunnel(const Position& position) const {

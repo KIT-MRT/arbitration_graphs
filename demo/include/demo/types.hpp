@@ -34,9 +34,9 @@ using Tile = ::Tile;
 
 enum class Direction { UP, DOWN, LEFT, RIGHT, LAST };
 enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
+enum class TileType { EMPTY, DOT, ENGERIZER, WALL, DOOR };
 
 using Path = std::vector<Direction>;
-
 struct Position {
     int x;
     int y;
@@ -47,8 +47,14 @@ struct Position {
     Position operator+(const Position& other) const {
         return {x + other.x, y + other.y};
     }
+    Position operator-(const Position& other) const {
+        return {x - other.x, y - other.y};
+    }
     bool operator==(const Position& other) const {
         return x == other.x && y == other.y;
+    }
+    bool operator!=(const Position& other) const {
+        return x != other.x || y != other.y;
     }
 };
 using Positions = std::vector<Position>;
