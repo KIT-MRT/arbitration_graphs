@@ -131,15 +131,18 @@ TEST_F(AStarTest, pathToClosestDot) {
     environmentModel_->setMaze({5, 6}, str);
 
     AStar astar(environmentModel_->maze());
-    Path path = astar.pathToClosestDot({1, 2});
+    std::optional<Path> path = astar.pathToClosestDot({1, 2});
+    ASSERT_TRUE(path.has_value());
+
     Path targetPath = {Direction::UP, Direction::RIGHT, Direction::RIGHT};
-    ASSERT_EQ(path.size(), targetPath.size());
+    ASSERT_EQ(path->size(), targetPath.size());
     for (int i = 0; i < targetPath.size(); i++) {
-        EXPECT_EQ(path.at(i), targetPath.at(i));
+        EXPECT_EQ(path->at(i), targetPath.at(i));
     }
 
     path = astar.pathToClosestDot({1, 3});
-    ASSERT_EQ(path.size(), 3);
+    ASSERT_TRUE(path.has_value());
+    ASSERT_EQ(path->size(), 3);
 }
 
 } // namespace utils

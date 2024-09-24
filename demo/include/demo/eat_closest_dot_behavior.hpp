@@ -22,13 +22,13 @@ public:
 
     Command getCommand(const Time& /*time*/) override {
         auto pacmanPosition = environmentModel_->pacmanPosition();
-        Path pathToClosestDot = environmentModel_->pathToClosestDot(pacmanPosition);
+        std::optional<Path> pathToClosestDot = environmentModel_->pathToClosestDot(pacmanPosition);
 
-        if (pathToClosestDot.empty()) {
+        if (!pathToClosestDot) {
             throw std::runtime_error("Failed to compute path to closest dot. Can not provide a sensible command.");
         }
 
-        return Command{pathToClosestDot};
+        return Command{pathToClosestDot.value()};
     }
 
     bool checkInvocationCondition(const Time& /*time*/) const override {

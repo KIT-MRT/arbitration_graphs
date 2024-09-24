@@ -77,7 +77,7 @@ public:
         return astar_.mazeDistance(start, goal);
     }
 
-    Path pathToClosestDot(const Position& position) const {
+    std::optional<Path> pathToClosestDot(const Position& position) const {
         return astar_.pathToClosestDot(position);
     }
 

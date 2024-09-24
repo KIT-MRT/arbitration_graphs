@@ -62,7 +62,7 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
     return {};
 }
 
-Path AStar::pathToClosestDot(const Position& start) const {
+std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
