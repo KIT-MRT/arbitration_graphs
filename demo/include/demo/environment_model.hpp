@@ -92,6 +92,10 @@ public:
         return astar_.mazeDistance(start, goal);
     }
 
+    Path pathTo(const Position& goal) {
+        return astar_.shortestPath(pacmanPosition(), goal);
+    }
+
     std::optional<Path> pathToClosestDot(const Position& position) const {
         return astar_.pathToClosestDot(position);
     }
