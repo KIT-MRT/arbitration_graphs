@@ -1,8 +1,5 @@
 #pragma once
 
-#include <limits>
-#include <stdexcept>
-
 #include <arbitration_graphs/cost_arbitrator.hpp>
 
 #include "environment_model.hpp"
