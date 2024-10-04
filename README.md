@@ -4,6 +4,14 @@
 
 Arbitration graphs combine simple atomic behavior components into more complex behaviors for decision-making and behavior generation
 
+## TLDR
+
+> No bullshit, just gimme a Demo!
+
+Sure 🫶
+Follow our awesome [PacMan Tutorial](./docs/Tutorial.md) 🕹️
+
+
 ## Demonstration
 
 We are currently working on a demonstration of this library using Pac-Man as an example application.
