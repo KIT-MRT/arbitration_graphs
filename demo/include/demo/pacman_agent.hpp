@@ -59,7 +59,9 @@ public:
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(stayInPlaceBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(stayInPlaceBehavior_,
+                                   PriorityArbitrator::Option::Flags::INTERRUPTABLE |
+                                       PriorityArbitrator::Option::FALLBACK);
     }
 
     Command getCommand(const Time& time) {
