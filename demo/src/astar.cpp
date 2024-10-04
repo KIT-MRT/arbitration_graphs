@@ -7,14 +7,14 @@ int AStar::mazeDistance(const Position& start, const Position& goal) const {
         return distanceCache_.cached({start, goal}).value();
     }
 
-    Path path = shortestPath(start, goal);
-    int pathLength = static_cast<int>(path.size());
+    std::optional<Path> path = shortestPath(start, goal);
+    int pathLength = path ? static_cast<int>(path->size()) : NoPathFound;
 
     distanceCache_.cache({start, goal}, pathLength);
     return pathLength;
 }
 
-Path AStar::shortestPath(const Position& start, const Position& goal) const {
+std::optional<Path> AStar::shortestPath(const Position& start, const Position& goal) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
@@ -39,12 +39,12 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
 
     while (!openSet.empty()) {
         if (openSet.top().position == wrappedGoal) {
-            return pathTo(mazeAdapter, openSet.top().position);
+            return extractPathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, heuristic);
     }
 
-    return {};
+    return std::nullopt;
 }
 
 std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
@@ -70,12 +70,12 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
         // Unfortunately, the pacman simulation will handle the dot consumption after the move, therefore we need to
         // explicitly exclude the start position from the search.
         if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
-            return pathTo(mazeAdapter, openSet.top().position);
+            return extractPathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, heuristic);
     }
 
-    return {};
+    return std::nullopt;
 }
 
 void AStar::expandCell(Set& openSet, AStarMazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
@@ -108,7 +108,7 @@ void AStar::expandCell(Set& openSet, AStarMazeAdapter& mazeAdapter, const Heuris
     }
 }
 
-Path AStar::pathTo(const AStarMazeAdapter& maze, const Position& goal) const {
+Path AStar::extractPathTo(const AStarMazeAdapter& maze, const Position& goal) const {
     Path path;
     Cell current = maze.cell(goal);
     while (current.moveFromPredecessor) {

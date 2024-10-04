@@ -26,8 +26,13 @@ public:
     }
 
     Command getCommand(const Time& /*time*/) override {
-        Path pathToTargetClusterCenter = environmentModel_->pathTo(targetCluster_->center);
-        return Command{pathToTargetClusterCenter};
+        std::optional<Path> pathToTargetClusterCenter = environmentModel_->pathTo(targetCluster_->center);
+
+        if (!pathToTargetClusterCenter) {
+            throw std::runtime_error("Failed to compute path to target cluster. Can not provide a sensible command.");
+        }
+
+        return Command{pathToTargetClusterCenter.value()};
     }
 
     bool checkInvocationCondition(const Time& /*time*/) const override;

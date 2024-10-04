@@ -95,11 +95,12 @@ TEST_F(AStarTest, path) {
     environmentModel_->setMaze({5, 5}, str);
 
     AStar astar(environmentModel_->maze());
-    Path path = astar.shortestPath({2, 1}, {3, 3});
+    std::optional<Path> path = astar.shortestPath({2, 1}, {3, 3});
     Path targetPath = {Direction::LEFT, Direction::DOWN, Direction::DOWN, Direction::RIGHT, Direction::RIGHT};
-    ASSERT_EQ(path.size(), targetPath.size());
+    ASSERT_TRUE(path.has_value());
+    ASSERT_EQ(path->size(), targetPath.size());
     for (int i = 0; i < targetPath.size(); i++) {
-        EXPECT_EQ(path.at(i), targetPath.at(i));
+        EXPECT_EQ(path->at(i), targetPath.at(i));
     }
 }
 
@@ -112,13 +113,15 @@ TEST_F(AStarTest, pathWithTunnel) {
     environmentModel_->setMaze({5, 5}, str);
 
     AStar astar(environmentModel_->maze());
-    Path path = astar.shortestPath({0, 2}, {4, 2});
-    ASSERT_EQ(path.size(), 1);
-    EXPECT_EQ(path.front(), demo::Direction::LEFT);
+    std::optional<Path> path = astar.shortestPath({0, 2}, {4, 2});
+    ASSERT_TRUE(path.has_value());
+    ASSERT_EQ(path->size(), 1);
+    EXPECT_EQ(path->front(), demo::Direction::LEFT);
 
     path = astar.shortestPath({4, 2}, {0, 2});
-    ASSERT_EQ(path.size(), 1);
-    EXPECT_EQ(path.front(), demo::Direction::RIGHT);
+    ASSERT_TRUE(path.has_value());
+    ASSERT_EQ(path->size(), 1);
+    EXPECT_EQ(path->front(), demo::Direction::RIGHT);
 }
 
 TEST_F(AStarTest, pathToClosestDot) {

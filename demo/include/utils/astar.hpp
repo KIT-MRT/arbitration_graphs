@@ -60,7 +60,7 @@ public:
     /**
      * @brief Returns the shortest path from the start to the goal position considering the maze geometry.
      */
-    Path shortestPath(const Position& start, const Position& goal) const;
+    std::optional<Path> shortestPath(const Position& start, const Position& goal) const;
 
     /**
      * @brief Returns the path from a given start position to the closest dot.
@@ -82,7 +82,7 @@ private:
      * Will expand the path backwards until no more predecessor relationship is available. If the cell at the goal
      * position does not have a predecessor, the path will be empty.
      */
-    Path pathTo(const AStarMazeAdapter& maze, const Position& goal) const;
+    Path extractPathTo(const AStarMazeAdapter& maze, const Position& goal) const;
 
     /**
      * @brief Approximates the distance of a given cell to a goal while considering a shortcut via the tunnel.
