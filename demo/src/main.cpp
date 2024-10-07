@@ -4,6 +4,7 @@
 #include "demo/pacman_agent.hpp"
 #include "demo/types.hpp"
 #include "utils/pacman_wrapper.hpp"
+#include "utils/utils.hpp"
 
 using namespace demo;
 using namespace utils;
@@ -19,7 +20,7 @@ int main() {
             Command command = agent.getCommand(Clock::now());
             std::cout << agent.to_str(Clock::now()) << '\n';
 
-            demo.progressGame(command);
+            demo.progressGame(command, agent.pacmanPosition());
         }
     } catch (std::exception& e) {
         std::cout << e.what() << '\n';
