@@ -1,3 +1,53 @@
+# This is a config file for Jekyll, the static site generator used by GitHub Pages.
+#
+# In our setup, the top-level README.md is the landing page,
+# while the rest of the pages and all assets are in the docs folder.
+#
+# This way, we can use the main branchs' README.md as main website,
+# add subpages for the tutorial and deep dive docs,
+# while avoiding Jekyll clutter in the repo root.
+
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme
+
+includes_dir: docs/_includes
+sass:
+  sass_dir: docs/assets/_sass
+
+
+# Tell Jekyll to use README.md and docs/ only.
+#
+# For some reason exluding root and then including only these does not work,
+# see https://github.com/jekyll/jekyll/issues/9116
+# So, we have to take the explicit detour…
+
+exclude:
+  # Jekyll default excludes
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+  # Custom C++ excludes
+  - build
+  - cmake
+  - CMakeLists.txt
+  - demo
+  - include
+  - src
+  - test
+
+  # Docker files
+  - /**/*ocker*
+  - /*ocker*
+
+  # Others
+  - CODEOWNERS
+  - LICENSE
