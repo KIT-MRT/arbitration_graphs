@@ -9,7 +9,7 @@
 namespace demo {
 
 /**
- * @brief The ChangeDotClusterBehavior makes pacman move towards the closest dot cluster
+ * @brief The ChangeDotClusterBehavior makes Pacman move towards the closest dot cluster
  * that he is not currently inside of.
  */
 class ChangeDotClusterBehavior : public arbitration_graphs::Behavior<Command> {
@@ -25,22 +25,10 @@ public:
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 
-    Command getCommand(const Time& /*time*/) override {
-        std::optional<Path> pathToTargetClusterCenter = environmentModel_->pathTo(targetCluster_->center);
-
-        if (!pathToTargetClusterCenter) {
-            throw std::runtime_error("Failed to compute path to target cluster. Can not provide a sensible command.");
-        }
-
-        return Command{pathToTargetClusterCenter.value()};
-    }
+    Command getCommand(const Time& /*time*/) override;
 
     bool checkInvocationCondition(const Time& /*time*/) const override;
-
-    bool checkCommitmentCondition(const Time& /*time*/) const override {
-        Position pacmanPosition = environmentModel_->pacmanPosition();
-        return !targetCluster_->isInCluster(pacmanPosition);
-    }
+    bool checkCommitmentCondition(const Time& /*time*/) const override;
 
     void gainControl(const Time& /*time*/) override {
         setTargetCluster();

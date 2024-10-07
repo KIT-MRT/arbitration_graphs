@@ -2,6 +2,16 @@
 
 namespace demo {
 
+Command ChangeDotClusterBehavior::getCommand(const Time& /*time*/) {
+    std::optional<Path> pathToTargetClusterCenter = environmentModel_->pathTo(targetCluster_->center);
+
+    if (!pathToTargetClusterCenter) {
+        throw std::runtime_error("Failed to compute path to target cluster. Can not provide a sensible command.");
+    }
+
+    return Command{pathToTargetClusterCenter.value()};
+}
+
 bool ChangeDotClusterBehavior::checkInvocationCondition(const Time& /*time*/) const {
     auto pacmanPosition = environmentModel_->pacmanPosition();
     Clusters clusters = environmentModel_->dotCluster();
@@ -16,6 +26,11 @@ bool ChangeDotClusterBehavior::checkInvocationCondition(const Time& /*time*/) co
     }
 
     return true;
+}
+
+bool ChangeDotClusterBehavior::checkCommitmentCondition(const Time& /*time*/) const {
+    Position pacmanPosition = environmentModel_->pacmanPosition();
+    return !targetCluster_->isInCluster(pacmanPosition);
 }
 
 void ChangeDotClusterBehavior::setTargetCluster() {
