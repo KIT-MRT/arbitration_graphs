@@ -1,0 +1,13 @@
+# This file is based on
+# https://github.com/VSteinborn/Docker-Jekyll/blob/main/compose.yaml
+
+name: github-pages-dev
+services:
+  github-pages-dev:
+    build:
+      context: ../..
+      dockerfile: docs/docker/Dockerfile
+    ports:
+      - 4000:4000
+    volumes:
+      - ../..:/site
