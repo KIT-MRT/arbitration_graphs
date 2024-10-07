@@ -17,6 +17,7 @@ Positions CostEstimator::toAbsolutePath(const Path& path) const {
     Position pacmanPosition = environmentModel_->pacmanPosition();
     Positions absolutePath{pacmanPosition};
 
+    // Let's follow the path and convert it to absolute positions
     for (const auto& direction : path) {
         pacmanPosition = pacmanPosition + Move(direction).deltaPosition;
         pacmanPosition = environmentModel_->positionConsideringTunnel(pacmanPosition);
@@ -27,29 +28,29 @@ Positions CostEstimator::toAbsolutePath(const Path& path) const {
 }
 
 int CostEstimator::dotsAlongPath(const Positions& absolutePath) const {
-    int dotCounter{0};
+    int nDots{0};
 
     for (const auto& position : absolutePath) {
         if (environmentModel_->isDot(position)) {
-            dotCounter++;
+            nDots++;
         }
     }
-    return dotCounter;
+    return nDots;
 }
 
 int CostEstimator::dotsInRadius(const Position& center) const {
-    int dotCounter{0};
+    int nDots{0};
 
     int radius = parameters_.pathEndNeighborhoodRadius;
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
             Position neighbor = {center.x + dx, center.y + dy};
             if (environmentModel_->isInBounds(neighbor) && environmentModel_->isDot(neighbor)) {
-                dotCounter++;
+                nDots++;
             }
         }
     }
 
-    return dotCounter;
+    return nDots;
 }
 } // namespace demo
