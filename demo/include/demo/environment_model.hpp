@@ -6,6 +6,7 @@
 
 #include "types.hpp"
 #include "utils/astar.hpp"
+#include "utils/cluster.hpp"
 #include "utils/entities.hpp"
 #include "utils/maze.hpp"
 
@@ -19,6 +20,8 @@ namespace demo {
  * the world. */
 class EnvironmentModel {
 public:
+    using Cluster = utils::Cluster;
+    using Clusters = utils::DotClusterFinder::Clusters;
     using Entities = utils::Entities;
     using Maze = utils::Maze;
     using Ghost = utils::Ghost;
@@ -32,7 +35,8 @@ public:
         int distance;
     };
 
-    explicit EnvironmentModel(const Game& game) : maze_(std::make_shared<Maze>(game.maze)), astar_(maze_) {
+    explicit EnvironmentModel(const Game& game)
+            : maze_{std::make_shared<Maze>(game.maze)}, astar_{maze_}, clusterFinder_{maze_} {
         updateEntities(game.reg);
     };
 
@@ -42,6 +46,7 @@ public:
     void update(const Game& game) {
         maze_ = std::make_shared<Maze>(game.maze);
         astar_.updateMaze(maze_);
+        clusterFinder_ = utils::DotClusterFinder{maze_};
         updateEntities(game.reg);
     }
 
@@ -69,6 +74,16 @@ public:
     std::optional<GhostWithDistance> closestScaredGhost(const Time& time) const;
 
     /**
+     * @brief Returns a vector of all dot clusters.
+     *
+     * A dot cluster is a set of dots (including power pellets) that can be connected by a path passing through neither
+     * walls nor empty space.
+     */
+    Clusters dotCluster() const {
+        return clusterFinder_.clusters();
+    }
+
+    /**
      * @brief Calculates the Manhattan distance between two positions using A* considering the maze geometry.
      *
      * A distance of 1 is the distance between two adjacent positions in the maze.
@@ -77,12 +92,19 @@ public:
         return astar_.mazeDistance(start, goal);
     }
 
+    std::optional<Path> pathTo(const Position& goal) {
+        return astar_.shortestPath(pacmanPosition(), goal);
+    }
+
     std::optional<Path> pathToClosestDot(const Position& position) const {
         return astar_.pathToClosestDot(position);
     }
 
     bool isWall(const Position& position) const {
         return maze_->isWall(position);
+    }
+    Position positionConsideringTunnel(const Position& position) const {
+        return maze_->positionConsideringTunnel(position);
     }
 
 protected:
@@ -94,6 +116,7 @@ protected:
     Maze::ConstPtr maze_;
 
     utils::AStar astar_;
+    utils::DotClusterFinder clusterFinder_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestGhostCache_;
     mutable util_caching::Cache<Time, GhostWithDistance> closestScaredGhostCache_;
 };

@@ -2,41 +2,26 @@
 
 namespace utils {
 
-/**
- * @brief Computes the modulus of a given numerator and denominator, ensuring a non-negative result when the denominator
- * is positive.
- *
- * This function calculates the result of the modulus operation. If the denominator is positive, the result is
- * non-negative and in the range [0, denominator - 1].
- *
- * @param numerator The value to be divided (dividend).
- * @param denominator The value by which the numerator is divided (divisor).
- * @return An integer representing the modulus of the division.
- */
-int nonNegativeModulus(const int& numerator, const int& denominator) {
-    return (denominator + (numerator % denominator)) % denominator;
-}
-
 int AStar::mazeDistance(const Position& start, const Position& goal) const {
     if (distanceCache_.cached({start, goal})) {
         return distanceCache_.cached({start, goal}).value();
     }
 
-    Path path = shortestPath(start, goal);
-    int pathLength = static_cast<int>(path.size());
+    std::optional<Path> path = shortestPath(start, goal);
+    int pathLength = path ? static_cast<int>(path->size()) : NoPathFound;
 
     distanceCache_.cache({start, goal}, pathLength);
     return pathLength;
 }
 
-Path AStar::shortestPath(const Position& start, const Position& goal) const {
+std::optional<Path> AStar::shortestPath(const Position& start, const Position& goal) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
-    Position wrappedStart = positionConsideringTunnel(start);
-    Position wrappedGoal = positionConsideringTunnel(goal);
+    Position wrappedStart = maze_->positionConsideringTunnel(start);
+    Position wrappedGoal = maze_->positionConsideringTunnel(goal);
 
-    MazeAdapter mazeAdapter(maze_);
+    AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
@@ -54,21 +39,21 @@ Path AStar::shortestPath(const Position& start, const Position& goal) const {
 
     while (!openSet.empty()) {
         if (openSet.top().position == wrappedGoal) {
-            return pathTo(mazeAdapter, openSet.top().position);
+            return extractPathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, heuristic);
     }
 
-    return {};
+    return std::nullopt;
 }
 
 std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     // There is a "virtual" position outside of the maze that entities are on when entering the tunnel. We accept a
     // small error in the distance computation by neglecting this and wrapping the position to be on either end of the
     // tunnel.
-    Position wrappedStart = positionConsideringTunnel(start);
+    Position wrappedStart = maze_->positionConsideringTunnel(start);
 
-    MazeAdapter mazeAdapter(maze_);
+    AStarMazeAdapter mazeAdapter(maze_);
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
@@ -85,15 +70,15 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
         // Unfortunately, the pacman simulation will handle the dot consumption after the move, therefore we need to
         // explicitly exclude the start position from the search.
         if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
-            return pathTo(mazeAdapter, openSet.top().position);
+            return extractPathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, heuristic);
     }
 
-    return {};
+    return std::nullopt;
 }
 
-void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
+void AStar::expandCell(Set& openSet, AStarMazeAdapter& mazeAdapter, const HeuristicFunction& heuristic) const {
     Cell current = openSet.top();
     openSet.pop();
 
@@ -102,7 +87,7 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFu
     for (const auto& move : demo::Move::possibleMoves()) {
         Position nextPosition = current.position + move.deltaPosition;
 
-        nextPosition = positionConsideringTunnel(nextPosition);
+        nextPosition = maze_->positionConsideringTunnel(nextPosition);
 
         if (!maze_->isPassableCell(nextPosition)) {
             continue;
@@ -123,27 +108,18 @@ void AStar::expandCell(Set& openSet, MazeAdapter& mazeAdapter, const HeuristicFu
     }
 }
 
-Path AStar::pathTo(const MazeAdapter& maze, const Position& goal) const {
+Path AStar::extractPathTo(const AStarMazeAdapter& maze, const Position& goal) const {
     Path path;
     Cell current = maze.cell(goal);
     while (current.moveFromPredecessor) {
         path.push_back(current.moveFromPredecessor->direction);
         Position predecessorPosition = current.position - current.moveFromPredecessor->deltaPosition;
-        predecessorPosition = positionConsideringTunnel(predecessorPosition);
+        predecessorPosition = maze_->positionConsideringTunnel(predecessorPosition);
         current = maze.cell(predecessorPosition);
     }
 
     std::reverse(path.begin(), path.end());
     return path;
-}
-
-Position AStar::positionConsideringTunnel(const Position& position) const {
-    Position wrappedPosition{nonNegativeModulus(position.x, maze_->width()),
-                             nonNegativeModulus(position.y, maze_->height())};
-    if (maze_->isPassableCell(wrappedPosition)) {
-        return wrappedPosition;
-    }
-    return position;
 }
 
 } // namespace utils

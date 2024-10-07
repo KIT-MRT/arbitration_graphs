@@ -10,7 +10,7 @@ Command AvoidGhostBehavior::getCommand(const Time& time) {
 
     double maxDistance = -1;
     for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = pacmanPosition + move.deltaPosition;
+        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
         if (environmentModel_->isWall(nextPosition)) {
             continue;
