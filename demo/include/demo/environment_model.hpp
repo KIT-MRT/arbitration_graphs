@@ -100,8 +100,14 @@ public:
         return astar_.pathToClosestDot(position);
     }
 
+    bool isDot(const Position& position) const {
+        return maze_->isDot(position);
+    }
     bool isWall(const Position& position) const {
         return maze_->isWall(position);
+    }
+    bool isInBounds(const Position& position) const {
+        return maze_->isInBounds(position);
     }
     Position positionConsideringTunnel(const Position& position) const {
         return maze_->positionConsideringTunnel(position);
