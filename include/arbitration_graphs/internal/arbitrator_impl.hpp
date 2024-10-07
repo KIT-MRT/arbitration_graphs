@@ -110,7 +110,15 @@ SubCommandT Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::g
         // otherwise we have bestOption == activeBehavior_ which already gained control
 
         // an arbitrator as option might not return a command, if its applicable options fail verification:
-        const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
+        std::optional<SubCommandT> command;
+        try {
+            command = getAndVerifyCommand(bestOption, time);
+        } catch (const std::exception& e) {
+            VLOG(1) << bestOption->behavior_->name_ << " threw an exception during getAndVerifyCommand(): " << e.what();
+            bestOption->verificationResult_.reset();
+            bestOption->behavior_->loseControl(time);
+            continue;
+        }
 
         if (command) {
             if (activeBehavior_ && bestOption != activeBehavior_) {
