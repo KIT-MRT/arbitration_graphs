@@ -63,6 +63,16 @@ public:
     int loseControlCounter_{0};
 };
 
+class BrokenDummyBehavior : public DummyBehavior {
+public:
+    BrokenDummyBehavior(const bool invocation, const bool commitment, const std::string& name = "BrokenDummyBehavior")
+            : DummyBehavior(invocation, commitment, name) {};
+
+    DummyCommand getCommand(const Time& time) override {
+        throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
+    }
+};
+
 struct DummyResult {
     bool isOk() const {
         return isOk_;
