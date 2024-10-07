@@ -71,4 +71,17 @@ TEST_F(CostEstimatorTest, estimateCostUpPath) {
     EXPECT_EQ(expectedCost, actualCost);
 }
 
+TEST_F(CostEstimatorTest, estimateCostNoDots) {
+    // Move from the top left to the top right corner
+    environmentModel_->setPacmanPosition({1, 1});
+    using D = Direction;
+    Path path{D::RIGHT, D::RIGHT, D::RIGHT, D::RIGHT, D::RIGHT, D::RIGHT, D::RIGHT};
+
+    // There are neither points along the path nor in the neighborhood search area
+    double expectedCost = std::numeric_limits<double>::max();
+    double actualCost = costEstimator_.estimateCost(Command{path}, true);
+
+    EXPECT_EQ(expectedCost, actualCost);
+}
+
 } // namespace demo

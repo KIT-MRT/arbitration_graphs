@@ -7,6 +7,10 @@ double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
 
     int dotCounter = dotsAlongPath(absolutePath) + dotsInRadius(absolutePath.back());
 
+    if (dotCounter == 0) {
+        return std::numeric_limits<double>::max();
+    }
+
     int pathLength = static_cast<int>(absolutePath.size());
     int neighborhoodSize = static_cast<int>(std::pow(2 * parameters_.pathEndNeighborhoodRadius + 1, 2));
     int numOfCells = pathLength + neighborhoodSize;
