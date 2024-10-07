@@ -52,12 +52,12 @@ DotClusterFinder::Clusters DotClusterFinder::findDotClusters() const {
 Positions DotClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapter& mazeAdapter) const {
     Positions dots;
 
-    std::queue<Position> bfsQueue;
-    bfsQueue.push(start.position);
+    std::queue<Position> explorationQueue;
+    explorationQueue.push(start.position);
 
-    while (!bfsQueue.empty()) {
-        Position currentPosition = bfsQueue.front();
-        bfsQueue.pop();
+    while (!explorationQueue.empty()) {
+        Position currentPosition = explorationQueue.front();
+        explorationQueue.pop();
         ClusterCell& current = mazeAdapter.cell(currentPosition);
 
         if (current.visited) {
@@ -76,7 +76,7 @@ Positions DotClusterFinder::expandDot(const Cell& start, const ClusterMazeAdapte
             ClusterCell& neighbor = mazeAdapter.cell(nextPosition);
 
             if (neighbor.isConsumable() && !neighbor.visited) {
-                bfsQueue.push(nextPosition);
+                explorationQueue.push(nextPosition);
             }
         }
     }
