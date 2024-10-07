@@ -17,9 +17,10 @@ double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
 
     return static_cast<double>(numOfCells) / dotCounter;
 }
+
 Positions CostEstimator::toAbsolutePath(const Path& path) const {
     Position pacmanPosition = environmentModel_->pacmanPosition();
-    Positions absolutePath{pacmanPosition};
+    Positions absolutePath;
 
     // Let's follow the path and convert it to absolute positions
     for (const auto& direction : path) {

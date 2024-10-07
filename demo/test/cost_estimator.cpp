@@ -42,7 +42,7 @@ TEST_F(CostEstimatorTest, estimateCostDownPath) {
     Path path{D::DOWN, D::DOWN, D::DOWN, D::DOWN, D::DOWN, D::DOWN, D::DOWN};
 
     // Number of cells along the path and within the neighborhood search area
-    int numOfCells = 8 + 9;
+    int numOfCells = 7 + 9;
 
     // Number of dots along the path and within the neighborhood search area
     int numOfDots = 4 + 4;
@@ -60,10 +60,11 @@ TEST_F(CostEstimatorTest, estimateCostUpPath) {
     Path path{D::UP, D::UP, D::UP, D::UP, D::UP, D::UP, D::UP};
 
     // Number of cells along the path and within the neighborhood search area
-    int numOfCells = 8 + 9;
+    int numOfCells = 7 + 9;
 
     // Number of dots along the path and within the neighborhood search area
-    int numOfDots = 4 + 0;
+    // Note: The dot on the current position is not counted - it would have already been eaten in a "real-life" scenario
+    int numOfDots = 3 + 0;
 
     double expectedCost = static_cast<double>(numOfCells) / numOfDots;
     double actualCost = costEstimator_.estimateCost(Command{path}, true);
