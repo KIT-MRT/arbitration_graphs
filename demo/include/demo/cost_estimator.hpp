@@ -32,10 +32,6 @@ struct CostEstimator : public arbitration_graphs::CostEstimator<Command> {
     double estimateCost(const Command& command, bool /*isActive*/) override;
 
 private:
-    Positions toAbsolutePath(const Path& path) const;
-    int dotsAlongPath(const Positions& absolutePath) const;
-    int dotsInRadius(const Position& center) const;
-
     EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 };
