@@ -23,7 +23,7 @@ struct ClusterCell : public BaseCell {
  * empty space.
  */
 struct Cluster {
-    explicit Cluster(const int& clusterId, const std::vector<Position>& points)
+    explicit Cluster(const int& clusterId, const Positions& points)
             : id(clusterId), dots(points), center{findClusterCenter()} {
     }
     bool isInCluster(const Position& target) const {

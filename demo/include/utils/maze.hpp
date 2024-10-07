@@ -101,9 +101,9 @@ struct BaseCell {
  * @brief Adapter class for storing properties per cell of the underlying maze.
  *
  * The MazeAdapter is a helpful little class to put between an algorithm and the actual maze class. It can be used to
- * store properties per cell of the maze grid using the templated CellType class. Cells are lazily initialized.
+ * store properties per cell of the maze grid using the templated CellT class. Cells are lazily initialized.
  */
-template <typename CellType = BaseCell>
+template <typename CellT = BaseCell>
 class MazeAdapter {
 public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
@@ -111,9 +111,9 @@ public:
 
     explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}) {};
 
-    CellType& cell(const Position& position) const {
+    CellT& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
-            cells_[{position.x, position.y}] = CellType(position, maze_->operator[](position));
+            cells_[{position.x, position.y}] = CellT(position, maze_->operator[](position));
         }
 
         return cells_[{position.x, position.y}].value();
@@ -121,7 +121,7 @@ public:
 
 private:
     Maze::ConstPtr maze_;
-    mutable Grid<std::optional<CellType>> cells_;
+    mutable Grid<std::optional<CellT>> cells_;
 };
 
 } // namespace utils

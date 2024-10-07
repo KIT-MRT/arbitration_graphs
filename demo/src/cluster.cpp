@@ -6,6 +6,9 @@
 namespace utils {
 
 Position Cluster::findClusterCenter() const {
+    if (dots.empty()) {
+        throw std::runtime_error("Cannot find center of an empty cluster");
+    }
     int sumX = 0;
     int sumY = 0;
 
@@ -14,20 +17,14 @@ Position Cluster::findClusterCenter() const {
         sumY += point.y;
     }
 
-    int avgX = std::floor(sumX / dots.size());
-    int avgY = std::floor(sumY / dots.size());
+    const int avgX = std::floor(sumX / dots.size());
+    const int avgY = std::floor(sumY / dots.size());
 
-    Position avgPosition{avgX, avgY};
-    Position closestDot = dots.front();
-    double minDistance = std::numeric_limits<double>::max();
-
-    for (const auto& dot : dots) {
-        double distance = avgPosition.distance(dot);
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestDot = dot;
-        }
-    }
+    const Position avgPosition{avgX, avgY};
+    auto distanceComparator = [&avgPosition](const Position& lhs, const Position& rhs) {
+        return avgPosition.distance(lhs) < avgPosition.distance(rhs);
+    };
+    Position closestDot = *std::min_element(dots.begin(), dots.end(), distanceComparator);
 
     return closestDot;
 }
