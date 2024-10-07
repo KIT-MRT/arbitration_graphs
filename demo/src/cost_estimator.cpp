@@ -5,17 +5,19 @@ namespace demo {
 double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
     Positions absolutePath = toAbsolutePath(command.path);
 
-    int dotCounter = dotsAlongPath(absolutePath) + dotsInRadius(absolutePath.back());
+    int nDots = dotsAlongPath(absolutePath) + dotsInRadius(absolutePath.back());
 
-    if (dotCounter == 0) {
+    if (nDots == 0) {
         return std::numeric_limits<double>::max();
     }
 
     int pathLength = static_cast<int>(absolutePath.size());
     int neighborhoodSize = static_cast<int>(std::pow(2 * parameters_.pathEndNeighborhoodRadius + 1, 2));
-    int numOfCells = pathLength + neighborhoodSize;
+    int nCells = pathLength + neighborhoodSize;
 
-    return static_cast<double>(numOfCells) / dotCounter;
+    // We can define a cost as the inverse of a benefit.
+    // Our benefit is a dot density (number of dots / number of examined cells)
+    return static_cast<double>(nCells) / nDots;
 }
 
 Positions CostEstimator::toAbsolutePath(const Path& path) const {
