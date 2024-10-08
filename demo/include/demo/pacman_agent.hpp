@@ -32,7 +32,6 @@ public:
         AvoidGhostBehavior::Parameters avoidGhostBehavior;
         ChaseGhostBehavior::Parameters chaseGhostBehavior;
         MoveRandomlyBehavior::Parameters moveRandomlyBehavior;
-        AvoidGhostBehavior::Parameters avoidGhostBehavior_;
 
         CostEstimator::Parameters costEstimator;
     };
