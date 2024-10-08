@@ -58,7 +58,10 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-find_package(Glog REQUIRED)
+find_package(Glog)
+
+find_package(pybind11 CONFIG)
+
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
@@ -95,6 +98,18 @@ configure_package_config_file(
     "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
     INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+
+################
+## Python API ##
+################
+
+pybind11_add_module(arbitration_graphs_py
+    python_api/arbitration_graphs_py.cpp
+)
+target_link_libraries(arbitration_graphs_py PUBLIC
+    ${PROJECT_NAME}
 )
 
 
@@ -152,4 +167,3 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
 include(cpack_config)
 include(CPack)
 
-message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")
