@@ -1,4 +1,4 @@
-#include "demo/random_walk_behavior.hpp"
+#include "demo/move_randomly_behavior.hpp"
 
 namespace demo {
 

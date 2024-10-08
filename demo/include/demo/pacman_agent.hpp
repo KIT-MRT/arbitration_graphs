@@ -9,7 +9,7 @@
 #include "cost_estimator.hpp"
 #include "eat_closest_dot_behavior.hpp"
 #include "environment_model.hpp"
-#include "random_walk_behavior.hpp"
+#include "move_randomly_behavior.hpp"
 #include "stay_in_place_behavior.hpp"
 #include "types.hpp"
 #include "verifier.hpp"
