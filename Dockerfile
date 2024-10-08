@@ -14,7 +14,10 @@ RUN apt-get update && \
       cmake \
       libgoogle-glog-dev \
       libgtest-dev \
-      libyaml-cpp-dev && \
+      libyaml-cpp-dev \
+      pybind11-dev \
+      python3-dev \
+      python3-pybind11 && \
     apt-get clean
 
 # Install Crow dependencies
