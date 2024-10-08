@@ -2,7 +2,7 @@
 
 namespace utils {
 
-demo::Direction toDemoDirection(const demo::entt::Direction& enttDirection) {
+std::optional<demo::Direction> toDemoDirection(const demo::entt::Direction& enttDirection) {
     const std::map<demo::entt::Direction, demo::Direction> typeMap{
         {demo::entt::Direction::up, demo::Direction::UP},
         {demo::entt::Direction::down, demo::Direction::DOWN},
@@ -10,7 +10,11 @@ demo::Direction toDemoDirection(const demo::entt::Direction& enttDirection) {
         {demo::entt::Direction::right, demo::Direction::RIGHT},
     };
 
-    return typeMap.at(enttDirection);
+    auto mapIterator = typeMap.find(enttDirection);
+    if (mapIterator != typeMap.end()) {
+        return mapIterator->second;
+    }
+    return std::nullopt;
 }
 
 void Ghost::update(const demo::entt::Registry& registry, const demo::entt::Entity& entity) {
@@ -18,7 +22,10 @@ void Ghost::update(const demo::entt::Registry& registry, const demo::entt::Entit
     position = {enttPosition.p.x, enttPosition.p.y};
 
     const auto& enttDirection = registry.get<demo::entt::ActualDirection>(entity);
-    direction = toDemoDirection(enttDirection.d);
+    const std::optional<demo::Direction> demoDirection = toDemoDirection(enttDirection.d);
+    if (demoDirection) {
+        direction = demoDirection.value();
+    }
 
     scaredCountdown = std::nullopt;
     if (registry.has<ChaseMode>(entity)) {
@@ -48,7 +55,10 @@ void Pacman::update(const demo::entt::Registry& registry, const demo::entt::Enti
     position = {enttPosition.p.x, enttPosition.p.y};
 
     const auto& enttDirection = registry.get<demo::entt::ActualDirection>(entity);
-    direction = toDemoDirection(enttDirection.d);
+    const std::optional<demo::Direction> demoDirection = toDemoDirection(enttDirection.d);
+    if (demoDirection) {
+        direction = demoDirection.value();
+    }
 }
 
 Entities::Ghosts Entities::scaredGhosts() const {
