@@ -109,6 +109,9 @@ public:
     bool isInBounds(const Position& position) const {
         return maze_->isInBounds(position);
     }
+    bool isPassableCell(const Position& position) const {
+        return maze_->isPassableCell(position);
+    }
     Position positionConsideringTunnel(const Position& position) const {
         return maze_->positionConsideringTunnel(position);
     }

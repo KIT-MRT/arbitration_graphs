@@ -12,6 +12,7 @@
 #include "random_walk_behavior.hpp"
 #include "stay_in_place_behavior.hpp"
 #include "types.hpp"
+#include "verifier.hpp"
 
 namespace demo {
 
@@ -24,8 +25,8 @@ namespace demo {
  */
 class PacmanAgent {
 public:
-    using CostArbitrator = arbitration_graphs::CostArbitrator<Command>;
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
+    using CostArbitrator = arbitration_graphs::CostArbitrator<Command, Command, Verifier, VerificationResult>;
+    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command, Verifier, VerificationResult>;
 
     struct Parameters {
         AvoidGhostBehavior::Parameters avoidGhostBehavior;
@@ -36,9 +37,8 @@ public:
         CostEstimator::Parameters costEstimator;
     };
 
-    explicit PacmanAgent(const entt::Game& game) {
-        parameters_ = Parameters{};
-        environmentModel_ = std::make_shared<EnvironmentModel>(game);
+    explicit PacmanAgent(const entt::Game& game)
+            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)}, verifier_{environmentModel_} {
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
@@ -47,19 +47,21 @@ public:
         randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
-        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots");
+        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
         costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
         eatDotsArbitrator_->addOption(
             changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
         eatDotsArbitrator_->addOption(
             eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
 
-        rootArbitrator_ = std::make_shared<PriorityArbitrator>();
+        rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman", verifier_);
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(stayInPlaceBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(stayInPlaceBehavior_,
+                                   PriorityArbitrator::Option::Flags::INTERRUPTABLE |
+                                       PriorityArbitrator::Option::FALLBACK);
     }
 
     Command getCommand(const Time& time) {
@@ -94,6 +96,7 @@ private:
     CostArbitrator::Ptr eatDotsArbitrator_;
 
     CostEstimator::Ptr costEstimator_;
+    Verifier verifier_;
 };
 
 } // namespace demo
