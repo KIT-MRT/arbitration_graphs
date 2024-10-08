@@ -2,7 +2,7 @@
 
 namespace demo {
 
-Command RandomWalkBehavior::getCommand(const Time& time) {
+Command MoveRandomlyBehavior::getCommand(const Time& time) {
     util_caching::policies::ApproximateTime<Time, std::chrono::seconds> approximateTimePolicy{
         parameters_.selectionFixedFor.count()};
     if (directionCache_.cached(time, approximateTimePolicy)) {
@@ -15,7 +15,7 @@ Command RandomWalkBehavior::getCommand(const Time& time) {
     return Command{randomDirection};
 }
 
-Direction RandomWalkBehavior::selectRandomDirection() {
+Direction MoveRandomlyBehavior::selectRandomDirection() {
     int randomIndex = discreteRandomDistribution_(randomGenerator_);
     Move randomMove = Move::possibleMoves().at(randomIndex);
 

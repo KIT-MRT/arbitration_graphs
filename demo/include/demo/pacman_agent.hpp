@@ -31,7 +31,7 @@ public:
     struct Parameters {
         AvoidGhostBehavior::Parameters avoidGhostBehavior;
         ChaseGhostBehavior::Parameters chaseGhostBehavior;
-        RandomWalkBehavior::Parameters randomWalkBehavior;
+        MoveRandomlyBehavior::Parameters moveRandomlyBehavior;
         AvoidGhostBehavior::Parameters avoidGhostBehavior_;
 
         CostEstimator::Parameters costEstimator;
@@ -44,7 +44,7 @@ public:
         changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
         chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
         eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
-        randomWalkBehavior_ = std::make_shared<RandomWalkBehavior>(parameters_.randomWalkBehavior);
+        moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
 
         eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
@@ -58,7 +58,7 @@ public:
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(randomWalkBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(stayInPlaceBehavior_,
                                    PriorityArbitrator::Option::Flags::INTERRUPTABLE |
                                        PriorityArbitrator::Option::FALLBACK);
@@ -89,7 +89,7 @@ private:
     ChangeDotClusterBehavior::Ptr changeDotClusterBehavior_;
     ChaseGhostBehavior::Ptr chaseGhostBehavior_;
     EatClosestDotBehavior::Ptr eatClosestDotBehavior_;
-    RandomWalkBehavior::Ptr randomWalkBehavior_;
+    MoveRandomlyBehavior::Ptr moveRandomlyBehavior_;
     StayInPlaceBehavior::Ptr stayInPlaceBehavior_;
 
     PriorityArbitrator::Ptr rootArbitrator_;

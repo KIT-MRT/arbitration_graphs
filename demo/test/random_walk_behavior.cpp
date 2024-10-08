@@ -4,33 +4,33 @@
 
 namespace demo {
 
-TEST(RandomWalkBehaviorTest, checkInvocationConditionTrue) {
-    RandomWalkBehavior randomWalkBehavior(RandomWalkBehavior::Parameters{});
-    ASSERT_TRUE(randomWalkBehavior.checkInvocationCondition(Clock::now()));
+TEST(MoveRandomlyTest, checkInvocationConditionTrue) {
+    MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
+    ASSERT_TRUE(moveRandomlyBehavior.checkInvocationCondition(Clock::now()));
 }
 
-TEST(RandomWalkBehaviorTest, checkCommitmentConditionFalse) {
-    RandomWalkBehavior randomWalkBehavior(RandomWalkBehavior::Parameters{});
-    ASSERT_FALSE(randomWalkBehavior.checkCommitmentCondition(Clock::now()));
+TEST(MoveRandomlyTest, checkCommitmentConditionFalse) {
+    MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
+    ASSERT_FALSE(moveRandomlyBehavior.checkCommitmentCondition(Clock::now()));
 }
 
-TEST(RandomWalkBehaviorTest, getCachedCommand) {
+TEST(MoveRandomlyTest, getCachedCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
-    RandomWalkBehavior randomWalkBehavior(RandomWalkBehavior::Parameters{selectionValidFor});
+    MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
-    Command firstCommand = randomWalkBehavior.getCommand(time);
+    Command firstCommand = moveRandomlyBehavior.getCommand(time);
 
     time += 0.5 * selectionValidFor;
-    Command secondCommand = randomWalkBehavior.getCommand(time);
+    Command secondCommand = moveRandomlyBehavior.getCommand(time);
 
     // We return the first selection until after selectionValidFor so the commands should be identical
     ASSERT_EQ(firstCommand.nextDirection(), secondCommand.nextDirection());
 }
 
-TEST(RandomWalkBehaviorTest, getRandomCommand) {
+TEST(MoveRandomlyTest, getRandomCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
-    RandomWalkBehavior randomWalkBehavior(RandomWalkBehavior::Parameters{selectionValidFor});
+    MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
 
@@ -39,7 +39,7 @@ TEST(RandomWalkBehaviorTest, getRandomCommand) {
         {Direction::UP, 0}, {Direction::DOWN, 0}, {Direction::LEFT, 0}, {Direction::RIGHT, 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        Direction direction = randomWalkBehavior.getCommand(time).nextDirection();
+        Direction direction = moveRandomlyBehavior.getCommand(time).nextDirection();
         directionCounter[direction]++;
 
         // We need to progress time to force a re-selection of a new direction
