@@ -19,6 +19,9 @@ find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBWEBSOCKETS REQUIRED libwebsockets)
+
 ###########
 ## Build ##
 ###########
@@ -50,10 +53,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 add_executable(${PROJECT_NAME}_exe
   src/main.cpp
   src/pacman_wrapper.cpp
+  src/websocket_server.cpp
 )
 target_include_directories(${PROJECT_NAME}_exe PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
+    ${LIBWEBSOCKETS_INCLUDE_DIRS}
 )
 target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     ${PROJECT_NAME}
@@ -61,6 +66,7 @@ target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     util_caching
     ${SDL2_LIBRARY}
     ${YAML_CPP_LIBRARIES}
+    ${LIBWEBSOCKETS_LIBRARIES}
 )
 
 #############

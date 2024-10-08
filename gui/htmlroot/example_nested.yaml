@@ -1,0 +1,57 @@
+arbitration:
+  type: PriorityArbitrator
+  name: AutomatedDriving
+  invocationCondition: true
+  commitmentCondition: true
+  options:
+    - type: Option
+      behavior:
+        type: CostArbitrator
+        name: UrbanDriving
+        invocationCondition: true
+        commitmentCondition: true
+        options:
+          - type: Option
+            behavior:
+              type: Behavior
+              name: FollowLane
+              invocationCondition: true
+              commitmentCondition: false
+            verificationResult: failed
+            cost: 4
+          - type: Option
+            behavior:
+              type: Behavior
+              name: ChangeLaneLeft
+              invocationCondition: true
+              commitmentCondition: true
+            verificationResult: passed
+            cost: 5
+          - type: Option
+            behavior:
+              type: Behavior
+              name: ChangeLaneRight
+              invocationCondition: false
+              commitmentCondition: false
+          - type: Option
+            behavior:
+              type: Behavior
+              name: ContinueLastManeuver
+              invocationCondition: true
+              commitmentCondition: false
+            verificationResult: passed
+            cost: 6
+        activeBehavior: 1
+      verificationResult: passed
+      flags:
+        - INTERRUPTABLE
+    - type: Option
+      behavior:
+        type: Behavior
+        name: SafeStopBehavior
+        invocationCondition: true
+        commitmentCondition: false
+      flags:
+        - INTERRUPTABLE
+        - FALLBACK
+  activeBehavior: 0
