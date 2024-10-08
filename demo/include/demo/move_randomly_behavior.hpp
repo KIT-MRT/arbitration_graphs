@@ -8,22 +8,22 @@
 namespace demo {
 
 /**
- * @brief The RandomWalkBehavior moves Pacman in a random direction.
+ * @brief The MoveRandomly moves Pacman in a random direction.
  *
  * This behavior will not consider ghosts or walls. Once a direction is selected, it will be returned for a defined
  * amount of time to avoid changing the direction too frequently.
  *
  */
-class RandomWalkBehavior : public arbitration_graphs::Behavior<Command> {
+class MoveRandomlyBehavior : public arbitration_graphs::Behavior<Command> {
 public:
-    using Ptr = std::shared_ptr<RandomWalkBehavior>;
-    using ConstPtr = std::shared_ptr<const RandomWalkBehavior>;
+    using Ptr = std::shared_ptr<MoveRandomlyBehavior>;
+    using ConstPtr = std::shared_ptr<const MoveRandomlyBehavior>;
 
     struct Parameters {
         Duration selectionFixedFor{std::chrono::seconds(1)};
     };
 
-    explicit RandomWalkBehavior(const Parameters& parameters, const std::string& name = "RandomWalkBehavior")
+    explicit MoveRandomlyBehavior(const Parameters& parameters, const std::string& name = "MoveRandomly")
             : Behavior{name}, parameters_{parameters} {
     }
 

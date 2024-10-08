@@ -32,7 +32,7 @@ add_library(${PROJECT_NAME} STATIC
   src/cluster.cpp
   src/entities.cpp
   src/environment_model.cpp
-  src/random_walk_behavior.cpp
+  src/move_randomly_behavior.cpp
   src/utils.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
