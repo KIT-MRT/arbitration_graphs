@@ -17,7 +17,7 @@ public:
         SDL_Quit();
     }
 
-    void progressGame(const demo::Command& command);
+    void progressGame(const demo::Command& command, const demo::Position& pacmanPosition);
 
     bool quit() const {
         return quit_;
@@ -28,6 +28,7 @@ public:
 
 private:
     void handleUserInput();
+    void renderPath(const demo::Path& path, const demo::Position& startPosition);
 
     int scaleFactor_;
     SDL::Window window_;

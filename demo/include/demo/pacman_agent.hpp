@@ -71,6 +71,10 @@ public:
         environmentModel_->update(game);
     }
 
+    Position pacmanPosition() const {
+        return environmentModel_->pacmanPosition();
+    }
+
     std::ostream& to_stream(std::ostream& output, const Time& time) const {
         return rootArbitrator_->to_stream(output, time);
     }
