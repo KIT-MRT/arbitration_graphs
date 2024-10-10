@@ -16,9 +16,9 @@ from dummy_types import DummyBehaviorPy, DummyCommandPy, PrintStrings
 class DummyBehaviorTest(unittest.TestCase):
 
     def setUp(self):
-        self.test_behavior_true = ag.DummyBehavior(True, True)
+        self.test_behavior_true = ag.testing_types.DummyBehavior(True, True)
 
-        self.expected_command = ag.DummyCommand("dummy_behavior")
+        self.expected_command = ag.testing_types.DummyCommand("dummy_behavior")
 
         self.time = time.time()
 
@@ -40,7 +40,9 @@ class DummyBehaviorTest(unittest.TestCase):
 
     def test_printout(self):
         expected_printout = (
-            ag.invocation_true_string + ag.commitment_true_string + "dummy_behavior"
+            ag.testing_types.invocation_true_string
+            + ag.testing_types.commitment_true_string
+            + "dummy_behavior"
         )
         actual_printout = self.test_behavior_true.to_str(self.time)
         print(actual_printout)

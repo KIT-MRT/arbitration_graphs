@@ -42,8 +42,10 @@ void bindDummyBehavior(py::module& module) {
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindBehavior<DummyCommand>(mainModule);
-    bindConstants(mainModule);
-    bindDummyCommand(mainModule);
-    bindDummyBehavior(mainModule);
+
+    py::module testingModule = mainModule.def_submodule("testing_types");
+    bindConstants(testingModule);
+    bindDummyCommand(testingModule);
+    bindDummyBehavior(testingModule);
 }
 } // namespace arbitration_graphs_tests
