@@ -4,6 +4,7 @@
 #include "behavior.hpp"
 #include "python_api/arbitrator.hpp"
 #include "python_api/behavior.hpp"
+#include "python_api/priority_arbitrator.hpp"
 #include "python_api/verification.hpp"
 #include "../test/dummy_types.hpp"
 
@@ -46,6 +47,7 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindPlaceboVerifier<DummyCommand>(mainModule);
     python_api::bindBehavior<DummyCommand>(mainModule);
     python_api::bindArbitrator<DummyCommand>(mainModule);
+    python_api::bindPriorityArbitrator<DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
