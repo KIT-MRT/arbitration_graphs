@@ -9,100 +9,86 @@ namespace arbitration_graphs::python_api {
 
 namespace py = pybind11;
 
-std::string yamlNodeToString(const YAML::Node &node) {
-  YAML::Emitter out;
-  out << node;
-  return out.c_str();
-}
-
 template <typename CommandT>
-class PyBehavior : public arbitration_graphs::Behavior<CommandT> {
+class PyBehavior : public Behavior<CommandT> {
 public:
-  PyBehavior(const std::string &name)
-      : arbitration_graphs::Behavior<CommandT>(name) {}
+    using BaseT = Behavior<CommandT>;
 
-  CommandT getCommand(const arbitration_graphs::Time &time) override {
-    PYBIND11_OVERRIDE_PURE_NAME(
-        CommandT,                               // Return type
-        arbitration_graphs::Behavior<CommandT>, // Parent class
-        "get_command",                          // Method name in Python
-        getCommand,                             // Method name in C++
-        time                                    // Arguments
-    );
-  }
+    explicit PyBehavior(const std::string& name) : BaseT(name) {
+    }
 
-  bool checkInvocationCondition(
-      const arbitration_graphs::Time &time) const override {
-    PYBIND11_OVERRIDE_NAME(
-        bool,                                   // Return type
-        arbitration_graphs::Behavior<CommandT>, // Parent class
-        "check_invocation_condition",           // Method name in Python
-        checkInvocationCondition,               // Method name in C++
-        time                                    // Arguments
-    );
-  }
+    // NOLINTBEGIN(readability-function-size)
+    CommandT getCommand(const Time& time) override {
+        PYBIND11_OVERRIDE_PURE_NAME(CommandT, BaseT, "get_command", getCommand, time);
+    }
 
-  bool checkCommitmentCondition(
-      const arbitration_graphs::Time &time) const override {
-    PYBIND11_OVERRIDE_NAME(bool, arbitration_graphs::Behavior<CommandT>,
-                           "check_commitment_condition",
-                           checkCommitmentCondition, time);
-  }
+    bool checkInvocationCondition(const Time& time) const override {
+        PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_invocation_condition", checkInvocationCondition, time);
+    }
 
-  void gainControl(const arbitration_graphs::Time &time) override {
-    PYBIND11_OVERRIDE_NAME(void, arbitration_graphs::Behavior<CommandT>,
-                           "gain_control", gainControl, time);
-  }
+    bool checkCommitmentCondition(const Time& time) const override {
+        PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_commitment_condition", checkCommitmentCondition, time);
+    }
 
-  void loseControl(const arbitration_graphs::Time &time) override {
-    PYBIND11_OVERRIDE_NAME(void, arbitration_graphs::Behavior<CommandT>,
-                           "lose_control", loseControl, time);
-  }
+    void gainControl(const Time& time) override {
+        PYBIND11_OVERRIDE_NAME(void, BaseT, "gain_control", gainControl, time);
+    }
 
-  std::string to_str(const arbitration_graphs::Time &time,
-                     const std::string &prefix = "",
-                     const std::string &suffix = "") const override {
-    PYBIND11_OVERRIDE(std::string,                            // Return type
-                      arbitration_graphs::Behavior<CommandT>, // Parent class
-                      to_str,              // Method name in C++
-                      time, prefix, suffix // Arguments
-    );
-  }
+    void loseControl(const Time& time) override {
+        PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time);
+    }
 
-  YAML::Node toYaml(const arbitration_graphs::Time &time) const override {
-    PYBIND11_OVERRIDE(YAML::Node, arbitration_graphs::Behavior<CommandT>,
-                      toYaml, time);
-  }
+    std::string to_str(const Time& time,
+                       const std::string& prefix = "",
+                       const std::string& suffix = "") const override {
+        PYBIND11_OVERRIDE(std::string, BaseT, to_str, time, prefix, suffix);
+    }
 
-  std::string toYamlAsString(const arbitration_graphs::Time &time) const {
-    return yamlNodeToString(toYaml(time));
-  }
+    std::ostream& to_stream(std::ostream& output,
+                            const Time& time,
+                            const std::string& prefix = "",
+                            const std::string& suffix = "") const override {
+        PYBIND11_OVERRIDE(std::ostream&, BaseT, to_stream, output, time, prefix, suffix);
+    }
+
+    YAML::Node toYaml(const Time& time) const override {
+        PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
+    }
+    // NOLINTEND(readability-function-size)
+
+    std::string toYamlAsString(const Time& time) const {
+        YAML::Emitter out;
+        out << toYaml(time);
+        return out.c_str();
+    }
 };
 
-template <typename CommandT> void bindBehavior(py::module &m) {
-  using BehaviorType = arbitration_graphs::Behavior<CommandT>;
-  py::class_<BehaviorType, PyBehavior<CommandT>, std::shared_ptr<BehaviorType>>(
-      m, "Behavior")
-      .def(py::init<const std::string &>(), py::arg("name") = "Behavior")
-      .def("get_command", &BehaviorType::getCommand, py::arg("time"))
-      .def("check_invocation_condition",
-           &BehaviorType::checkInvocationCondition, py::arg("time"))
-      .def("check_commitment_condition",
-           &BehaviorType::checkCommitmentCondition, py::arg("time"))
-      .def("gain_control", &BehaviorType::gainControl, py::arg("time"))
-      .def("lose_control", &BehaviorType::loseControl, py::arg("time"))
-      .def("to_str", &BehaviorType::to_str, py::arg("time"),
-           py::arg("prefix") = "", py::arg("suffix") = "")
-      .def(
-          "to_yaml_as_str",
-          [](const BehaviorType &self, const arbitration_graphs::Time &time) {
-            return static_cast<const PyBehavior<CommandT> &>(self)
-                .toYamlAsString(time);
-          },
-          py::arg("time"))
-      .def("__repr__", [](const BehaviorType &self) {
-        return "<Behavior '" + self.name_ + "'>";
-      });
+template <typename CommandT>
+void bindBehavior(py::module& module) {
+    using BehaviorT = Behavior<CommandT>;
+    using PyBehaviorT = PyBehavior<CommandT>;
+
+    py::class_<BehaviorT, PyBehaviorT, std::shared_ptr<BehaviorT>>(module, "Behavior")
+        .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
+        .def("get_command", &BehaviorT::getCommand, py::arg("time"))
+        .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
+        .def("check_commitment_condition", &BehaviorT::checkCommitmentCondition, py::arg("time"))
+        .def("gain_control", &BehaviorT::gainControl, py::arg("time"))
+        .def("lose_control", &BehaviorT::loseControl, py::arg("time"))
+        .def("to_str", &BehaviorT::to_str, py::arg("time"), py::arg("prefix") = "", py::arg("suffix") = "")
+        .def("to_stream",
+             &BehaviorT::to_stream,
+             py::arg("ostream"),
+             py::arg("time"),
+             py::arg("prefix") = "",
+             py::arg("suffix") = "")
+        .def(
+            "to_yaml_as_str",
+            [](const BehaviorT& self, const Time& time) {
+                return static_cast<const PyBehaviorT&>(self).toYamlAsString(time);
+            },
+            py::arg("time"))
+        .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });
 }
 
 } // namespace arbitration_graphs::python_api
