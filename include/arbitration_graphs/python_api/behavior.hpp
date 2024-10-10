@@ -1,11 +1,20 @@
 #pragma once
 
 #include <pybind11/pybind11.h>
+#include <yaml-cpp/yaml.h>
 
 #include "../behavior.hpp"
+
 namespace arbitration_graphs::python_api {
 
 namespace py = pybind11;
+
+std::string yamlNodeToString(const YAML::Node &node) {
+  YAML::Emitter out;
+  out << node;
+  return out.c_str();
+}
+
 template <typename CommandT>
 class PyBehavior : public arbitration_graphs::Behavior<CommandT> {
 public:
@@ -59,6 +68,17 @@ public:
                       time, prefix, suffix // Arguments
     );
   }
+
+  YAML::Node toYaml(const arbitration_graphs::Time &time) const override {
+    PYBIND11_OVERRIDE(YAML::Node, arbitration_graphs::Behavior<CommandT>,
+                      toYaml, time);
+  }
+
+  std::string toYamlAsString(const arbitration_graphs::Time &time) const {
+    return yamlNodeToString(toYaml(time));
+  }
+};
+
 template <typename CommandT> void bindBehavior(py::module &m) {
   using BehaviorType = arbitration_graphs::Behavior<CommandT>;
   py::class_<BehaviorType, PyBehavior<CommandT>, std::shared_ptr<BehaviorType>>(
@@ -73,6 +93,13 @@ template <typename CommandT> void bindBehavior(py::module &m) {
       .def("lose_control", &BehaviorType::loseControl, py::arg("time"))
       .def("to_str", &BehaviorType::to_str, py::arg("time"),
            py::arg("prefix") = "", py::arg("suffix") = "")
+      .def(
+          "to_yaml_as_str",
+          [](const BehaviorType &self, const arbitration_graphs::Time &time) {
+            return static_cast<const PyBehavior<CommandT> &>(self)
+                .toYamlAsString(time);
+          },
+          py::arg("time"))
       .def("__repr__", [](const BehaviorType &self) {
         return "<Behavior '" + self.name_ + "'>";
       });

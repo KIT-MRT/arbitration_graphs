@@ -7,6 +7,7 @@ sys.path.append(build_directory)
 import time
 import unittest
 
+import yaml
 import arbitration_graphs_py as ag
 class DummyBehaviorTest(unittest.TestCase):
 

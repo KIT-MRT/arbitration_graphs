@@ -17,7 +17,8 @@ RUN apt-get update && \
       libyaml-cpp-dev \
       pybind11-dev \
       python3-dev \
-      python3-pybind11 && \
+      python3-pybind11 \
+      python3-yaml && \
     apt-get clean
 
 # Install Crow dependencies
