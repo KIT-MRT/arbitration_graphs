@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 
 #include "behavior.hpp"
+#include "python_api/arbitrator.hpp"
 #include "python_api/behavior.hpp"
 #include "python_api/verification.hpp"
 #include "../test/dummy_types.hpp"
@@ -44,6 +45,7 @@ void bindDummyBehavior(py::module& module) {
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindPlaceboVerifier<DummyCommand>(mainModule);
     python_api::bindBehavior<DummyCommand>(mainModule);
+    python_api::bindArbitrator<DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
