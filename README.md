@@ -1,4 +1,4 @@
-# ARBITRATION GRAPHS
+# Arbitration Graphs
 
 [![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
 
@@ -9,10 +9,10 @@ Arbitration graphs combine simple atomic behavior components into more complex b
 We are currently working on a demonstration of this library using Pac-Man as an example application.
 
 <p align="center">
-  <img src="docs/pacman_scenario.png" width="400" />
+  <img src="docs/assets/img/pacman_scenario.png" width="400" />
 </p>
 <p align="center">
-  <img src="docs/pacman_arbitrator_safe.svg" width="500" /> 
+  <img src="docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
 </p>
 
 Feel free to take a look at the work in progress in the [pacman-demo branch](https://github.com/KIT-MRT/arbitration_graphs/tree/pacman-demo).
