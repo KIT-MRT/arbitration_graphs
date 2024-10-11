@@ -11,6 +11,7 @@ import yaml
 
 import arbitration_graphs_py as ag
 from dummy_types import DummyBehaviorPy, DummyCommandPy
+from cost_estimator import CostEstimatorFromCostMapPy
 
 
 class CostArbitratorTest(unittest.TestCase):
@@ -278,6 +279,69 @@ class CostArbitratorTest(unittest.TestCase):
         self.assertEqual("high_cost", self.test_cost_arbitrator.get_command(self.time))
 
     def test_basic_functionality_with_interruptable_options(self):
+        # If there are no options yet, the invocationCondition should be false
+        self.assertFalse(
+            self.test_cost_arbitrator.check_invocation_condition(self.time)
+        )
+        self.assertFalse(
+            self.test_cost_arbitrator.check_commitment_condition(self.time)
+        )
+
+        # InvocationCondition is true if any option has true invocationCondition
+        self.test_cost_arbitrator.add_option(
+            self.test_behavior_low_cost,
+            ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
+            self.cost_estimator,
+        )
+        self.test_cost_arbitrator.add_option(
+            self.test_behavior_low_cost,
+            ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
+            self.cost_estimator,
+        )
+        self.assertFalse(
+            self.test_cost_arbitrator.check_invocation_condition(self.time)
+        )
+        self.assertFalse(
+            self.test_cost_arbitrator.check_commitment_condition(self.time)
+        )
+
+        self.test_cost_arbitrator.add_option(
+            self.test_behavior_high_cost,
+            ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
+            self.cost_estimator,
+        )
+        self.test_cost_arbitrator.add_option(
+            self.test_behavior_mid_cost,
+            ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
+            self.cost_estimator,
+        )
+
+        self.assertTrue(self.test_cost_arbitrator.check_invocation_condition(self.time))
+        self.assertFalse(
+            self.test_cost_arbitrator.check_commitment_condition(self.time)
+        )
+
+        self.test_cost_arbitrator.gain_control(self.time)
+        self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
+        self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
+
+        self.test_behavior_mid_cost.invocation_condition = False
+        self.assertTrue(self.test_cost_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(self.test_cost_arbitrator.check_commitment_condition(self.time))
+        self.assertEqual("high_cost", self.test_cost_arbitrator.get_command(self.time))
+        self.assertEqual("high_cost", self.test_cost_arbitrator.get_command(self.time))
+
+        # high_cost behavior is interruptable -> mid_cost should become active again
+        self.test_behavior_mid_cost.invocation_condition = True
+        self.assertTrue(self.test_cost_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(self.test_cost_arbitrator.check_commitment_condition(self.time))
+        self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
+        self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
+
+    def test_basic_functionality_with_cost_estimator_py(self):
+        # Replace the C++ implemented cost estimator with the one implemented in python
+        self.cost_estimator = CostEstimatorFromCostMapPy(self.cost_map)
+
         # If there are no options yet, the invocationCondition should be false
         self.assertFalse(
             self.test_cost_arbitrator.check_invocation_condition(self.time)
