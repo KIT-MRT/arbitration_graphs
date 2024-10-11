@@ -3,13 +3,10 @@
 #include <pybind11/stl.h>
 
 #include "behavior.hpp"
+#include "python_bindings.hpp"
+
 #include "cost_estimator.hpp"
 #include "dummy_types.hpp"
-#include "python_api/arbitrator.hpp"
-#include "python_api/behavior.hpp"
-#include "python_api/cost_arbitrator.hpp"
-#include "python_api/priority_arbitrator.hpp"
-#include "python_api/verification.hpp"
 
 namespace arbitration_graphs_tests {
 
@@ -68,11 +65,7 @@ void bindCostEstimatorFromCostMap(py::module& module) {
 } // namespace
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
-    python_api::bindPlaceboVerifier<DummyCommand>(mainModule);
-    python_api::bindBehavior<DummyCommand>(mainModule);
-    python_api::bindArbitrator<DummyCommand>(mainModule);
-    python_api::bindPriorityArbitrator<DummyCommand>(mainModule);
-    python_api::bindCostArbitrator<DummyCommand>(mainModule);
+    python_api::bindArbitrationGraphs<DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
@@ -82,12 +75,7 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
 }
 
 PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
-    python_api::bindPlaceboVerifier<DummyCommand>(mainModule);
-    python_api::bindBehavior<DummyCommand>(mainModule);
-    python_api::bindBehavior<DummyCommandInt>(mainModule, "Int");
-    python_api::bindArbitrator<DummyCommandInt, DummyCommand>(mainModule);
-    python_api::bindPriorityArbitrator<DummyCommandInt, DummyCommand>(mainModule);
-    python_api::bindCostArbitrator<DummyCommandInt, DummyCommand>(mainModule);
+    python_api::bindArbitrationGraphs<DummyCommandInt, DummyCommand>(mainModule, "Int");
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
