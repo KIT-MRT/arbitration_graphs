@@ -206,7 +206,25 @@ Run all unit tests with CTest:
 ```bash
 cmake --build . --target test
 ```
+</details>
 
+<details>
+<summary>Python unit tests</summary>
+
+Make sure [pybind11](https://pybind11.readthedocs.io/en/stable/) is installed and define `BUILD_TESTS=true`.
+Then compile the project as usual.
+```bash
+mkdir -p arbitration_graphs/build
+cd arbitration_graphs/build
+cmake -DBUILD_TESTS=true ..
+cmake --build .
+```
+
+Run all unit tests:
+
+```bash
+find . -type f -name '*.py' -exec python3 {} \;
+```
 </details>
 
 

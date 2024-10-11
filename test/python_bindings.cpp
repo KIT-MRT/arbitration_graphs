@@ -3,13 +3,13 @@
 #include <pybind11/stl.h>
 
 #include "behavior.hpp"
+#include "cost_estimator.hpp"
+#include "dummy_types.hpp"
 #include "python_api/arbitrator.hpp"
 #include "python_api/behavior.hpp"
 #include "python_api/cost_arbitrator.hpp"
 #include "python_api/priority_arbitrator.hpp"
 #include "python_api/verification.hpp"
-#include "../test/cost_estimator.hpp"
-#include "../test/dummy_types.hpp"
 
 namespace arbitration_graphs_tests {
 

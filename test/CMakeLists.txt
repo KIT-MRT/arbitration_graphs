@@ -43,6 +43,11 @@ endif()
 ###################
 
 find_package(GTest)
+find_package(pybind11 CONFIG)
+
+if(NOT GTEST_FOUND AND NOT pybind11_FOUND)
+  message(WARNING "Neither GTest nor pybind11 found. Cannot compile tests!")
+endif()
 
 # Find installed lib and its dependencies, if this is build as top-level project
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -54,13 +59,14 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 
-###########
-## Build ##
-###########
+####################
+## C++ Unit Tests ##
+####################
 
 if(GTEST_FOUND)
   file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "*.cpp" "*.cc")
   list(FILTER _tests EXCLUDE REGEX "${CMAKE_CURRENT_BINARY_DIR}")
+  list(REMOVE_ITEM _tests "${CMAKE_CURRENT_SOURCE_DIR}/test/python_bindings.cpp")
 
   foreach(_test ${_tests})
     get_filename_component(_test_name ${_test} NAME_WE)
@@ -84,6 +90,39 @@ if(GTEST_FOUND)
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
   endforeach()
-else()
-  message(WARNING "GTest not found. Cannot compile tests!")
+endif()
+
+#######################
+## Python Unit Tests ##
+#######################
+  
+if(pybind11_FOUND)
+  message(STATUS "pybind11 found, building bindings for Python tests")
+
+  # Python bindings modules
+  pybind11_add_module(arbitration_graphs_py
+    test/python_bindings.cpp
+  )
+  target_link_libraries(arbitration_graphs_py PUBLIC
+    ${PROJECT_NAME}
+  )
+  pybind11_add_module(arbitration_graphs_py_with_subcommand
+    test/python_bindings.cpp
+  )
+  target_link_libraries(arbitration_graphs_py_with_subcommand PUBLIC
+    ${PROJECT_NAME}
+  )
+
+  file(GLOB_RECURSE PYTHON_TESTS "test/*.py")
+
+  # Copy Python test files to build directory
+  foreach(_py_test ${PYTHON_TESTS})
+    get_filename_component(_py_test_name ${_py_test} NAME)
+    set(_py_test_target "${CMAKE_BINARY_DIR}/${_py_test_name}")
+
+    message(STATUS "Copying Python file: ${_py_test} to ${_py_test_target}")
+
+    # Copy the python test file to the build directory
+    configure_file(${_py_test} ${_py_test_target} COPYONLY)
+  endforeach()
 endif()

@@ -1,9 +1,3 @@
-import sys
-import os
-
-build_directory = "/home/blinky/arbitration_graphs/build/"
-sys.path.append(build_directory)
-
 import time
 import unittest
 
