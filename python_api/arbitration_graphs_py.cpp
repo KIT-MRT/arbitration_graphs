@@ -87,10 +87,12 @@ PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
     python_api::bindBehavior<DummyCommandInt>(mainModule, "Int");
     python_api::bindArbitrator<DummyCommandInt, DummyCommand>(mainModule);
     python_api::bindPriorityArbitrator<DummyCommandInt, DummyCommand>(mainModule);
+    python_api::bindCostArbitrator<DummyCommandInt, DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
     bindDummyCommand(testingModule);
     bindDummyBehavior(testingModule);
+    bindCostEstimatorFromCostMap<DummyCommand>(testingModule);
 }
 } // namespace arbitration_graphs_tests
