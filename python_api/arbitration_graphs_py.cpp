@@ -1,11 +1,14 @@
 #include <pybind11/chrono.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include "behavior.hpp"
 #include "python_api/arbitrator.hpp"
 #include "python_api/behavior.hpp"
+#include "python_api/cost_arbitrator.hpp"
 #include "python_api/priority_arbitrator.hpp"
 #include "python_api/verification.hpp"
+#include "../test/cost_estimator.hpp"
 #include "../test/dummy_types.hpp"
 
 namespace arbitration_graphs_tests {
@@ -52,6 +55,16 @@ void bindDummyBehavior(py::module& module) {
         .def("lose_control", &DummyBehavior::loseControl, py::arg("time"));
 }
 
+template <typename CommandT>
+void bindCostEstimatorFromCostMap(py::module& module) {
+    py::class_<CostEstimatorFromCostMap, CostEstimator<CommandT>, std::shared_ptr<CostEstimatorFromCostMap>>(
+        module, "CostEstimatorFromCostMap")
+        .def(py::init<const CostEstimatorFromCostMap::CostMap&, double>(),
+             py::arg("costMap"),
+             py::arg("activationCosts") = 0)
+        .def("estimate_cost", &CostEstimatorFromCostMap::estimateCost, py::arg("command"), py::arg("isActive"));
+}
+
 } // namespace
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
@@ -59,11 +72,13 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindBehavior<DummyCommand>(mainModule);
     python_api::bindArbitrator<DummyCommand>(mainModule);
     python_api::bindPriorityArbitrator<DummyCommand>(mainModule);
+    python_api::bindCostArbitrator<DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);
     bindDummyCommand(testingModule);
     bindDummyBehavior(testingModule);
+    bindCostEstimatorFromCostMap<DummyCommand>(testingModule);
 }
 
 PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
