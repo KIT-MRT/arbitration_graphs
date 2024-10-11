@@ -1,4 +1,4 @@
-# ARBITRATION GRAPHS
+# Arbitration Graphs
 
 [![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
 
