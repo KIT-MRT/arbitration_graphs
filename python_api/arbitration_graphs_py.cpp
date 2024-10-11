@@ -25,6 +25,17 @@ void bindConstants(py::module& module) {
 
 void bindDummyCommand(py::module& module) {
     module.def("DummyCommand", [](const std::string& command) { return std::string(command); });
+
+    py::class_<DummyCommandInt>(module, "DummyCommandInt")
+        .def(py::init<const int>())
+        .def(py::init<const DummyCommand&>())
+        .def("__eq__", [](const DummyCommandInt& self, int otherCommand) { return self == otherCommand; })
+        .def_readwrite("command_", &DummyCommandInt::command_);
+
+    module.def(
+        "__eq__",
+        [](int commandInt, const DummyCommandInt& commandObject) { return commandInt == commandObject; },
+        py::is_operator());
 }
 
 void bindDummyBehavior(py::module& module) {
@@ -48,6 +59,19 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindBehavior<DummyCommand>(mainModule);
     python_api::bindArbitrator<DummyCommand>(mainModule);
     python_api::bindPriorityArbitrator<DummyCommand>(mainModule);
+
+    py::module testingModule = mainModule.def_submodule("testing_types");
+    bindConstants(testingModule);
+    bindDummyCommand(testingModule);
+    bindDummyBehavior(testingModule);
+}
+
+PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
+    python_api::bindPlaceboVerifier<DummyCommand>(mainModule);
+    python_api::bindBehavior<DummyCommand>(mainModule);
+    python_api::bindBehavior<DummyCommandInt>(mainModule, "Int");
+    python_api::bindArbitrator<DummyCommandInt, DummyCommand>(mainModule);
+    python_api::bindPriorityArbitrator<DummyCommandInt, DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindConstants(testingModule);

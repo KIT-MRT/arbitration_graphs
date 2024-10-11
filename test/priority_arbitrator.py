@@ -293,31 +293,6 @@ class TestPriorityArbitrator(unittest.TestCase):
             "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
-    # def test_sub_command_type_differs_from_command_type(self):
-    #     # Different sub-command type case
-    #     test_priority_arbitrator = PriorityArbitrator("test_arbitrator_with_subcommand")
-    #     test_behavior_high_priority = DummyBehavior(False, False, "___HighPriority___")
-    #     test_behavior_mid_priority = DummyBehavior(True, False, "__MidPriority__")
-    #     test_behavior_low_priority = DummyBehavior(True, True, "_LowPriority_")
-    #
-    #     test_priority_arbitrator.add_option(
-    #         test_behavior_high_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
-    #     )
-    #     test_priority_arbitrator.add_option(
-    #         test_behavior_high_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
-    #     )
-    #     test_priority_arbitrator.add_option(
-    #         test_behavior_mid_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
-    #     )
-    #     test_priority_arbitrator.add_option(
-    #         test_behavior_low_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
-    #     )
-    #
-    #     test_priority_arbitrator.gain_control(self.time)
-    #
-    #     expected = "__MidPriority__"
-    #     self.assertEqual(len(expected), test_priority_arbitrator.get_command(self.time))
-
 
 if __name__ == "__main__":
     unittest.main()

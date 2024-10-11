@@ -111,6 +111,12 @@ pybind11_add_module(arbitration_graphs_py
 target_link_libraries(arbitration_graphs_py PUBLIC
     ${PROJECT_NAME}
 )
+pybind11_add_module(arbitration_graphs_py_with_subcommand
+    python_api/arbitration_graphs_py.cpp
+)
+target_link_libraries(arbitration_graphs_py_with_subcommand PUBLIC
+    ${PROJECT_NAME}
+)
 
 
 #############
