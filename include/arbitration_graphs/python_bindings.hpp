@@ -2,6 +2,7 @@
 
 #include "internal/arbitrator_py.hpp"
 #include "internal/behavior_py.hpp"
+#include "internal/conjunctive_coordinator_py.hpp"
 #include "internal/cost_arbitrator_py.hpp"
 #include "internal/exceptions_py.hpp"
 #include "internal/priority_arbitrator_py.hpp"
@@ -20,15 +21,17 @@ void bindArbitrationGraphs(py::module& module,
                            const std::string& behaviorSubCommandSuffix = "") {
     bindExceptions(module);
     bindPlaceboVerifier<SubCommandT>(module);
-    bindBehavior<CommandT>(module, behaviorCommandSuffix);
 
+    bindBehavior<CommandT>(module, behaviorCommandSuffix);
     // Only bind behavior for SubCommandT if it is different from CommandT
     if constexpr (!std::is_same_v<CommandT, SubCommandT>) {
         bindBehavior<SubCommandT>(module, behaviorSubCommandSuffix);
     }
 
     bindArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
-    bindPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
+
+    bindConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindCostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
+    bindPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
 }
 } // namespace arbitration_graphs::python_api

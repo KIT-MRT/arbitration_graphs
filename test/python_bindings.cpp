@@ -8,9 +8,15 @@
 #include "cost_estimator.hpp"
 #include "dummy_types.hpp"
 
-namespace arbitration_graphs_tests {
-
 namespace py = pybind11;
+using namespace arbitration_graphs;
+using namespace arbitration_graphs_tests;
+
+// We need to define this operator for the coordinators to work
+DummyCommand& operator&=(DummyCommand& a, const DummyCommand& b) {
+    a += b;
+    return a;
+}
 
 namespace {
 
@@ -83,4 +89,3 @@ PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
     bindDummyBehavior(testingModule);
     bindCostEstimatorFromCostMap<DummyCommand>(testingModule);
 }
-} // namespace arbitration_graphs_tests
