@@ -55,7 +55,10 @@ void bindDummyBehavior(py::module& module) {
         .def("check_invocation_condition", &DummyBehavior::checkInvocationCondition, py::arg("time"))
         .def("check_commitment_condition", &DummyBehavior::checkCommitmentCondition, py::arg("time"))
         .def("gain_control", &DummyBehavior::gainControl, py::arg("time"))
-        .def("lose_control", &DummyBehavior::loseControl, py::arg("time"));
+        .def("lose_control", &DummyBehavior::loseControl, py::arg("time"))
+        .def_readwrite("invocation_condition", &DummyBehavior::invocationCondition_)
+        .def_readwrite("commitment_condition", &DummyBehavior::commitmentCondition_)
+        .def_readwrite("lose_control_counter", &DummyBehavior::loseControlCounter_);
 }
 
 template <typename CommandT>
