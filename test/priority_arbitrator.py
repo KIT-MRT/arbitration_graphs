@@ -1,6 +1,6 @@
+import os
 import time
 import unittest
-
 import yaml
 
 import arbitration_graphs_py as ag
@@ -290,4 +290,10 @@ class TestPriorityArbitrator(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    header = "Running " + os.path.basename(__file__)
+
+    print("=" * len(header))
+    print(header)
+    print("=" * len(header) + "\n")
+    unittest.main(exit=False)
+    print("=" * len(header) + "\n")
