@@ -61,6 +61,18 @@ void bindDummyBehavior(py::module& module) {
         .def_readwrite("lose_control_counter", &DummyBehavior::loseControlCounter_);
 }
 
+void bindDummyVerifier(py::module& module) {
+    py::class_<DummyResult>(module, "DummyResult")
+        .def(py::init<>())
+        .def("is_ok", &DummyResult::isOk)
+        .def("__str__", [](const DummyResult& result) { return result.isOk() ? "is okay" : "is not okay"; });
+
+    py::class_<DummyVerifier>(module, "DummyVerifier")
+        .def(py::init<std::string>(), py::arg("wrong") = "")
+        .def("analyze", &DummyVerifier::analyze)
+        .def_readwrite("wrong", &DummyVerifier::wrong_);
+}
+
 template <typename CommandT>
 void bindCostEstimatorFromCostMap(py::module& module) {
     py::class_<CostEstimatorFromCostMap, CostEstimator<CommandT>, std::shared_ptr<CostEstimatorFromCostMap>>(
@@ -71,24 +83,33 @@ void bindCostEstimatorFromCostMap(py::module& module) {
         .def("estimate_cost", &CostEstimatorFromCostMap::estimateCost, py::arg("command"), py::arg("isActive"));
 }
 
+void bindTestingTypes(py::module& module) {
+    bindConstants(module);
+    bindDummyCommand(module);
+    bindDummyBehavior(module);
+    bindCostEstimatorFromCostMap<DummyCommand>(module);
+}
+
 } // namespace
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     python_api::bindArbitrationGraphs<DummyCommand>(mainModule);
 
     py::module testingModule = mainModule.def_submodule("testing_types");
-    bindConstants(testingModule);
-    bindDummyCommand(testingModule);
-    bindDummyBehavior(testingModule);
-    bindCostEstimatorFromCostMap<DummyCommand>(testingModule);
+    bindTestingTypes(testingModule);
 }
 
 PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
     python_api::bindArbitrationGraphs<DummyCommandInt, DummyCommand>(mainModule, "Int");
 
     py::module testingModule = mainModule.def_submodule("testing_types");
-    bindConstants(testingModule);
-    bindDummyCommand(testingModule);
-    bindDummyBehavior(testingModule);
-    bindCostEstimatorFromCostMap<DummyCommand>(testingModule);
+    bindTestingTypes(testingModule);
+}
+
+PYBIND11_MODULE(arbitration_graphs_py_with_verifier, mainModule) {
+    py::module testingModule = mainModule.def_submodule("testing_types");
+    bindDummyVerifier(testingModule); // Verifier must be known before binding the main library
+
+    python_api::bindArbitrationGraphs<DummyCommand, DummyCommand, DummyVerifier, DummyResult>(mainModule);
+    bindTestingTypes(testingModule);
 }

@@ -79,7 +79,7 @@ public:
 struct DummyResult : public verification::PlaceboResult {};
 
 struct DummyVerifier {
-    explicit DummyVerifier(std::string wrong) : wrong_{std::move(wrong)} {
+    explicit DummyVerifier(std::string wrong = "") : wrong_{std::move(wrong)} {
     }
     DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
         if (data == wrong_) {

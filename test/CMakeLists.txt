@@ -112,6 +112,12 @@ if(pybind11_FOUND)
   target_link_libraries(arbitration_graphs_py_with_subcommand PUBLIC
     ${PROJECT_NAME}
   )
+  pybind11_add_module(arbitration_graphs_py_with_verifier
+      test/python_bindings.cpp
+  )
+    target_link_libraries(arbitration_graphs_py_with_verifier PUBLIC
+      ${PROJECT_NAME}
+  )
 
   file(GLOB_RECURSE PYTHON_TESTS "test/*.py")
 
