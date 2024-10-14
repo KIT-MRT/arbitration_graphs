@@ -36,13 +36,6 @@ public:
     }
 
     // NOLINTBEGIN(readability-function-size)
-    std::ostream& to_stream(std::ostream& output,
-                            const Time& time,
-                            const int& option_index,
-                            const std::string& prefix = "",
-                            const std::string& suffix = "") const override {
-        PYBIND11_OVERRIDE(std::ostream&, BaseT, to_stream, output, time, option_index, prefix, suffix);
-    }
     YAML::Node toYaml(const Time& time) const override {
         PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
     }
@@ -124,18 +117,10 @@ void bindCostArbitrator(py::module& module) {
             py::arg("time"));
 
     py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(costArbitrator, "Option");
-    option
-        .def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
-             py::arg("behavior"),
-             py::arg("flags"),
-             py::arg("cost_estimator"))
-        .def("to_stream",
-             &OptionT::to_stream,
-             py::arg("ostream"),
-             py::arg("time"),
-             py::arg("option_index"),
-             py::arg("prefix") = "",
-             py::arg("suffix") = "");
+    option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
+               py::arg("behavior"),
+               py::arg("flags"),
+               py::arg("cost_estimator"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NO_FLAGS)

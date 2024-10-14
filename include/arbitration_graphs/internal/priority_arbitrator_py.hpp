@@ -21,16 +21,6 @@ public:
     explicit PyPriorityArbitratorOption(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
             : BaseT(behavior, flags) {
     }
-
-    // NOLINTBEGIN(readability-function-size)
-    std::ostream& to_stream(std::ostream& output,
-                            const Time& time,
-                            const int& option_index,
-                            const std::string& prefix = "",
-                            const std::string& suffix = "") const override {
-        PYBIND11_OVERRIDE(std::ostream&, BaseT, to_stream, output, time, option_index, prefix, suffix);
-    }
-    // NOLINTEND(readability-function-size)
 };
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
@@ -88,17 +78,8 @@ void bindPriorityArbitrator(py::module& module) {
             py::arg("time"));
 
     py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
-    option
-        .def(py::init<const typename Behavior<SubCommandT>::Ptr&, const FlagsT&>(),
-             py::arg("behavior"),
-             py::arg("flags"))
-        .def("to_stream",
-             &OptionT::to_stream,
-             py::arg("ostream"),
-             py::arg("time"),
-             py::arg("option_index"),
-             py::arg("prefix") = "",
-             py::arg("suffix") = "");
+    option.def(
+        py::init<const typename Behavior<SubCommandT>::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NO_FLAGS)

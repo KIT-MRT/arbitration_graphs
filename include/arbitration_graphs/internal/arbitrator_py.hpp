@@ -21,14 +21,6 @@ public:
     }
 
     // NOLINTBEGIN(readability-function-size)
-    std::ostream& to_stream(std::ostream& output,
-                            const Time& time,
-                            const int& option_index,
-                            const std::string& prefix = "",
-                            const std::string& suffix = "") const override {
-        PYBIND11_OVERRIDE(std::ostream&, BaseT, to_stream, output, time, option_index, prefix, suffix);
-    }
-
     YAML::Node toYaml(const Time& time) const override {
         PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
     }
@@ -74,13 +66,6 @@ public:
     void loseControl(const arbitration_graphs::Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time);
     }
-
-    std::ostream& to_stream(std::ostream& output,
-                            const arbitration_graphs::Time& time,
-                            const std::string& prefix = "",
-                            const std::string& suffix = "") const override {
-        PYBIND11_OVERRIDE(std::ostream&, BaseT, to_stream, output, time, prefix, suffix);
-    }
     // NOLINTEND(readability-function-size)
 };
 
@@ -104,12 +89,6 @@ void bindArbitrator(py::module& module) {
         .def("check_commitment_condition", &ArbitratorT::checkCommitmentCondition, py::arg("time"))
         .def("gain_control", &ArbitratorT::gainControl, py::arg("time"))
         .def("lose_control", &ArbitratorT::loseControl, py::arg("time"))
-        .def("to_stream",
-             &ArbitratorT::to_stream,
-             py::arg("ostream"),
-             py::arg("time"),
-             py::arg("prefix") = "",
-             py::arg("suffix") = "")
         .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name_ + "'>"; });
 
     py::class_<OptionT, PyOptionT, std::shared_ptr<OptionT>> option(arbitrator, "Option");
@@ -118,13 +97,6 @@ void bindArbitrator(py::module& module) {
              py::arg("behavior"),
              py::arg("flags"))
         .def("has_flags", &OptionT::hasFlag, py::arg("flags_to_check"))
-        .def("to_stream",
-             &OptionT::to_stream,
-             py::arg("ostream"),
-             py::arg("time"),
-             py::arg("option_index"),
-             py::arg("prefix") = "",
-             py::arg("suffix") = "")
         .def(
             "to_yaml_as_str",
             [](const OptionT& self, const arbitration_graphs::Time& time) {
