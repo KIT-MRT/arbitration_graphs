@@ -3,6 +3,7 @@
 #include "internal/arbitrator_py.hpp"
 #include "internal/behavior_py.hpp"
 #include "internal/cost_arbitrator_py.hpp"
+#include "internal/exceptions_py.hpp"
 #include "internal/priority_arbitrator_py.hpp"
 #include "internal/verification_py.hpp"
 
@@ -17,6 +18,7 @@ template <typename CommandT,
 void bindArbitrationGraphs(py::module& module,
                            const std::string& behaviorCommandSuffix = "",
                            const std::string& behaviorSubCommandSuffix = "") {
+    bindExceptions(module);
     bindPlaceboVerifier<SubCommandT>(module);
     bindBehavior<CommandT>(module, behaviorCommandSuffix);
 
