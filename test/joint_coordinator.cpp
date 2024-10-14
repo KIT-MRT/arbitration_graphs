@@ -142,15 +142,6 @@ TEST_F(JointCoordinatorTest, BasicFunctionality) {
 }
 
 
-struct DummyVerifier {
-    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
-        if (data == wrong_) {
-            return DummyResult{false};
-        }
-        return DummyResult{true};
-    };
-    std::string wrong_{"B"};
-};
 struct RejectingVerifier {
     static DummyResult analyze(const Time& /*time*/, const DummyCommand& /*data*/) {
         return DummyResult{false};
@@ -159,7 +150,8 @@ struct RejectingVerifier {
 
 TEST_F(JointCoordinatorTest, DummyVerification) {
     using OptionFlags = JointCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
-    JointCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingJointCoordinator;
+    JointCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingJointCoordinator(
+        "JointCoordinator", DummyVerifier("B"));
 
     verifyingJointCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     verifyingJointCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);

@@ -134,19 +134,10 @@ TEST_F(ConjunctiveCoordinatorTest, BasicFunctionality) {
 }
 
 
-struct DummyVerifier {
-    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
-        if (data == wrong_) {
-            return DummyResult{false};
-        }
-        return DummyResult{true};
-    };
-    std::string wrong_{"B"};
-};
-
 TEST_F(ConjunctiveCoordinatorTest, Verification) {
     using OptionFlags = ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
-    ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingConjunctiveCoordinator;
+    ConjunctiveCoordinator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> verifyingConjunctiveCoordinator(
+        "ConjunctiveCoordinator", DummyVerifier("B"));
 
     verifyingConjunctiveCoordinator.addOption(testBehaviorA, OptionFlags::NO_FLAGS);
     verifyingConjunctiveCoordinator.addOption(testBehaviorB1, OptionFlags::NO_FLAGS);
