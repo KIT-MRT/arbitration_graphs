@@ -49,10 +49,9 @@ public:
 };
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-class PyCostArbitrator
-        : public arbitration_graphs::CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+class PyCostArbitrator : public CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using BaseT = arbitration_graphs::CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using BaseT = CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
     using CostEstimatorT = CostEstimator<SubCommandT>;
 
     explicit PyCostArbitrator(const std::string& name, const VerifierT& verifier = VerifierT())
@@ -114,7 +113,8 @@ void bindCostArbitrator(py::module& module) {
             [](const CostArbitratorT& self, const Time& time) {
                 return static_cast<const PyCostArbitratorT&>(self).toYamlAsString(time);
             },
-            py::arg("time"));
+            py::arg("time"))
+        .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
 
     py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(costArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),

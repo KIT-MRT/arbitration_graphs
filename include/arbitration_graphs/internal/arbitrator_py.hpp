@@ -43,7 +43,7 @@ public:
     }
 
     // NOLINTBEGIN(readability-function-size)
-    CommandT getCommand(const arbitration_graphs::Time& time) override {
+    CommandT getCommand(const Time& time) override {
         PYBIND11_OVERRIDE_PURE_NAME(CommandT, BaseT, "get_command", getCommand, time);
     }
 
@@ -51,19 +51,19 @@ public:
         PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags);
     }
 
-    bool checkInvocationCondition(const arbitration_graphs::Time& time) const override {
+    bool checkInvocationCondition(const Time& time) const override {
         PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_invocation_condition", checkInvocationCondition, time);
     }
 
-    bool checkCommitmentCondition(const arbitration_graphs::Time& time) const override {
+    bool checkCommitmentCondition(const Time& time) const override {
         PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_commitment_condition", checkCommitmentCondition, time);
     }
 
-    void gainControl(const arbitration_graphs::Time& time) override {
+    void gainControl(const Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "gain_control", gainControl, time);
     }
 
-    void loseControl(const arbitration_graphs::Time& time) override {
+    void loseControl(const Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time);
     }
     // NOLINTEND(readability-function-size)
@@ -76,8 +76,10 @@ template <typename CommandT,
 void bindArbitrator(py::module& module) {
     using ArbitratorT = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
     using PyArbitratorT = PyArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+
     using OptionT = typename ArbitratorT::Option;
     using PyOptionT = PyArbitratorOption<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+
     using FlagsT = typename OptionT::FlagsT;
 
     py::class_<ArbitratorT, PyArbitratorT, Behavior<CommandT>, std::shared_ptr<ArbitratorT>> arbitrator(module,
@@ -99,7 +101,7 @@ void bindArbitrator(py::module& module) {
         .def("has_flags", &OptionT::hasFlag, py::arg("flags_to_check"))
         .def(
             "to_yaml_as_str",
-            [](const OptionT& self, const arbitration_graphs::Time& time) {
+            [](const OptionT& self, const Time& time) {
                 return static_cast<const PyOptionT&>(self).toYamlAsString(time);
             },
             py::arg("time"))
