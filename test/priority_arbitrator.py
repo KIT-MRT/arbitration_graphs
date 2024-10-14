@@ -4,7 +4,7 @@ import unittest
 import yaml
 
 import arbitration_graphs_py as ag
-from dummy_types import DummyBehaviorPy, DummyCommandPy
+from dummy_types import DummyBehaviorPy, DummyCommandPy, PrintStrings
 
 
 class TestPriorityArbitrator(unittest.TestCase):
@@ -122,12 +122,13 @@ class TestPriorityArbitrator(unittest.TestCase):
         )
 
         # fmt: off
+        ps = PrintStrings()
         expected_printout = (
-            ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "PriorityArbitrator\n"
-            "    1. " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "HighPriority\n"
-            "    2. " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "HighPriority\n"
-            "    3. " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "MidPriority\n"
-            "    4. " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "LowPriority"
+            ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n"
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            "    3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
         actual_printout = self.test_priority_arbitrator.to_str(self.time)
@@ -142,11 +143,11 @@ class TestPriorityArbitrator(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "PriorityArbitrator\n"
-            "    1. " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "HighPriority\n"
-            "    2. " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "HighPriority\n"
-            " -> 3. " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "MidPriority\n"
-            "    4. " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "LowPriority"
+            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n"
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            " -> 3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
         actual_printout = self.test_priority_arbitrator.to_str(self.time)

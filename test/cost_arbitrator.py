@@ -4,7 +4,7 @@ import unittest
 import yaml
 
 import arbitration_graphs_py as ag
-from dummy_types import DummyBehaviorPy, DummyCommandPy
+from dummy_types import DummyBehaviorPy, DummyCommandPy, PrintStrings
 from cost_estimator import CostEstimatorFromCostMapPy
 
 
@@ -114,12 +114,13 @@ class CostArbitratorTest(unittest.TestCase):
         )
 
         # fmt: off
+        ps = PrintStrings()
         expected_printout = (
-            ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "low_cost\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "low_cost\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "high_cost\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "mid_cost"
+            ps.invocation_true + ps.commitment_false + "CostArbitrator\n"
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
+            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
         actual_printout = self.test_cost_arbitrator.to_str(self.time)
@@ -132,11 +133,11 @@ class CostArbitratorTest(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "low_cost\n"
-            "    - (cost:  n.a.) " + ag.testing_types.invocation_false_string + ag.testing_types.commitment_false_string + "low_cost\n"
-            "    - (cost: 1.000) " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_true_string + "high_cost\n"
-            " -> - (cost: 0.500) " + ag.testing_types.invocation_true_string + ag.testing_types.commitment_false_string + "mid_cost"
+            ps.invocation_true + ps.commitment_true + "CostArbitrator\n"
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
+            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            " -> - (cost: 0.500) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
         actual_printout = self.test_cost_arbitrator.to_str(self.time)

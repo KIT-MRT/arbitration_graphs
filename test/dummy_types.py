@@ -5,10 +5,10 @@ class PrintStrings:
     strike_through_on = "×××\010\010\010\033[9m"
     strike_through_off = "\033[29m\033[8m×××\033[28m"
 
-    invocation_true_string = "\033[32mINVOCATION\033[39m "
-    invocation_false_string = "\033[31mInvocation\033[39m "
-    commitment_true_string = "\033[32mCOMMITMENT\033[39m "
-    commitment_false_string = "\033[31mCommitment\033[39m "
+    invocation_true = "\033[32mINVOCATION\033[39m "
+    invocation_false = "\033[31mInvocation\033[39m "
+    commitment_true = "\033[32mCOMMITMENT\033[39m "
+    commitment_false = "\033[31mCommitment\033[39m "
 
 
 class DummyCommandPy(str):
