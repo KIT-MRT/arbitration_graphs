@@ -163,7 +163,7 @@ TEST_F(NestedArbitratorsTest, ToYaml) {
     EXPECT_EQ("high_cost", yaml["options"][0]["behavior"]["options"][1]["behavior"]["name"].as<std::string>());
 
     ASSERT_EQ(2, yaml["options"][1]["behavior"]["options"].size());
-    EXPECT_EQ(false, yaml["options"][0]["behavior"]["activeBehavior"].IsDefined());
+    EXPECT_EQ(false, yaml["options"][1]["behavior"]["activeBehavior"].IsDefined());
     EXPECT_EQ("HighPriority", yaml["options"][1]["behavior"]["options"][0]["behavior"]["name"].as<std::string>());
     EXPECT_EQ("LowPriority", yaml["options"][1]["behavior"]["options"][1]["behavior"]["name"].as<std::string>());
 
