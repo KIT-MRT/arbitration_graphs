@@ -5,6 +5,7 @@
 #include "internal/conjunctive_coordinator_py.hpp"
 #include "internal/cost_arbitrator_py.hpp"
 #include "internal/exceptions_py.hpp"
+#include "internal/joint_coordinator_py.hpp"
 #include "internal/priority_arbitrator_py.hpp"
 #include "internal/verification_py.hpp"
 
@@ -32,6 +33,7 @@ void bindArbitrationGraphs(py::module& module,
 
     bindConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindCostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
+    bindJointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
 }
 } // namespace arbitration_graphs::python_api
