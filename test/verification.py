@@ -282,6 +282,49 @@ class TestCommandVerification(unittest.TestCase):
             test_cost_arbitrator.get_command(self.time)
 
 
+class TestCommandVerificationInConjunctiveCoordinator(unittest.TestCase):
+    def setUp(self):
+        self.test_behavior_a = ag_verifier.testing_types.DummyBehavior(
+            False, False, "A"
+        )
+        self.test_behavior_b1 = ag_verifier.testing_types.DummyBehavior(
+            True, False, "B"
+        )
+        self.test_behavior_c = ag_verifier.testing_types.DummyBehavior(True, True, "C")
+        self.test_behavior_b2 = ag_verifier.testing_types.DummyBehavior(
+            True, False, "B"
+        )
+
+        self.time = time.time()
+
+    def test_verification(self):
+
+        NO_FLAGS = ag_verifier.ConjunctiveCoordinator.Option.Flags.NO_FLAGS
+
+        verifying_conjunctive_coordinator = ag_verifier.ConjunctiveCoordinator(
+            "ConjunctiveCoordinator", ag_verifier.testing_types.DummyVerifier("B")
+        )
+
+        verifying_conjunctive_coordinator.add_option(self.test_behavior_a, NO_FLAGS)
+        verifying_conjunctive_coordinator.add_option(self.test_behavior_b1, NO_FLAGS)
+        verifying_conjunctive_coordinator.add_option(self.test_behavior_c, NO_FLAGS)
+        verifying_conjunctive_coordinator.add_option(self.test_behavior_b2, NO_FLAGS)
+
+        self.test_behavior_a.invocation_condition = True
+
+        self.assertTrue(
+            verifying_conjunctive_coordinator.check_invocation_condition(self.time)
+        )
+        self.assertFalse(
+            verifying_conjunctive_coordinator.check_commitment_condition(self.time)
+        )
+
+        verifying_conjunctive_coordinator.gain_control(self.time)
+
+        with self.assertRaises(ag_verifier.ApplicableOptionFailedVerificationError):
+            verifying_conjunctive_coordinator.get_command(self.time)
+
+
 if __name__ == "__main__":
     header = "Running " + os.path.basename(__file__)
 
