@@ -20,13 +20,13 @@ DummyCommand& operator&=(DummyCommand& a, const DummyCommand& b) {
 
 namespace {
 
-void bindConstants(py::module& module) {
+void bindPrintStrings(py::module& module) {
     module.attr("strike_through_on") = strikeThroughOn;
     module.attr("strike_through_off") = strikeThroughOff;
-    module.attr("invocation_true_string") = invocationTrueString;
-    module.attr("invocation_false_string") = invocationFalseString;
-    module.attr("commitment_true_string") = commitmentTrueString;
-    module.attr("commitment_false_string") = commitmentFalseString;
+    module.attr("invocation_true") = invocationTrueString;
+    module.attr("invocation_false") = invocationFalseString;
+    module.attr("commitment_true") = commitmentTrueString;
+    module.attr("commitment_false") = commitmentFalseString;
 }
 
 void bindDummyCommand(py::module& module) {
@@ -84,7 +84,8 @@ void bindCostEstimatorFromCostMap(py::module& module) {
 }
 
 void bindTestingTypes(py::module& module) {
-    bindConstants(module);
+    py::module printStrings = module.def_submodule("print_strings");
+    bindPrintStrings(printStrings);
     bindDummyCommand(module);
     bindDummyBehavior(module);
     bindCostEstimatorFromCostMap<DummyCommand>(module);

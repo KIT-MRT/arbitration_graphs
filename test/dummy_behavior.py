@@ -34,11 +34,8 @@ class DummyBehaviorTest(unittest.TestCase):
             self.fail(f"lose_control threw an exception: {e}")
 
     def test_printout(self):
-        expected_printout = (
-            ag.testing_types.invocation_true_string
-            + ag.testing_types.commitment_true_string
-            + "dummy_behavior"
-        )
+        ps = ag.testing_types.print_strings
+        expected_printout = ps.invocation_true + ps.commitment_true + "dummy_behavior"
         actual_printout = self.test_behavior_true.to_str(self.time)
         print(actual_printout)
 
