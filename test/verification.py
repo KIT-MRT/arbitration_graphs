@@ -282,7 +282,7 @@ class TestCommandVerification(unittest.TestCase):
             test_cost_arbitrator.get_command(self.time)
 
 
-class TestCommandVerificationInConjunctiveCoordinator(unittest.TestCase):
+class TestCommandVerificationInCoordinator(unittest.TestCase):
     def setUp(self):
         self.test_behavior_a = ag_verifier.testing_types.DummyBehavior(
             False, False, "A"
@@ -297,7 +297,7 @@ class TestCommandVerificationInConjunctiveCoordinator(unittest.TestCase):
 
         self.time = time.time()
 
-    def test_verification(self):
+    def test_verification_in_conjunctive_coordinator(self):
 
         NO_FLAGS = ag_verifier.ConjunctiveCoordinator.Option.Flags.NO_FLAGS
 
@@ -323,6 +323,86 @@ class TestCommandVerificationInConjunctiveCoordinator(unittest.TestCase):
 
         with self.assertRaises(ag_verifier.ApplicableOptionFailedVerificationError):
             verifying_conjunctive_coordinator.get_command(self.time)
+
+    def test_joint_coordinator_with_dummy_verification(self):
+        NO_FLAGS = ag_verifier.JointCoordinator.Option.Flags.NO_FLAGS
+        verifying_joint_coordinator = ag_verifier.JointCoordinator(
+            "JointCoordinator", ag_verifier.testing_types.DummyVerifier("B")
+        )
+
+        verifying_joint_coordinator.add_option(self.test_behavior_a, NO_FLAGS)
+        verifying_joint_coordinator.add_option(self.test_behavior_b1, NO_FLAGS)
+        verifying_joint_coordinator.add_option(self.test_behavior_c, NO_FLAGS)
+        verifying_joint_coordinator.add_option(self.test_behavior_b2, NO_FLAGS)
+
+        self.test_behavior_a.invocation_condition = True
+
+        self.assertTrue(
+            verifying_joint_coordinator.check_invocation_condition(self.time)
+        )
+        self.assertFalse(
+            verifying_joint_coordinator.check_commitment_condition(self.time)
+        )
+
+        verifying_joint_coordinator.gain_control(self.time)
+
+        # B1, C, and B2 are invocable, A is not, but B1 and B2 fail verification
+        self.assertEqual("AC", verifying_joint_coordinator.get_command(self.time))
+
+        # fmt:off
+        ps = ag_verifier.testing_types.print_strings
+        expected_printout = (
+            ps.invocation_true + ps.commitment_true + "JointCoordinator\n"
+            " -> - " + ps.invocation_true + ps.commitment_false + "A\n"
+            "    - " + ps.strike_through_on
+                      + ps.invocation_true + ps.commitment_false + "B"
+                      + ps.strike_through_off + "\n"
+            " -> - " + ps.invocation_true + ps.commitment_true + "C\n"
+            "    - " + ps.strike_through_on
+                      + ps.invocation_true + ps.commitment_false + "B"
+                      + ps.strike_through_off
+        )
+        # fmt:on
+        actual_printout = verifying_joint_coordinator.to_str(self.time)
+        print(actual_printout)
+
+        self.assertEqual(expected_printout, actual_printout)
+
+    def test_joint_coordinator_with_rejecting_verification(self):
+        NO_FLAGS = ag_verifier.JointCoordinator.Option.Flags.NO_FLAGS
+        verifying_joint_coordinator = ag_verifier.JointCoordinator(
+            "JointCoordinator",
+            ag_verifier.testing_types.DummyVerifier(reject_all=True),
+        )
+
+        verifying_joint_coordinator.add_option(
+            self.test_behavior_a,
+            NO_FLAGS,
+        )
+        verifying_joint_coordinator.add_option(
+            self.test_behavior_b1,
+            NO_FLAGS,
+        )
+        verifying_joint_coordinator.add_option(
+            self.test_behavior_c,
+            NO_FLAGS,
+        )
+        verifying_joint_coordinator.add_option(
+            self.test_behavior_b2,
+            NO_FLAGS,
+        )
+
+        self.assertTrue(
+            verifying_joint_coordinator.check_invocation_condition(self.time)
+        )
+        self.assertFalse(
+            verifying_joint_coordinator.check_commitment_condition(self.time)
+        )
+
+        verifying_joint_coordinator.gain_control(self.time)
+
+        with self.assertRaises(ag_verifier.NoApplicableOptionPassedVerificationError):
+            verifying_joint_coordinator.get_command(self.time)
 
 
 if __name__ == "__main__":
