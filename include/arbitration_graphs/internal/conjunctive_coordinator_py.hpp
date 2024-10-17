@@ -12,18 +12,6 @@ namespace arbitration_graphs::python_api {
 namespace py = pybind11;
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-class PyConjunctiveCoordinatorOption
-        : public ConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option {
-public:
-    using BaseT = typename ConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option;
-    using FlagsT = typename BaseT::FlagsT;
-
-    explicit PyConjunctiveCoordinatorOption(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-            : BaseT(behavior, flags) {
-    }
-};
-
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
 class PyConjunctiveCoordinator : public ConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
     using BaseT = ConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
@@ -83,8 +71,6 @@ void bindConjunctiveCoordinator(py::module& module) {
     using PyConjunctiveCoordinatorT = PyConjunctiveCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using OptionT = typename ConjunctiveCoordinatorT::Option;
-    using PyOptionT = PyConjunctiveCoordinatorOption<CommandT, SubCommandT, VerifierT, VerificationResultT>;
-
     using FlagsT = typename OptionT::FlagsT;
 
     py::class_<ConjunctiveCoordinatorT,
@@ -111,8 +97,7 @@ void bindConjunctiveCoordinator(py::module& module) {
         .def("__repr__",
              [](const ConjunctiveCoordinatorT& self) { return "<ConjunctiveCoordinator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(conjunctiveCoordinator,
-                                                                                       "Option");
+    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(conjunctiveCoordinator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")

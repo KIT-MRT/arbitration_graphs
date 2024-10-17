@@ -12,18 +12,6 @@ namespace arbitration_graphs::python_api {
 namespace py = pybind11;
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-class PyPriorityArbitratorOption
-        : public PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option {
-public:
-    using BaseT = typename PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option;
-    using FlagsT = typename BaseT::FlagsT;
-
-    explicit PyPriorityArbitratorOption(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-            : BaseT(behavior, flags) {
-    }
-};
-
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
 class PyPriorityArbitrator : public PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
     using BaseT = PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
@@ -63,8 +51,6 @@ void bindPriorityArbitrator(py::module& module) {
     using PyPriorityArbitratorT = PyPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using OptionT = typename PriorityArbitratorT::Option;
-    using PyOptionT = PyPriorityArbitratorOption<CommandT, SubCommandT, VerifierT, VerificationResultT>;
-
     using FlagsT = typename OptionT::FlagsT;
 
     py::class_<PriorityArbitratorT, ArbitratorT, PyPriorityArbitratorT, std::shared_ptr<PriorityArbitratorT>>
@@ -82,7 +68,7 @@ void bindPriorityArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
+    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")

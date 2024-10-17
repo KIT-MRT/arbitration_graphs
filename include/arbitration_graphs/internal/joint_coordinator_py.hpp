@@ -12,18 +12,6 @@ namespace arbitration_graphs::python_api {
 namespace py = pybind11;
 
 template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-class PyJointCoordinatorOption
-        : public JointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option {
-public:
-    using BaseT = typename JointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option;
-    using FlagsT = typename BaseT::FlagsT;
-
-    explicit PyJointCoordinatorOption(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
-            : BaseT(behavior, flags) {
-    }
-};
-
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
 class PyJointCoordinator : public JointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
     using BaseT = JointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
@@ -83,8 +71,6 @@ void bindJointCoordinator(py::module& module) {
     using PyJointCoordinatorT = PyJointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using OptionT = typename JointCoordinatorT::Option;
-    using PyOptionT = PyJointCoordinatorOption<CommandT, SubCommandT, VerifierT, VerificationResultT>;
-
     using FlagsT = typename OptionT::FlagsT;
 
     py::class_<JointCoordinatorT, ArbitratorT, PyJointCoordinatorT, std::shared_ptr<JointCoordinatorT>>
@@ -108,7 +94,7 @@ void bindJointCoordinator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const JointCoordinatorT& self) { return "<JointCoordinator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(jointCoordinator, "Option");
+    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(jointCoordinator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
