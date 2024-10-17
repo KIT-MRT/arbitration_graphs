@@ -160,6 +160,34 @@ class TestPriorityArbitratorWithSubCommand(unittest.TestCase):
         self.assertEqual(len(expected), test_priority_arbitrator.get_command(now))
 
 
+class TestRandomArbitratorWithSubCommand(unittest.TestCase):
+    def test_subcommand_type_differs_from_command_type(self):
+        now = time.time()
+
+        NO_FLAGS = ag_subcommand.RandomArbitrator.Option.Flags.NO_FLAGS
+
+        test_behavior_high_weight = ag_subcommand.testing_types.DummyBehavior(
+            True, False, "___HighWeight___"
+        )
+        test_behavior_mid_weight = ag_subcommand.testing_types.DummyBehavior(
+            True, False, "__MidWeight__"
+        )
+        test_behavior_low_weight = ag_subcommand.testing_types.DummyBehavior(
+            True, False, "_LowWeight_"
+        )
+
+        test_random_arbitrator = ag_subcommand.RandomArbitrator()
+
+        test_random_arbitrator.add_option(test_behavior_high_weight, NO_FLAGS)
+        test_random_arbitrator.add_option(test_behavior_mid_weight, NO_FLAGS)
+        test_random_arbitrator.add_option(test_behavior_low_weight, NO_FLAGS, 0)
+
+        test_random_arbitrator.gain_control(now)
+
+        expected = "__MidWeight__"
+        self.assertEqual(len(expected), test_random_arbitrator.get_command(now))
+
+
 if __name__ == "__main__":
     header = "Running " + os.path.basename(__file__)
 
