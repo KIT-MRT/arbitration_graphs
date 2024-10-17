@@ -68,7 +68,7 @@ void bindDummyVerifier(py::module& module) {
         .def("__str__", [](const DummyResult& result) { return result.isOk() ? "is okay" : "is not okay"; });
 
     py::class_<DummyVerifier>(module, "DummyVerifier")
-        .def(py::init<std::string>(), py::arg("wrong") = "")
+        .def(py::init<std::string, bool>(), py::arg("wrong") = "", py::arg("reject_all") = false)
         .def("analyze", &DummyVerifier::analyze)
         .def_readwrite("wrong", &DummyVerifier::wrong_);
 }
