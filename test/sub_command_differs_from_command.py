@@ -94,6 +94,32 @@ class TestCostArbitratorWithSubCommand(unittest.TestCase):
         self.assertEqual(len(expected), test_cost_arbitrator.get_command(now))
 
 
+class TestJointCoordinatorWithSubCommand(unittest.TestCase):
+    def test_sub_command_type_differs_from_command_type(self):
+        now = time.time()
+
+        NO_FLAGS = ag_subcommand.JointCoordinator.Option.Flags.NO_FLAGS
+
+        test_behavior_a = ag_subcommand.testing_types.DummyBehavior(False, False, "A")
+        test_behavior_b1 = ag_subcommand.testing_types.DummyBehavior(True, False, "B")
+        test_behavior_c = ag_subcommand.testing_types.DummyBehavior(True, True, "C")
+        test_behavior_b2 = ag_subcommand.testing_types.DummyBehavior(True, False, "B")
+
+        test_joint_coordinator = ag_subcommand.JointCoordinator()
+
+        test_joint_coordinator.add_option(test_behavior_a, NO_FLAGS)
+        test_joint_coordinator.add_option(test_behavior_b1, NO_FLAGS)
+        test_joint_coordinator.add_option(test_behavior_c, NO_FLAGS)
+        test_joint_coordinator.add_option(test_behavior_b2, NO_FLAGS)
+
+        test_behavior_a.invocation_condition = True
+        test_joint_coordinator.gain_control(now)
+
+        expected = "ABCB"
+
+        self.assertEqual(len(expected), test_joint_coordinator.get_command(now))
+
+
 class TestPriorityArbitratorWithSubCommand(unittest.TestCase):
     def test_sub_command_type_differs_from_command_type(self):
         now = time.time()
