@@ -7,6 +7,7 @@
 #include "internal/exceptions_py.hpp"
 #include "internal/joint_coordinator_py.hpp"
 #include "internal/priority_arbitrator_py.hpp"
+#include "internal/random_arbitrator_py.hpp"
 #include "internal/verification_py.hpp"
 
 namespace arbitration_graphs::python_api {
@@ -35,5 +36,6 @@ void bindArbitrationGraphs(py::module& module,
     bindCostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindJointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
+    bindRandomArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
 }
 } // namespace arbitration_graphs::python_api
