@@ -14,21 +14,8 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
     auto ghostPosition = closestScaredGhost->ghost.position;
 
     std::optional<Direction> direction;
-    double minDistance = std::numeric_limits<double>::max();
-    for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
-        if (environmentModel_->isWall(nextPosition)) {
-            continue;
-        }
-
-        // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
-        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
-        if (nextDistance < minDistance) {
-            direction = move.direction;
-            minDistance = nextDistance;
-        }
-    }
+    ///@todo Implement logic to get the direction to chase the closest ghost
 
     if (!direction) {
         throw std::runtime_error("Failed to compute direction to chase the closest ghost.");
