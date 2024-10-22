@@ -49,6 +49,7 @@ PacmanWrapper::PacmanWrapper()
           renderer_(createRendererAndSetLogicalSize(window_)),
           maze_(SDL::loadTexture(renderer_.get(), animera::getTextureInfo())), writer_({renderer_.get(), maze_.get()}) {
     game_.init();
+    SDL_SetRenderDrawBlendMode(renderer_.get(), SDL_BLENDMODE_BLEND);
 }
 
 void PacmanWrapper::handleUserInput() {
@@ -92,10 +93,28 @@ void PacmanWrapper::progressGame(const demo::Command& command,
     SDL_CHECK(SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255));
     SDL_CHECK(SDL_RenderClear(renderer_.get()));
     game_.render(writer_, frame_ % tileSize);
+    renderPath(environmentModel->toAbsolutePath(command.path));
+
     frame_++;
     SDL_RenderPresent(renderer_.get());
 
     FrameCap sync{fps};
+}
+
+void PacmanWrapper::renderPath(const demo::Positions& path) {
+    // Set path color and transparency
+    SDL_CHECK(SDL_SetRenderDrawColor(renderer_.get(), 0, 255, 0, 90));
+
+    SDL_Rect rect;
+    rect.w = tileSize;
+    rect.h = tileSize;
+
+    for (const auto& position : path) {
+        rect.x = position.x * tileSize;
+        rect.y = position.y * tileSize;
+
+        SDL_RenderFillRect(renderer_.get(), &rect);
+    }
 }
 
 } // namespace utils

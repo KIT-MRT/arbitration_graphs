@@ -29,6 +29,7 @@ public:
 
 private:
     void handleUserInput();
+    void renderPath(const demo::Positions& path);
 
     int scaleFactor_;
     SDL::Window window_;
