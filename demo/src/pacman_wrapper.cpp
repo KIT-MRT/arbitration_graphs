@@ -69,6 +69,10 @@ void PacmanWrapper::handleUserInput() {
                 quit_ = true;
                 break;
             }
+            if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+                renderPath_ = !renderPath_;
+                break;
+            }
         }
     }
 }
@@ -93,7 +97,10 @@ void PacmanWrapper::progressGame(const demo::Command& command,
     SDL_CHECK(SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255));
     SDL_CHECK(SDL_RenderClear(renderer_.get()));
     game_.render(writer_, frame_ % tileSize);
-    renderPath(environmentModel->toAbsolutePath(command.path));
+
+    if (renderPath_) {
+        renderPath(environmentModel->toAbsolutePath(command.path));
+    }
 
     frame_++;
     SDL_RenderPresent(renderer_.get());

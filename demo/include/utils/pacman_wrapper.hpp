@@ -39,8 +39,10 @@ private:
 
     Game game_;
     int frame_{0};
-    bool quit_{false};
+
     bool pause_{false};
+    bool quit_{false};
+    bool renderPath_{false};
 };
 
 } // namespace utils
