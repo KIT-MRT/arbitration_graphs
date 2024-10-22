@@ -6,6 +6,7 @@
 #include <pacman/util/sdl_delete.hpp>
 #include <pacman/util/sdl_quad_writer.hpp>
 
+#include "demo/environment_model.hpp"
 #include "demo/types.hpp"
 
 namespace utils {
@@ -17,7 +18,7 @@ public:
         SDL_Quit();
     }
 
-    void progressGame(const demo::Command& command);
+    void progressGame(const demo::Command& command, const demo::EnvironmentModel::ConstPtr& environmentModel);
 
     bool quit() const {
         return quit_;

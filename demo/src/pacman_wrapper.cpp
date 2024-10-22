@@ -72,7 +72,8 @@ void PacmanWrapper::handleUserInput() {
     }
 }
 
-void PacmanWrapper::progressGame(const demo::Command& command) {
+void PacmanWrapper::progressGame(const demo::Command& command,
+                                 const demo::EnvironmentModel::ConstPtr& environmentModel) {
     handleUserInput();
 
     game_.input(command.scancode());

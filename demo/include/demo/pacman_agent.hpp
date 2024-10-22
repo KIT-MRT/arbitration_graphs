@@ -71,6 +71,10 @@ public:
         environmentModel_->update(game);
     }
 
+    EnvironmentModel::ConstPtr environmentModel() const {
+        return environmentModel_;
+    }
+
     std::ostream& to_stream(std::ostream& output, const Time& time) const {
         return rootArbitrator_->to_stream(output, time);
     }
