@@ -19,7 +19,7 @@ int main() {
             Command command = agent.getCommand(Clock::now());
             std::cout << agent.to_str(Clock::now()) << '\n';
 
-            demo.progressGame(command);
+            demo.progressGame(command, agent.environmentModel());
         }
     } catch (std::exception& e) {
         std::cout << e.what() << '\n';
