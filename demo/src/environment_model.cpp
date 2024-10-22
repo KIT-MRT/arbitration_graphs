@@ -62,4 +62,19 @@ EnvironmentModel::GhostWithDistance EnvironmentModel::closestGhost(const Ghosts&
     return {closestGhost, minGhostDistance};
 }
 
+Positions EnvironmentModel::toAbsolutePath(const Path& path) const {
+
+    Position currentPosition = pacmanPosition();
+    Positions absolutePath;
+
+    // Let's follow the path and convert it to absolute positions
+    for (const auto& direction : path) {
+        currentPosition = currentPosition + Move(direction).deltaPosition;
+        currentPosition = positionConsideringTunnel(currentPosition);
+        absolutePath.push_back(currentPosition);
+    }
+
+    return absolutePath;
+}
+
 } // namespace demo
