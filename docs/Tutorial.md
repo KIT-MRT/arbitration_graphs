@@ -33,6 +33,8 @@ You guessed it, it contains the environment model for the arbitration graph.
 In it, we store things like current positions of PacMan and the ghosts, the maze, several utility functions
   and other things required by the behavior components.
 
+The `cost_estimator.hpp` file will be relevant for a later task when we cover cost arbitrators.
+
 Finally, in `pacman_agent.hpp`, the behavior components are assembled into an arbitration graph.
 It's also where you'll spend most of your time during this tutorial.
 
