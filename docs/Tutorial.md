@@ -35,6 +35,8 @@ In it, we store things like current positions of PacMan and the ghosts, the maze
 
 The `cost_estimator.hpp` file will be relevant for a later task when we cover cost arbitrators.
 
+Similarly, the `verifier.hpp` file will be used to add a verification layer to the arbitration graph near the end of the tutorial.
+
 Finally, in `pacman_agent.hpp`, the behavior components are assembled into an arbitration graph.
 It's also where you'll spend most of your time during this tutorial.
 
