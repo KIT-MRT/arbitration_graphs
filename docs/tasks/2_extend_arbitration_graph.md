@@ -23,6 +23,7 @@ Integrate the `ChaseGhost` behavior component into the arbitration graph defined
 
 - Take a look at how the other behavior components are defined in `include/demo/pacman_agent.hpp`.
 - Add the `ChaseGhost` behavior component as a new member of the `PacmanAgent` class and initialize it in the constructor.
+- Extend the `PacmanAgent` parameter struct to include the parameters for the `ChaseGhost` behavior component.
 - Add a new option to the priority arbitrator.
 - Run the game, take a look at the new arbitration graph and observe how PacMan behaves.
 
@@ -40,6 +41,16 @@ Add the `ChaseGhost` behavior component as a new member of the `PacmanAgent` cla
 ```cpp
 private:
     ChaseGhostBehavior::Ptr chaseGhostBehavior_;
+```
+
+Extend the `PacmanAgent` parameter struct to include the parameters for the `ChaseGhost` behavior component:
+```cpp
+struct Parameters {
+    AvoidGhostBehavior::Parameters avoidGhostBehavior;
+    // Add the parameters for the ChaseGhost behavior component
+    ChaseGhostBehavior::Parameters chaseGhostBehavior;
+    MoveRandomlyBehavior::Parameters moveRandomlyBehavior;
+};
 ```
 
 In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behavior component and add it to the priority arbitrator:

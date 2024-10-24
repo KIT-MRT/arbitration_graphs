@@ -30,6 +30,7 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 
 - In `cost_estimator.cpp`, fill in the blanks to compute `nDots` and `nCells`.
 - Add an instance of the `CostEstimator` to the `PacmanAgent` class and initialize it in the constructor.
+  Don't forget to include the necessary headers and extend the parameter struct with the parameters for the `CostEstimator`.
 - Replace the random arbitrator with a cost arbitrator in the `PacmanAgent` class. Pass the `CostEstimator` instance to the `addOption` method.
 
 ## Solution
@@ -77,6 +78,18 @@ private:
     CostArbitrator::Ptr eatDotsArbitrator_;
 
     CostEstimator::Ptr costEstimator_;
+```
+
+Extend the `Parameters` struct to contain the parameters for the `CostEstimator`:
+```cpp
+struct Parameters {
+    AvoidGhostBehavior::Parameters avoidGhostBehavior;
+    ChaseGhostBehavior::Parameters chaseGhostBehavior;
+    MoveRandomlyBehavior::Parameters moveRandomlyBehavior;
+
+    // Add the parameters for the CostEstimator
+    CostEstimator::Parameters costEstimator;
+};
 ```
 
 As always, the magic happens in the constructor of the `PacmanAgent` class.
