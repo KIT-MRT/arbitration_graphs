@@ -38,6 +38,62 @@ Finish the implementation of the `checkInvocationCondition` and `getCommand` fun
 - Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::getCommand` if you need inspiration.
 - Compile and run the unit tests for the `ChaseGhost` behavior component to verify that your implementation is correct.
 
+## Solution
+
+<details>
+<summary>Click here to expand the solution</summary>
+
+Fix the invocation condition in `src/chase_ghost_behavior.cpp`:
+```cpp
+bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
+    return environmentModel_->closestScaredGhost(time).has_value() &&
+           environmentModel_->closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
+           environmentModel_->closestScaredGhost(time)->distance < parameters_.invocationMinDistance; // Only applicable if a ghost is close by
+}
+```
+
+Add the missing pice of the getCommand function in `src/chase_ghost_behavior.cpp`:
+```cpp
+Command ChaseGhostBehavior::getCommand(const Time& time) {
+    auto pacmanPosition = environmentModel_->pacmanPosition();
+
+    auto closestScaredGhost = environmentModel_->closestScaredGhost(time);
+    if (!closestScaredGhost) {
+        throw std::runtime_error("Can not compute command to chase ghost because there are no scared ghosts.");
+    }
+
+    auto ghostPosition = closestScaredGhost->ghost.position;
+
+    std::optional<Direction> direction;
+
+    // Add this part:
+    // Chose the direction moving pacman towards the closest scared ghost
+    double minDistance = std::numeric_limits<double>::max();
+    for (const auto& move : Move::possibleMoves()) {
+        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
+
+        if (environmentModel_->isWall(nextPosition)) {
+            continue;
+        }
+
+        // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
+        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
+        if (nextDistance < minDistance) {
+            direction = move.direction;
+            minDistance = nextDistance;
+        }
+    }
+
+    if (!direction) {
+        throw std::runtime_error("Failed to compute direction to chase the closest ghost.");
+    }
+
+    return Command{direction.value()};
+}
+
+```
+</details>
+
 
 ---
 [Tutorial Home](../Tutorial.md)

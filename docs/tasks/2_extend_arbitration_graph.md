@@ -26,6 +26,41 @@ Integrate the `ChaseGhost` behavior component into the arbitration graph defined
 - Add a new option to the priority arbitrator.
 - Run the game, take a look at the new arbitration graph and observe how PacMan behaves.
 
+## Solution
+
+<details>
+<summary>Click here to expand the solution</summary>
+
+Include the header of the `ChaseGhost` behavior component in `include/demo/pacman_agent.hpp`:
+```cpp
+#include "chase_ghost_behavior.hpp"
+```
+
+Add the `ChaseGhost` behavior component as a new member of the `PacmanAgent` class:
+```cpp
+private:
+    ChaseGhostBehavior::Ptr chaseGhostBehavior_;
+```
+
+In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behavior component and add it to the priority arbitrator:
+```cpp
+explicit PacmanAgent(const entt::Game& game)
+        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
+
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+    // Initialize the ChaseGhost behavior component
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior); 
+    moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
+
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    // Add the ChaseGhost behavior component to the priority arbitrator (before the AvoidGhost behavior component!)
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+}
+```
+</details>
+
 
 ---
 [← Previous task](1_implement_behavior_component.md)
