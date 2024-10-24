@@ -96,12 +96,3 @@ With the basics out of the way, let's work through the tasks.
 4. [Learn about nested arbitration graphs](./tasks/4_nested_arbitrators.md)
 5. [Arbitrate based on predicted utility](./tasks/5_cost_arbitration.md)
 
-
-- [ ] Finish chase ghost finish so that is passes unit tests by re-implementing some removed part, e.g. getCommand
-- [ ] Integrate chase ghost into priority arbitrator
-- [ ] Integrate eat closest dot behavior
-- [ ] Integrate eat dot arbitrator as random arbitrator
-- [ ] Replace arbitrator from previous step with cost arbitrator, finish cost estimator
-
-## General TODOs
-- [ ] Add a bit of an explanation about arbitration graphs to top-level readme
