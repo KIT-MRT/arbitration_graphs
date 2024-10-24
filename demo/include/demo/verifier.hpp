@@ -30,9 +30,7 @@ public:
         Move nextMove = Move{command.path.front()};
         Position nextPosition = environmentModel_->pacmanPosition() + nextMove.deltaPosition;
 
-        if (environmentModel_->isPassableCell(nextPosition)) {
-            return VerificationResult{true};
-        }
+        ///@todo Verify the next position is valid
 
         return VerificationResult{false};
     }
