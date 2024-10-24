@@ -25,6 +25,43 @@ Integrate the `EatClosestDot` behavior component into the arbitration graph defi
 - Integrate the new component just like you did in the last task.
 - Start the game and see how PacMan stop wandering around aimlessly and starts eating dots.
 
+## Solution
+
+<details>
+<summary>Click here to expand the solution</summary>
+
+Include the header of the `EatClosestDot` behavior component in `include/demo/pacman_agent.hpp`:
+```cpp
+#include "eat_closest_dot_behavior.hpp"
+```
+
+Add the `ChaseGhost` behavior component as a new member of the `PacmanAgent` class:
+```cpp
+private:
+    EatClosestDotBehavior::Ptr eatClosestDotBehavior_;
+```
+
+In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behavior component and add it to the priority arbitrator:
+```cpp
+explicit PacmanAgent(const entt::Game& game)
+        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
+
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior); 
+    // Initialize the EatClosestDot behavior component
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
+    moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
+
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    // Add the EatClosestDot behavior component to the priority arbitrator (after the ghost behavior components!)
+    rootArbitrator_->addOption(eatClosestDotBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+}
+```
+</details>
+
 
 
 ---

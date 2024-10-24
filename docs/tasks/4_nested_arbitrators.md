@@ -30,6 +30,62 @@ Add the `EatClosestDot` and `ChangeDotCluster` behavior components to a random a
 - Add the random arbitrator as an option to the root arbitrator.
 - Run the game and observe how PacMan behaves.
 
+## Solution
+
+<details>
+<summary>Click here to expand the solution</summary>
+
+Include the header of the `ChangeDotCluster` behavior component and the random arbitrator in `include/demo/pacman_agent.hpp`:
+```cpp
+#include <arbitration_graphs/random_arbitrator.hpp>
+
+#include "change_dot_cluster_behavior.hpp"
+```
+
+For easier to read code, add the following alias near the top of the class definition:
+```cpp
+using RandomArbitrator = arbitration_graphs::RandomArbitrator<Command, Command>;
+```
+
+Add the `ChangeDotCluster` behavior component and the `RandomArbitrator` as a new members of the `PacmanAgent` class:
+```cpp
+private:
+    ChangeDotClusterBehavior::Ptr changeDotClusterBehavior_;
+
+    RandomArbitrator::Ptr eatDotsArbitrator_;
+```
+
+In the constructor of the `PacmanAgent` class, initialize the `ChangeDotCluster` behavior component and the `RandomArbitrator`:
+Add the `EatClosestDot` and `ChangeDotCluster` behavior components as options to the random arbitrator.
+Finally, add the random arbitrator as an option to the root arbitrator:
+```cpp
+explicit PacmanAgent(const entt::Game& game)
+        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
+
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+    // Initialize the ChangeDotCluster behavior component
+    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
+    moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
+
+    // Initialize the random arbitrator and add the EatClosestDot and ChangeDotCluster behavior components as options
+    eatDotsArbitrator_ = std::make_shared<RandomArbitrator>("EatDots");
+    eatDotsArbitrator_->addOption( changeDotClusterBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
+    eatDotsArbitrator_->addOption( eatClosestDotBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
+
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    // The EatDot arbitrator is itself an option of the root arbitrator
+    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+}
+```
+
+
+</details>
+
 
 ---
 [← Previous task](3_add_more_behaviors.md)
