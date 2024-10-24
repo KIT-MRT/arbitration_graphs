@@ -37,3 +37,5 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 [← Previous task](4_nested_arbitrators.md)
 |
 [Tutorial Home](../Tutorial.md)
+|
+[Next task →](6_verification.md)
