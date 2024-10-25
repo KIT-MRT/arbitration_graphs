@@ -1,0 +1,22 @@
+name: Run unit tests
+
+on:
+  push:
+    branches:
+      - github_actions # todo: set to main branch before merge
+
+jobs:
+  build-and-run-unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image for library unit tests
+        run: |
+          docker build --target unittest --tag arbitration_graphs_test .
+
+      - name: Run library unit tests in Docker container
+        run: |
+          docker run --rm arbitration_graphs_test
