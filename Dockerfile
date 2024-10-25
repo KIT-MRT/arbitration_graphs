@@ -42,6 +42,24 @@ USER blinky
 WORKDIR /home/blinky/
 
 
+FROM base AS unit_test
+
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY cmake /tmp/arbitration_graphs/cmake
+COPY include /tmp/arbitration_graphs/include
+COPY test /tmp/arbitration_graphs/test
+COPY version /tmp/arbitration_graphs/version
+
+# Prepare build directory
+RUN mkdir /tmp/arbitration_graphs/build && \
+    cd /tmp/arbitration_graphs/build && \
+    cmake -DBUILD_TESTS=true .. && \
+    cmake --build . -j9
+
+# Run unit tests
+CMD ["cmake", "--build", "/tmp/arbitration_graphs/build", "--target", "test"]
+
+
 
 FROM base AS install
 
@@ -61,3 +79,4 @@ RUN mkdir /tmp/arbitration_graphs/build && \
     cmake --build . && \
     cmake --install . && \
     rm -rf /tmp/arbitration_graphs
+

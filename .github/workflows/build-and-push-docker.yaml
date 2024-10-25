@@ -33,9 +33,11 @@ jobs:
           cat version >> $GITHUB_ENV
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           tags: |
             ghcr.io/kit-mrt/arbitration_graphs:latest
             ghcr.io/kit-mrt/arbitration_graphs:${{ env.VERSION }}
+          target: install
+
