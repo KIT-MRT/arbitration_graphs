@@ -93,6 +93,7 @@ First make sure all dependencies are installed:
 - [Googletest](https://github.com/google/googletest) (only if you want to build unit tests)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [util_caching](https://github.com/KIT-MRT/util_caching)
+- [Crow](https://crowcpp.org) (only needed for GUI)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 

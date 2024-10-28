@@ -13,6 +13,21 @@ RUN apt-get update && \
       libyaml-cpp-dev && \
     apt-get clean
 
+# Install Crow dependencies
+RUN apt-get update && \
+    apt-get install -y \
+      libasio-dev \
+      unzip \
+      wget &&\
+    apt-get clean
+
+# Install Crow (C++ REST/WebSocket server)
+RUN cd /tmp && \
+    wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/Crow-1.2.0.zip && \
+    unzip Crow-*.zip -d /tmp && \
+    cp -r /tmp/Crow-*/* /usr/local && \
+    rm -r Crow-*
+
 # Install util_caching
 RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
     mkdir /tmp/util_caching/build && \
