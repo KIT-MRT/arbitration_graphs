@@ -1,4 +1,5 @@
 services:
   arbitration_graphs:
-    image: arbitration_graphs
+    image: ghcr.io/kit-mrt/arbitration_graphs:$VERSION
     build: .
+    env_file: .env
