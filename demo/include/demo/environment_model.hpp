@@ -100,6 +100,8 @@ public:
         return astar_.pathToClosestDot(position);
     }
 
+    Positions toAbsolutePath(const Path& path) const;
+
     bool isDot(const Position& position) const {
         return maze_->isDot(position);
     }

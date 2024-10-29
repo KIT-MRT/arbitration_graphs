@@ -5,7 +5,7 @@
 namespace demo {
 
 double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
-    Positions absolutePath = utils::toAbsolutePath(command.path, environmentModel_);
+    Positions absolutePath = environmentModel_->toAbsolutePath(command.path);
 
     const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel_);
     const int nDotsInRadius =

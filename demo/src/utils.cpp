@@ -2,22 +2,6 @@
 
 namespace utils {
 
-Positions toAbsolutePath(const demo::Path& path, const demo::EnvironmentModel::ConstPtr& environmentModel) {
-    using namespace demo;
-
-    Position pacmanPosition = environmentModel->pacmanPosition();
-    Positions absolutePath;
-
-    // Let's follow the path and convert it to absolute positions
-    for (const auto& direction : path) {
-        pacmanPosition = pacmanPosition + Move(direction).deltaPosition;
-        pacmanPosition = environmentModel->positionConsideringTunnel(pacmanPosition);
-        absolutePath.push_back(pacmanPosition);
-    }
-
-    return absolutePath;
-}
-
 int dotsAlongPath(const Positions& absolutePath, const demo::EnvironmentModel::ConstPtr& environmentModel) {
     int nDots{0};
 
