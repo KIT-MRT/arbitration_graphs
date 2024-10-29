@@ -3,3 +3,9 @@ services:
     image: ghcr.io/kit-mrt/arbitration_graphs:$VERSION
     build: .
     env_file: .env
+  arbitration_graphs_devel:
+    extends:
+      service: arbitration_graphs
+    image: arbitration_graphs_devel
+    volumes:
+      - .:/home/blinky/arbitration_graphs
