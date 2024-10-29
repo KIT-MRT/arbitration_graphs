@@ -3,3 +3,12 @@ setup.py
 *.pyc
 CMakeLists.txt.user
 build
+
+## GitHub Pages / Jekyll related
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+Gemfile.lock

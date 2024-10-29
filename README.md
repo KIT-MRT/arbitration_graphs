@@ -1,16 +1,29 @@
-# ARBITRATION GRAPHS
+# Arbitration Graphs
 
-Arbitration graphs combine simple atomic behavior blocks to more complex behaviors for decision making and behavior generation
+[![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
 
+Arbitration graphs combine simple atomic behavior components into more complex behaviors for decision-making and behavior generation
+
+## Demonstration
+
+We are currently working on a demonstration of this library using Pac-Man as an example application.
+
+<p align="center">
+  <img src="docs/assets/img/pacman_scenario.png" width="400" />
+</p>
+<p align="center">
+  <img src="docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
+</p>
+
+Feel free to take a look at the work in progress in the [pacman-demo branch](https://github.com/KIT-MRT/arbitration_graphs/tree/pacman-demo).
 
 ## Installation
 
-First, clone this repository, including its submodules:
+First, clone this repository:
 
 ```bash
 git clone https://github.com/KIT-MRT/arbitration_graphs.git
 cd arbitration_graphs
-git submodule update --init --recursive
 ```
 
 
@@ -85,3 +98,4 @@ Run all unit tests:
 ```bash
 find -executable -type f -name '*-gtest-*' -exec {} \;
 ```
+
