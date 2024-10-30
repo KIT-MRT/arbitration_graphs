@@ -9,7 +9,7 @@ Arbitration graphs combine simple atomic behavior components into more complex b
 We are currently working on a demonstration of this library using Pac-Man as an example application.
 
 <p align="center">
-  <img src="docs/assets/img/pacman_scenario.png" width="400" />
+  <img src="docs/assets/img/pacman_scenario_cropped.png" width="300" />
 </p>
 <p align="center">
   <img src="docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
