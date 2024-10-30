@@ -48,7 +48,7 @@ docker compose up
 ### Explanation
 
 You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
-The *Eat Dots* option is again an arbitrator with two sub-behaviors (selecting by expected benefit).
+The *Eat Dots* option is itself an arbitrator with two sub-behaviors (selecting by expected benefit).
 
 In this scene,
 - the *Chase Ghost* and *Avoid Ghost* behaviors are not applicable (no ghosts in close vicinity) → grey background,
