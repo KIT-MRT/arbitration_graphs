@@ -2,11 +2,50 @@
 
 [![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
 
-Arbitration graphs combine simple atomic behavior components into more complex behaviors for decision-making and behavior generation
+**Hierarchical behavior models for complex decision-making and behavior generation in robotics!**
 
-## Demonstration
+<!-- 
+TODO: add example arbitration graph from robotics (with POMDP, RL methods)
+<img
+  src="./docs/assets/img/pacman_arbitrator_safe.svg"
+  alt="Example arbitration graph from robotics"
+  style="margin:10px; width: 50%"
+  align="right"
+/>
+-->
 
-We are currently working on a demonstration of this library using Pac-Man as an example application.
+- **Bottom-up** 🌱: Combine simple atomic behavior components to generate complex behaviors.
+- **Functional decomposition** 🧩: Behavior components define the *How to do it?* and *Can we do it?*, while Arbitrators take the decision on *What to do?*
+- **Meta-framework** 🧠: Integrate diverse methods in one decision-making framework. Why not combine optimization-based planning, probabilistic approaches (POMDPs), and machine learning (RL)? Use any approach where it performs best!
+- **Scalability** 📈: Stack behavior components in arbitrators to create hierarchical behavior models.
+- **Maintainability** 🛠️: Add new behaviors without having to touch others – did we mention strict modularity and functional decomposition?
+- **Transparency** 💡: Easily follow and understand the decision-making process.
+- **Behavior Verification** 🛡️: Use tightly integrated verifiers to ensure only valid and safe behavior commands are executed.
+- **Graceful Degradation** 🪂: Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
+
+
+## Demo
+
+We provide a demo of this library using Pac-Man as an example application.  
+The arbitration graph controls Pac-Man on its journey to collect tasty dots 🍬
+
+Run the demo with:
+
+```bash
+git clone https://github.com/KIT-MRT/arbitration_graphs.git
+cd arbitration_graphs/demo
+docker compose up
+```
+
+### Explanation
+
+You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
+The *Eat Dots* option is again an arbitrator with two sub-behaviors (selecting by expected benefit).
+
+In this scene,
+- the *Chase Ghost* and *Avoid Ghost* behaviors are not applicable (no ghosts in close vicinity) → grey background,
+- the *Eat Closest Dot* and *Move Randomly* behavior failed verification (our verification showcase) → red background,
+- thus, the least-prioritized *Stay in Place* behavior is being executed → green background.
 
 <p align="center">
   <img src="docs/assets/img/pacman_scenario_cropped.png" width="300" />
@@ -15,11 +54,9 @@ We are currently working on a demonstration of this library using Pac-Man as an 
   <img src="docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
 </p>
 
-Feel free to take a look at the work in progress in the [pacman-demo branch](https://github.com/KIT-MRT/arbitration_graphs/tree/pacman-demo).
 
-## Installation
+We will shortly add an [arbitration graph GUI](https://github.com/KIT-MRT/arbitration_graphs/pull/10) and a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
 
-First, clone this repository:
 
 ## Installation
 
