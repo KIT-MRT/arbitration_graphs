@@ -21,24 +21,19 @@ Feel free to take a look at the work in progress in the [pacman-demo branch](htt
 
 First, clone this repository:
 
-```bash
-git clone https://github.com/KIT-MRT/arbitration_graphs.git
-cd arbitration_graphs
-```
+## Installation
 
+From easy to advanced:
 
 ### Using Docker image
 
-We provide a [`Dockerfile`](./Dockerfile) with the library already installed globally.
-
-In the source directory, build and run the docker image with `docker compose`:
+We provide a Docker image with the library already installed globally.
 
 ```bash
-docker compose build
-docker compose run --rm arbitration_graphs
+docker pull ghcr.io/kit-mrt/arbitration_graphs
 ```
 
-The library is installed in the Docker image under `/usr/local/include/arbitration_graphs/` and `/usr/local/lib/cmake/arbitration_graphs/`.
+The library is located under `/usr/local/include/arbitration_graphs/` and `/usr/local/lib/cmake/arbitration_graphs/`.
 So, it can be easily loaded with CMake:
 
 ```cmake
@@ -56,6 +51,13 @@ First make sure all dependencies are installed:
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 
+Now, clone the repository:
+
+```bash
+git clone https://github.com/KIT-MRT/arbitration_graphs.git
+cd arbitration_graphs
+```
+
 Compile and install the project with CMake:
 
 ```bash
@@ -71,10 +73,11 @@ sudo cmake --install .
 
 ### Using Docker image
 
-Follow the steps above to setup the Docker image.
-Then, run the development image.
+Clone the repository and run the development image
 
 ```bash
+git clone https://github.com/KIT-MRT/arbitration_graphs.git
+cd arbitration_graphs
 docker compose build
 docker compose run --rm arbitration_graphs_devel
 ```
