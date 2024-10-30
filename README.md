@@ -14,14 +14,22 @@ TODO: add example arbitration graph from robotics (with POMDP, RL methods)
 />
 -->
 
-- **Bottom-up** 🌱: Combine simple atomic behavior components to generate complex behaviors.
-- **Functional decomposition** 🧩: Behavior components define the *How to do it?* and *Can we do it?*, while Arbitrators take the decision on *What to do?*
-- **Meta-framework** 🧠: Integrate diverse methods in one decision-making framework. Why not combine optimization-based planning, probabilistic approaches (POMDPs), and machine learning (RL)? Use any approach where it performs best!
-- **Scalability** 📈: Stack behavior components in arbitrators to create hierarchical behavior models.
-- **Maintainability** 🛠️: Add new behaviors without having to touch others – did we mention strict modularity and functional decomposition?
-- **Transparency** 💡: Easily follow and understand the decision-making process.
-- **Behavior Verification** 🛡️: Use tightly integrated verifiers to ensure only valid and safe behavior commands are executed.
-- **Graceful Degradation** 🪂: Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
+- 🌱 **Bottom-up**  
+  Combine simple atomic behavior components to generate complex behaviors.
+- 🧩 **Functional decomposition**  
+  Behavior components define the *How to do it?* and *Can we do it?*, while Arbitrators take the decision on *What to do?*
+ - 🧠 **Meta-framework**  
+  Integrate diverse methods in one decision-making framework. Why not combine optimization-based planning, probabilistic approaches (POMDPs), and machine learning (RL)? Use any approach where it performs best!
+- 📈 **Scalability**  
+  Stack behavior components in arbitrators to create hierarchical behavior models.
+- 🛠️ **Maintainability**  
+  Add new behaviors without having to touch others – did we mention strict modularity and functional decomposition?
+- 💡 **Transparency**  
+  Easily follow and understand the decision-making process.
+- 🛡️ **Behavior Verification**  
+  Use tightly integrated verifiers to ensure only valid and safe behavior commands are executed.
+- 🪂 **Graceful Degradation**  
+  Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
 
 
 ## Demo
