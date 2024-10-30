@@ -75,8 +75,8 @@ Follow the steps above to setup the Docker image.
 Then, run the development image.
 
 ```bash
-docker compose -f docker-compose.devel.yaml build
-docker compose -f docker-compose.devel.yaml run --rm arbitration_graphs_devel
+docker compose build
+docker compose run --rm arbitration_graphs_devel
 ```
 
 This mounts the source into the container's `/home/blinky/arbitration_graphs` folder.

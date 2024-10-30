@@ -1,9 +1,12 @@
 services:
   tutorial:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
     build:
       context: .
+      args:
+        - VERSION=$VERSION
       target: tutorial
-    image: arbitration_graphs_pacman_tutorial
+    env_file: .env
     volumes:
       - .:/home/blinky/demo
       - $HOME/.Xauthority:/home/blinky/.Xauthority
@@ -12,10 +15,13 @@ services:
       - DISPLAY=$DISPLAY
 
   demo:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:$VERSION
     build:
       context: .
+      args:
+        - VERSION=$VERSION
       target: demo
-    image: arbitration_graphs_pacman_demo
+    env_file: .env
     volumes:
       - $HOME/.Xauthority:/home/blinky/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix

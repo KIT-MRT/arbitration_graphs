@@ -1,4 +1,5 @@
-FROM ghcr.io/kit-mrt/arbitration_graphs:latest AS tutorial
+ARG VERSION
+FROM ghcr.io/kit-mrt/arbitration_graphs:$VERSION AS tutorial
 
 USER root
 
@@ -33,7 +34,7 @@ COPY --chown=blinky:blinky CMakeLists.txt /home/blinky/demo/CMakeLists.txt
 WORKDIR /home/blinky/demo/build
 
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    cmake --build .
+    cmake --build . -j8
 
 CMD [ "/home/blinky/demo/build/arbitration_graphs_pacman_demo_exe" ]
 
