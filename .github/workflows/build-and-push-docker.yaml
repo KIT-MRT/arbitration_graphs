@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - add_version_tag_to_docker_image # TODO: switch to main before merge
+      - main
 
 jobs:
   build-and-push-image:
