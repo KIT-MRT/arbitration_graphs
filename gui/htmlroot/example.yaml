@@ -1,0 +1,33 @@
+arbitration:
+  type: CostArbitrator
+  name: CostArbitrator
+  invocationCondition: true
+  commitmentCondition: true
+  options:
+    - type: Option
+      behavior:
+        type: Behavior
+        name: low_cost
+        invocationCondition: false
+        commitmentCondition: false
+    - type: Option
+      behavior:
+        type: Behavior
+        name: low_cost
+        invocationCondition: false
+        commitmentCondition: false
+    - type: Option
+      behavior:
+        type: Behavior
+        name: high_cost
+        invocationCondition: true
+        commitmentCondition: true
+      cost: 1
+    - type: Option
+      behavior:
+        type: Behavior
+        name: mid_cost
+        invocationCondition: true
+        commitmentCondition: false
+      cost: 0.5
+  activeBehavior: 3
