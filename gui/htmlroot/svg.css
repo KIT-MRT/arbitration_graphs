@@ -63,10 +63,6 @@
     --on-grey: #8b8b8b;
 }
 
-.behavior-block-frame, .behavior-block-background, .behavior-block-utility {
-    rx: 10;
-    ry: 10;
-}
 .behavior-block-frame {
     fill: transparent;
     stroke: transparent;
@@ -84,10 +80,6 @@
     fill: var(--on-grey);
 }
 
-.arbitrator .behavior-block-frame, .arbitrator .behavior-block-background, .arbitrator .behavior-block-utility {
-    rx: 0;
-    ry: 0;
-}
 .invocable .behavior-block-frame {
     stroke: var(--grey);
     stroke-width: 1;

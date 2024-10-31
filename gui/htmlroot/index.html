@@ -59,10 +59,6 @@
                         :active-options="arbitrationGraph.activeBehaviors" />
                 </g>
             </svg>
-            <div id="browser-warning" v-if="!browser.isChrome">
-                This browser seems to be {{ browser.which }}.
-                Use Chrome/Chromium for proper rendering!
-            </div>
             <div id="status" v-show="showStatus">{{ status }}</div>
             <div id="hover-status" v-show="hoverTimeout">Headless mode → hiding soon…</div>
             <div id="hover-bar" :class="{hoverBarAnimation: animateHoverBar}" v-show="hoverTimeout"></div>
@@ -111,13 +107,13 @@
                     d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z" />
 
                 <!-- behavior block background -->
-                <rect class="behavior-block-background" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" />
+                <rect class="behavior-block-background" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" :rx="optionRx(options)" :ry="optionRy(options)" />
 
                 <!-- behavior block cost -->
-                <rect v-if="utility" class="behavior-block-utility" x="0" y="0" :width="utility ? optionInnerWidth*utility : optionInnerWidth" :height="optionInnerHeight" />
+                <rect v-if="utility" class="behavior-block-utility" x="0" y="0" :width="utility ? optionInnerWidth*utility : optionInnerWidth" :height="optionInnerHeight" :rx="optionRx(options)" :ry="optionRy(options)" />
 
                 <!-- behavior block frame -->
-                <rect class="behavior-block-frame" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" />
+                <rect class="behavior-block-frame" x="0" y="0" :width="optionInnerWidth" :height="optionInnerHeight" :rx="optionRx(options)" :ry="optionRy(options)" />
 
                 <!-- behavior block icon -->
                 <g class="behavior-block-icon" transform="translate(10,10)">

@@ -109,6 +109,18 @@ let ArbitratorOptionComponent = {
         isOptionDelayed: function (option) {
             return option.verificationResult && option.verificationResult == "noTimelyResponse";
         },
+        optionRx: function (options) {
+            if (options == null || options === undefined || options.length == 0) {
+                // This component is a behavior option → rounded edges
+                return 10;
+            } else {
+                // This component is an arbitrator → square edges
+                return 0;
+            }
+        },
+        optionRy: function () {
+            return this.optionRx();
+        },
         optionY: function (index) {
             return index * this.optionOuterHeight - this.options.length / 2 * this.optionOuterHeight + this.optionOuterHeight / 2;
         },
