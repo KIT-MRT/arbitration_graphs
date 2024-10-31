@@ -6,7 +6,6 @@ services:
       args:
         - VERSION=$VERSION
       target: tutorial
-    profiles: ["tutorial"]
     env_file: .env
     volumes:
       - .:/home/blinky/demo
@@ -14,6 +13,10 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - DISPLAY=$DISPLAY
+    #
+    # This makes sure `docker compose up` only runs the demo service
+    # Use `docker compose run --rm tutorial` to run the tutorial
+    profiles: ["tutorial"]
 
   demo:
     image: ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:$VERSION
