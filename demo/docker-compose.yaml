@@ -1,0 +1,34 @@
+services:
+  tutorial:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
+    build:
+      context: .
+      args:
+        - VERSION=$VERSION
+      target: tutorial
+    env_file: .env
+    volumes:
+      - .:/home/blinky/demo
+      - $HOME/.Xauthority:/home/blinky/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY
+    #
+    # This makes sure `docker compose up` only runs the demo service
+    # Use `docker compose run --rm tutorial` to run the tutorial
+    profiles: ["tutorial"]
+
+  demo:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:$VERSION
+    build:
+      context: .
+      args:
+        - VERSION=$VERSION
+      target: demo
+    env_file: .env
+    volumes:
+      - $HOME/.Xauthority:/home/blinky/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY
+

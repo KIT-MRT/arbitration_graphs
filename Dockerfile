@@ -24,7 +24,11 @@ RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
 
 
 # Install arbitration_graphs
-COPY . /tmp/arbitration_graphs
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY cmake /tmp/arbitration_graphs/cmake
+COPY include /tmp/arbitration_graphs/include
+COPY test /tmp/arbitration_graphs/test
+
 RUN mkdir /tmp/arbitration_graphs/build && \
     cd /tmp/arbitration_graphs/build && \
     cmake .. && \
