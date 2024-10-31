@@ -3,13 +3,12 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 #header {
-    position: absolute;
-    height: 10vh;
+    height: 5vh;
     margin: 0;
     font-family: "Ubuntu";
 }
 .frame {
-    height: 70vh;
+    height: 65vh;
     padding: 10vh 0;
 }
 #arbitration-frame svg {
