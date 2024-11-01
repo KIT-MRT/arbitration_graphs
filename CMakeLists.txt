@@ -19,12 +19,6 @@ find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
 
-############################
-## Read source code files ##
-############################
-file(GLOB_RECURSE PROJECT_HEADER_FILES_INC CONFIGURE_DEPENDS "include/${PROJECT_NAME}/*.h" "include/${PROJECT_NAME}/*.hpp")
-
-
 ###########
 ## Build ##
 ###########
