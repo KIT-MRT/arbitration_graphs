@@ -68,36 +68,8 @@ target_link_libraries(${PROJECT_NAME}_exe PRIVATE
 #############
 ## Testing ##
 #############
-find_package(GTest)
 
-if(GTEST_FOUND)
-  if(BUILD_TESTS)
-    file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "test/*.cpp" "test/*.cc")
-
-    foreach(_test ${_tests})
-      get_filename_component(_test_name ${_test} NAME_WE)
-      # make sure we add only one -test to the target
-      string(REGEX REPLACE "-test" "" TEST_TARGET_NAME ${_test_name})
-      set(TEST_TARGET_NAME ${PROJECT_NAME}-gtest-${TEST_TARGET_NAME})
-
-      message(STATUS
-        "Adding gtest unittest \"${TEST_TARGET_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_test}"
-      )
-
-      add_executable(${TEST_TARGET_NAME} ${_test})
-
-      target_include_directories(${TEST_TARGET_NAME}
-          PRIVATE
-          include
-          ${SDL2_INCLUDE_DIR}
-      )
-      target_link_libraries(${TEST_TARGET_NAME}
-          PRIVATE
-          ${GTEST_BOTH_LIBRARIES} pthread
-          ${PROJECT_NAME}
-          EnTT_Pacman
-      )
-    endforeach()
-  endif()
+if(BUILD_TESTS)
+  message("Building with tests")
+  add_subdirectory(test)
 endif()
-

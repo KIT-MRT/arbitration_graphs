@@ -1,0 +1,32 @@
+###################
+## Find packages ##
+###################
+
+find_package(GTest)
+
+
+###########
+## Build ##
+###########
+
+if(GTEST_FOUND)
+  file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "*.cpp" "*.cc")
+
+  foreach(_test ${_tests})
+    get_filename_component(_test_name ${_test} NAME_WE)
+    # make sure we add only one -test to the target
+    string(REGEX REPLACE "-test" "" TEST_TARGET_NAME ${_test_name})
+    set(TEST_TARGET_NAME ${PROJECT_NAME}-gtest-${TEST_TARGET_NAME})
+
+    message(STATUS
+      "Adding gtest unittest \"${TEST_TARGET_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_test}"
+    )
+
+    add_executable(${TEST_TARGET_NAME} ${_test})
+
+    target_link_libraries(${TEST_TARGET_NAME} PUBLIC
+      ${GTEST_BOTH_LIBRARIES} pthread
+      ${PROJECT_NAME}
+    )
+  endforeach()
+endif()
