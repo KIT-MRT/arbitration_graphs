@@ -19,6 +19,8 @@ RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_gr
     rm -rf /tmp/EnTT-Pacman
 
 USER blinky
+COPY --chown=blinky:blinky .motd /home/blinky/.motd
+RUN echo "\n\nsource /home/blinky/.motd" >> /home/blinky/.bashrc
 
 WORKDIR /home/blinky/demo
 
