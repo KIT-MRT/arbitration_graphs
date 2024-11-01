@@ -22,7 +22,7 @@ find_package(Yaml-cpp REQUIRED)
 ############################
 ## Read source code files ##
 ############################
-file(GLOB_RECURSE PROJECT_HEADER_FILES_INC "include/${PROJECT_NAME}/*.h" "include/${PROJECT_NAME}/*.hpp")
+file(GLOB_RECURSE PROJECT_HEADER_FILES_INC CONFIGURE_DEPENDS "include/${PROJECT_NAME}/*.h" "include/${PROJECT_NAME}/*.hpp")
 
 
 ###########
@@ -85,7 +85,7 @@ find_package(GTest)
 
 if(GTEST_FOUND)
   if(BUILD_TESTS)
-    file(GLOB_RECURSE _tests "test/*.cpp" "test/*.cc")
+    file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "test/*.cpp" "test/*.cc")
 
     foreach(_test ${_tests})
       get_filename_component(_test_name ${_test} NAME_WE)

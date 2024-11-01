@@ -19,6 +19,7 @@ find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
+
 ###########
 ## Build ##
 ###########
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     ${YAML_CPP_LIBRARIES}
 )
 
+
 #############
 ## Testing ##
 #############
@@ -70,7 +72,7 @@ find_package(GTest)
 
 if(GTEST_FOUND)
   if(BUILD_TESTS)
-    file(GLOB_RECURSE _tests "test/*.cpp" "test/*.cc")
+    file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "test/*.cpp" "test/*.cc")
 
     foreach(_test ${_tests})
       get_filename_component(_test_name ${_test} NAME_WE)
