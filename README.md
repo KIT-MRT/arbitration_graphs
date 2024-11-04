@@ -141,9 +141,9 @@ cmake -DBUILD_TESTS=true ..
 cmake --build .
 ```
 
-Run all unit tests:
+Run all unit tests with CTest:
 
 ```bash
-find -executable -type f -name '*-gtest-*' -exec {} \;
+cmake --build . --target test
 ```
 

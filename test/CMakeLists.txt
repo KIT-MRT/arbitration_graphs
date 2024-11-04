@@ -28,5 +28,10 @@ if(GTEST_FOUND)
       ${GTEST_BOTH_LIBRARIES} pthread
       ${PROJECT_NAME}
     )
+
+    add_test(NAME ${TEST_TARGET_NAME}
+      COMMAND ${TEST_TARGET_NAME}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
   endforeach()
 endif()

@@ -39,6 +39,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # Allow clangd and others to properly understand this C++ project
   set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+  # Testing only available if this is the main project
+  # Note this needs to be done in the main CMakeLists
+  # since it calls enable_testing, which must be in the
+  # main CMakeLists.
+  include(CTest)
 endif()
 
 
@@ -89,6 +95,18 @@ configure_package_config_file(
 
 
 #############
+## Testing ##
+#############
+
+# Testing only available if this is the main project
+# Emergency override ARBITRATION_GRAPHS_CMAKE_BUILD_TESTING provided as well
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ARBITRATION_GRAPHS_CMAKE_BUILD_TESTING)
+   AND BUILD_TESTS)
+  add_subdirectory(test)
+endif()
+
+
+#############
 ## Install ##
 #############
 
@@ -106,13 +124,3 @@ install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
               "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
         DESTINATION lib/cmake/${PROJECT_NAME})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
-
-
-#############
-## Testing ##
-#############
-
-if(BUILD_TESTS)
-  message("Building with tests")
-  add_subdirectory(test)
-endif()
