@@ -11,11 +11,29 @@ project(arbitration_graphs_pacman_demo
   LANGUAGES CXX
 )
 
+# Select project features
+set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+###############
+## C++ setup ##
+###############
+
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  # Require C++17
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+  # Let's ensure -std=c++xx instead of -std=g++xx
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # Allow clangd and others to properly understand this C++ project
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
 
 
 ###################
