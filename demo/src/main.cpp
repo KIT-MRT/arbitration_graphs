@@ -25,7 +25,6 @@ int main() {
             const Time time = Clock::now();
 
             Command command = agent.getCommand(time);
-            std::cout << agent.to_str(time) << '\n';
 
             server.broadcast(agent.yamlString(time));
 
