@@ -18,6 +18,7 @@ RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_gr
     cmake --install . && \
     rm -rf /tmp/EnTT-Pacman
 
+RUN useradd --create-home --uid 1000 blinky
 USER blinky
 
 WORKDIR /home/blinky/demo

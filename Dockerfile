@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -23,6 +23,18 @@ RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
     rm -rf /tmp/util_caching
 
 
+
+FROM base AS devel
+
+RUN useradd --create-home --uid 1000 blinky
+USER blinky
+
+WORKDIR /home/blinky/
+
+
+
+FROM base as install
+
 # Install arbitration_graphs
 COPY CMakeLists.txt /tmp/arbitration_graphs/
 COPY cmake /tmp/arbitration_graphs/cmake
@@ -36,9 +48,3 @@ RUN mkdir /tmp/arbitration_graphs/build && \
     cmake --build . && \
     cmake --install . && \
     rm -rf /tmp/arbitration_graphs
-
-RUN useradd --create-home --uid 1000 blinky
-USER blinky
-
-WORKDIR /home/blinky/
-
