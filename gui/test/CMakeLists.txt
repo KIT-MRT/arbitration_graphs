@@ -24,6 +24,12 @@ if(GTEST_FOUND)
 
     add_executable(${TEST_TARGET_NAME} ${_test})
 
+    target_include_directories(${TEST_TARGET_NAME} PRIVATE
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/gui/include/${PROJECT_NAME}>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+    )
+
     target_link_libraries(${TEST_TARGET_NAME} PUBLIC
       ${GTEST_BOTH_LIBRARIES} pthread
       ${PROJECT_NAME}
