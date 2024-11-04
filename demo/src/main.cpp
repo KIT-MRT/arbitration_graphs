@@ -17,7 +17,7 @@ int main() {
         PacmanWrapper demo;
         PacmanAgent agent(demo.game());
 
-        gui::WebServer server(1256, true);
+        gui::WebServer server(8080, true);
 
         while (!demo.quit()) {
             agent.updateEnvironmentModel(demo.game());

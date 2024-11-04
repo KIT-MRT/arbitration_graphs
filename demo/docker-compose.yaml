@@ -8,7 +8,7 @@ services:
       target: tutorial
     env_file: .env
     ports:
-      - "1256:1256"
+      - "8080:8080"
     volumes:
       - .:/home/blinky/demo
       - $HOME/.Xauthority:/home/blinky/.Xauthority
@@ -29,7 +29,7 @@ services:
       target: demo
     env_file: .env
     ports:
-      - "1256:1256"
+      - "8080:8080"
     volumes:
       - $HOME/.Xauthority:/home/blinky/.Xauthority
       - /tmp/.X11-unix:/tmp/.X11-unix
