@@ -1,6 +1,6 @@
 #pragma once
 
-#define CROW_STATIC_ENDPOINT "/<path>"
+#include "crow_config.hpp"
 
 #include <crow.h>
 #include <mutex>

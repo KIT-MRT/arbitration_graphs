@@ -27,6 +27,7 @@ if(GTEST_FOUND)
     target_include_directories(${TEST_TARGET_NAME} PRIVATE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/gui/include/${PROJECT_NAME}>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/gui>
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     )
 
