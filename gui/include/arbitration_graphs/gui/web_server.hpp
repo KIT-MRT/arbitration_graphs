@@ -16,7 +16,7 @@ public:
 
         app_.loglevel(crow::LogLevel::Warning);
 
-        CROW_WEBSOCKET_ROUTE(app_, "/ws")
+        CROW_WEBSOCKET_ROUTE(app_, "/status")
             .onopen([this](crow::websocket::connection& conn) {
                 std::lock_guard<std::mutex> guard(connections_mutex_);
                 connections_.insert(&conn);
