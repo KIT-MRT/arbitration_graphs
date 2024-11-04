@@ -3,6 +3,20 @@
 cmake_minimum_required(VERSION 3.22)
 
 
+################
+## Crow setup ##
+################
+
+# Pass install data directory to the Crow web server,
+# as the Web App files will be located there
+
+include(GNUInstallDirs)
+
+set(CROW_STATIC_DIRECTORY ${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME})
+add_compile_definitions(CROW_STATIC_DIRECTORY="${CROW_STATIC_DIRECTORY}")
+message("Install directory for WebApp GUI: CROW_STATIC_DIRECTORY=${CROW_STATIC_DIRECTORY}")
+
+
 ###################
 ## Find packages ##
 ###################
@@ -16,8 +30,8 @@ find_package(Crow REQUIRED)
 
 # Declare a cpp library
 add_library(${PROJECT_NAME}_gui SHARED
-  src/websocket_server.cpp
-  include/arbitration_graphs/gui/websocket_server.hpp
+  src/web_server.cpp
+  include/arbitration_graphs/gui/web_server.hpp
 )
 target_include_directories(${PROJECT_NAME}_gui PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/gui/include/${PROJECT_NAME}>
@@ -33,6 +47,7 @@ target_link_libraries(${PROJECT_NAME}_gui PUBLIC
 #############
 
 set(INSTALL_TARGETS ${INSTALL_TARGETS} ${PROJECT_NAME}_gui PARENT_SCOPE)
+install(DIRECTORY htmlroot/ DESTINATION ${CROW_STATIC_DIRECTORY})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 
 

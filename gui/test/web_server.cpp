@@ -36,7 +36,7 @@
 //}
 //=======================================================================================================================================================
 
-#include <arbitration_graphs/gui/websocket_server.hpp>
+#include <arbitration_graphs/gui/web_server.hpp>
 
 #include "gtest/gtest.h"
 
@@ -48,13 +48,13 @@
 
 using namespace arbitration_graphs;
 
-TEST(WebSocketServer, Autostart) {
+TEST(WebServer, Autostart) {
 
     // We run the test in a thread, in order to test for timeouts
     auto asyncFuture = std::async(std::launch::async, []() {
-        gui::WebSocketServer server{8080, true};
+        gui::WebServer server{8080, true};
 
-        std::cout << "WebSocketServer set up, sending some messages" << std::endl;
+        std::cout << "WebServer set up, sending some messages" << std::endl;
 
         for (int i = 0; i < 3; i++) {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulate some delay
@@ -68,14 +68,14 @@ TEST(WebSocketServer, Autostart) {
     ASSERT_TRUE(asyncFuture.wait_for(std::chrono::seconds(10)) != std::future_status::timeout);
 }
 
-TEST(WebSocketServer, CustomStartStop) {
+TEST(WebServer, CustomStartStop) {
 
     // We run the test in a thread, in order to test for timeouts
     auto asyncFuture = std::async(std::launch::async, []() {
-        gui::WebSocketServer server{8080};
+        gui::WebServer server{8080};
         auto a = server.start();
 
-        std::cout << "WebSocketServer set up, sending some messages" << std::endl;
+        std::cout << "WebServer set up, sending some messages" << std::endl;
 
         for (int i = 0; i < 3; i++) {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulate some delay

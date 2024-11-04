@@ -1,5 +1,7 @@
 #pragma once
 
+#define CROW_STATIC_ENDPOINT "/<path>"
+
 #include <crow.h>
 #include <mutex>
 #include <set>
@@ -8,9 +10,9 @@
 
 namespace arbitration_graphs::gui {
 
-class WebSocketServer {
+class WebServer {
 public:
-    WebSocketServer(int port, bool autostart = false) : port_{port}, autostart_{autostart} {
+    WebServer(int port, bool autostart = false) : port_{port}, autostart_{autostart} {
 
         app_.loglevel(crow::LogLevel::Warning);
 
@@ -35,7 +37,7 @@ public:
         }
     }
 
-    ~WebSocketServer() {
+    ~WebServer() {
         if (autostart_) {
             stop();
         }

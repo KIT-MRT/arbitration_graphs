@@ -2,7 +2,7 @@
 #include <iostream>
 #include <thread>
 
-#include <arbitration_graphs/gui/websocket_server.hpp>
+#include <arbitration_graphs/gui/web_server.hpp>
 
 #include "demo/pacman_agent.hpp"
 #include "demo/types.hpp"
@@ -17,7 +17,7 @@ int main() {
         PacmanWrapper demo;
         PacmanAgent agent(demo.game());
 
-        gui::WebSocketServer server(1256, true);
+        gui::WebServer server(1256, true);
 
         while (!demo.quit()) {
             agent.updateEnvironmentModel(demo.game());
