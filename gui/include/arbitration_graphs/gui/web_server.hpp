@@ -64,6 +64,10 @@ public:
         CROW_LOG_DEBUG << "Message sent to all clients: " << message;
     }
 
+    crow::SimpleApp loglevel(crow::LogLevel level) {
+        return app_.loglevel(level);
+    }
+
 private:
     crow::SimpleApp app_;
     std::set<crow::websocket::connection*> connections_;
