@@ -16,6 +16,13 @@ public:
 
         app_.loglevel(crow::LogLevel::Warning);
 
+        CROW_ROUTE(app_, "/")
+        ([]() {
+            crow::response response;
+            response.set_static_file_info_unsafe(std::string{CROW_STATIC_DIRECTORY} + "/index.html");
+            return response;
+        });
+
         CROW_WEBSOCKET_ROUTE(app_, "/status")
             .onopen([this](crow::websocket::connection& conn) {
                 std::lock_guard<std::mutex> guard(connections_mutex_);

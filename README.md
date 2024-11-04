@@ -45,6 +45,9 @@ cd arbitration_graphs/demo
 docker compose up
 ```
 
+Open the GUI with your favorite browser:  
+http://0.0.0.0:8080
+
 ### Explanation
 
 You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
