@@ -28,6 +28,7 @@ COPY CMakeLists.txt /tmp/arbitration_graphs/
 COPY cmake /tmp/arbitration_graphs/cmake
 COPY include /tmp/arbitration_graphs/include
 COPY test /tmp/arbitration_graphs/test
+COPY version /tmp/arbitration_graphs/version
 
 RUN mkdir /tmp/arbitration_graphs/build && \
     cd /tmp/arbitration_graphs/build && \

@@ -1,5 +1,16 @@
 cmake_minimum_required(VERSION 3.22)
-project(arbitration_graphs_pacman_demo)
+
+
+######################
+## Project settings ##
+######################
+
+# Setup project
+project(arbitration_graphs_pacman_demo
+  DESCRIPTION "Demo and tutorial project for teaching arbitration_graphs"
+  LANGUAGES CXX
+)
+
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
