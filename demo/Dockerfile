@@ -8,7 +8,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
       cmake \
-      libsdl2-dev
+      libsdl2-dev && \
+    apt-get clean
 
 # Build and install EnTT-Pacman
 RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_graphs_demo /tmp/EnTT-Pacman && \

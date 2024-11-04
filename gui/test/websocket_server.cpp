@@ -36,7 +36,7 @@
 //}
 //=======================================================================================================================================================
 
-#include "gui/websocket_server.hpp"
+#include <arbitration_graphs/gui/websocket_server.hpp>
 
 #include "gtest/gtest.h"
 
@@ -50,46 +50,42 @@ using namespace arbitration_graphs;
 
 TEST(WebSocketServer, Autostart) {
 
-  // We run the test in a thread, in order to test for timeouts
-  auto asyncFuture = std::async(std::launch::async, []() {
-    gui::WebSocketServer server{8080, true};
+    // We run the test in a thread, in order to test for timeouts
+    auto asyncFuture = std::async(std::launch::async, []() {
+        gui::WebSocketServer server{8080, true};
 
-    std::cout << "WebSocketServer set up, sending some messages" << std::endl;
+        std::cout << "WebSocketServer set up, sending some messages" << std::endl;
 
-    for (int i = 0; i < 3; i++) {
-      std::this_thread::sleep_for(
-          std::chrono::seconds(1)); // Simulate some delay
-      server.broadcast("Hello from the server! " + std::to_string(i));
-    }
+        for (int i = 0; i < 3; i++) {
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulate some delay
+            server.broadcast("Hello from the server! " + std::to_string(i));
+        }
 
-    std::cout << "Closing" << std::endl;
-  });
+        std::cout << "Closing" << std::endl;
+    });
 
-  // Make sure that the server shuts down cleanly
-  ASSERT_TRUE(asyncFuture.wait_for(std::chrono::seconds(10)) !=
-              std::future_status::timeout);
+    // Make sure that the server shuts down cleanly
+    ASSERT_TRUE(asyncFuture.wait_for(std::chrono::seconds(10)) != std::future_status::timeout);
 }
 
 TEST(WebSocketServer, CustomStartStop) {
 
-  // We run the test in a thread, in order to test for timeouts
-  auto asyncFuture = std::async(std::launch::async, []() {
-    gui::WebSocketServer server{8080};
-    auto a = server.start();
+    // We run the test in a thread, in order to test for timeouts
+    auto asyncFuture = std::async(std::launch::async, []() {
+        gui::WebSocketServer server{8080};
+        auto a = server.start();
 
-    std::cout << "WebSocketServer set up, sending some messages" << std::endl;
+        std::cout << "WebSocketServer set up, sending some messages" << std::endl;
 
-    for (int i = 0; i < 3; i++) {
-      std::this_thread::sleep_for(
-          std::chrono::seconds(1)); // Simulate some delay
-      server.broadcast("Hello from the server! " + std::to_string(i));
-    }
+        for (int i = 0; i < 3; i++) {
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulate some delay
+            server.broadcast("Hello from the server! " + std::to_string(i));
+        }
 
-    std::cout << "Closing" << std::endl;
-    server.stop();
-  });
+        std::cout << "Closing" << std::endl;
+        server.stop();
+    });
 
-  // Make sure that the server shuts down cleanly
-  ASSERT_TRUE(asyncFuture.wait_for(std::chrono::seconds(10)) !=
-              std::future_status::timeout);
+    // Make sure that the server shuts down cleanly
+    ASSERT_TRUE(asyncFuture.wait_for(std::chrono::seconds(10)) != std::future_status::timeout);
 }

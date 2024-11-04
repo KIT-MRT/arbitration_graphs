@@ -90,10 +90,10 @@ find_package(arbitration_graphs REQUIRED)
 
 First make sure all dependencies are installed:
 - [glog](https://github.com/google/glog)
-- [Googletest](https://github.com/google/googletest) (only if you want to build unit tests)
+- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [util_caching](https://github.com/KIT-MRT/util_caching)
-- [Crow](https://crowcpp.org) (only needed for GUI)
+- [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 
@@ -113,6 +113,8 @@ cmake ..
 cmake --build .
 sudo cmake --install .
 ```
+
+In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
 
 ## Development
