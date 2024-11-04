@@ -45,6 +45,7 @@ public:
 
     // Function to start the server
     std::future<void> start() {
+        CROW_LOG_INFO << "Serving WebApp from " << CROW_STATIC_DIRECTORY;
         return app_.port(port_).multithreaded().run_async();
     }
 
