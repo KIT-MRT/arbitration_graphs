@@ -74,6 +74,7 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
   util_caching
   ${YAML_CPP_LIBRARIES}
 )
+set(INSTALL_TARGETS ${PROJECT_NAME})
 
 
 ###################
@@ -110,8 +111,7 @@ endif()
 ## Install ##
 #############
 
-
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${INSTALL_TARGETS}
     EXPORT ${PROJECT_NAME}Targets
     LIBRARY DESTINATION lib COMPONENT Runtime
     ARCHIVE DESTINATION lib COMPONENT Development
