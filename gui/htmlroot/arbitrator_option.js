@@ -23,7 +23,7 @@ let ArbitratorOptionComponent = {
         flags: { type: Object, default: null },
         options: { type: Object, default: null },
         activeOption: { type: Number, default: null },
-        activeOptions: { type: Number, default: [] },
+        activeOptions: { type: Object, default: [] },
     },
     computed: {
         failedVerification: function () {
