@@ -1,4 +1,4 @@
-ARG VERSION
+ARG VERSION=latest
 FROM ghcr.io/kit-mrt/arbitration_graphs:$VERSION AS tutorial
 
 USER root
