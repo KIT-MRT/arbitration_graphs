@@ -19,6 +19,8 @@ RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_gr
     rm -rf /tmp/EnTT-Pacman
 
 USER blinky
+COPY --chown=blinky:blinky .motd /home/blinky/.motd
+RUN echo "\n\nsource /home/blinky/.motd" >> /home/blinky/.bashrc
 
 WORKDIR /home/blinky/demo
 
@@ -36,5 +38,5 @@ WORKDIR /home/blinky/demo/build
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
     cmake --build . -j8
 
-CMD [ "/home/blinky/demo/build/arbitration_graphs_pacman_demo_exe" ]
+CMD ["bash", "-c", "/home/blinky/.motd && /home/blinky/demo/build/arbitration_graphs_pacman_demo_exe"]
 
