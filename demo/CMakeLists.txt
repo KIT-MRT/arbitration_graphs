@@ -54,7 +54,6 @@ find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
-find_package(Crow)
 
 ###########
 ## Build ##
@@ -94,7 +93,6 @@ target_include_directories(${PROJECT_NAME}_exe PRIVATE
 )
 target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     ${PROJECT_NAME}
-    Crow::Crow
     EnTT_Pacman
     util_caching
     ${SDL2_LIBRARY}
