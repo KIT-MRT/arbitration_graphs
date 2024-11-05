@@ -18,7 +18,6 @@ int main() {
         PacmanAgent agent(demo.game());
 
         gui::WebServer server(8080, true);
-        server.loglevel(crow::LogLevel::Info);
 
         while (!demo.quit()) {
             agent.updateEnvironmentModel(demo.game());
