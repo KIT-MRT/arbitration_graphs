@@ -66,7 +66,7 @@ In this scene,
 </p>
 
 
-We will shortly add an [arbitration graph GUI](https://github.com/KIT-MRT/arbitration_graphs/pull/10) and a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
+We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
 
 
 ## Installation
