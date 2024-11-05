@@ -71,8 +71,8 @@ public:
         CROW_LOG_DEBUG << "Message sent to all clients: " << message;
     }
 
-    crow::SimpleApp loglevel(crow::LogLevel level) {
-        return app_.loglevel(level);
+    void loglevel(crow::LogLevel level) {
+        app_.loglevel(level);
     }
 
 private:
