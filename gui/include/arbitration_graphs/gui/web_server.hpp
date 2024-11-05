@@ -12,9 +12,10 @@ namespace arbitration_graphs::gui {
 
 class WebServer {
 public:
-    WebServer(int port, bool autostart = false) : port_{port}, autostart_{autostart} {
+    WebServer(int port, bool autostart = false, crow::LogLevel loglevel = crow::LogLevel::Warning)
+            : port_{port}, autostart_{autostart} {
 
-        app_.loglevel(crow::LogLevel::Warning);
+        app_.loglevel(loglevel);
 
         CROW_ROUTE(app_, "/")
         ([]() {
