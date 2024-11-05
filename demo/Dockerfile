@@ -18,6 +18,7 @@ RUN git clone https://github.com/KIT-MRT/EnTT-Pacman.git --branch arbitration_gr
     cmake --install . && \
     rm -rf /tmp/EnTT-Pacman
 
+RUN useradd --create-home --uid 1000 blinky
 USER blinky
 COPY --chown=blinky:blinky .motd /home/blinky/.motd
 RUN echo "\n\nsource /home/blinky/.motd" >> /home/blinky/.bashrc
@@ -25,6 +26,7 @@ RUN echo "\n\nsource /home/blinky/.motd" >> /home/blinky/.bashrc
 WORKDIR /home/blinky/demo
 
 CMD [ "/bin/bash" ]
+
 
 FROM tutorial AS demo
 

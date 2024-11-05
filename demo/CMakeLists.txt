@@ -1,10 +1,45 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(arbitration_graphs_pacman_demo)
+cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+######################
+## Project settings ##
+######################
+
+# Setup project
+project(arbitration_graphs_pacman_demo
+  DESCRIPTION "Demo and tutorial project for teaching arbitration_graphs"
+  LANGUAGES CXX
+)
+
+# Select project features
+set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
+
+
+###############
+## C++ setup ##
+###############
+
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  # Require C++17
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+  # Let's ensure -std=c++xx instead of -std=g++xx
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # Allow clangd and others to properly understand this C++ project
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+  # Testing only available if this is the main project
+  # Note this needs to be done in the main CMakeLists
+  # since it calls enable_testing, which must be in the
+  # main CMakeLists.
+  include(CTest)
+endif()
 
 
 ###################
@@ -18,6 +53,7 @@ find_package(Glog)
 find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
+
 
 ###########
 ## Build ##
@@ -63,39 +99,14 @@ target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     ${YAML_CPP_LIBRARIES}
 )
 
+
 #############
 ## Testing ##
 #############
-find_package(GTest)
 
-if(GTEST_FOUND)
-  if(BUILD_TESTS)
-    file(GLOB_RECURSE _tests "test/*.cpp" "test/*.cc")
-
-    foreach(_test ${_tests})
-      get_filename_component(_test_name ${_test} NAME_WE)
-      # make sure we add only one -test to the target
-      string(REGEX REPLACE "-test" "" TEST_TARGET_NAME ${_test_name})
-      set(TEST_TARGET_NAME ${PROJECT_NAME}-gtest-${TEST_TARGET_NAME})
-
-      message(STATUS
-        "Adding gtest unittest \"${TEST_TARGET_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_test}"
-      )
-
-      add_executable(${TEST_TARGET_NAME} ${_test})
-
-      target_include_directories(${TEST_TARGET_NAME}
-          PRIVATE
-          include
-          ${SDL2_INCLUDE_DIR}
-      )
-      target_link_libraries(${TEST_TARGET_NAME}
-          PRIVATE
-          ${GTEST_BOTH_LIBRARIES} pthread
-          ${PROJECT_NAME}
-          EnTT_Pacman
-      )
-    endforeach()
-  endif()
+# Testing only available if this is the main project
+# Emergency override ARBITRATION_GRAPHS_DEMO_CMAKE_BUILD_TESTING provided as well
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ARBITRATION_GRAPHS_DEMO_CMAKE_BUILD_TESTING)
+   AND BUILD_TESTS)
+  add_subdirectory(test)
 endif()
-

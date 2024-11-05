@@ -138,12 +138,12 @@ In order to compile with tests define `BUILD_TESTS=true`
 mkdir -p arbitration_graphs/build
 cd arbitration_graphs/build
 cmake -DBUILD_TESTS=true ..
-cmake --build .
+cmake --build . -j9
 ```
 
-Run all unit tests:
+Run all unit tests with CTest:
 
 ```bash
-find -executable -type f -name '*-gtest-*' -exec {} \;
+cmake --build . --target test
 ```
 

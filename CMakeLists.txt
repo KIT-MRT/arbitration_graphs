@@ -1,10 +1,52 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(arbitration_graphs)
+cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+######################
+## Project settings ##
+######################
+
+# Read the project/package version from ./version file
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version" ver)
+string(REGEX MATCH "VERSION=v([0-9\.]*)" _ ${ver})
+set(PACKAGE_VERSION ${CMAKE_MATCH_1})
+
+# Setup project
+project(arbitration_graphs
+  VERSION ${PACKAGE_VERSION}
+  DESCRIPTION "Hierarchical behavior models for complex decision-making and behavior generation in robotics"
+  LANGUAGES CXX
+)
+
+# Select project features
+set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
+
+
+###############
+## C++ setup ##
+###############
+
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  # Require C++17
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+  # Let's ensure -std=c++xx instead of -std=g++xx
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # Allow clangd and others to properly understand this C++ project
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+  # Testing only available if this is the main project
+  # Note this needs to be done in the main CMakeLists
+  # since it calls enable_testing, which must be in the
+  # main CMakeLists.
+  include(CTest)
+endif()
+
 
 ###################
 ## Find packages ##
@@ -12,22 +54,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-find_package(Glog)
-
+find_package(Glog REQUIRED)
 find_package(util_caching REQUIRED)
-
 find_package(Yaml-cpp REQUIRED)
-
-
-############################
-## Read source code files ##
-############################
-file(GLOB_RECURSE PROJECT_HEADER_FILES_INC "include/${PROJECT_NAME}/*.h" "include/${PROJECT_NAME}/*.hpp")
 
 
 ###########
 ## Build ##
 ###########
+
 # Declare a cpp library
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
@@ -39,15 +74,17 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
   util_caching
   ${YAML_CPP_LIBRARIES}
 )
+set(INSTALL_TARGETS ${PROJECT_NAME})
 
 
 ###################
 ## Cmake Package ##
 ###################
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    VERSION 0.1
+    VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 include(CMakePackageConfigHelpers)
@@ -59,11 +96,22 @@ configure_package_config_file(
 
 
 #############
+## Testing ##
+#############
+
+# Testing only available if this is the main project
+# Emergency override ARBITRATION_GRAPHS_CMAKE_BUILD_TESTING provided as well
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ARBITRATION_GRAPHS_CMAKE_BUILD_TESTING)
+   AND BUILD_TESTS)
+  add_subdirectory(test)
+endif()
+
+
+#############
 ## Install ##
 #############
 
-
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${INSTALL_TARGETS}
     EXPORT ${PROJECT_NAME}Targets
     LIBRARY DESTINATION lib COMPONENT Runtime
     ARCHIVE DESTINATION lib COMPONENT Development
@@ -76,33 +124,3 @@ install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
               "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
         DESTINATION lib/cmake/${PROJECT_NAME})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
-
-
-#############
-## Testing ##
-#############
-find_package(GTest)
-
-if(GTEST_FOUND)
-  if(BUILD_TESTS)
-    file(GLOB_RECURSE _tests "test/*.cpp" "test/*.cc")
-
-    foreach(_test ${_tests})
-      get_filename_component(_test_name ${_test} NAME_WE)
-      # make sure we add only one -test to the target
-      string(REGEX REPLACE "-test" "" TEST_TARGET_NAME ${_test_name})
-      set(TEST_TARGET_NAME ${PROJECT_NAME}-gtest-${TEST_TARGET_NAME})
-
-      message(STATUS
-        "Adding gtest unittest \"${TEST_TARGET_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_test}"
-      )
-
-      add_executable(${TEST_TARGET_NAME} ${_test})
-
-      target_link_libraries(${TEST_TARGET_NAME} PUBLIC
-          ${GTEST_BOTH_LIBRARIES} pthread
-          ${PROJECT_NAME}
-      )
-    endforeach()
-  endif()
-endif()
