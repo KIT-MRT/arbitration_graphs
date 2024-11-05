@@ -41,4 +41,6 @@ if(GTEST_FOUND)
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
   endforeach()
+else()
+  message(WARNING "GTest not found. Cannot compile tests!")
 endif()
