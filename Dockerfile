@@ -50,14 +50,13 @@ COPY include /tmp/arbitration_graphs/include
 COPY test /tmp/arbitration_graphs/test
 COPY version /tmp/arbitration_graphs/version
 
-# Prepare build directory
-RUN mkdir /tmp/arbitration_graphs/build && \
-    cd /tmp/arbitration_graphs/build && \
-    cmake -DBUILD_TESTS=true .. && \
+WORKDIR /tmp/arbitration_graphs/build
+
+RUN cmake -DBUILD_TESTS=true .. && \
     cmake --build . -j9
 
 # Run unit tests
-CMD ["cmake", "--build", "/tmp/arbitration_graphs/build", "--target", "test"]
+CMD ["cmake", "--build", ".", "--target", "test"]
 
 
 
@@ -73,9 +72,9 @@ COPY gui /tmp/arbitration_graphs/gui
 COPY include /tmp/arbitration_graphs/include
 COPY test /tmp/arbitration_graphs/test
 
-RUN mkdir /tmp/arbitration_graphs/build && \
-    cd /tmp/arbitration_graphs/build && \
-    cmake .. && \
+WORKDIR /tmp/arbitration_graphs/build
+
+RUN cmake .. && \
     cmake --build . && \
     cmake --install . && \
     rm -rf /tmp/arbitration_graphs
