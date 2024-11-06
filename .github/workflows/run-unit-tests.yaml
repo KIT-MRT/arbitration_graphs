@@ -15,16 +15,9 @@ jobs:
 
       - name: Build Docker image for library unit tests
         run: |
-          docker build --target unittest --tag arbitration_graphs_test .
-
-      - name: Run library unit tests in Docker container
-        run: |
-          docker run --rm arbitration_graphs_test
+          docker compose run --rm --build arbitration_graphs_test
 
       - name: Build Docker image for demo unit tests
         run: |
-          docker build --file demo/Dockerfile --target unittest --tag arbitration_graphs_demo_test demo
+          docker compose -f demo/docker-compose.yaml run --rm --build demo_test
 
-      - name: Run unit tests in Docker container
-        run: |
-          docker run --rm arbitration_graphs_demo_test

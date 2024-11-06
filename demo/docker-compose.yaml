@@ -1,4 +1,13 @@
 services:
+  demo_test:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_test:$VERSION
+    build:
+      context: .
+      args:
+        - VERSION=$VERSION
+      target: unit_test
+    env_file: .env
+
   tutorial:
     image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
     build:
