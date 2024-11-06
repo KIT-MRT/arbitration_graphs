@@ -49,12 +49,24 @@ target_link_libraries(${PROJECT_NAME}_gui INTERFACE
 ## Install ##
 #############
 
-set(INSTALL_TARGETS ${INSTALL_TARGETS} ${PROJECT_NAME}_gui PARENT_SCOPE)
-install(DIRECTORY app/ TYPE DATA)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include
-  PATTERN "*.in" EXCLUDE
-)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION include)
+install(TARGETS ${PROJECT_NAME}_gui
+        EXPORT ${PROJECT_NAME}_guiTargets
+        COMPONENT gui
+        LIBRARY DESTINATION lib COMPONENT Runtime
+        ARCHIVE DESTINATION lib COMPONENT Development
+        RUNTIME DESTINATION bin COMPONENT Runtime
+        PUBLIC_HEADER DESTINATION include COMPONENT Development
+        BUNDLE DESTINATION bin COMPONENT Runtime)
+install(DIRECTORY app/
+        TYPE DATA
+        COMPONENT gui)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+        DESTINATION include
+        COMPONENT gui
+        PATTERN "*.in" EXCLUDE)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
+        DESTINATION include
+        COMPONENT gui)
 
 
 #############
