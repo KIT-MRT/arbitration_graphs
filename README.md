@@ -45,6 +45,9 @@ cd arbitration_graphs/demo
 docker compose up
 ```
 
+Open the GUI with your favorite browser:  
+http://0.0.0.0:8080
+
 ### Explanation
 
 You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
@@ -63,7 +66,7 @@ In this scene,
 </p>
 
 
-We will shortly add an [arbitration graph GUI](https://github.com/KIT-MRT/arbitration_graphs/pull/10) and a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
+We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
 
 
 ## Installation
@@ -90,9 +93,10 @@ find_package(arbitration_graphs REQUIRED)
 
 First make sure all dependencies are installed:
 - [glog](https://github.com/google/glog)
-- [Googletest](https://github.com/google/googletest) (only if you want to build unit tests)
+- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [util_caching](https://github.com/KIT-MRT/util_caching)
+- [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 
@@ -112,6 +116,8 @@ cmake ..
 cmake --build .
 sudo cmake --install .
 ```
+
+In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
 
 ## Development

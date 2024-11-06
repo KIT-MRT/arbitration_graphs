@@ -21,7 +21,7 @@ public:
     using Clusters = utils::DotClusterFinder::Clusters;
 
     explicit ChangeDotClusterBehavior(EnvironmentModel::Ptr environmentModel,
-                                      const std::string& name = "ChangeDotClusterBehavior")
+                                      const std::string& name = "ChangeDotCluster")
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 

@@ -15,8 +15,7 @@ public:
     using Ptr = std::shared_ptr<EatClosestDotBehavior>;
     using ConstPtr = std::shared_ptr<const EatClosestDotBehavior>;
 
-    explicit EatClosestDotBehavior(EnvironmentModel::Ptr environmentModel,
-                                   const std::string& name = "EatClosestDotBehavior")
+    explicit EatClosestDotBehavior(EnvironmentModel::Ptr environmentModel, const std::string& name = "EatClosestDot")
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 

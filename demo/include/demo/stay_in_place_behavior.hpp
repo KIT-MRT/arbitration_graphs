@@ -20,8 +20,7 @@ public:
     using Ptr = std::shared_ptr<StayInPlaceBehavior>;
     using ConstPtr = std::shared_ptr<const StayInPlaceBehavior>;
 
-    explicit StayInPlaceBehavior(EnvironmentModel::Ptr environmentModel,
-                                 const std::string& name = "StayInPlaceBehavior")
+    explicit StayInPlaceBehavior(EnvironmentModel::Ptr environmentModel, const std::string& name = "StayInPlace")
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 

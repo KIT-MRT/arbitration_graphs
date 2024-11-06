@@ -26,7 +26,7 @@ public:
 
     AvoidGhostBehavior(EnvironmentModel::Ptr environmentModel,
                        const Parameters& parameters,
-                       const std::string& name = "AvoidGhostBehavior")
+                       const std::string& name = "AvoidGhost")
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 

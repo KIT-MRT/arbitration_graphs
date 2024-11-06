@@ -1,0 +1,205 @@
+/*
+ * This CSS is loaded via Vue.js and then inlined into the SVG directly.
+ * As a result, the styles will also be included in the downloaded SVG file :)
+ */
+ :root {
+    --red-0: #000000;
+    --red-10: #410000;
+    --red-20: #690000;
+    --red-30: #940000;
+    --red-40: #b81f13;
+    --red-50: #dc3b2a;
+    --red-60: #ff5440;
+    --red-70: #ff8a76;
+    --red-80: #ffb4a6;
+    --red-90: #ffdad3;
+    --red-95: #ffede9;
+    --red-99: #fcfcfc;
+    --red-100: #ffffff;
+
+    --green-0: #000000;
+    --green-10: #002200;
+    --green-20: #003a00;
+    --green-30: #005300;
+    --green-40: #006f00;
+    --green-50: #2a891f;
+    --green-60: #46a438;
+    --green-70: #61c050;
+    --green-80: #7cdd68;
+    --green-90: #97fa81;
+    --green-95: #c9ffb3;
+    --green-99: #f5ffeb;
+    --green-100: #ffffff;
+
+    --blue-0: #000000;
+    --blue-10: #00174d;
+    --blue-20: #002a79;
+    --blue-30: #003ea9;
+    --blue-40: #2657c3;
+    --blue-50: #4671de;
+    --blue-60: #628cfa;
+    --blue-70: #89a9ff;
+    --blue-80: #b2c5ff;
+    --blue-90: #dae2ff;
+    --blue-95: #eef0ff;
+    --blue-99: #fdfbff;
+    --blue-100: #ffffff;
+
+    --red: var(--red-40);
+    --on-red: var(--red-100);
+    --red-light: var(--red-80);
+    --on-red-light: var(--red-20);
+    --red-utility-light: var(--red-90);
+    --red-utility-dark: var(--red-50);
+
+    --green: var(--green-40);
+    --on-green: var(--green-100);
+    --green-light: var(--green-80);
+    --on-green-light: var(--green-20);
+    --green-utility-light: var(--green-90);
+    --green-utility-dark: var(--green-50);
+
+    --grey: #e0e0e0;
+    --on-grey: #8b8b8b;
+}
+
+.behavior-block-frame {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 1;
+}
+.behavior-block-background {
+    fill: var(--grey);
+    stroke: none;
+}
+.behavior-block-utility {
+    fill: var(--on-grey);
+    stroke: none;
+}
+.behavior-block-icon {
+    fill: var(--on-grey);
+}
+
+.invocable .behavior-block-frame {
+    stroke: var(--grey);
+    stroke-width: 1;
+}
+.invocable .behavior-block-background {
+    fill: white;
+}
+.invocable .behavior-block-utility {
+    fill: var(--green-utility-light);
+}
+.committed .behavior-block-frame {
+    stroke: transparent;
+}
+.committed .behavior-block-background {
+    filter: url(#dropShadow);
+}
+.active .behavior-block-frame {
+    stroke: transparent !important;
+}
+.active .behavior-block-background {
+    fill: var(--green) !important;
+}
+.active.utility .behavior-block-background {
+    fill: var(--green-utility-dark) !important;
+}
+.active .behavior-block-utility {
+    fill: var(--green) !important;
+}
+.failed .behavior-block-frame, .delayed .behavior-block-frame {
+    stroke: transparent;
+}
+.failed .behavior-block-background, .delayed .behavior-block-background {
+    fill: var(--red);
+}
+.failed.utility .behavior-block-background, .delayed.utility .behavior-block-background {
+    fill: var(--red-utility-dark);
+}
+.failed .behavior-block-utility, .delayed .behavior-block-utility {
+    fill: var(--red);
+}
+.deactivated .behavior-block-frame {
+    stroke: transparent;
+}
+.deactivated .behavior-block-background {
+    fill: var(--red-light);
+}
+.deactivated .behavior-block-utility {
+    fill: none;
+}
+
+.behavior-block-label {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: Roboto, sans-serif;
+    fill: var(--on-grey);
+    letter-spacing: 0.5px;
+}
+.invocable .behavior-block-label, .committed .behavior-block-label {
+    fill: var(--green);
+}
+.active .behavior-block-label, .failed .behavior-block-label, .delayed .behavior-block-label {
+    fill: var(--on-green) !important;
+}
+.deactivated .behavior-block-label {
+    fill: var(--on-red-light);
+}
+
+.invocable .behavior-block-icon, .committed .behavior-block-icon {
+    fill: var(--green);
+}
+.active .behavior-block-icon, .failed .behavior-block-icon, .delayed .behavior-block-icon {
+    fill: var(--on-red) !important;
+}
+.deactivated .behavior-block-icon {
+    fill: var(--on-red-light);
+}
+.behavior-block-icon-failed, .behavior-block-icon-delayed {
+    fill: var(--red);
+}
+.deactivated .behavior-block-icon-failed, .deactivated .behavior-block-icon-delayed {
+    fill: var(--red-light);
+}
+.behavior-block-icon-fallback {
+    fill: var(--grey);
+}
+.active .behavior-block-icon-fallback {
+    fill: var(--green) !important;
+}
+.failed .behavior-block-icon-fallback, .delayed .behavior-block-icon-fallback {
+    fill: var(--red);
+}
+.failed .behavior-block-icon-reboot, .delayed .behavior-block-icon-reboot {
+    fill: var(--red);
+}
+
+.arrow-marker {
+    fill: var(--grey);
+    stroke: var(--grey);
+    stroke-width: 2;
+}
+.active .arrow-marker {
+    fill: var(--green) !important;
+    stroke: var(--green) !important;
+}
+.failed .arrow-marker, .delayed .arrow-marker {
+    fill: var(--red);
+    stroke: var(--red);
+}
+
+.arrow {
+    fill: none;
+    stroke: var(--grey);
+    stroke-width: 2;
+}
+.arrow.active {
+    stroke: var(--green) !important;
+}
+.arrow.failed, .arrow.delayed {
+    stroke: var(--red);
+}
+.arrow.deactivated {
+    stroke: var(--red-light);
+}

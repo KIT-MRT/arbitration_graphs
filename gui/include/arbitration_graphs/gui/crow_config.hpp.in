@@ -1,0 +1,4 @@
+#pragma once
+
+#define CROW_STATIC_ENDPOINT "/<path>"
+#define CROW_STATIC_DIRECTORY "@CMAKE_CROW_STATIC_DIRECTORY@"

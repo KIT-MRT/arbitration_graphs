@@ -18,6 +18,7 @@ project(arbitration_graphs
 )
 
 # Select project features
+set(BUILD_GUI "TRUE" CACHE STRING "Compile the project with the WebApp GUI")
 set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
 
 
@@ -93,6 +94,16 @@ configure_package_config_file(
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
     INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
 )
+
+
+#############
+##   GUI   ##
+#############
+
+if(BUILD_GUI)
+  message("Building with WebApp GUI")
+  add_subdirectory(gui)
+endif()
 
 
 #############

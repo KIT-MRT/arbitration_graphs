@@ -27,7 +27,7 @@ public:
 
     ChaseGhostBehavior(EnvironmentModel::Ptr environmentModel,
                        const Parameters& parameters,
-                       const std::string& name = "ChaseGhostBehavior")
+                       const std::string& name = "ChaseGhost")
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 
