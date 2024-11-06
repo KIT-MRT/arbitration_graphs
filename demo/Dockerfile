@@ -30,6 +30,25 @@ WORKDIR /home/blinky/demo
 CMD [ "/bin/bash" ]
 
 
+
+FROM tutorial AS unit_test
+
+COPY --chown=blinky:blinky cmake /home/blinky/demo/cmake
+COPY --chown=blinky:blinky include /home/blinky/demo/include
+COPY --chown=blinky:blinky src /home/blinky/demo/src
+COPY --chown=blinky:blinky test /home/blinky/demo/test
+COPY --chown=blinky:blinky CMakeLists.txt /home/blinky/demo/CMakeLists.txt
+
+WORKDIR /home/blinky/demo/build
+
+RUN cmake -DBUILD_TESTS=true .. && \
+    cmake --build . -j8
+
+# Run unit tests
+CMD ["cmake", "--build", ".", "--target", "test"]
+
+
+
 FROM tutorial AS demo
 
 COPY --chown=blinky:blinky cmake /home/blinky/demo/cmake
