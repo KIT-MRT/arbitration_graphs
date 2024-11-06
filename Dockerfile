@@ -52,11 +52,13 @@ FROM base AS install
 
 # Install arbitration_graphs
 COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY LICENSE /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
+COPY version /tmp/arbitration_graphs/
 COPY cmake /tmp/arbitration_graphs/cmake
 COPY gui /tmp/arbitration_graphs/gui
 COPY include /tmp/arbitration_graphs/include
 COPY test /tmp/arbitration_graphs/test
-COPY version /tmp/arbitration_graphs/version
 
 RUN mkdir /tmp/arbitration_graphs/build && \
     cd /tmp/arbitration_graphs/build && \

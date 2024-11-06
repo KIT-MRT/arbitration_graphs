@@ -140,3 +140,13 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
         DESTINATION include
         COMPONENT core
         PATTERN "gui" EXCLUDE)
+
+
+###############
+## Packaging ##
+###############
+
+include(cpack_config)
+include(CPack)
+
+message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")
