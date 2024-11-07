@@ -17,6 +17,9 @@ project(arbitration_graphs
   LANGUAGES CXX
 )
 
+# In order to properly support the GUI, we have to decide on an install path upfront (instead of letting CPack decide)
+set(CMAKE_INSTALL_PREFIX "/opt")
+
 # Select project features
 set(BUILD_GUI "TRUE" CACHE STRING "Compile the project with the WebApp GUI")
 set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
