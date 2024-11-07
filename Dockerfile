@@ -46,6 +46,7 @@ FROM base AS unit_test
 
 COPY CMakeLists.txt /tmp/arbitration_graphs/
 COPY cmake /tmp/arbitration_graphs/cmake
+COPY gui /tmp/arbitration_graphs/gui
 COPY include /tmp/arbitration_graphs/include
 COPY test /tmp/arbitration_graphs/test
 COPY version /tmp/arbitration_graphs/version
