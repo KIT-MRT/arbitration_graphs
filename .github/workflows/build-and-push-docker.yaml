@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Images
 
 on:
   push:
@@ -40,4 +40,17 @@ jobs:
             ghcr.io/kit-mrt/arbitration_graphs:latest
             ghcr.io/kit-mrt/arbitration_graphs:${{ env.VERSION }}
           target: install
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            VERSION=${{ env.VERSION }}
+          context: demo
+          file: demo/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:latest
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:${{ env.VERSION }}
+          target: demo
 
