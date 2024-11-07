@@ -32,7 +32,7 @@ jobs:
         run: |
           cat version >> $GITHUB_ENV
 
-      - name: Build and push Docker image
+      - name: Build and push core library Docker image
         uses: docker/build-push-action@v6
         with:
           push: true
@@ -41,7 +41,7 @@ jobs:
             ghcr.io/kit-mrt/arbitration_graphs:${{ env.VERSION }}
           target: install
 
-      - name: Build and push Docker image
+      - name: Build and push Pacman demo Docker image
         uses: docker/build-push-action@v6
         with:
           build-args: |
@@ -53,4 +53,17 @@ jobs:
             ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:latest
             ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:${{ env.VERSION }}
           target: demo
+
+      - name: Build and push Pacman tutorial Docker image
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            VERSION=${{ env.VERSION }}
+          context: demo
+          file: demo/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:latest
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:${{ env.VERSION }}
+          target: tutorial
 
