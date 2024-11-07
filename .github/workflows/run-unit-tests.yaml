@@ -2,8 +2,6 @@ name: Run unit tests
 
 on:
   push:
-    branches:
-      - github_actions # todo: set to main branch before merge
 
 jobs:
   build-and-run-unit-tests:
