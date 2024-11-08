@@ -46,7 +46,7 @@ docker compose up
 ```
 
 Open the GUI with your favorite browser:  
-http://0.0.0.0:8080
+[http://0.0.0.0:8080](http://0.0.0.0:8080)
 
 ### Explanation
 
