@@ -31,7 +31,7 @@ set(CPACK_DEBIAN_CORE_PACKAGE_NAME "arbitration-graphs-core")
 set(CPACK_DEBIAN_GUI_PACKAGE_NAME "arbitration-graphs-gui")
 
 # Component-specific dependencies (make sure to use upper-case!)
-set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "libgoogle-glog-dev, libyaml-cpp-dev, util_caching")
+set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "libgoogle-glog-dev, libyaml-cpp-dev, util-caching")
 set(CPACK_DEBIAN_GUI_PACKAGE_DEPENDS "arbitration-graphs-core, Crow")
 
 # Use CMAKE_INSTALL_PREFIX for CPack install paths aswell
