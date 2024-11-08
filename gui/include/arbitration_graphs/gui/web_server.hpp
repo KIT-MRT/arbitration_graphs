@@ -26,14 +26,6 @@ public:
             return response;
         });
 
-        CROW_ROUTE(app_, "/<path>")
-        ([this](std::string file_path_partial) {
-            crow::response response;
-            crow::utility::sanitize_filename(file_path_partial);
-            response.set_static_file_info_unsafe(static_directory_ + file_path_partial);
-            return response;
-        });
-
         CROW_WEBSOCKET_ROUTE(app_, "/status")
             .onopen([this](crow::websocket::connection& conn) {
                 std::lock_guard<std::mutex> guard(connections_mutex_);
@@ -48,6 +40,14 @@ public:
             .onmessage([this](crow::websocket::connection& conn, const std::string& message, bool is_binary) {
                 CROW_LOG_DEBUG << "Received message: " << message;
             });
+
+        CROW_ROUTE(app_, "/<path>")
+        ([this](std::string file_path_partial) {
+            crow::response response;
+            crow::utility::sanitize_filename(file_path_partial);
+            response.set_static_file_info_unsafe(static_directory_ + file_path_partial);
+            return response;
+        });
 
         if (autostart_) {
             // We need to store the std::future to run Crow asynchronously
