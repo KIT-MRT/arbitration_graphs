@@ -18,7 +18,7 @@ project(arbitration_graphs
 )
 
 # In order to properly support the GUI, we have to decide on an install path upfront (instead of letting CPack decide)
-set(CMAKE_INSTALL_PREFIX "/opt")
+set(CMAKE_INSTALL_PREFIX "/usr")
 
 # Select project features
 set(BUILD_GUI "TRUE" CACHE STRING "Compile the project with the WebApp GUI")
