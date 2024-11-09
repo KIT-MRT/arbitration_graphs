@@ -40,6 +40,7 @@ exclude:
   - cmake
   - CMakeLists.txt
   - demo
+  - gui
   - include
   - src
   - test
