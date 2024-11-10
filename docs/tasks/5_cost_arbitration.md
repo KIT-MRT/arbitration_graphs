@@ -7,7 +7,7 @@ description: Learn how the cost arbitrator can help you to arbitrate between beh
 
 ## Context
 
-The `EatDot` arbitrator we added in the previous task decides between the two dot eating strategies randomly.
+The `EatDot` arbitrator we added in the [previous task](4_nested_arbitrators.md) decides between the two dot eating strategies randomly.
 That's obviously not the greatest idea.
 There must be a better way.
 

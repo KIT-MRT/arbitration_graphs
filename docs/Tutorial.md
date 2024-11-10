@@ -42,9 +42,9 @@ You guessed it, it contains the environment model for the arbitration graph.
 In it, we store things like current positions of PacMan and the ghosts, the maze, several utility functions
   and other things required by the behavior components.
 
-The `cost_estimator.hpp` file will be relevant for a later task when we cover cost arbitrators.
+The `cost_estimator.hpp` file will be relevant for a later task when we cover [cost arbitrators](./tasks/5_cost_arbitration.md).
 
-Similarly, the `verifier.hpp` file will be used to add a verification layer to the arbitration graph near the end of the tutorial.
+Similarly, the `verifier.hpp` file will be used to add a verification layer to the arbitration graph [near the end](./tasks/6_verification.md) of the tutorial.
 
 Finally, in `pacman_agent.hpp`, the behavior components are assembled into an arbitration graph.
 It's also where you'll spend most of your time during this tutorial.
@@ -104,4 +104,4 @@ With the basics out of the way, let's work through the tasks.
 3. [Add even more behavior components](./tasks/3_add_more_behaviors.md)
 4. [Learn about nested arbitration graphs](./tasks/4_nested_arbitrators.md)
 5. [Arbitrate based on predicted utility](./tasks/5_cost_arbitration.md)
-
+6. [Verify commands and add a fallback strategy](./tasks/6_verification.md)

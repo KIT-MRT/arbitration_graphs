@@ -16,7 +16,7 @@ The `ChangeDotCluster` behavior will move to an area in the maze where there is 
 For now, we'll just decide between the two dot eating strategies using chance.
 We can achieve that by adding them to a random arbitrator which is then added as an option to the root arbitrator.
 
-There are more sophisticated ways to decide between behavior components, we'll cover those in the next task.
+There are more sophisticated ways to decide between behavior components, we'll cover those in the [next task](5_cost_arbitration.md).
 
 ## Goal
 

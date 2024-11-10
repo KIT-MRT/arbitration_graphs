@@ -9,7 +9,7 @@ description: Extend the arbitration graph with the ChaseGhost behavior component
 
 With our next behavior component ready to go, we need to think about integrating it into our arbitration graph.
 
-For this purpose, we need to modify the `PacmanAgent` class to include the `ChaseGhost` behavior component we implemented in the previous task.
+For this purpose, we need to modify the `PacmanAgent` class to include the `ChaseGhost` behavior component we implemented in the [previous task](1_implement_behavior_component.md).
 Integrating a new behavior component into the arbitration graph is as simple as instantiating it and adding it as a new option to one of the arbitrators.
 Since right now there is just one arbitrator - a priority arbitrator - the choice is simple.
 We just need to worry about the order in which the options are assigned to the arbitrator.

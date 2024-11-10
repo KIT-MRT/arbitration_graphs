@@ -11,10 +11,10 @@ So far, we have not looked into a behavior component that handles the most impor
 So now is a good a time as any to further extend our arbitration graph with the `EatClosestDot` behavior component.
 
 We don't want to bore you with the details of planning a path through a PacMan maze, so we have already implemented that for you.
-You just need to integrate it into the arbitration graph, very similarly to the last task.
+You just need to integrate it into the arbitration graph, very similarly to the [previous task](2_extend_arbitration_graph.md).
 
 We'll keep it simple and just add it as another option to the priority arbitrator.
-Arbitration graphs can be nested of course, but we'll save that for the next task.
+Arbitration graphs can be nested of course, but we'll save that for the [next task](4_nested_arbitrators.md).
 
 ## Goal
 
@@ -22,7 +22,7 @@ Integrate the `EatClosestDot` behavior component into the arbitration graph defi
 
 ## Instructions
 
-- Integrate the new component just like you did in the last task.
+- Integrate the new component just like you did in the [previous task](2_extend_arbitration_graph.md).
 - Start the game and see how PacMan stop wandering around aimlessly and starts eating dots.
 
 ## Solution
