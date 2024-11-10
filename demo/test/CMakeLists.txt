@@ -88,7 +88,7 @@ if(GTEST_FOUND)
     target_link_libraries(${TEST_TARGET_NAME} PUBLIC
       ${GTEST_BOTH_LIBRARIES}
       pthread
-      arbitration_graphs_pacman_demo
+      arbitration_graphs_pacman_demo_lib
       arbitration_graphs
       EnTT_Pacman
       util_caching

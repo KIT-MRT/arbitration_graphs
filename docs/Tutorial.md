@@ -73,7 +73,7 @@ cmake --build .
 
 You can then run the demo with
 ```bash
-./arbitration_graphs_pacman_demo_exe
+./arbitration_graphs_pacman_demo
 ```
 
 You'll also find the individual unit executables in this directory.

@@ -59,7 +59,7 @@ find_package(Yaml-cpp REQUIRED)
 ## Build ##
 ###########
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}_lib SHARED
   src/astar.cpp
   src/avoid_ghost_behavior.cpp
   src/change_dot_cluster_behavior.cpp
@@ -71,11 +71,11 @@ add_library(${PROJECT_NAME} SHARED
   src/move_randomly_behavior.cpp
   src/utils.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PROJECT_NAME}_lib PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC
+target_link_libraries(${PROJECT_NAME}_lib PUBLIC
     arbitration_graphs
 
     glog::glog
@@ -86,16 +86,16 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${SDL2_LIBRARY}
 )
 
-add_executable(${PROJECT_NAME}_exe
+add_executable(${PROJECT_NAME}
   src/main.cpp
   src/pacman_wrapper.cpp
 )
-target_include_directories(${PROJECT_NAME}_exe PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
 )
-target_link_libraries(${PROJECT_NAME}_exe PRIVATE
-    ${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${PROJECT_NAME}_lib
 )
 
 
@@ -133,7 +133,7 @@ endif()
 ## Install ##
 #############
 
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_exe
+install(TARGETS ${PROJECT_NAME}_lib ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
         COMPONENT demo
         LIBRARY DESTINATION lib COMPONENT Runtime

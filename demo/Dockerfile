@@ -61,5 +61,5 @@ WORKDIR /home/blinky/demo/build
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && \
     cmake --build . -j8
 
-CMD ["bash", "-c", "/home/blinky/.motd && /home/blinky/demo/build/arbitration_graphs_pacman_demo_exe"]
+CMD ["bash", "-c", "/home/blinky/.motd && /home/blinky/demo/build/arbitration_graphs_pacman_demo"]
 
