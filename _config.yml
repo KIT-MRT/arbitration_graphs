@@ -18,6 +18,14 @@ sass:
   sass_dir: docs/assets/_sass
 
 
+# Support collapsible details/summary sections
+markdown: CommonMarkGhPages
+
+commonmark:
+  options: ["UNSAFE", "SMART", "FOOTNOTES"]
+  extensions: ["strikethrough", "autolink", "table", "tagfilter"]
+
+
 # Tell Jekyll to use README.md and docs/ only.
 #
 # For some reason exluding root and then including only these does not work,
