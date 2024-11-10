@@ -74,10 +74,10 @@ You should enable the `BUILD_TESTS` option to build the unit tests as well.
 
 ```bash
 cd /home/blinky/demo
-mkdir -p arbitration_graphs/demo/build
-cd arbitration_graphs/demo/build
+mkdir build
+cd build
 cmake -DBUILD_TESTS=true ..
-cmake --build .
+cmake --build . -j9
 ```
 
 You can then run the demo with
@@ -88,7 +88,7 @@ You can then run the demo with
 You'll also find the individual unit executables in this directory.
 To execute them all at once, run
 ```bash
-find -executable -type f -name '*-gtest-*' -exec {} \;
+cmake --build . --target test
 ```
 
 We'll leave the setup of your favorite IDE up to you
