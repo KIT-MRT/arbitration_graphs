@@ -2,7 +2,7 @@
 
 Let's write an agent for the famous PacMan game using Arbitration Graphs 🕹️
 
-**TL;DR**: Find links to the individual tasks at the bottom of this page.
+**TL;DR:** Find links to the individual tasks at the bottom of this page.
 
 ## Introduction
 
@@ -22,11 +22,20 @@ The tutorial is structured into several tasks that are meant to be completed in 
 
 ### What to find where
 
-Let's take a look at the structure and content of the `arbitration_graphs/demo` directory.
-All header files can be found in the `include/demo/` directory with corresponding implementation files in the `src/` directory.
+Let's take a look at the structure and content of the `arbitration_graphs/demo/` directory.
+
+```
+demo
+├── include
+├── src
+├── test
+└── …
+```
+
+All header files can be found in the `include/` directory with corresponding implementation files in the `src/` directory.
 The entire demo is thoroughly tested using the unit tests you'll find in the `test/` directory.
 
-Each behavior component is implemented in a separate `_behavior.hpp` file as a class inheriting from the abstract `Behavior` class.
+Each behavior component is implemented in a separate `<name>_behavior.hpp` file as a class inheriting from the abstract `Behavior` class.
 
 Next, there is `environment_model.hpp`.
 You guessed it, it contains the environment model for the arbitration graph.
@@ -50,10 +59,10 @@ The easiest way to get started is to use the provided docker setup.
 Start by checking out the `tutorial` branch where we have removed some parts
   of the demo implementation for the purpose of this tutorial.
 ```bash
-git checkout tutorial
+git clone --branch tutorial https://github.com/KIT-MRT/arbitration_graphs.git
 ```
 
-To be dropped into an interactive shell with all required dependencies installed
+To start an interactive shell in the docker container with all required dependencies installed
   and the current directory mounted, run
 ```bash
 cd arbitration_graphs/demo
