@@ -1,0 +1,98 @@
+name: Bump version and create release
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  compute-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_tag: ${{ steps.bump_version.outputs.new_tag }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Read version from file
+        run: |
+          # Read the version from the version file, only store the number (without the 'v')
+          INITIAL_VERSION=$(source version && echo ${VERSION#v})
+          echo "Current version: $INITIAL_VERSION"
+          echo "INITIAL_VERSION=${INITIAL_VERSION}" >> $GITHUB_ENV
+
+      - name: Bump version
+        id: bump_version
+        uses: anothrNick/github-tag-action@v1
+        env:
+          DEFAULT_BUMP: minor
+          DRY_RUN: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INITIAL_VERSION: ${{ env.INITIAL_VERSION }}
+          WITH_V: true
+
+
+  update-version-file:
+    needs: compute-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Update version file with new version
+        run: |
+          echo "New version: ${{ needs.compute-version.outputs.new_tag }}"
+          echo "VERSION=${{ needs.compute-version.outputs.new_tag }}" > version
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add version
+          git commit -m "chore: update version file to ${{ needs.compute-version.outputs.new_tag }}"
+          git push
+
+      - name: Push new tag
+        run: |
+          git tag ${{ needs.compute-version.outputs.new_tag }}
+          git push origin ${{ needs.compute-version.outputs.new_tag }}
+
+
+  create-release:
+    needs: [compute-version, update-version-file]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository and pull the new tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.compute-version.outputs.new_tag }}
+
+      - name: Build release packages
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: |
+            release_builder
+          target: release
+
+      - name: Copy release packages
+        run: |
+          mkdir -p /tmp/artifacts/
+          docker run --rm -v /tmp/artifacts:/tmp/artifacts release_builder cp -r /release /tmp/artifacts/
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "/tmp/artifacts/release/*"
+          tag: ${{ needs.compute-version.outputs.new_tag }}
+          body: ${{ github.event.pull_request.body }}
+
