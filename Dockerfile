@@ -18,7 +18,8 @@ RUN apt-get update && \
     apt-get install -y \
       libasio-dev \
       unzip \
-      wget &&\
+      wget \
+      zlib1g-dev &&\
     apt-get clean
 
 # Install Crow (C++ REST/WebSocket server)
