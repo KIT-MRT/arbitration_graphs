@@ -45,6 +45,8 @@ WORKDIR /home/blinky/
 FROM base AS unit_test
 
 COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY LICENSE /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
 COPY cmake /tmp/arbitration_graphs/cmake
 COPY gui /tmp/arbitration_graphs/gui
 COPY include /tmp/arbitration_graphs/include
