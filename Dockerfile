@@ -7,7 +7,6 @@ RUN apt-get update && \
     apt-get install -y \
       build-essential \
       cmake \
-      git \
       libgoogle-glog-dev \
       libgtest-dev \
       libyaml-cpp-dev && \
@@ -17,26 +16,21 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y \
       libasio-dev \
-      unzip \
-      wget \
       zlib1g-dev &&\
     apt-get clean
 
-# Install Crow (C++ REST/WebSocket server)
-RUN cd /tmp && \
-    wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/Crow-1.2.0.zip && \
-    unzip Crow-*.zip -d /tmp && \
-    cp -r /tmp/Crow-*/* /usr/local && \
-    rm -r Crow-*
 
-# Install util_caching
-RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
-    mkdir /tmp/util_caching/build && \
-    cd /tmp/util_caching/build && \
-    cmake .. && \
-    cmake --build . && \
-    cmake --install . && \
-    rm -rf /tmp/util_caching
+# Install Crow (C++ REST/WebSocket server) and util_caching
+
+# `ADD` downloads the Crow and util_caching debian releases and adds them to the docker image
+# This "bloats" the image. But otherwise, we'd have to installing wget and ca-certificates
+# temporarily to download and install the package in one docker layer…
+ADD https://github.com/CrowCpp/Crow/releases/download/v1.2.0/Crow-1.2.0-Linux.deb /tmp/debfiles/
+ADD https://github.com/KIT-MRT/util_caching/releases/latest/download/libutil-caching-dev.deb /tmp/debfiles/
+
+# Install Crow and util_caching from release debian package
+RUN dpkg -i /tmp/debfiles/*.deb && \
+    rm -rf /tmp/debfiles
 
 
 
