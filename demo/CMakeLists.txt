@@ -99,6 +99,24 @@ target_link_libraries(${PROJECT_NAME}_exe PRIVATE
 )
 
 
+###################
+## Cmake Package ##
+###################
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION 0.1
+    COMPATIBILITY AnyNewerVersion
+)
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+
 #############
 ## Testing ##
 #############
@@ -109,3 +127,27 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ARBITRATION_GRAPHS_DEMO_CMAKE_BU
    AND BUILD_TESTS)
   add_subdirectory(test)
 endif()
+
+
+#############
+## Install ##
+#############
+
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_exe
+        EXPORT ${PROJECT_NAME}Targets
+        COMPONENT demo
+        LIBRARY DESTINATION lib COMPONENT Runtime
+        ARCHIVE DESTINATION lib COMPONENT Development
+        RUNTIME DESTINATION bin COMPONENT Runtime
+        PUBLIC_HEADER DESTINATION include COMPONENT Development
+        BUNDLE DESTINATION bin COMPONENT Runtime)
+install(EXPORT ${PROJECT_NAME}Targets
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT demo)
+install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+              "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT demo)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
+        DESTINATION include
+        COMPONENT demo)
