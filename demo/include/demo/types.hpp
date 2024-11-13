@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include <SDL_scancode.h>
+#include <SDL2/SDL_scancode.h>
 #include <arbitration_graphs/types.hpp>
 #include <entt/entity/registry.hpp>
 #include <pacman/comp/dir.hpp>

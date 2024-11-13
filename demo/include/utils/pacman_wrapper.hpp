@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <pacman/core/game.hpp>
 #include <pacman/util/sdl_delete.hpp>

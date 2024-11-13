@@ -17,6 +17,9 @@ project(arbitration_graphs
   LANGUAGES CXX
 )
 
+# In order to properly support the GUI, we have to decide on an install path upfront (instead of letting CPack decide)
+set(CMAKE_INSTALL_PREFIX "/usr")
+
 # Select project features
 set(BUILD_GUI "TRUE" CACHE STRING "Compile the project with the WebApp GUI")
 set(BUILD_TESTS "FALSE" CACHE STRING "Compile the project with all unit tests")
@@ -75,7 +78,6 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
   util_caching
   ${YAML_CPP_LIBRARIES}
 )
-set(INSTALL_TARGETS ${PROJECT_NAME})
 
 
 ###################
@@ -122,16 +124,32 @@ endif()
 ## Install ##
 #############
 
-install(TARGETS ${INSTALL_TARGETS}
-    EXPORT ${PROJECT_NAME}Targets
-    LIBRARY DESTINATION lib COMPONENT Runtime
-    ARCHIVE DESTINATION lib COMPONENT Development
-    RUNTIME DESTINATION bin COMPONENT Runtime
-    PUBLIC_HEADER DESTINATION include COMPONENT Development
-    BUNDLE DESTINATION bin COMPONENT Runtime
-)
-install(EXPORT ${PROJECT_NAME}Targets DESTINATION lib/cmake/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}Targets
+        COMPONENT core
+        LIBRARY DESTINATION lib COMPONENT Runtime
+        ARCHIVE DESTINATION lib COMPONENT Development
+        RUNTIME DESTINATION bin COMPONENT Runtime
+        PUBLIC_HEADER DESTINATION include COMPONENT Development
+        BUNDLE DESTINATION bin COMPONENT Runtime)
+install(EXPORT ${PROJECT_NAME}Targets
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT core)
 install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
               "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        DESTINATION lib/cmake/${PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT core)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
+        DESTINATION include
+        COMPONENT core
+        PATTERN "gui" EXCLUDE)
+
+
+###############
+## Packaging ##
+###############
+
+include(cpack_config)
+include(CPack)
+
+message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")

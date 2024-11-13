@@ -153,3 +153,20 @@ Run all unit tests with CTest:
 cmake --build . --target test
 ```
 
+
+### Serving the WebApp GUI
+
+The GUI consists of
+- a web server with static WebApp files, see [`gui/app`](./gui/app)
+- a websocket server providing the arbitration graph state to the WebApp
+
+In order to serve the WebApp files, their location must be known to the executable running the web server.
+By default (and without further setup), we support these locations:
+- the install path, i.e. `/opt/share/arbitration_graphs`
+- the current source path for local builds, i.e. `/home/blinky/arbitration_graphs/gui/app/arbitration_graphs` (only works, if no installation has been found)
+
+If you intend to override these, please use the `APP_DIRECTORY` environment variable to define the WebApp path:
+
+```
+APP_DIRECTORY=/my/custom/app/path my_awesome_executable
+```

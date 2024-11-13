@@ -49,7 +49,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 find_package(arbitration_graphs REQUIRED)
 find_package(EnTT_Pacman REQUIRED)
-find_package(Glog)
+find_package(Glog REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
@@ -59,7 +59,7 @@ find_package(Yaml-cpp REQUIRED)
 ## Build ##
 ###########
 
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
   src/astar.cpp
   src/avoid_ghost_behavior.cpp
   src/change_dot_cluster_behavior.cpp
@@ -75,12 +75,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     include
     ${SDL2_INCLUDE_DIR}
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PUBLIC
     arbitration_graphs
-    EnTT_Pacman
+
+    glog::glog
     util_caching
-    ${SDL2_LIBRARY}
     ${YAML_CPP_LIBRARIES}
+
+    EnTT_Pacman
+    ${SDL2_LIBRARY}
 )
 
 add_executable(${PROJECT_NAME}_exe
@@ -93,10 +96,24 @@ target_include_directories(${PROJECT_NAME}_exe PRIVATE
 )
 target_link_libraries(${PROJECT_NAME}_exe PRIVATE
     ${PROJECT_NAME}
-    EnTT_Pacman
-    util_caching
-    ${SDL2_LIBRARY}
-    ${YAML_CPP_LIBRARIES}
+)
+
+
+###################
+## Cmake Package ##
+###################
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION 0.1
+    COMPATIBILITY AnyNewerVersion
+)
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
 )
 
 
@@ -110,3 +127,27 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ARBITRATION_GRAPHS_DEMO_CMAKE_BU
    AND BUILD_TESTS)
   add_subdirectory(test)
 endif()
+
+
+#############
+## Install ##
+#############
+
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_exe
+        EXPORT ${PROJECT_NAME}Targets
+        COMPONENT demo
+        LIBRARY DESTINATION lib COMPONENT Runtime
+        ARCHIVE DESTINATION lib COMPONENT Development
+        RUNTIME DESTINATION bin COMPONENT Runtime
+        PUBLIC_HEADER DESTINATION include COMPONENT Development
+        BUNDLE DESTINATION bin COMPONENT Runtime)
+install(EXPORT ${PROJECT_NAME}Targets
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT demo)
+install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+              "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        DESTINATION lib/cmake/${PROJECT_NAME}
+        COMPONENT demo)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
+        DESTINATION include
+        COMPONENT demo)
