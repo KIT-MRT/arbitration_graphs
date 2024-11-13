@@ -1,6 +1,6 @@
 #include "utils/pacman_wrapper.hpp"
 
-#include <SDL_main.h>
+#include <SDL2/SDL_main.h>
 
 #include <pacman/core/constants.hpp>
 #include <pacman/util/frame_cap.hpp>
