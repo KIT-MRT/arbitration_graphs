@@ -42,6 +42,7 @@ USER blinky
 WORKDIR /home/blinky/
 
 
+
 FROM base AS unit_test
 
 COPY CMakeLists.txt /tmp/arbitration_graphs/
@@ -63,9 +64,28 @@ CMD ["cmake", "--build", ".", "--target", "test"]
 
 
 
+FROM base AS release
+
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY LICENSE /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
+COPY version /tmp/arbitration_graphs/
+COPY cmake /tmp/arbitration_graphs/cmake
+COPY gui /tmp/arbitration_graphs/gui
+COPY include /tmp/arbitration_graphs/include
+
+WORKDIR /tmp/arbitration_graphs/build
+
+RUN cmake .. && \
+    cmake --build . && \
+    cmake --build . --target package && \
+    mv packages /release && \
+    rm -rf /tmp/arbitration_graphs
+
+
+
 FROM base AS install
 
-# Install arbitration_graphs
 COPY CMakeLists.txt /tmp/arbitration_graphs/
 COPY LICENSE /tmp/arbitration_graphs/
 COPY README.md /tmp/arbitration_graphs/
