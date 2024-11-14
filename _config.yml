@@ -12,6 +12,8 @@ plugins:
 - jekyll-remote-theme
 
 includes_dir: docs/_includes
+data_dir: docs/_data
+layouts_dir: docs/_layouts
 sass:
   sass_dir: docs/assets/_sass
 
