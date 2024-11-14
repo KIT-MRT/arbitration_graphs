@@ -98,6 +98,54 @@ RUN cmake .. && \
     rm -rf /tmp/arbitration_graphs
 
 
+# =============
+# Release tests
+# =============
+
+FROM base AS release_test_core
+
+ARG RELEASE_DOWNLOAD_URL=https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/
+
+# This downloads the latest arbitration_graph debian release and adds it to the docker image
+# This "bloats" the image. But otherwise, we'd have to installing wget and ca-certificates
+# temporarily to download and install the package in one docker layer…
+ADD ${RELEASE_DOWNLOAD_URL}/libarbitration-graphs-core-dev.deb /tmp/debfiles/
+
+# Install arbitration_graphs core library from release debian package
+RUN dpkg -i /tmp/debfiles/*.deb && \
+    rm -rf /tmp/debfiles
+
+COPY test /tmp/arbitration_graphs_test
+WORKDIR /tmp/arbitration_graphs_test/build
+
+RUN cmake .. && \
+    cmake --build . -j9
+
+CMD ["cmake", "--build", ".", "--target", "test"]
+
+FROM base AS release_test_gui
+
+ARG RELEASE_DOWNLOAD_URL=https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/
+
+# This downloads the latest arbitration_graph debian release and adds it to the docker image
+# This "bloats" the image. But otherwise, we'd have to installing wget and ca-certificates
+# temporarily to download and install the package in one docker layer…
+ADD ${RELEASE_DOWNLOAD_URL}/libarbitration-graphs-core-dev.deb /tmp/debfiles/
+ADD ${RELEASE_DOWNLOAD_URL}/libarbitration-graphs-gui-dev.deb /tmp/debfiles/
+
+# Install arbitration_graphs gui from release debian package
+RUN dpkg -i /tmp/debfiles/*.deb && \
+    rm -rf /tmp/debfiles
+
+COPY gui/test /tmp/arbitration_graphs_test
+WORKDIR /tmp/arbitration_graphs_test/build
+
+RUN cmake .. && \
+    cmake --build . -j9
+
+CMD ["cmake", "--build", ".", "--target", "test"]
+
+
 # =======
 # Install
 # =======
