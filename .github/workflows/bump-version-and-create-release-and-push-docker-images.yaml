@@ -1,4 +1,4 @@
-name: Bump version and create release
+name: Bump version, create and test release, and push Docker images
 on:
   pull_request:
     types:
@@ -161,7 +161,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            VERSION=${{ env.VERSION }}
+            VERSION=${{ needs.compute-version.outputs.new_tag }}
           context: demo
           file: demo/Dockerfile
           push: true
@@ -174,7 +174,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            VERSION=${{ env.VERSION }}
+            VERSION=${{ needs.compute-version.outputs.new_tag }}
           context: demo
           file: demo/Dockerfile
           push: true
