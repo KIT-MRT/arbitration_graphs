@@ -1,3 +1,8 @@
+# ==========
+# Base image
+# ==========
+
+
 FROM ubuntu:22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -33,6 +38,10 @@ RUN dpkg -i /tmp/debfiles/*.deb && \
     rm -rf /tmp/debfiles
 
 
+# ===========
+# Development
+# ===========
+
 
 FROM base AS devel
 
@@ -42,6 +51,9 @@ USER blinky
 WORKDIR /home/blinky/
 
 
+# ==========
+# Unit tests
+# ==========
 
 FROM base AS unit_test
 
@@ -63,6 +75,9 @@ RUN cmake -DBUILD_TESTS=true .. && \
 CMD ["cmake", "--build", ".", "--target", "test"]
 
 
+# =======
+# Release
+# =======
 
 FROM base AS release
 
@@ -83,6 +98,9 @@ RUN cmake .. && \
     rm -rf /tmp/arbitration_graphs
 
 
+# =======
+# Install
+# =======
 
 FROM base AS install
 
