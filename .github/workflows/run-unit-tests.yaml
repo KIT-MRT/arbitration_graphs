@@ -15,6 +15,14 @@ jobs:
         run: |
           cat version >> $GITHUB_ENV
 
+      - name: Build and core library Docker image using current repo state
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs:${{ env.VERSION }}
+          target: install
+
       - name: Build core library unit test Docker image
         uses: docker/build-push-action@v6
         with:
