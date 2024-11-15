@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "utils/utils.hpp"
 
 namespace utils {
@@ -29,6 +31,18 @@ int dotsInRadius(const Position& center,
     }
 
     return nDots;
+}
+
+void printKeybindings() {
+    std::cout << "\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << "\033[1;37m               CONTROLS              \033[0m\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << "  \033[1;32mESC/Q\033[0m - Quit the demo\n"
+              << "  \033[1;32mSpace\033[0m - Pause the demo\n"
+              << "  \033[1;32mP\033[0m     - Toggle path visualization\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << '\n';
 }
 
 } // namespace utils

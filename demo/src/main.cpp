@@ -7,6 +7,7 @@
 #include "demo/pacman_agent.hpp"
 #include "demo/types.hpp"
 #include "utils/pacman_wrapper.hpp"
+#include "utils/utils.hpp"
 
 using namespace demo;
 using namespace utils;
@@ -14,6 +15,8 @@ using namespace arbitration_graphs;
 
 int main() {
     try {
+        printKeybindings();
+
         PacmanWrapper demo;
         PacmanAgent agent(demo.game());
 
