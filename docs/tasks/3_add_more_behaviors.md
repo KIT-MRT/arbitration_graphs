@@ -5,6 +5,8 @@ description: Integrate the EatClosestDot behavior component into the arbitration
 
 # Eat Closest Dot
 
+Integrate the EatClosestDot behavior component into the arbitration graph.
+
 ## Context
 
 So far, we have not looked into a behavior component that handles the most important aspect of the game: eating dots.

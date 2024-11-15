@@ -1,9 +1,11 @@
 ---
 title: "Task 1: Implement a Behavior Component"
-description: Implement your first checkInvocationCondition and getCommand function, such that the ChaseGhost behavior component passes its unit tests.
+description: Implement your first invocation condition and command function, such that the ChaseGhost behavior component passes its unit tests.
 ---
 
 # Chase Ghost
+
+Implement your first `checkInvocationCondition` and `getCommand` function, such that the ChaseGhost behavior component passes its unit tests.
 
 ## Context
 

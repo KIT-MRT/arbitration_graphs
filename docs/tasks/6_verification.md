@@ -5,6 +5,8 @@ description: Execute only safe commands and add a fallback strategy.
 
 # Verification and Fallback Layers
 
+Execute only safe commands and add a fallback strategy.
+
 ## Context
 
 The arbitration graph is now complete and PacMan is eating dots like a pro.

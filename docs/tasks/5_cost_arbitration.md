@@ -5,6 +5,8 @@ description: Learn how the cost arbitrator can help you to arbitrate between beh
 
 # Cost Arbitrator
 
+Learn how the cost arbitrator can help you to arbitrate between behaviors based on their expected cost/utility.
+
 ## Context
 
 The `EatDot` arbitrator we added in the [previous task](4_nested_arbitrators.md) decides between the two dot eating strategies randomly.

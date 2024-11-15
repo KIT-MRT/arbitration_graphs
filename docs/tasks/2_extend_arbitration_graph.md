@@ -5,6 +5,8 @@ description: Extend the arbitration graph with the ChaseGhost behavior component
 
 # Chase Ghost
 
+Extend the arbitration graph with the ChaseGhost behavior component
+
 ## Context
 
 With our next behavior component ready to go, we need to think about integrating it into our arbitration graph.

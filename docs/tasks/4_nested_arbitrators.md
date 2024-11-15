@@ -5,6 +5,8 @@ description: Integrate a long-term behavior and add another layer to the arbitra
 
 # Nesting
 
+Integrate a long-term behavior and add another layer to the arbitration graph.
+
 ## Context
 
 We have now implemented a few behavior components and integrated them into the arbitration graph.
