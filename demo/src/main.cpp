@@ -15,6 +15,8 @@ using namespace arbitration_graphs;
 int main() {
     try {
         PacmanWrapper demo;
+        demo.printKeybindings();
+
         PacmanAgent agent(demo.game());
 
         gui::WebServer server(8080, true);

@@ -27,6 +27,8 @@ public:
         return game_;
     }
 
+    void printKeybindings();
+
 private:
     void handleUserInput();
     void renderPath(const demo::Positions& path);
