@@ -1,0 +1,39 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create build folder",
+      "type": "shell",
+      "command": "mkdir -p ${workspaceFolder}/build"
+    },
+    {
+      "label": "Configure debug build",
+      "type": "shell",
+      "command": "cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=true -S ${workspaceFolder} -B ${workspaceFolder}/build"
+    },
+    {
+      "label": "CMake build for debug",
+      "dependsOn": ["Create build folder", "Configure debug build"],
+      "type": "shell",
+      "command": "cmake --build ${workspaceFolder}/build -j9",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Configure release build",
+      "dependsOn": ["Create build folder"],
+      "type": "shell",
+      "command": "cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=true -S ${workspaceFolder} -B ${workspaceFolder}/build"
+    },
+    {
+      "label": "CMake build for release",
+      "dependsOn": ["Create build folder", "Configure release build"],
+      "type": "shell",
+      "command": "cmake --build ${workspaceFolder}/build -j9"
+    }
+  ]
+}

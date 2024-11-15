@@ -18,3 +18,14 @@ Open the GUI with your favorite browser:
 ## Tutorial
 
 If you're here for the tutorial, follow the instructions on our [Tutorial GitHub Page](https://kit-mrt.github.io/arbitration_graphs/docs/Tutorial.md).
+
+For a smooth out-of-the-box experience, we recommend using [Visual Studio Code](https://code.visualstudio.com/) with our DevContainer setup.
+
+- Open this folder in VSCode
+- Build and open the Dev Container by running this [command](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (use `Ctrl+Shift+P`):  
+  `Dev Containers: Reopen in Container`
+- Enjoy a full-blown IDE with code-completion, code-navigation etc.
+  - Compile via `Ctrl+Shift+B`
+  - View, run and debug unit tests via [Testing](https://code.visualstudio.com/docs/editor/testing) sidebar
+  - Debug the PacMan Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
+  - Debug with breakpoints etc.
