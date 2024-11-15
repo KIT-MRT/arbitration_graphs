@@ -1,9 +1,8 @@
 ---
-title: "Task 1: Implement a Behavior Component"
-description: Implement your first invocation condition and command function, such that the ChaseGhost behavior component passes its unit tests.
+title: "Arbitration Graphs Tutorial"
 ---
 
-# Chase Ghost
+# Task 1: Implement a Behavior Component
 
 Implement your first `checkInvocationCondition()` and `getCommand()` function, such that the ChaseGhost behavior component passes its unit tests.
 

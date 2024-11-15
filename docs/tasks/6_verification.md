@@ -1,9 +1,8 @@
 ---
-title: "Task 6: Better safe than sorry"
-description: Execute only safe commands and add a fallback strategy.
+title: "Arbitration Graphs Tutorial"
 ---
 
-# Verification and Fallback Layers
+# Task 6: Better safe than sorry
 
 Execute only safe commands and add a fallback strategy.
 

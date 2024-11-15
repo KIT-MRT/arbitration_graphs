@@ -1,11 +1,10 @@
 ---
-title: "Task 2: Extend the Arbitration Graph"
-description: Extend the arbitration graph with the ChaseGhost behavior component.
+title: "Arbitration Graphs Tutorial"
 ---
 
-# Chase Ghost
+# Task 2: Extend the Arbitration Graph
 
-Extend the arbitration graph with the ChaseGhost behavior component
+Extend the arbitration graph with the `ChaseGhost` behavior component.
 
 ## Context
 

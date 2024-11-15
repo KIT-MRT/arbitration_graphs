@@ -1,11 +1,10 @@
 ---
-title: "Task 3: Even more behavior components"
-description: Integrate the EatClosestDot behavior component into the arbitration graph.
+title: "Arbitration Graphs Tutorial"
 ---
 
-# Eat Closest Dot
+# Task 3: Even more behavior components
 
-Integrate the EatClosestDot behavior component into the arbitration graph.
+Integrate the `EatClosestDot` behavior component into the arbitration graph.
 
 ## Context
 

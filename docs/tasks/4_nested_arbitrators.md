@@ -1,9 +1,8 @@
 ---
-title: "Task 4: Nested arbitration graphs"
-description: Integrate a long-term behavior and add another layer to the arbitration graph
+title: "Arbitration Graphs Tutorial"
 ---
 
-# Nesting
+# Task 4: Nested arbitration graphs
 
 Integrate a long-term behavior and add another layer to the arbitration graph.
 
