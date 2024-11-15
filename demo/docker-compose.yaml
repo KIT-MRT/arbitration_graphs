@@ -1,11 +1,6 @@
 services:
   tutorial:
     image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
-    build:
-      context: .
-      args:
-        - VERSION=$VERSION
-      target: tutorial
     env_file: .env
     ports:
       - "8080:8080"
@@ -22,11 +17,6 @@ services:
 
   demo:
     image: ghcr.io/kit-mrt/arbitration_graphs_pacman_demo:$VERSION
-    build:
-      context: .
-      args:
-        - VERSION=$VERSION
-      target: demo
     env_file: .env
     ports:
       - "8080:8080"

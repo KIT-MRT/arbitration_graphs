@@ -1,0 +1,53 @@
+name: Run unit tests
+
+on:
+  push:
+
+jobs:
+  build-and-run-unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Read version from file
+        run: |
+          cat version >> $GITHUB_ENV
+
+      - name: Build and core library Docker image using current repo state
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs:${{ env.VERSION }}
+          target: install
+
+      - name: Build core library unit test Docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs_tests:${{ env.VERSION }}
+          target: unit_test
+
+      - name: Run library unit tests
+        run: |
+          docker run --rm ghcr.io/kit-mrt/arbitration_graphs_tests:${{ env.VERSION }}
+
+      - name: Build Pacman demo unit test Docker image
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            VERSION=${{ env.VERSION }}
+          context: demo
+          file: demo/Dockerfile
+          push: false
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_tests:latest
+            ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_tests:${{ env.VERSION }}
+          target: unit_test
+
+      - name: Run demo unit tests
+        run: |
+          docker run --rm ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_tests:${{ env.VERSION }}

@@ -71,11 +71,31 @@ We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/p
 
 ## Installation
 
-From easy to advanced:
+### Prerequisites
 
-### Using Docker image
+First make sure all dependencies are installed:
+- [glog](https://github.com/google/glog)
+- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [util_caching](https://github.com/KIT-MRT/util_caching)
+- [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
-We provide a Docker image with the library already installed globally.
+See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
+
+### Installation using Debian package (recommended)
+
+We provide a Debian package for easy installation on Debian-based distributions.
+Download the latest `.deb` packages for the [core library](https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/libarbitration-graphs-core-dev.deb)
+and optionally for [the gui](https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/libarbitration-graphs-gui-dev.deb) install them with `dpkg`:
+
+```bash
+sudo dpkg -i libarbitration-graphs-core-dev.deb
+sudo dpkg -i libarbitration-graphs-gui-dev.deb
+```
+
+### Using Docker image with pre-installed library
+
+We provide a Docker image with the library and all dependencies already installed globally.
 
 ```bash
 docker pull ghcr.io/kit-mrt/arbitration_graphs
@@ -91,16 +111,7 @@ find_package(arbitration_graphs REQUIRED)
 
 ### Building from source using CMake
 
-First make sure all dependencies are installed:
-- [glog](https://github.com/google/glog)
-- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-- [util_caching](https://github.com/KIT-MRT/util_caching)
-- [Crow](https://crowcpp.org) (optional, needed for GUI only)
-
-See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
-
-Now, clone the repository:
+Clone the repository:
 
 ```bash
 git clone https://github.com/KIT-MRT/arbitration_graphs.git
