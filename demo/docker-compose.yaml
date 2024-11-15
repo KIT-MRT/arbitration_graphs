@@ -1,15 +1,8 @@
 services:
   tutorial:
-    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
-    env_file: .env
-    ports:
-      - "8080:8080"
-    volumes:
-      - .:/home/blinky/demo
-      - $HOME/.Xauthority:/home/blinky/.Xauthority
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    environment:
-      - DISPLAY=$DISPLAY
+    extends:
+      file: docker-compose.tutorial.yaml
+      service: tutorial
     #
     # This makes sure `docker compose up` only runs the demo service
     # Use `docker compose run --rm --service-ports tutorial` to run the tutorial
