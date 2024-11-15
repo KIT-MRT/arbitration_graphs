@@ -1,5 +1,6 @@
 ---
 title: "Arbitration Graphs Tutorial"
+menu_title: "More Behaviors"
 ---
 
 # Task 3: Even more behavior components

@@ -32,6 +32,40 @@
 
     <div id="page-container">
       <main id="content" class="main-content" role="main">
+        <!-- Show the menu on docs pages only -->
+        <nav id="menu" class="pages-nav">
+        {% assign urlfolders = page.url | split: '/' %}
+        {% if urlfolders[1] == "docs" %}
+          <ul>
+            <!-- Main -->
+            {% assign classes = "" %}
+            {% if page.url == "/" %}
+              {% assign classes = "active" %}
+            {% endif %}
+            <li class="{{ classes }}"><a href="/">🢄 Main</a></li>
+
+            <!-- Tutorial Home -->
+            {% assign classes = "" %}
+            {% if page.url == "/docs/Tutorial.html" %}
+              {% assign classes = "active" %}
+            {% endif %}
+            <li class="{{ classes }}"><a href="/docs/Tutorial.html">⌂ Tutorial Home</a></li>
+
+            <!-- Tutorial Tasks -->
+            {% for sitepage in site.pages %}
+              {% assign urlfolders = sitepage.url | split: '/' %}
+              {% if urlfolders[1] == 'docs' and urlfolders[2] == 'tasks' %}
+                {% assign classes = "" %}
+                {% if page.url == sitepage.url %}
+                  {% assign classes = "active" %}
+                {% endif %}
+                <li class="{{ classes }}"><a href="{{ sitepage.url }}">{{ sitepage.menu_title }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </nav>
+
         {{ content }}
 
         <footer class="site-footer">

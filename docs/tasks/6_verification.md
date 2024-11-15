@@ -1,5 +1,6 @@
 ---
 title: "Arbitration Graphs Tutorial"
+menu_title: "Verification and Fallbacks"
 ---
 
 # Task 6: Better safe than sorry
