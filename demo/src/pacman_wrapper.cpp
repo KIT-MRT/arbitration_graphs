@@ -119,7 +119,7 @@ void PacmanWrapper::printKeybindings() {
               << "  \033[1;32mSpace\033[0m - Pause the demo\n"
               << "  \033[1;32mP\033[0m     - Toggle path visualization\n"
               << "\033[1;36m=====================================\033[0m\n"
-              << '\n';
+              << std::endl;
 }
 
 void PacmanWrapper::renderPath(const demo::Positions& path) {
