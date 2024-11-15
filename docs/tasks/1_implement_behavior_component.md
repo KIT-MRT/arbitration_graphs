@@ -5,7 +5,7 @@ description: Implement your first invocation condition and command function, suc
 
 # Chase Ghost
 
-Implement your first `checkInvocationCondition` and `getCommand` function, such that the ChaseGhost behavior component passes its unit tests.
+Implement your first `checkInvocationCondition()` and `getCommand()` function, such that the ChaseGhost behavior component passes its unit tests.
 
 ## Context
 
@@ -24,20 +24,20 @@ We can ensure that's always the case using the behavior's invocation condition.
 But wait - the current implementation of the invocation condition is not complete.
 It should only be applicable if there is one of these tasty ghosts close by.
 
-Once that's out of the way, we'll take a closer look at the `getCommand` function which is missing some core logic right now.
+Once that's out of the way, we'll take a closer look at the `getCommand()` function which is missing some core logic right now.
 
 ## Goal
 
-Finish the implementation of the `checkInvocationCondition` and `getCommand` functions
+Finish the implementation of the `checkInvocationCondition()` and `getCommand()` functions
   of the `ChaseGhost` behavior component such that it passes its unit tests.
 
 ## Instructions
 
 - Open the implementation of the `ChaseGhost` behavior component in `src/chase_ghost_behavior.cpp`.
-- The `checkInvocationCondition` function is already implemented but does not check for the presence of a ghost.
-- Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::checkInvocationCondition` if you need inspiration.
-- The `getCommand` function is partially implemented but the core logic is missing.
-- Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::getCommand` if you need inspiration.
+- The `checkInvocationCondition()` function is already implemented but does not check for the presence of a ghost.
+- Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::checkInvocationCondition()` if you need inspiration.
+- The `getCommand()` function is partially implemented but the core logic is missing.
+- Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::getCommand()` if you need inspiration.
 - Compile and run the unit tests for the `ChaseGhost` behavior component to verify that your implementation is correct.
 
 ## Solution
@@ -54,7 +54,7 @@ bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
 }
 ```
 
-Add the missing pice of the getCommand function in `src/chase_ghost_behavior.cpp`:
+Add the missing piece of the `getCommand()` function in `src/chase_ghost_behavior.cpp`:
 ```cpp
 Command ChaseGhostBehavior::getCommand(const Time& time) {
     auto pacmanPosition = environmentModel_->pacmanPosition();

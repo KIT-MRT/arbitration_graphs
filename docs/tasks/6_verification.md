@@ -53,21 +53,21 @@ Add the `MoveRandomly` behavior component as a last resort fallback layer.
 
 ## Instructions
 
-- In `verifier.cpp`, finish the implementation of the `Verifier::analyze` method.
+- In `verifier.cpp`, finish the implementation of the `Verifier::analyze()` method.
 - Add an instance of the `Verifier` to the `PacmanAgent` class and initialize it in the constructor.
 - Pass the `Verifier` instance to the constructors of the arbitrators.
   (Hint: You'll need to adjust the template parameters of the arbitrators.)
 - Add the `MoveRandomly` behavior component analogously to the other behavior components.
 - Mark the `MoveRandomly` behavior component as a last resort fallback layer.
 - Try breaking a behavior component on purpose and see how the system reacts.
-  (Try throwing an exception in the `getCommand` method of a behavior component or returning a command that will lead to a collision with a wall.)
+  (Try throwing an exception in the `getCommand()` method of a behavior component or returning a command that will lead to a collision with a wall.)
 
 ## Solution
 
 <details>
 <summary>Click here to expand the solution</summary>
 
-In the `Verifier::analyze` method (in `include/demo/verifier.hpp`), we simply check if the command would lead to an invalid position:
+In the `Verifier::analyze()` method (in `include/demo/verifier.hpp`), we simply check if the command would lead to an invalid position:
 ```cpp
 VerificationResult analyze(const Time /*time*/, const Command& command) const {
     Move nextMove = Move{command.path.front()};
