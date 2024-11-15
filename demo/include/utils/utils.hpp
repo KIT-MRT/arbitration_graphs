@@ -11,6 +11,4 @@ int dotsInRadius(const Position& center,
                  const demo::EnvironmentModel::ConstPtr& environmentModel,
                  int pathEndNeighborhoodRadius);
 
-void printKeybindings();
-
 } // namespace utils

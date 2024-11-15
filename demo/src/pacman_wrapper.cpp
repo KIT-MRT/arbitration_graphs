@@ -1,5 +1,7 @@
 #include "utils/pacman_wrapper.hpp"
 
+#include <iostream>
+
 #include <SDL2/SDL_main.h>
 
 #include <pacman/core/constants.hpp>
@@ -106,6 +108,18 @@ void PacmanWrapper::progressGame(const demo::Command& command,
     SDL_RenderPresent(renderer_.get());
 
     FrameCap sync{fps};
+}
+
+void PacmanWrapper::printKeybindings() {
+    std::cout << "\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << "\033[1;37m               CONTROLS              \033[0m\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << "  \033[1;32mESC/Q\033[0m - Quit the demo\n"
+              << "  \033[1;32mSpace\033[0m - Pause the demo\n"
+              << "  \033[1;32mP\033[0m     - Toggle path visualization\n"
+              << "\033[1;36m=====================================\033[0m\n"
+              << '\n';
 }
 
 void PacmanWrapper::renderPath(const demo::Positions& path) {
