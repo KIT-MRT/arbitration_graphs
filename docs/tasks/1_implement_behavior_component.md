@@ -33,6 +33,7 @@ Finish the implementation of the `checkInvocationCondition()` and `getCommand()`
 
 ## Instructions
 
+- Run the unit tests and note that the `ChaseGhost` `scheckInvocationConditionFalse` test is failing
 - Open the implementation of the `ChaseGhost` behavior component in `src/chase_ghost_behavior.cpp`.
 - The `checkInvocationCondition()` function is already implemented but does not check for the presence of a ghost.
 - Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::checkInvocationCondition()` if you need inspiration.
