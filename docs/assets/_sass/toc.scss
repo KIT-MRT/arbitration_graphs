@@ -43,7 +43,7 @@ html {
 
   // ScrollSpy active styles (see toc.js tab for activation)
   .section-nav li.active>a {
-    color: #333;
+    color: $nav-text-active-color;
     font-weight: 500;
   }
 
@@ -56,13 +56,13 @@ html {
     text-decoration: none;
     display: block;
     padding: .125rem 0;
-    color: #ccc;
+    color: $nav-text-color;
     transition: all 50ms ease-in-out;
     /* 💡 This small transition makes setting of the active state smooth */
   }
 
   .section-nav a:hover,
   .section-nav a:focus {
-    color: #666;
+    color: $nav-text-focus-color;
   }
 }
