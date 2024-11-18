@@ -32,6 +32,31 @@ Start by checking out the `tutorial` branch where we have removed some parts
 git clone --branch tutorial https://github.com/KIT-MRT/arbitration_graphs.git
 ```
 
+<details>
+<summary>Go here for the VSCode Dev Container</summary>
+
+Open the `demo` folder of your fresh `arbitration_graphs` clone in VSCode, e.g. via terminal:  
+```bash
+cd arbitration_graphs/demo
+code .
+```
+
+Build and open the Dev Container by running this [command](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (use `Ctrl+Shift+P`):  
+`Dev Containers: Reopen in Container` (this might take a while)
+
+Enjoy a full-blown IDE with code-completion, code-navigation etc.
+- Explore the repo in the Explorer sidebar
+- Compile via `Ctrl+Shift+B`
+- View, run and debug unit tests via [Testing](https://code.visualstudio.com/docs/editor/testing) sidebar
+- Debug the PacMan Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
+- Debug with breakpoints etc.
+
+</details>
+
+
+<details>
+<summary>Unfold this for the Docker setup via terminal</summary>
+
 To start an interactive shell in the docker container with all required dependencies installed
   and the current directory mounted, run
 ```bash
@@ -63,6 +88,8 @@ cmake --build . --target test
 
 We'll leave the setup of your favorite IDE up to you
   though most modern IDEs should support attaching to a running docker container.
+
+</details>
 
 
 ### What to find where
