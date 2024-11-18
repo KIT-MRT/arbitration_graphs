@@ -39,6 +39,7 @@ TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionFalse) {
 
     // We don't want to chase ghosts when they are far away
     environmentModel_->setGhostMode(GhostMode::SCARED);
+    environmentModel_->setScaredCountdown(40);
     environmentModel_->setPacmanPosition({1, 1});
     environmentModel_->setGhostPositions({8, 8});
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
@@ -67,6 +68,7 @@ TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionFalse) {
 
     // We don't want to chase ghosts when they are far away
     environmentModel_->setGhostMode(GhostMode::SCARED);
+    environmentModel_->setScaredCountdown(40);
     environmentModel_->setPacmanPosition({1, 1});
     environmentModel_->setGhostPositions({8, 8});
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time));
