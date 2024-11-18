@@ -71,7 +71,7 @@ if(GTEST_FOUND)
     get_filename_component(_test_name ${_test} NAME_WE)
     # make sure we add only one -test to the target
     string(REGEX REPLACE "-test" "" TEST_TARGET_NAME ${_test_name})
-    set(TEST_TARGET_NAME arbitration_graphs_pacman_demo-gtest-${TEST_TARGET_NAME})
+    set(TEST_TARGET_NAME test_${TEST_TARGET_NAME})
 
     message(STATUS
       "Adding gtest unittest \"${TEST_TARGET_NAME}\" with working dir ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_test}"
