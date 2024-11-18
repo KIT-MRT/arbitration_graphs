@@ -39,13 +39,13 @@ public:
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
     /*!
-     * \brief The Option struct
+     * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags
      *
-     * \todo explain why it is a subclass of arbitrator
-     * \todo explain flags implementation and usage
-     *       - MyArbitrator::Option::Flags != Arbitrator::Option::Flags (no inheritance)
-     *       - addOption() checks type, but hasFlag() not anymore (otherwise each inherited Option would have to
-     *         implement a new, not overriding (because signature changed) hasFlag() -> error prone)
+     * This is a subclass of arbitrator, as some of the Flags could be arbitrator specific.
+     * For each arbitration class we have to make sure though, to derive an Option class from this Option base.
+     *
+     * \note When using addOption(), make sure to use the Flags of the correct Arbitrator.
+     *       The compiler wouldn't notice a confusion unfortunately.
      */
     struct Option {
     public:
@@ -58,7 +58,6 @@ public:
         Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : behavior_{behavior}, flags_{flags} {
         }
-        //! \todo document why we need this
         virtual ~Option() = default;
 
         typename Behavior<SubCommandT>::Ptr behavior_;
