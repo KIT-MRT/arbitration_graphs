@@ -1,6 +1,8 @@
 # Arbitration Graphs
 
-[![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
+![Latest Release](https://img.shields.io/github/v/release/KIT-MRT/arbitration_graphs?color=green) 
+![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)
+![Unit Test Status](https://img.shields.io/github/actions/workflow/status/KIT-MRT/arbitration_graphs/run-unit-tests.yaml?branch=main&label=tests)
 
 **Hierarchical behavior models for complex decision-making and behavior generation in robotics!**
 
