@@ -20,41 +20,11 @@ Next, we'll start adding more and more behavior components to the graph and lear
 
 The tutorial is structured into several tasks that are meant to be completed in order.
 
-### What to find where
-
-Let's take a look at the structure and content of the `arbitration_graphs/demo/` directory.
-
-```
-demo
-├── include
-├── src
-├── test
-└── …
-```
-
-All header files can be found in the `include/` directory with corresponding implementation files in the `src/` directory.
-The entire demo is thoroughly tested using the unit tests you'll find in the `test/` directory.
-
-Each behavior component is implemented in a separate `<name>_behavior.hpp` file as a class inheriting from the abstract `Behavior` class.
-
-Next, there is `environment_model.hpp`.
-You guessed it, it contains the environment model for the arbitration graph.
-In it, we store things like current positions of PacMan and the ghosts, the maze, several utility functions
-  and other things required by the behavior components.
-
-The `cost_estimator.hpp` file will be relevant for a later task when we cover [cost arbitrators](./tasks/5_cost_arbitration.md).
-
-Similarly, the `verifier.hpp` file will be used to add a verification layer to the arbitration graph [near the end](./tasks/6_verification.md) of the tutorial.
-
-Finally, in `pacman_agent.hpp`, the behavior components are assembled into an arbitration graph.
-It's also where you'll spend most of your time during this tutorial.
-
-If you are interested in how the demo works in detail,
-  you'll find additional code not directly relevant to the tutorial in the `include/utils/` directory
 
 ### Development Environment
 
-The easiest way to get started is to use the provided docker setup.
+The easiest way to get started is to use the provided [Visual Studio Code](https://code.visualstudio.com/) [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers).
+Using the docker setup via terminal is great as well and works with any IDE.
 
 Start by checking out the `tutorial` branch where we have removed some parts
   of the demo implementation for the purpose of this tutorial.
@@ -93,6 +63,39 @@ cmake --build . --target test
 
 We'll leave the setup of your favorite IDE up to you
   though most modern IDEs should support attaching to a running docker container.
+
+
+### What to find where
+
+Let's take a look at the structure and content of the `arbitration_graphs/demo/` directory.
+
+```
+demo
+├── include
+├── src
+├── test
+└── …
+```
+
+All header files can be found in the `include/` directory with corresponding implementation files in the `src/` directory.
+The entire demo is thoroughly tested using the unit tests you'll find in the `test/` directory.
+
+Each behavior component is implemented in a separate `<name>_behavior.hpp` file as a class inheriting from the abstract `Behavior` class.
+
+Next, there is `environment_model.hpp`.
+You guessed it, it contains the environment model for the arbitration graph.
+In it, we store things like current positions of PacMan and the ghosts, the maze, several utility functions
+  and other things required by the behavior components.
+
+The `cost_estimator.hpp` file will be relevant for a later task when we cover [cost arbitrators](./tasks/5_cost_arbitration.md).
+
+Similarly, the `verifier.hpp` file will be used to add a verification layer to the arbitration graph [near the end](./tasks/6_verification.md) of the tutorial.
+
+Finally, in `pacman_agent.hpp`, the behavior components are assembled into an arbitration graph.
+It's also where you'll spend most of your time during this tutorial.
+
+If you are interested in how the demo works in detail,
+  you'll find additional code not directly relevant to the tutorial in the `include/utils/` directory
 
 
 ## Tasks
