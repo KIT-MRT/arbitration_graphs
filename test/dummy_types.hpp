@@ -1,6 +1,7 @@
 #pragma once
 
 #include "behavior.hpp"
+#include "verification.hpp"
 
 
 namespace arbitration_graphs_tests {
@@ -66,20 +67,14 @@ public:
 class BrokenDummyBehavior : public DummyBehavior {
 public:
     BrokenDummyBehavior(const bool invocation, const bool commitment, const std::string& name = "BrokenDummyBehavior")
-            : DummyBehavior(invocation, commitment, name) {};
+            : DummyBehavior(invocation, commitment, name){};
 
     DummyCommand getCommand(const Time& time) override {
         throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
     }
 };
 
-struct DummyResult {
-    bool isOk() const {
-        return isOk_;
-    };
-
-    bool isOk_;
-};
+struct DummyResult : public verification::PlaceboResult {};
 
 } // namespace arbitration_graphs_tests
 
