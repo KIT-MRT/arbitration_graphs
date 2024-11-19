@@ -13,7 +13,7 @@ With our next behavior component ready to go, we need to think about integrating
 
 For this purpose, we need to modify the `PacmanAgent` class to include the `ChaseGhost` behavior component we implemented in the [previous task](1_implement_behavior_component.md).
 Integrating a new behavior component into the arbitration graph is as simple as instantiating it and adding it as a new option to one of the arbitrators.
-Since right now there is just one arbitrator - a priority arbitrator - the choice is simple.
+Since right now there is just one arbitrator – a priority arbitrator – the choice is simple.
 We just need to worry about the order in which the options are assigned to the arbitrator.
 Should chasing a ghost have a higher priority than avoiding a ghost or vice versa?
 
@@ -55,7 +55,9 @@ struct Parameters {
 };
 ```
 
-In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behavior component and add it to the priority arbitrator:
+In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behavior component and add it to the priority arbitrator.
+
+The invocation condition of `ChaseGhost` is a subset of the `AvoidGhost` invocation condition. Therefore, it only makes sense to add `ChaseGhost` with higher priority than (i.e. before) the `AvoidGhost` behavior component:
 ```cpp
 explicit PacmanAgent(const entt::Game& game)
         : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
