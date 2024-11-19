@@ -78,9 +78,9 @@ We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/p
 
 First make sure all dependencies are installed:
 - [glog](https://github.com/google/glog)
-- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [util_caching](https://github.com/KIT-MRT/util_caching)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
