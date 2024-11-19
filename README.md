@@ -100,6 +100,22 @@ sudo dpkg -i libarbitration-graphs-gui-dev.deb
 </details>
 
 <details>
+<summary>Installation from .zip/.tar.gz</summary>
+
+As this is a header-only library, no platform-specific compilation is needed.
+So, you can also install the files directly from our release [`.zip` or `.tar.gz` archives](https://github.com/KIT-MRT/arbitration_graphs/releases/latest):
+
+```bash
+tar xf arbitration_graphs-core.tar.gz --directory=/
+tar xf arbitration_graphs-gui.tar.gz --directory=/
+```
+
+This installs into `/usr/[include,lib,share]/arbitration_graphs`.
+Please read [Serving the WebApp GUI](#serving-the-webapp-gui) below, if you consider custom installation paths and want to use the GUI.
+
+</details> 
+
+<details>
 <summary>Using Docker image with pre-installed library</summary>
 
 We provide a Docker image with the library and all dependencies already installed globally.
