@@ -73,7 +73,8 @@ We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/p
 
 ## Installation
 
-### Prerequisites
+<details>
+<summary>Prerequisites</summary>
 
 First make sure all dependencies are installed:
 - [glog](https://github.com/google/glog)
@@ -83,8 +84,10 @@ First make sure all dependencies are installed:
 - [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
+</details>
 
-### Installation using Debian package (recommended)
+<details>
+<summary>Installation using Debian package (recommended)</summary>
 
 We provide a Debian package for easy installation on Debian-based distributions.
 Download the latest `.deb` packages for the [core library](https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/libarbitration-graphs-core-dev.deb)
@@ -94,8 +97,10 @@ and optionally for [the gui](https://github.com/KIT-MRT/arbitration_graphs/relea
 sudo dpkg -i libarbitration-graphs-core-dev.deb
 sudo dpkg -i libarbitration-graphs-gui-dev.deb
 ```
+</details>
 
-### Using Docker image with pre-installed library
+<details>
+<summary>Using Docker image with pre-installed library</summary>
 
 We provide a Docker image with the library and all dependencies already installed globally.
 
@@ -110,8 +115,10 @@ So, it can be easily loaded with CMake:
 find_package(arbitration_graphs REQUIRED)
 ```
 
+</details>
 
-### Building from source using CMake
+<details>
+<summary>Building from source using CMake</summary>
 
 Clone the repository:
 
@@ -132,10 +139,13 @@ sudo cmake --install .
 
 In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
+</details>
+
 
 ## Development
 
-### Using Docker image
+<details>
+<summary>Using Docker image</summary>
 
 Clone the repository and run the development image
 
@@ -149,8 +159,11 @@ docker compose run --rm arbitration_graphs_devel
 This mounts the source into the container's `/home/blinky/arbitration_graphs` folder.
 There, you can edit the source code, compile and run the tests etc.
 
+</details>
 
-### Compiling unit tests
+
+<details>
+<summary>Compiling unit tests</summary>
 
 In order to compile with tests define `BUILD_TESTS=true`
 ```bash
@@ -166,8 +179,11 @@ Run all unit tests with CTest:
 cmake --build . --target test
 ```
 
+</details>
 
-### Serving the WebApp GUI
+
+<details>
+<summary>Serving the WebApp GUI</summary>
 
 The GUI consists of
 - a web server with static WebApp files, see [`gui/app`](./gui/app)
@@ -183,3 +199,6 @@ If you intend to override these, please use the `APP_DIRECTORY` environment vari
 ```
 APP_DIRECTORY=/my/custom/app/path my_awesome_executable
 ```
+
+</details>
+
