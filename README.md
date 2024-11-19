@@ -301,7 +301,7 @@ Nick Le Large&nbsp;
 
 ## Citation
 
-If you use arbitration graphs in your research, we would be pleased if you cite our publication:
+If you use arbitration graphs in your research, we would be pleased if you cite our work:
 
 ```bibtex
 @misc{spieker2024ArbitrationGraphs,
