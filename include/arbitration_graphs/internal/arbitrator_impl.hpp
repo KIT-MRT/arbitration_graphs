@@ -115,7 +115,7 @@ SubCommandT Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::g
             command = getAndVerifyCommand(bestOption, time);
         } catch (const std::exception& e) {
             VLOG(1) << bestOption->behavior_->name_ << " threw an exception during getAndVerifyCommand(): " << e.what();
-            bestOption->verificationResult_.reset();
+            bestOption->verificationResult_.cache(time, VerificationResultT{false});
             bestOption->behavior_->loseControl(time);
             continue;
         }

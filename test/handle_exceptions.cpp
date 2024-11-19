@@ -33,9 +33,10 @@ TEST_F(ExceptionHandlingTest, HandleException) {
 
     // Since the high priority behavior is broken, we should get the low priority behavior as fallback
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
 
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
     EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
 
     testPriorityArbitrator.loseControl(time);
