@@ -15,5 +15,5 @@
 @import 'toc';
 
 img.github-logo {
-  content: url(/docs/assets/img/github-mark.svg);
+  content: url({{ "/docs/assets/img/github-mark.svg" | relative_url }});
 }
