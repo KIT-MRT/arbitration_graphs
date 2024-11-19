@@ -41,10 +41,10 @@ public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, loseControlCounter_{
-                                                                                                      0} {};
+            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
     DummyCommand getCommand(const Time& time) override {
+        getCommandCounter_++;
         return name_;
     }
     bool checkInvocationCondition(const Time& time) const override {
@@ -59,7 +59,8 @@ public:
 
     bool invocationCondition_;
     bool commitmentCondition_;
-    int loseControlCounter_;
+    int getCommandCounter_{0};
+    int loseControlCounter_{0};
 };
 
 struct DummyResult {

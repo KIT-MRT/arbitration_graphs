@@ -116,6 +116,36 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
 }
 
+TEST_F(CostArbitratorTest, CommandCaching) {
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NO_FLAGS, cost_estimator);
+
+    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time));
+    EXPECT_EQ(0, testBehaviorMidCost->getCommandCounter_);
+
+    testCostArbitrator.gainControl(time);
+
+    // Even though the cost arbitrator needs to compute the command to estimate the costs, the behaviors getCommand
+    // should only be called once since the result is cached
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    // For a second call to getCommand, we can still use the cached command
+    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter_);
+
+    time = time + Duration(1);
+
+    // The cached command should be invalidated after the time has passed
+    // Therefore the behavior should be called again once for the new time
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
+    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter_);
+}
+
 TEST_F(CostArbitratorTest, Printout) {
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, cost_estimator);

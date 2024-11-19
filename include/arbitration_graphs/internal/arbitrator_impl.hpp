@@ -51,7 +51,7 @@ template <typename CommandT, typename SubCommandT, typename VerifierT, typename 
 std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::getAndVerifyCommand(
     const typename Option::Ptr& option, const Time& time) const {
     try {
-        const SubCommandT command = option->behavior_->getCommand(time);
+        const SubCommandT command = option->getCommand(time);
 
         const VerificationResultT verificationResult = verifier_.analyze(time, command);
         option->verificationResult_.cache(time, verificationResult);
