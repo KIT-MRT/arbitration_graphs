@@ -76,7 +76,7 @@ public:
 
 
     CostArbitrator(const std::string& name = "CostArbitrator", const VerifierT& verifier = VerifierT())
-            : ArbitratorBase(name, verifier){};
+            : ArbitratorBase(name, verifier) {};
 
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
@@ -118,10 +118,10 @@ private:
 
             double cost;
             if (isActive) {
-                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                cost = option->costEstimator_->estimateCost(option->getCommand(time), isActive);
             } else {
                 option->behavior_->gainControl(time);
-                cost = option->costEstimator_->estimateCost(option->behavior_->getCommand(time), isActive);
+                cost = option->costEstimator_->estimateCost(option->getCommand(time), isActive);
                 option->behavior_->loseControl(time);
             }
             option->last_estimated_cost_ = cost;
