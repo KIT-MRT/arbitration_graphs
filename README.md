@@ -1,8 +1,8 @@
 # Arbitration Graphs
 
-![Latest Release](https://img.shields.io/github/v/release/KIT-MRT/arbitration_graphs?color=green) 
-![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)
-![Unit Test Status](https://img.shields.io/github/actions/workflow/status/KIT-MRT/arbitration_graphs/run-unit-tests.yaml?branch=main&label=tests)
+[![Latest Release](https://img.shields.io/github/v/release/KIT-MRT/arbitration_graphs?color=green)](https://github.com/KIT-MRT/arbitration_graphs/releases)
+[![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
+[![Unit Test Status](https://img.shields.io/github/actions/workflow/status/KIT-MRT/arbitration_graphs/run-unit-tests.yaml?branch=main&label=tests)](https://github.com/KIT-MRT/arbitration_graphs/actions/workflows/run-unit-tests.yaml?query=branch%3Amain)
 
 **Hierarchical behavior models for complex decision-making and behavior generation in robotics!**
 
@@ -32,6 +32,10 @@ TODO: add example arbitration graph from robotics (with POMDP, RL methods)
   Use tightly integrated verifiers to ensure that only safe and valid behavior commands are executed.
 - 🪂 **Graceful Degradation**  
   Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
+- 📦 **Header-Only**  
+  Simple integration – just include this header-only C++ library!
+- 📜 **Permissive License**  
+  Published under MIT license to ensure maximum flexibility for your projects.
 
 
 ## Demo
@@ -73,18 +77,27 @@ We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/p
 
 ## Installation
 
-### Prerequisites
+The `arbitration_graphs` library consists of two parts
+- **Core**  
+  This is what it's all about – base classes for arbitrators and behavior components, implementations of various arbitration schemes, behavior verification, …
+- **GUI** *optional*  
+  Draws a live visual representation of the arbitration state (full graph, currently active behavior, current costs of behaviors, …) in a WebApp GUI. Supports SVG export as the one above (great for publications).
+
+<details>
+<summary>Prerequisites</summary>
 
 First make sure all dependencies are installed:
 - [glog](https://github.com/google/glog)
-- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [util_caching](https://github.com/KIT-MRT/util_caching)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [Crow](https://crowcpp.org) (optional, needed for GUI only)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
+</details>
 
-### Installation using Debian package (recommended)
+<details>
+<summary>Installation using Debian package (recommended)</summary>
 
 We provide a Debian package for easy installation on Debian-based distributions.
 Download the latest `.deb` packages for the [core library](https://github.com/KIT-MRT/arbitration_graphs/releases/latest/download/libarbitration-graphs-core-dev.deb)
@@ -94,8 +107,26 @@ and optionally for [the gui](https://github.com/KIT-MRT/arbitration_graphs/relea
 sudo dpkg -i libarbitration-graphs-core-dev.deb
 sudo dpkg -i libarbitration-graphs-gui-dev.deb
 ```
+</details>
 
-### Using Docker image with pre-installed library
+<details>
+<summary>Installation from .zip/.tar.gz</summary>
+
+As this is a header-only library, no platform-specific compilation is needed.
+So, you can also install the files directly from our release [`.zip` or `.tar.gz` archives](https://github.com/KIT-MRT/arbitration_graphs/releases/latest):
+
+```bash
+tar xf arbitration_graphs-core.tar.gz --directory=/
+tar xf arbitration_graphs-gui.tar.gz --directory=/
+```
+
+This installs into `/usr/[include,lib,share]/arbitration_graphs`.
+Please read [Serving the WebApp GUI](#serving-the-webapp-gui) below, if you consider custom installation paths and want to use the GUI.
+
+</details> 
+
+<details>
+<summary>Using Docker image with pre-installed library</summary>
 
 We provide a Docker image with the library and all dependencies already installed globally.
 
@@ -110,8 +141,10 @@ So, it can be easily loaded with CMake:
 find_package(arbitration_graphs REQUIRED)
 ```
 
+</details>
 
-### Building from source using CMake
+<details>
+<summary>Building from source using CMake</summary>
 
 Clone the repository:
 
@@ -132,10 +165,13 @@ sudo cmake --install .
 
 In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
+</details>
+
 
 ## Development
 
-### Using Docker image
+<details>
+<summary>Using Docker image</summary>
 
 Clone the repository and run the development image
 
@@ -149,8 +185,11 @@ docker compose run --rm arbitration_graphs_devel
 This mounts the source into the container's `/home/blinky/arbitration_graphs` folder.
 There, you can edit the source code, compile and run the tests etc.
 
+</details>
 
-### Compiling unit tests
+
+<details>
+<summary>Compiling unit tests</summary>
 
 In order to compile with tests define `BUILD_TESTS=true`
 ```bash
@@ -166,8 +205,11 @@ Run all unit tests with CTest:
 cmake --build . --target test
 ```
 
+</details>
 
-### Serving the WebApp GUI
+
+<details>
+<summary>Serving the WebApp GUI</summary>
 
 The GUI consists of
 - a web server with static WebApp files, see [`gui/app`](./gui/app)
@@ -182,4 +224,118 @@ If you intend to override these, please use the `APP_DIRECTORY` environment vari
 
 ```
 APP_DIRECTORY=/my/custom/app/path my_awesome_executable
+```
+
+</details>
+
+
+## Contributors
+
+This library and repo has been crafted with ❤️ by
+
+**Christoph Burger**
+&nbsp;
+<a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ChristophBurger89
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  christoph-burger
+</a>
+&nbsp;
+<a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0009-0002-9147-8749
+</a><br>
+**Nick Le Large**
+&nbsp;
+<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ll-nick
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  nick-le-large
+</a>
+&nbsp;
+<a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0009-0006-5191-9043
+</a><br>
+**Piotr Spieker**
+&nbsp;
+<a href="https://github.com/orzechow" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  orzechow
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  piotr-spieker
+</a>
+&nbsp;
+<a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0000-0002-0449-3741
+</a>
+
+Christoph and Piotr coded the core in a pair-programming session.
+Piotr also contributed the GUI and GitHub Page.
+Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+
+The repository is maintained by Piotr Spieker&nbsp;
+<a href="https://github.com/orzechow" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  orzechow
+</a>
+and
+Nick Le Large&nbsp;
+<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ll-nick
+</a>.
+
+
+## Citation
+
+If you use arbitration graphs in your research, we would be pleased if you cite our work:
+
+```bibtex
+@misc{spieker2024ArbitrationGraphs,
+  title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
+  author={Piotr Spieker and Nick Le Large and Martin Lauer},
+  year={2024},
+  eprint={2411.10170},
+  eprinttype = {arXiv},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  doi = {10.48550/arXiv.2411.10170},
+  url={https://arxiv.org/abs/2411.10170}, 
+}
+
+@inproceedings{orzechowski2020ArbitrationGraphs,
+  title = {Decision-{{Making}} for {{Automated Vehicles Using}} a {{Hierarchical Behavior-Based Arbitration Scheme}}},
+  booktitle = {Intelligent {{Vehicles Symposium}}},
+  author = {Orzechowski, Piotr F. and Burger, Christoph and Lauer, Martin},
+  date = {2020-10},
+  pages = {767--774},
+  publisher = {IEEE},
+  location = {Las Vegas, NV, USA},
+  issn = {2642-7214},
+  doi = {10.1109/IV47402.2020.9304723},
+}
+
+@article{lauer2010CognitiveConceptsAutonomous,
+  title = {Cognitive Concepts in Autonomous Soccer Playing Robots},
+  author = {Lauer, Martin and Hafner, Roland and Lange, Sascha and Riedmiller, Martin},
+  date = {2010},
+  journaltitle = {Cognitive Systems Research},
+  volume = {11},
+  number = {3},
+  pages = {287--309},
+  doi = {10.1016/j.cogsys.2009.12.003},
+}
 ```
