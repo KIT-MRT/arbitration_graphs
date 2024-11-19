@@ -218,6 +218,71 @@ APP_DIRECTORY=/my/custom/app/path my_awesome_executable
 
 </details>
 
+
+## Contributors
+
+This library and repo has been crafted with ❤️ by
+
+**Christoph Burger**
+&nbsp;
+<a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ChristophBurger89
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  christoph-burger
+</a>
+&nbsp;
+<a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0009-0002-9147-8749
+</a><br>
+**Nick Le Large**
+&nbsp;
+<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ll-nick
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  nick-le-large
+</a>
+&nbsp;
+<a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0009-0006-5191-9043
+</a><br>
+**Piotr Spieker**
+&nbsp;
+<a href="https://github.com/orzechow" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  orzechow
+</a>
+&nbsp;
+<a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  piotr-spieker
+</a>
+&nbsp;
+<a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
+  <img style="height:1em; position: relative; top:.2em" src="docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  0000-0002-0449-3741
+</a>
+
+Christoph and Piotr coded the core in a pair-programming session.
+Piotr also contributed the GUI and GitHub Page.
+Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+
+The repository is maintained by Piotr Spieker&nbsp;
+<a href="https://github.com/orzechow" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  orzechow
+</a>
+
+
 ## Citation
 
 If you use arbitration graphs in your research, we would be pleased if you cite our publication:
