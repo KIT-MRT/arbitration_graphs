@@ -90,7 +90,7 @@ explicit PacmanAgent(const entt::Game& game)
 
 
 ---
-[← Previous task](3_add_more_behaviors.md)
+[← Previous task](2_extend_arbitration_graph.md)
 |
 [Tutorial Home](../Tutorial.md)
 |

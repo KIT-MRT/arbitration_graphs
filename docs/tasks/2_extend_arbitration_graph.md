@@ -82,4 +82,4 @@ explicit PacmanAgent(const entt::Game& game)
 |
 [Tutorial Home](../Tutorial.md)
 |
-[Next task →](3_add_more_behaviors.md)
+[Next task →](4_nested_arbitrators.md)
