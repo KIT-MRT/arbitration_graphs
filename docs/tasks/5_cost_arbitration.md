@@ -30,7 +30,9 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 
 ## Instructions
 
+- Run the unit tests and note that some of the `CostEstimator` tests are failing
 - In `cost_estimator.cpp`, fill in the blanks to compute `nDots` and `nCells`.
+- Compile and run the unit tests for the `CostEstimator` to verify that your implementation is correct.
 - Add an instance of the `CostEstimator` to the `PacmanAgent` class and initialize it in the constructor.
   Don't forget to include the necessary headers and extend the parameter struct with the parameters for the `CostEstimator`.
 - Replace the random arbitrator with a cost arbitrator in the `PacmanAgent` class. Pass the `CostEstimator` instance to the `addOption()` method.
