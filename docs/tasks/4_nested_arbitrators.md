@@ -44,7 +44,7 @@ Include the header of the `ChangeDotCluster` behavior component and the random a
 #include "change_dot_cluster_behavior.hpp"
 ```
 
-For easier to read code, add the following alias near the top of the class definition:
+For better code readability, add the following alias near the top of the class definition:
 ```cpp
 using RandomArbitrator = arbitration_graphs::RandomArbitrator<Command, Command>;
 ```
