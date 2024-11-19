@@ -298,13 +298,38 @@ The repository is maintained by Piotr Spieker&nbsp;
 If you use arbitration graphs in your research, we would be pleased if you cite our publication:
 
 ```bibtex
-@misc{spieker2024arbitrationgraphs,
-      title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
-      author={Piotr Spieker and Nick Le Large and Martin Lauer},
-      year={2024},
-      eprint={2411.10170},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2411.10170}, 
+@misc{spieker2024ArbitrationGraphs,
+  title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
+  author={Piotr Spieker and Nick Le Large and Martin Lauer},
+  year={2024},
+  eprint={2411.10170},
+  eprinttype = {arXiv},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  doi = {10.48550/arXiv.2411.10170},
+  url={https://arxiv.org/abs/2411.10170}, 
+}
+
+@inproceedings{orzechowski2020ArbitrationGraphs,
+  title = {Decision-{{Making}} for {{Automated Vehicles Using}} a {{Hierarchical Behavior-Based Arbitration Scheme}}},
+  booktitle = {Intelligent {{Vehicles Symposium}}},
+  author = {Orzechowski, Piotr F. and Burger, Christoph and Lauer, Martin},
+  date = {2020-10},
+  pages = {767--774},
+  publisher = {IEEE},
+  location = {Las Vegas, NV, USA},
+  issn = {2642-7214},
+  doi = {10.1109/IV47402.2020.9304723},
+}
+
+@article{lauer2010CognitiveConceptsAutonomous,
+  title = {Cognitive Concepts in Autonomous Soccer Playing Robots},
+  author = {Lauer, Martin and Hafner, Roland and Lange, Sascha and Riedmiller, Martin},
+  date = {2010},
+  journaltitle = {Cognitive Systems Research},
+  volume = {11},
+  number = {3},
+  pages = {287--309},
+  doi = {10.1016/j.cogsys.2009.12.003},
 }
 ```
