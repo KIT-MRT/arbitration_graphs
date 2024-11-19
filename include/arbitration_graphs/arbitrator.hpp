@@ -63,7 +63,15 @@ public:
 
         typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
+        mutable util_caching::Cache<Time, SubCommandT> command_;
         mutable util_caching::Cache<Time, VerificationResultT> verificationResult_;
+
+        SubCommandT getCommand(const Time& time) const {
+            if (!command_.cached(time)) {
+                command_.cache(time, behavior_->getCommand(time));
+            }
+            return command_.cached(time).value();
+        }
 
         bool hasFlag(const FlagsT& flag_to_check) const {
             return flags_ & flag_to_check;
