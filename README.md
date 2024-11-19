@@ -73,6 +73,12 @@ We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/p
 
 ## Installation
 
+The `arbitration_graphs` library consists of two parts
+- **Core**  
+  This is what it's all about – base classes for arbitrators and behavior components, implementations of various arbitration schemes, behavior verification, …
+- **GUI** *optional*  
+  Draws a live visual representation of the arbitration state (full graph, currently active behavior, current costs of behaviors, …) in a WebApp GUI. Supports SVG export as the one above (great for publications).
+
 <details>
 <summary>Prerequisites</summary>
 
