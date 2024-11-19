@@ -321,6 +321,24 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
 <details>
 <summary>Earlier publications</summary>
 
+A safety concept that extends Arbitration Graphs with behavior verification and fallback layers in the context of automated driving has been proposed by Piotr Spieker (née Orzechowski) in his PhD thesis.
+This served as the basis for the paper with Nick above.
+
+_Piotr F. Orzechowski, “Verhaltensentscheidung für automatisierte Fahrzeuge mittels Arbitrationsgraphen,” phd, Karlsruher Institut für Technologie (KIT), 2023. doi: [10.5445/IR/1000160638](https://doi.org/10.5445/IR/1000160638)._
+
+```bibtex
+@thesis{Orzechowski2023Arbitrationsgraphen,
+  type = {phdthesis},
+  title = {Verhaltensentscheidung für automatisierte Fahrzeuge mittels Arbitrationsgraphen},
+  author = {Orzechowski, Piotr Franciszek},
+  date = {2023},
+  institution = {Karlsruher Institut für Technologie (KIT)},
+  doi = {10.5445/IR/1000160638},
+  langid = {german},
+  pagetotal = {169},
+}
+```
+
 Arbitration Graphs replaced state machines in the context of automated driving at the Institute of Measurement and Control Systems (MRT) of the Karlsruhe Institute of Technology (KIT):
 
 _Piotr F. Orzechowski, Christoph Burger, and Martin Lauer, “Decision-Making for Automated Vehicles Using a Hierarchical Behavior-Based Arbitration Scheme,” in Intelligent Vehicles Symposium, Las Vegas, NV, USA: IEEE, Oct. 2020, pp. 767–774. doi: [10.1109/IV47402.2020.9304723](https://doi.org/10.1109/IV47402.2020.9304723)._
