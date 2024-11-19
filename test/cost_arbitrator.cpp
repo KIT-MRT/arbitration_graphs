@@ -90,11 +90,11 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
 
     testCostArbitrator.gainControl(time);
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
-    //! \todo This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
+    //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
     EXPECT_EQ(1, testBehaviorMidCost->loseControlCounter_);
 
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time));
-    //! \todo This should be 1, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
+    //! \note This should be 1, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
     EXPECT_EQ(3, testBehaviorMidCost->loseControlCounter_);
 
     testBehaviorMidCost->invocationCondition_ = false;
@@ -102,10 +102,10 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time));
 
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
-    //! \todo This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
+    //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
     EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter_);
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time));
-    //! \todo This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
+    //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
     EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter_);
 
     // high_cost behavior is not interruptable -> high_cost should stay active
