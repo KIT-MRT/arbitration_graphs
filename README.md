@@ -32,6 +32,10 @@ TODO: add example arbitration graph from robotics (with POMDP, RL methods)
   Use tightly integrated verifiers to ensure that only safe and valid behavior commands are executed.
 - 🪂 **Graceful Degradation**  
   Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
+- 📦 **Header-Only**  
+  Simple integration – just include this header-only C++ library!
+- 📜 **Permissive License**  
+  Published under MIT license to ensure maximum flexibility for your projects.
 
 
 ## Demo
