@@ -202,3 +202,18 @@ APP_DIRECTORY=/my/custom/app/path my_awesome_executable
 
 </details>
 
+## Citation
+
+If you use arbitration graphs in your research, we would be pleased if you cite our publication:
+
+```bibtex
+@misc{spieker2024arbitrationgraphs,
+      title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
+      author={Piotr Spieker and Nick Le Large and Martin Lauer},
+      year={2024},
+      eprint={2411.10170},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2411.10170}, 
+}
+```
