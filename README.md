@@ -291,6 +291,12 @@ The repository is maintained by Piotr Spieker&nbsp;
   <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
   orzechow
 </a>
+and
+Nick Le Large&nbsp;
+<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  ll-nick
+</a>.
 
 
 ## Citation
