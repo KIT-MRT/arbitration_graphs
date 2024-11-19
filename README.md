@@ -303,6 +303,8 @@ Nick Le Large&nbsp;
 
 If you use arbitration graphs in your research, we would be pleased if you cite our work:
 
+_Piotr Spieker, Nick Le Large, and Martin Lauer, “Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making,” Nov. 15, 2024, arXiv: arXiv:2411.10170. doi: [10.48550/arXiv.2411.10170](https://doi.org/10.48550/arXiv.2411.10170)._
+
 {% raw %}
 ```bibtex
 @misc{spieker2024ArbitrationGraphs,
@@ -316,7 +318,19 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
   doi = {10.48550/arXiv.2411.10170},
   url={https://arxiv.org/abs/2411.10170}, 
 }
+```
+{% endraw %}
 
+
+<details>
+<summary>Earlier publications</summary>
+
+Arbitration Graphs replaced state machines in the context of automated driving at the Institute of Measurement and Control Systems (MRT) of the Karlsruhe Institute of Technology (KIT):
+
+_Piotr F. Orzechowski, Christoph Burger, and Martin Lauer, “Decision-Making for Automated Vehicles Using a Hierarchical Behavior-Based Arbitration Scheme,” in Intelligent Vehicles Symposium, Las Vegas, NV, USA: IEEE, Oct. 2020, pp. 767–774. doi: [10.1109/IV47402.2020.9304723](https://doi.org/10.1109/IV47402.2020.9304723)._
+
+{% raw %}
+```bibtex
 @inproceedings{orzechowski2020ArbitrationGraphs,
   title = {Decision-{{Making}} for {{Automated Vehicles Using}} a {{Hierarchical Behavior-Based Arbitration Scheme}}},
   booktitle = {Intelligent {{Vehicles Symposium}}},
@@ -328,7 +342,15 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
   issn = {2642-7214},
   doi = {10.1109/IV47402.2020.9304723},
 }
+```
+{% endraw %}
 
+The foundations for Arbitration Graphs have been proposed in the context of robot soccer:
+
+_Martin Lauer, Roland Hafner, Sascha Lange, and Martin Riedmiller, “Cognitive concepts in autonomous soccer playing robots,” Cognitive Systems Research, vol. 11, no. 3, pp. 287–309, 2010, doi: [10.1016/j.cogsys.2009.12.003](https://doi.org/10.1016/j.cogsys.2009.12.003)._
+
+{% raw %}
+```bibtex
 @article{lauer2010CognitiveConceptsAutonomous,
   title = {Cognitive Concepts in Autonomous Soccer Playing Robots},
   author = {Lauer, Martin and Hafner, Roland and Lange, Sascha and Riedmiller, Martin},
@@ -341,3 +363,5 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
 }
 ```
 {% endraw %}
+
+</details>
