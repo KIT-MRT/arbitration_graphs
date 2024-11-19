@@ -22,4 +22,11 @@ Direction MoveRandomlyBehavior::selectRandomDirection() {
     return randomMove.direction;
 }
 
+bool MoveRandomlyBehavior::checkInvocationCondition(const Time& /*time*/) const {
+    return true;
+}
+bool MoveRandomlyBehavior::checkCommitmentCondition(const Time& /*time*/) const {
+    return false;
+}
+
 } // namespace demo

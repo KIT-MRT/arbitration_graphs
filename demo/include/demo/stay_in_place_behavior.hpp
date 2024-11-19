@@ -24,22 +24,10 @@ public:
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 
-    Command getCommand(const Time& time) override {
-        Direction currentDirection = environmentModel_->pacmanDirection();
-        return Command{oppositeDirection(currentDirection)};
-    }
+    Command getCommand(const Time& /*time*/) override;
 
-    bool checkInvocationCondition(const Time& time) const override {
-        return true;
-    }
-    bool checkCommitmentCondition(const Time& time) const override {
-        return false;
-    }
-
-    void gainControl(const Time& time) override {
-    }
-    void loseControl(const Time& time) override {
-    }
+    bool checkInvocationCondition(const Time& /*time*/) const override;
+    bool checkCommitmentCondition(const Time& /*time*/) const override;
 
 private:
     EnvironmentModel::Ptr environmentModel_;

@@ -66,9 +66,11 @@ add_library(${PROJECT_NAME}_lib SHARED
   src/chase_ghost_behavior.cpp
   src/cost_estimator.cpp
   src/cluster.cpp
+  src/eat_closest_dot_behavior.cpp
   src/entities.cpp
   src/environment_model.cpp
   src/move_randomly_behavior.cpp
+  src/stay_in_place_behavior.cpp
   src/utils.cpp
 )
 target_include_directories(${PROJECT_NAME}_lib PRIVATE

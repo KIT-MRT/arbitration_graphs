@@ -24,9 +24,9 @@ public:
         double commitmentMinDistance{7};
     };
 
-    AvoidGhostBehavior(EnvironmentModel::Ptr environmentModel,
-                       const Parameters& parameters,
-                       const std::string& name = "AvoidGhost")
+    explicit AvoidGhostBehavior(EnvironmentModel::Ptr environmentModel,
+                                const Parameters& parameters,
+                                const std::string& name = "AvoidGhost")
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 
