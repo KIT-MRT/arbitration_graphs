@@ -32,7 +32,7 @@ set(CPACK_DEBIAN_GUI_PACKAGE_NAME "libarbitration-graphs-gui-dev")
 
 # Component-specific dependencies (make sure to use upper-case!)
 set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "libgoogle-glog-dev, libyaml-cpp-dev, libutil-caching-dev")
-set(CPACK_DEBIAN_GUI_PACKAGE_DEPENDS "libarbitration-graphs-core-dev, Crow, zlib1g-dev")
+set(CPACK_DEBIAN_GUI_PACKAGE_DEPENDS "libarbitration-graphs-core-dev, crow, zlib1g-dev")
 
 # Use fixed debian file names
 set(CPACK_DEBIAN_CORE_FILE_NAME "${CPACK_DEBIAN_CORE_PACKAGE_NAME}.deb")
