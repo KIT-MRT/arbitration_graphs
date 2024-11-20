@@ -303,7 +303,6 @@ Nick Le Large&nbsp;
 
 If you use arbitration graphs in your research, we would be pleased if you cite our work:
 
-{% raw %}
 ```bibtex
 @misc{spieker2024ArbitrationGraphs,
   title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
@@ -318,7 +317,7 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
 }
 
 @inproceedings{orzechowski2020ArbitrationGraphs,
-  title = {Decision-{{Making}} for {{Automated Vehicles Using}} a {{Hierarchical Behavior-Based Arbitration Scheme}}},
+  title = {Decision-Making for Automated Vehicles Using a Hierarchical Behavior-Based Arbitration Scheme},
   booktitle = {Intelligent {{Vehicles Symposium}}},
   author = {Orzechowski, Piotr F. and Burger, Christoph and Lauer, Martin},
   date = {2020-10},
@@ -340,4 +339,3 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
   doi = {10.1016/j.cogsys.2009.12.003},
 }
 ```
-{% endraw %}
