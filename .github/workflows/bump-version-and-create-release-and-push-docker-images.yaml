@@ -18,23 +18,13 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      - name: Read version from file
-        run: |
-          # Read the version from the version file, only store the number (without the 'v')
-          INITIAL_VERSION=$(source version && echo ${VERSION#v})
-          echo "Current version: $INITIAL_VERSION"
-          echo "INITIAL_VERSION=${INITIAL_VERSION}" >> $GITHUB_ENV
-
-      - name: Bump version
+      - name: Compute new version
         id: bump_version
-        uses: anothrNick/github-tag-action@v1
-        env:
-          DEFAULT_BUMP: minor
-          DRY_RUN: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INITIAL_VERSION: ${{ env.INITIAL_VERSION }}
-          WITH_V: true
-
+        run: |
+          # Run the compute_version script and pass the PR description as an argument
+          cd .github/workflows
+          new_tag=$(./compute_version.sh "${{ github.event.pull_request.body }}")
+          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
 
   update-version-file:
     needs: compute-version
