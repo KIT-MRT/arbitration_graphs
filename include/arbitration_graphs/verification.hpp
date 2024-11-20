@@ -14,9 +14,11 @@ namespace arbitration_graphs::verification {
  * robots. Otherwise these are a good starting point to implement your own meaningful verifier.
  */
 struct PlaceboResult {
-    static bool isOk() {
-        return true;
+    bool isOk() const {
+        return isOk_;
     };
+
+    bool isOk_{true};
 };
 template <typename DataT>
 struct PlaceboVerifier {
