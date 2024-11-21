@@ -7,8 +7,8 @@ if [[ $# -ne 2 ]]; then
   exit 1
 fi
 
-initial_version="$1"
-input_string="$2"
+initial_version=${1//[^0-9.v]/}
+input_string=${2//[^a-zA-Z0-9#]/}
 
 # Extract the current version components
 major=$(echo "$initial_version" | cut -d'.' -f1 | cut -d'v' -f2)
