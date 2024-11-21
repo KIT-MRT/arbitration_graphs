@@ -303,6 +303,8 @@ Nick Le Large&nbsp;
 
 If you use arbitration graphs in your research, we would be pleased if you cite our work:
 
+*Piotr Spieker, Nick Le Large, and Martin Lauer, “Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making,” Nov. 15, 2024, arXiv: arXiv:2411.10170. doi: [10.48550/arXiv.2411.10170](https://doi.org/10.48550/arXiv.2411.10170).*
+
 ```bibtex
 @misc{spieker2024ArbitrationGraphs,
   title={Better Safe Than Sorry: Enhancing Arbitration Graphs for Safe and Robust Autonomous Decision-Making}, 
