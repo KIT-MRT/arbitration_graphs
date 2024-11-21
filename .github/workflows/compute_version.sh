@@ -14,7 +14,7 @@ initial_major=$(echo "$initial_version" | cut -d'.' -f1)
 initial_minor=$(echo "$initial_version" | cut -d'.' -f2)
 initial_patch=$(echo "$initial_version" | cut -d'.' -f3)
 
-# Determine the bump type based on PR description
+# Determine the bump type based on input string
 if [[ "$input_string" == *"#major"* ]]; then
   new_major=$((initial_major + 1))
   new_minor=0
