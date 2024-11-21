@@ -7,10 +7,10 @@ if [[ $# -ne 2 ]]; then
   exit 1
 fi
 
-initial_version=${1//[^0-9.v]/}
+initial_version=${1//[^0-9.]/}
 input_string=${2//[^a-zA-Z0-9#]/}
 
-initial_major=$(echo "$initial_version" | cut -d'.' -f1 | cut -d'v' -f2)
+initial_major=$(echo "$initial_version" | cut -d'.' -f1)
 initial_minor=$(echo "$initial_version" | cut -d'.' -f2)
 initial_patch=$(echo "$initial_version" | cut -d'.' -f3)
 

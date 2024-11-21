@@ -21,8 +21,8 @@ jobs:
       - name: Compute new version
         id: bump_version
         run: |
-          initial_version=$(source version && echo ${VERSION#v})
-          new_version=$(.github/workflows/compute_version.sh "$initial_version" "${{ github.event.pull_request.body }}")
+          source version
+          new_version=$(.github/workflows/compute_version.sh "$VERSION" "${{ github.event.pull_request.body }}")
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
   update-version-file:
