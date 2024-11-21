@@ -2,23 +2,18 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VERSION_FILE="$SCRIPT_DIR/../../version"
-
-# Read the current version from the version file or default to v0.0.0
-if [[ -f "$VERSION_FILE" ]]; then
-  source "$VERSION_FILE"
-else
-  VERSION="v0.0.0"
+if [[ $# -ne 2 ]]; then
+  echo "Usage: $0 <version> <input_string>"
+  exit 1
 fi
 
-# Extract the current version components
-major=$(echo $VERSION | cut -d'.' -f1 | cut -d'v' -f2)
-minor=$(echo $VERSION | cut -d'.' -f2)
-patch=$(echo $VERSION | cut -d'.' -f3)
+initial_version="$1"
+input_string="$2"
 
-# Read the PR description passed as an argument
-input_string="$1"
+# Extract the current version components
+major=$(echo "$initial_version" | cut -d'.' -f1 | cut -d'v' -f2)
+minor=$(echo "$initial_version" | cut -d'.' -f2)
+patch=$(echo "$initial_version" | cut -d'.' -f3)
 
 # Determine the bump type based on PR description
 if [[ "$input_string" == *"#major"* ]]; then

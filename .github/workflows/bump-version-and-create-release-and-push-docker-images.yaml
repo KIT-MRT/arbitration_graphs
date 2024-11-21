@@ -21,10 +21,9 @@ jobs:
       - name: Compute new version
         id: bump_version
         run: |
-          # Run the compute_version script and pass the PR description as an argument
-          cd .github/workflows
-          new_tag=$(./compute_version.sh "${{ github.event.pull_request.body }}")
-          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+          initial_version=$(source version && echo ${VERSION#v})
+          new_version=$(.github/workflows/compute_version.sh "$initial_version" "${{ github.event.pull_request.body }}")
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
   update-version-file:
     needs: compute-version
