@@ -24,7 +24,7 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           source version
-          new_version=$(.github/workflows/compute_version.sh "$VERSION" "${PR_BODY//[^a-zA-Z0-9#]/}")
+          new_version=$(.github/workflows/compute_version.sh "$VERSION" "${PR_BODY//[^a-zA-Z0-9# $'\n']/}")
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
   update-version-file:

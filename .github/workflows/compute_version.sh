@@ -8,7 +8,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 initial_version=${1//[^0-9.]/}
-input_string=${2//[^a-zA-Z0-9#]/}
+input_string=${2//[^a-zA-Z0-9# $'\n']/}
 
 initial_major=$(echo "$initial_version" | cut -d'.' -f1)
 initial_minor=$(echo "$initial_version" | cut -d'.' -f2)
