@@ -20,9 +20,11 @@ jobs:
 
       - name: Compute new version
         id: bump_version
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           source version
-          new_version=$(.github/workflows/compute_version.sh "$VERSION" "${{ github.event.pull_request.body }}")
+          new_version=$(.github/workflows/compute_version.sh "$VERSION" "${PR_BODY//[^a-zA-Z0-9#]/}")
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
   update-version-file:
