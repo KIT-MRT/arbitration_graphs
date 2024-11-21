@@ -323,6 +323,7 @@ If you use arbitration graphs in your research, we would be pleased if you cite 
 <details>
 <summary>Earlier publications</summary>
 
+### Behavior Verification and Fallback Layers
 A safety concept that extends Arbitration Graphs with behavior verification and fallback layers in the context of automated driving has been proposed by Piotr Spieker (née Orzechowski) in his PhD thesis.
 This served as the basis for the paper with Nick above.
 
@@ -341,6 +342,7 @@ _Piotr F. Orzechowski, “Verhaltensentscheidung für automatisierte Fahrzeuge m
 }
 ```
 
+### Replacing state machines in AV
 Arbitration Graphs replaced state machines in the context of automated driving at the Institute of Measurement and Control Systems (MRT) of the Karlsruhe Institute of Technology (KIT):
 
 _Piotr F. Orzechowski, Christoph Burger, and Martin Lauer, “Decision-Making for Automated Vehicles Using a Hierarchical Behavior-Based Arbitration Scheme,” in Intelligent Vehicles Symposium, Las Vegas, NV, USA: IEEE, Oct. 2020, pp. 767–774. doi: [10.1109/IV47402.2020.9304723](https://doi.org/10.1109/IV47402.2020.9304723)._
@@ -359,6 +361,7 @@ _Piotr F. Orzechowski, Christoph Burger, and Martin Lauer, “Decision-Making fo
 }
 ```
 
+### Foundation work in Robot Soccer
 The foundations for Arbitration Graphs have been proposed in the context of robot soccer:
 
 _Martin Lauer, Roland Hafner, Sascha Lange, and Martin Riedmiller, “Cognitive concepts in autonomous soccer playing robots,” Cognitive Systems Research, vol. 11, no. 3, pp. 287–309, 2010, doi: [10.1016/j.cogsys.2009.12.003](https://doi.org/10.1016/j.cogsys.2009.12.003)._
