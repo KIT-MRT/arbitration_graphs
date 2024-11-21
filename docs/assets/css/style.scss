@@ -14,6 +14,19 @@
 // Add table of contents navbar
 @import 'toc';
 
+// Switch to light theme logo
 img.github-logo {
   content: url({{ "/docs/assets/img/github-mark.svg" | relative_url }});
+}
+
+// Improve collapsible sections
+details summary {
+  cursor: pointer;
+  display: list-item;
+  counter-increment: list-item 0;
+  list-style: disclosure-closed inside;
+}
+
+details[open] summary {
+  list-style-type: disclosure-open;
 }
