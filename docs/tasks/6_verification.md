@@ -9,12 +9,12 @@ Execute only safe commands and add a fallback strategy.
 
 ## Context
 
-The arbitration graph is now complete and PacMan is eating dots like a pro.
+The arbitration graph is now complete and Pac-Man is eating dots like a pro.
 But there is one last topic we want to talk about: **safety and robustness**.
 
 Depending on your application, you might only want to execute commands that you know meet certain criteria. 
 The specific requirements will depend on your application and could be anything from physical constraints to safety requirements.
-In our case, we only want to execute commands where PacMan does not run into walls.
+In our case, we only want to execute commands where Pac-Man does not run into walls.
 
 We can ensure that commands obey these requirements by adding a verifier to the arbitrators.
 The arbitrator will then run the **verification step** and only choose commands that pass this step.
@@ -39,9 +39,9 @@ We can mark a behavior component as last resort fallback layer in order to exclu
 After all, it's our last straw and it's better to execute that than to do nothing.
 
 In our case, we will add a `StayInPlace` behavior component.
-PacMan is not actually able to stop, so he will just keep moving back and forth.
+Pac-Man is not actually able to stop, so he will just keep moving back and forth.
 Probably not an ideal strategy to win the game, but we can be sure to have a comprehensible command at all times.
-Also, PacMan will never run into a wall with this behavior component.
+Also, Pac-Man will never run into a wall with this behavior component.
 
 Phew, that was long read. Time to get our hands dirty!
 

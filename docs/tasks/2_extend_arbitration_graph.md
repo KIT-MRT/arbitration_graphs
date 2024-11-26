@@ -27,7 +27,7 @@ Integrate the `ChaseGhost` behavior component into the arbitration graph defined
 - Add the `ChaseGhost` behavior component as a new member of the `PacmanAgent` class and initialize it in the constructor.
 - Extend the `PacmanAgent` parameter struct to include the parameters for the `ChaseGhost` behavior component.
 - Add a new option to the priority arbitrator.
-- Run the game, take a look at the new arbitration graph and observe how PacMan behaves.
+- Run the game, take a look at the new arbitration graph and observe how Pac-Man behaves.
 
 ## Solution
 

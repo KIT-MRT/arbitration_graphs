@@ -1,6 +1,6 @@
 # Arbitration Graphs Tutorial
 
-Let's write an agent for the famous PacMan game using Arbitration Graphs 🕹️
+Let's write an agent for the famous Pac-Man game using Arbitration Graphs 🕹️
 
 **TL;DR:** Find links to the individual tasks at the bottom of this page.
 
@@ -10,7 +10,7 @@ Let's write an agent for the famous PacMan game using Arbitration Graphs 🕹️
 ### Goal
 
 The goal of this tutorial is to help you understand how to use the Arbitration Graphs library.
-To keep things interesting, we will re-implement some parts of our PacMan demo.
+To keep things interesting, we will re-implement some parts of our Pac-Man demo.
 
 We'll start by looking into the implementation of a single behavior component
   and then learn how to integrate it into an arbitration graph using a simple priority arbitrator.
@@ -48,7 +48,7 @@ Enjoy a full-blown IDE with code-completion, code-navigation etc.
 - Explore the repo in the Explorer sidebar
 - Compile via `Ctrl+Shift+B`
 - View, run and debug unit tests via [Testing](https://code.visualstudio.com/docs/editor/testing) sidebar
-- Debug the PacMan Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
+- Debug the Pac-Man Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
 - Debug with breakpoints etc.
 
 </details>
@@ -111,7 +111,7 @@ Each behavior component is implemented in a separate `<name>_behavior.hpp` file 
 
 Next, there is `environment_model.hpp`.
 You guessed it, it contains the environment model for the arbitration graph.
-In it, we store things like current positions of PacMan and the ghosts, the maze, several utility functions
+In it, we store things like current positions of Pac-Man and the ghosts, the maze, several utility functions
   and other things required by the behavior components.
 
 The `cost_estimator.hpp` file will be relevant for a later task when we cover [cost arbitrators](./tasks/5_cost_arbitration.md).

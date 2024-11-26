@@ -13,12 +13,12 @@ Before we start building our arbitration graph, we want to take a closer look in
 Don't worry, most of the behavior components are already implemented for you
   but we want to make sure you have an idea of how they work.
 
-With the current state of the arbitration graph, PacMan will just move around and eat dots until a ghost gets too close.
+With the current state of the arbitration graph, Pac-Man will just move around and eat dots until a ghost gets too close.
 That's great and all but if we ate a power pellet, we want to take advantage and chase the ghosts to eat them for extra points!
 
 To do this, we need to implement the `ChaseGhost` behavior component.
 It essentially does the exact opposite of the `AvoidGhost` behavior component
-  but is only applicable when PacMan ate a power pellet.
+  but is only applicable when Pac-Man ate a power pellet.
 We can ensure that's always the case using the behavior's invocation condition.
 
 But wait - the current implementation of the invocation condition is not complete.
@@ -33,7 +33,7 @@ Finish the implementation of the `checkInvocationCondition()` and `getCommand()`
 
 ## Instructions
 
-- Build and run the game, take a look at the arbitration graph and observe how PacMan behaves.
+- Build and run the game, take a look at the arbitration graph and observe how Pac-Man behaves.
 - Run the unit tests and note that the `ChaseGhost` `scheckInvocationConditionFalse` test is failing
 - Open the implementation of the `ChaseGhost` behavior component in `src/chase_ghost_behavior.cpp`.
 - The `checkInvocationCondition()` function is already implemented but does not check for the presence of a ghost.

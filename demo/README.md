@@ -27,5 +27,5 @@ For a smooth out-of-the-box experience, we recommend using [Visual Studio Code](
 - Enjoy a full-blown IDE with code-completion, code-navigation etc.
   - Compile via `Ctrl+Shift+B`
   - View, run and debug unit tests via [Testing](https://code.visualstudio.com/docs/editor/testing) sidebar
-  - Debug the PacMan Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
+  - Debug the Pac-Man Demo via [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) sidebar
   - Debug with breakpoints etc.
