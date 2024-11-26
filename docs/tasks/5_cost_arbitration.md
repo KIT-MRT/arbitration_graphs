@@ -76,6 +76,12 @@ Also, include `cost_estimator.hpp`:
 #include "cost_estimator.hpp"
 ```
 
+To keep things tidy and consistent, add an alias definition analogous to the existing ones:
+
+```cpp
+using CostArbitrator = arbitration_graphs::CostArbitrator<Command, Command>;
+```
+
 Change the type of the `eatDotsArbitrator_` member in the `PacmanAgent` class to `CostArbitrator` and add an instance of the `CostEstimator`:
 ```cpp
 private:

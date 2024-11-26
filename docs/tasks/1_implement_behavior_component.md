@@ -19,7 +19,7 @@ That's great and all but if we ate a power pellet, we want to take advantage and
 To do this, we need to implement the `ChaseGhost` behavior component.
 It essentially does the exact opposite of the `AvoidGhost` behavior component
   but is only applicable when Pac-Man ate a power pellet.
-We can ensure that's always the case using the behavior's invocation condition.
+We can ensure that this is always the case by using the behavior's invocation condition.
 
 But wait - the current implementation of the invocation condition is not complete.
 It should only be applicable if there is one of these tasty ghosts close by.
@@ -34,7 +34,7 @@ Finish the implementation of the `checkInvocationCondition()` and `getCommand()`
 ## Instructions
 
 - Build and run the game, take a look at the arbitration graph and observe how Pac-Man behaves.
-- Run the unit tests and note that the `ChaseGhost` `scheckInvocationConditionFalse` test is failing
+- Run the unit tests and note that the `ChaseGhost`'s `checkInvocationConditionFalse` test is failing
 - Open the implementation of the `ChaseGhost` behavior component in `src/chase_ghost_behavior.cpp`.
 - The `checkInvocationCondition()` function is already implemented but does not check for the presence of a ghost.
 - Implement the missing piece. Take a look at the implementation of `AvoidGhostBehavior::checkInvocationCondition()` if you need inspiration.

@@ -9,7 +9,7 @@ Integrate a long-term behavior and add another layer to the arbitration graph.
 
 ## Context
 
-We have now implemented a few behavior components and integrated them into the arbitration graph.
+We have now implemented a behavior component and integrated it into the arbitration graph.
 So far, all behavior components are children of the root arbitrator.
 
 Let's make things a bit more interesting by adding a long-term behavior component that's also about eating dots.
