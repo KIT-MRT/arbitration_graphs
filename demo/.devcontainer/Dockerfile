@@ -20,6 +20,7 @@ RUN curl https://starship.rs/install.sh > /tmp/starship_install.sh && \
     /tmp/starship_install.sh -y && \
     rm /tmp/starship_install.sh
 
+COPY .devcontainer/.bashrc /home/blinky/.bashrc
 COPY .devcontainer/.zshrc /home/blinky/.zshrc
 
 USER blinky
