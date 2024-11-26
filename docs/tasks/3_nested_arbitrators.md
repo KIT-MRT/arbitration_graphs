@@ -1,6 +1,7 @@
 ---
 title: "Arbitration Graphs Tutorial"
 menu_title: "Nesting"
+tagline: "Task 3: Nested arbitration graphs"
 ---
 
 # Task 3: Nested arbitration graphs

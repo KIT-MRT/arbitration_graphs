@@ -1,6 +1,7 @@
 ---
 title: "Arbitration Graphs Tutorial"
 menu_title: "First Behavior"
+tagline: "Task 1: Implement a Behavior Component"
 ---
 
 # Task 1: Implement a Behavior Component

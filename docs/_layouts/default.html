@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8">
 
-{% seo %}
+    {% capture htmltitle %}{{ page.title }} | {{ page.tagline | default: site.tagline | default: site.github.repository_name }}{% endcapture %}
+    <title>{{ htmltitle }}</title>
+    <meta property="og:title" content="{{ htmltitle }}">
+
+    {% seo title=false %}
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1">

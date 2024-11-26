@@ -1,6 +1,7 @@
 ---
 title: "Arbitration Graphs Tutorial"
 menu_title: "Extending the Graph"
+tagline: "Task 2: Extend the Arbitration Graph"
 ---
 
 # Task 2: Extend the Arbitration Graph

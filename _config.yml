@@ -17,6 +17,8 @@ layouts_dir: docs/_layouts
 sass:
   sass_dir: docs/assets/_sass
 
+# This will be used as default HTML (sub)title
+tagline: decision-making for robotics
 
 # Support collapsible details/summary sections
 markdown: CommonMarkGhPages

@@ -1,3 +1,7 @@
+---
+tagline: "decision-making for Pac-Man"
+---
+
 # Arbitration Graphs Tutorial
 
 Let's write an agent for the famous Pac-Man game using Arbitration Graphs 🕹️

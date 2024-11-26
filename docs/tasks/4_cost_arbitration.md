@@ -1,6 +1,7 @@
 ---
 title: "Arbitration Graphs Tutorial"
 menu_title: "Cost Arbitrator"
+tagline: "Task 4: Arbitrate based on predicted utility"
 ---
 
 # Task 4: Arbitrate based on predicted utility
