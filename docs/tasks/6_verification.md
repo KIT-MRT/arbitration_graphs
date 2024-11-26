@@ -107,7 +107,7 @@ Make sure to also pass the verifier to the arbitrator constructors:
     explicit PacmanAgent(const entt::Game& game)
             : parameters_{},
               environmentModel_{std::make_shared<EnvironmentModel>(game)},
-              verifier_{environmentModel_} // We can initialize the verifier in the member initializer list {
+              verifier_{environmentModel_} { // We can initialize the verifier in the member initializer list
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);

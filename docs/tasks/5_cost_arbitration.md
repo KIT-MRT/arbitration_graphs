@@ -45,7 +45,7 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 Finish the implementation of the `CostEstimator` class in `cost_estimator.cpp`:
 ```cpp
 double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
-    Positions absolutePath = utils::toAbsolutePath(command.path, environmentModel_);
+    Positions absolutePath = environmentModel_->toAbsolutePath(command.path);
 
     // Compute the number of dots along the path and in the neighborhood of the path end using helper functions
     const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel_);
