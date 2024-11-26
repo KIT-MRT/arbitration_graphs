@@ -4,7 +4,7 @@ html {
 }
 
 // Hide navbar on small/medium screens
-#page-container>nav {
+#page-container nav {
   display: none;
 }
 
@@ -13,6 +13,7 @@ html {
   // Style table of content
   /** page layout **/
   #page-container {
+    background-color: $section-bg-color;
     display: grid;
     grid-template-columns: 1fr 15em;
     max-width: 100em;
@@ -20,14 +21,18 @@ html {
     margin: 0 auto;
   }
 
+  #page-container .main-content {
+    padding-top: 0;
+  }
+
   // Make nav sticky
-  #page-container>nav {
+  #page-container nav {
     display: block;
     position: sticky;
-    top: 2rem;
-    margin-top: 2rem;
+    top: 0;
+    padding-bottom: .4rem;
     align-self: start;
-
+    background-color: $section-bg-color;
 
     ul,
     ol {
@@ -41,28 +46,50 @@ html {
     }
   }
 
+  .pages-nav {
+    padding: .4rem 0;
+  }
+
   // ScrollSpy active styles (see toc.js tab for activation)
-  .section-nav li.active>a {
-    color: #333;
+  nav li.active>a {
+    color: $nav-text-active-color;
     font-weight: 500;
   }
 
-  .section-nav {
-    padding-left: 0;
-    border-left: 1px solid #efefef;
+  #page-container .pages-nav > ul {
+    display: flex;
+    width: 100%;
   }
 
-  .section-nav a {
+  #page-container .pages-nav li {
+    margin-left: 1.5rem;
+    text-wrap: nowrap;
+  }
+
+  #page-container .pages-nav li:first-of-type {
+    margin-left: .5rem;
+  }
+
+  #page-container .section-nav > ul {
+    margin-top: 4rem;
+  }
+
+  #page-container .section-nav>ul {
+    padding-left: 0;
+    border-left: 1px solid $nav-border-color;
+  }
+
+  nav a {
     text-decoration: none;
     display: block;
     padding: .125rem 0;
-    color: #ccc;
+    color: $nav-text-color;
     transition: all 50ms ease-in-out;
     /* 💡 This small transition makes setting of the active state smooth */
   }
 
-  .section-nav a:hover,
-  .section-nav a:focus {
-    color: #666;
+  nav a:hover,
+  nav a:focus {
+    color: $nav-text-focus-color;
   }
 }

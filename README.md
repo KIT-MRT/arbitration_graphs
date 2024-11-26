@@ -72,7 +72,17 @@ In this scene,
 </p>
 
 
-We will shortly add a [tutorial](https://github.com/KIT-MRT/arbitration_graphs/pull/51) based on this demo – stay tuned! 
+## Tutorial
+
+Follow our [Tutorial](./docs/Tutorial.md) and learn how to use the Arbitration Graphs library!  
+It's based on this demo and guides you through all important concepts:
+
+0. [Introduction – start here!](./docs/Tutorial.md)
+1. [Implement your first behavior component](./docs/tasks/1_implement_behavior_component.md)
+2. [Extend the arbitration graph with that behavior](./docs/tasks/2_extend_arbitration_graph.md)
+3. [Learn about nested arbitration graphs](./docs/tasks/3_nested_arbitrators.md)
+4. [Arbitrate based on predicted utility](./docs/tasks/4_cost_arbitration.md)
+5. [Verify commands and add a fallback strategy](./docs/tasks/5_verification.md)
 
 
 ## Installation

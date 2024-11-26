@@ -19,27 +19,10 @@ public:
             : Behavior(name), environmentModel_{std::move(environmentModel)} {
     }
 
-    Command getCommand(const Time& /*time*/) override {
-        auto pacmanPosition = environmentModel_->pacmanPosition();
-        std::optional<Path> pathToClosestDot = environmentModel_->pathToClosestDot(pacmanPosition);
+    Command getCommand(const Time& /*time*/) override;
 
-        if (!pathToClosestDot) {
-            throw std::runtime_error("Failed to compute path to closest dot. Can not provide a sensible command.");
-        }
-
-        return Command{pathToClosestDot.value()};
-    }
-
-    bool checkInvocationCondition(const Time& /*time*/) const override {
-        // This behavior is only applicable if there is at least one dot. We should check for the presence of a dot
-        // here, but since the game is won when all dots are collected, we assume at least one dot exists when this
-        // behavior is invoked.
-        return true;
-    }
-
-    bool checkCommitmentCondition(const Time& /*time*/) const override {
-        return false;
-    }
+    bool checkInvocationCondition(const Time& /*time*/) const override;
+    bool checkCommitmentCondition(const Time& /*time*/) const override;
 
 private:
     EnvironmentModel::Ptr environmentModel_;

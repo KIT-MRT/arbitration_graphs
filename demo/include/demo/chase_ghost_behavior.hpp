@@ -25,9 +25,9 @@ public:
         int minScaredTicksLeft{5};
     };
 
-    ChaseGhostBehavior(EnvironmentModel::Ptr environmentModel,
-                       const Parameters& parameters,
-                       const std::string& name = "ChaseGhost")
+    explicit ChaseGhostBehavior(EnvironmentModel::Ptr environmentModel,
+                                const Parameters& parameters,
+                                const std::string& name = "ChaseGhost")
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 

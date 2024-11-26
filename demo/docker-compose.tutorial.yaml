@@ -1,0 +1,13 @@
+services:
+  tutorial:
+    image: ghcr.io/kit-mrt/arbitration_graphs_pacman_tutorial:$VERSION
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/home/blinky/demo
+      - $HOME/.Xauthority:/home/blinky/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY
+

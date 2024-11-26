@@ -29,24 +29,13 @@ public:
 
     Command getCommand(const Time& time) override;
 
-    bool checkInvocationCondition(const Time& time) const override {
-        return true;
-    }
-    bool checkCommitmentCondition(const Time& time) const override {
-        return false;
-    }
-
-    void gainControl(const Time& time) override {
-        gainedControlAt_ = time;
-    }
-    void loseControl(const Time& time) override {
-    }
+    bool checkInvocationCondition(const Time& /*time*/) const override;
+    bool checkCommitmentCondition(const Time& /*time*/) const override;
 
 private:
     Direction selectRandomDirection();
 
     util_caching::Cache<Time, Direction> directionCache_;
-    Time gainedControlAt_;
     Parameters parameters_;
 
     std::random_device randomDevice_;
