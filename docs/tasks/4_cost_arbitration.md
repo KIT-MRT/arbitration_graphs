@@ -3,13 +3,13 @@ title: "Arbitration Graphs Tutorial"
 menu_title: "Cost Arbitrator"
 ---
 
-# Task 5: Arbitrate based on predicted utility
+# Task 4: Arbitrate based on predicted utility
 
 Learn how the cost arbitrator can help you to arbitrate between behaviors based on their expected cost/utility.
 
 ## Context
 
-The `EatDot` arbitrator we added in the [previous task](4_nested_arbitrators.md) decides between the two dot eating strategies randomly.
+The `EatDot` arbitrator we added in the [previous task](3_nested_arbitrators.md) decides between the two dot eating strategies randomly.
 That's obviously not the greatest idea.
 There must be a better way.
 
@@ -140,8 +140,8 @@ explicit PacmanAgent(const entt::Game& game)
 
 
 ---
-[← Previous task](4_nested_arbitrators.md)
+[← Previous task](3_nested_arbitrators.md)
 |
 [Tutorial Home](../Tutorial.md)
 |
-[Next task →](6_verification.md)
+[Next task →](5_verification.md)

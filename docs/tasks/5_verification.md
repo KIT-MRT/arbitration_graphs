@@ -3,7 +3,7 @@ title: "Arbitration Graphs Tutorial"
 menu_title: "Verification and Fallbacks"
 ---
 
-# Task 6: Better safe than sorry
+# Task 5: Better safe than sorry
 
 Execute only safe commands and add a fallback strategy.
 
@@ -141,6 +141,6 @@ Make sure to also pass the verifier to the arbitrator constructors:
 
 
 ---
-[← Previous task](5_cost_arbitration.md)
+[← Previous task](4_cost_arbitration.md)
 |
 [Tutorial Home](../Tutorial.md)

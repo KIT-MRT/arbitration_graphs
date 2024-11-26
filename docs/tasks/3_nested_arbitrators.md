@@ -3,7 +3,7 @@ title: "Arbitration Graphs Tutorial"
 menu_title: "Nesting"
 ---
 
-# Task 4: Nested arbitration graphs
+# Task 3: Nested arbitration graphs
 
 Integrate a long-term behavior and add another layer to the arbitration graph.
 
@@ -18,7 +18,7 @@ The `ChangeDotCluster` behavior will move Pac-man to an area in the maze where t
 For now, we'll just decide between the two dot eating strategies using chance.
 We can achieve that by adding them to a random arbitrator which is then added as an option to the root arbitrator.
 
-There are more sophisticated ways to decide between behavior components, we'll cover those in the [next task](5_cost_arbitration.md).
+There are more sophisticated ways to decide between behavior components, we'll cover those in the [next task](4_cost_arbitration.md).
 
 ## Goal
 
@@ -94,4 +94,4 @@ explicit PacmanAgent(const entt::Game& game)
 |
 [Tutorial Home](../Tutorial.md)
 |
-[Next task →](5_cost_arbitration.md)
+[Next task →](4_cost_arbitration.md)
