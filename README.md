@@ -8,16 +8,6 @@
 
 **Hierarchical behavior models for complex decision-making and behavior generation in robotics!**
 
-<!-- 
-TODO: add example arbitration graph from robotics (with POMDP, RL methods)
-<img
-  src="./docs/assets/img/pacman_arbitrator_safe.svg"
-  alt="Example arbitration graph from robotics"
-  style="margin:10px; width: 50%"
-  align="right"
-/>
--->
-
 - 🌱 **Bottom-up**  
   Combine simple atomic behavior components to generate complex behaviors.
 - 🧩 **Functional decomposition**  
