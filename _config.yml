@@ -23,6 +23,9 @@ tagline: decision-making for robotics
 # Support collapsible details/summary sections
 markdown: CommonMarkGhPages
 
+# Uncomment this in a local setup, in order to test link compatibility with GitHub Pages
+# baseurl: /base
+
 commonmark:
   options: ["UNSAFE", "SMART", "FOOTNOTES"]
   extensions: ["strikethrough", "autolink", "table", "tagfilter"]
