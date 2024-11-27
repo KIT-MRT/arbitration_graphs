@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/github/license/KIT-MRT/arbitration_graphs)](./LICENSE)
 [![Unit Test Status](https://img.shields.io/github/actions/workflow/status/KIT-MRT/arbitration_graphs/run-unit-tests.yaml?branch=main&label=tests)](https://github.com/KIT-MRT/arbitration_graphs/actions/workflows/run-unit-tests.yaml?query=branch%3Amain)
 
+*TL;DR: Replace those rusty state machines with safe and scalable arbitration graphs!*
+
 **Hierarchical behavior models for complex decision-making and behavior generation in robotics!**
 
 <!-- 
