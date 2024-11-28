@@ -20,6 +20,8 @@
   <body>
     <a id="skip-to-content" href="#content">Skip to the content.</a>
 
+    {% include github-corner.html %}
+
     <header class="page-header" role="banner">
       <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
@@ -85,9 +87,10 @@
             <a href="https://github.com/allejo/jekyll-toc">allejo/jekyll-toc</a> and
             <br>
             snippets from
-            <a href="https://www.bram.us/2020/01/10/smooth-scrolling-sticky-scrollspy-navigation/">Bram.us</a>
-            as well as
+            <a href="https://www.bram.us/2020/01/10/smooth-scrolling-sticky-scrollspy-navigation/">Bram.us</a>,
             <a href="https://github.com/davidensinger/davidensinger.github.io">David Ensinger</a></span>
+            as well as
+            <a href="https://github.com/tholman/github-corners">Tim Holman</a></span>
             ❤️
           </span>
         </footer>
