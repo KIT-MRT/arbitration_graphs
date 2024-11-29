@@ -14,6 +14,10 @@
 // Add table of contents navbar
 @import 'toc';
 
+// Style GitHub octocat corner logo
+@import 'github-corner';
+
+
 #page-container {
   background-color: $section-bg-color;
 }
