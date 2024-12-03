@@ -18,8 +18,8 @@ struct CostEstimator : public arbitration_graphs::CostEstimator<Command> {
         int pathEndNeighborhoodRadius{3};
     };
 
-    explicit CostEstimator(EnvironmentModel::Ptr environmentModel, const Parameters& paramters)
-            : environmentModel_{std::move(environmentModel)}, parameters_{paramters} {
+    explicit CostEstimator(EnvironmentModel::Ptr environmentModel, const Parameters& parameters)
+            : environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 
     /**
