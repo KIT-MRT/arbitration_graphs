@@ -44,7 +44,8 @@ Pac-Man is not actually able to stop, so he will just keep moving back and forth
 Probably not an ideal strategy to win the game, but we can be sure to have a comprehensible command at all times.
 Also, Pac-Man will never run into a wall with this behavior component.
 
-Phew, that was long read. Time to get our hands dirty!
+Phew, that was a long read.
+Time to get our hands dirty!
 
 
 ## Goal
