@@ -85,7 +85,11 @@ jobs:
         with:
           artifacts: "/tmp/artifacts/release/*"
           tag: ${{ needs.compute-version.outputs.new_version }}
-          body: ${{ github.event.pull_request.body }}
+          body: |
+            ${{ github.event.pull_request.body }}  
+
+            This release is based on #${{ github.event.pull_request.number }} and has been published
+            by release job [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
 
   build-and-run-release-tests:
     needs: [compute-version, create-release]
