@@ -36,7 +36,7 @@ SDL::Window createWindow(int scaleFactor) {
                                                   SDL_WINDOWPOS_CENTERED,
                                                   tilesPx.x * scaleFactor,
                                                   tilesPx.y * scaleFactor,
-                                                  SDL_WINDOW_SHOWN))};
+                                                  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE))};
 }
 
 SDL::Renderer createRendererAndSetLogicalSize(const SDL::Window& window) {
