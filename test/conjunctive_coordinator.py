@@ -7,9 +7,6 @@ import yaml
 import arbitration_graphs_py as ag
 from dummy_types import DummyBehaviorPy, PrintStrings
 
-import unittest
-import time
-
 
 class ConjunctiveCoordinatorTest(unittest.TestCase):
     def setUp(self):
