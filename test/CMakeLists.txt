@@ -66,7 +66,7 @@ endif()
 if(GTEST_FOUND)
   file(GLOB_RECURSE _tests CONFIGURE_DEPENDS "*.cpp" "*.cc")
   list(FILTER _tests EXCLUDE REGEX "${CMAKE_CURRENT_BINARY_DIR}")
-  list(REMOVE_ITEM _tests "${CMAKE_CURRENT_SOURCE_DIR}/test/python_bindings.cpp")
+  list(REMOVE_ITEM _tests "${CMAKE_CURRENT_SOURCE_DIR}/python_bindings.cpp")
 
   foreach(_test ${_tests})
     get_filename_component(_test_name ${_test} NAME_WE)
@@ -97,29 +97,30 @@ endif()
 #######################
   
 if(pybind11_FOUND)
-  message(STATUS "pybind11 found, building bindings for Python tests")
+  # Find Python3 to run tests via ctest
+  find_package(Python3 REQUIRED)
 
   # Python bindings modules
   pybind11_add_module(arbitration_graphs_py
-    test/python_bindings.cpp
+    python_bindings.cpp
   )
   target_link_libraries(arbitration_graphs_py PUBLIC
-    ${PROJECT_NAME}
+    arbitration_graphs
   )
   pybind11_add_module(arbitration_graphs_py_with_subcommand
-    test/python_bindings.cpp
+    python_bindings.cpp
   )
   target_link_libraries(arbitration_graphs_py_with_subcommand PUBLIC
-    ${PROJECT_NAME}
+    arbitration_graphs
   )
   pybind11_add_module(arbitration_graphs_py_with_verifier
-      test/python_bindings.cpp
+    python_bindings.cpp
   )
-    target_link_libraries(arbitration_graphs_py_with_verifier PUBLIC
-      ${PROJECT_NAME}
+  target_link_libraries(arbitration_graphs_py_with_verifier PUBLIC
+    arbitration_graphs
   )
 
-  file(GLOB_RECURSE PYTHON_TESTS "test/*.py")
+  file(GLOB_RECURSE _py_tests CONFIGURE_DEPENDS "*.py")
 
   # Copy Python test files to build directory
   foreach(_py_test ${PYTHON_TESTS})
