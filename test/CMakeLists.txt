@@ -123,13 +123,20 @@ if(pybind11_FOUND)
   file(GLOB_RECURSE _py_tests CONFIGURE_DEPENDS "*.py")
 
   # Copy Python test files to build directory
-  foreach(_py_test ${PYTHON_TESTS})
+  foreach(_py_test ${_py_tests})
     get_filename_component(_py_test_name ${_py_test} NAME)
-    set(_py_test_target "${CMAKE_BINARY_DIR}/${_py_test_name}")
+    string(REGEX REPLACE "-test" "" PY_TEST_NAME ${_py_test_name})
+    set(PY_TEST_NAME ${PROJECT_NAME}-pytest-${PY_TEST_NAME})
 
-    message(STATUS "Copying Python file: ${_py_test} to ${_py_test_target}")
+    message(STATUS
+      "Adding python unittest \"${PY_TEST_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_py_test}"
+    )
 
-    # Copy the python test file to the build directory
-    configure_file(${_py_test} ${_py_test_target} COPYONLY)
+    configure_file(${_py_test} ${PY_TEST_NAME} COPYONLY)
+
+    add_test(NAME ${PY_TEST_NAME}
+      COMMAND ${Python3_EXECUTABLE} ${PY_TEST_NAME}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
   endforeach()
 endif()
