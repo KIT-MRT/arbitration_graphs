@@ -97,10 +97,9 @@ endif()
 #######################
   
 if(pybind11_FOUND)
-  # Find Python3 to run tests via ctest
   find_package(Python3 REQUIRED)
 
-  # Python bindings modules
+  # Build the individual pybind modules
   pybind11_add_module(arbitration_graphs_py
     python_bindings.cpp
   )
@@ -120,13 +119,20 @@ if(pybind11_FOUND)
     arbitration_graphs
   )
 
-  file(GLOB_RECURSE _py_tests CONFIGURE_DEPENDS "*.py")
+  # Copy required modules to the build directory
+  # These do not contain tests but are roughly equivalent to the C++ test-specific header files.
+  configure_file(cost_estimator.py cost_estimator.py COPYONLY)
+  configure_file(dummy_types.py dummy_types.py COPYONLY)
 
-  # Copy Python test files to build directory
+  # Copy Python test files to the build directory and add them as tests.
+  # Of course, python tests do not need to be compiled.
+  # However, we can easily import the compiled pybind11 module if they are in the same directory.
+  # We also want to be able run the using ctest to keep things consistent with the C++ tests.
+  file(GLOB_RECURSE _py_tests CONFIGURE_DEPENDS "*_test.py")
   foreach(_py_test ${_py_tests})
     get_filename_component(_py_test_name ${_py_test} NAME)
-    string(REGEX REPLACE "-test" "" PY_TEST_NAME ${_py_test_name})
-    set(PY_TEST_NAME ${PROJECT_NAME}-pytest-${PY_TEST_NAME})
+    string(REGEX REPLACE "_test" "" PY_TEST_NAME ${_py_test_name})
+    set(PY_TEST_NAME arbitration_graphs-pytest-${PY_TEST_NAME})
 
     message(STATUS
       "Adding python unittest \"${PY_TEST_NAME}\" with working dir ${PROJECT_SOURCE_DIR}/${TEST_FOLDER} \n _test: ${_py_test}"
