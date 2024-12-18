@@ -14,7 +14,7 @@ void bindPlaceboVerifier(py::module& module) {
     using PlaceboResult = verification::PlaceboResult;
     using PlaceboVerifierT = verification::PlaceboVerifier<DataT>;
 
-    py::class_<PlaceboResult>(module, "PlaceboResult").def_static("is_ok", &PlaceboResult::isOk);
+    py::class_<PlaceboResult>(module, "PlaceboResult").def("is_ok", &PlaceboResult::isOk);
 
     py::class_<PlaceboVerifierT>(module, "PlaceboVerifier")
         .def_static("analyze", &PlaceboVerifierT::analyze, py::arg("time"), py::arg("data"));
