@@ -1,5 +1,7 @@
 #pragma once
 
+#include <util_caching/python_bindings.hpp>
+
 #include "internal/arbitrator_py.hpp"
 #include "internal/behavior_py.hpp"
 #include "internal/conjunctive_coordinator_py.hpp"
@@ -37,5 +39,11 @@ void bindArbitrationGraphs(py::module& module,
     bindJointCoordinator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
     bindRandomArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);
+
+    py::module utilCaching = module.def_submodule("util_caching");
+    using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
+    util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
+                                                                                                 "ApproximateTime");
+    util_caching::python_api::time_based::bindCache<Time, VerificationResultT, ApproximateTimeT>(utilCaching);
 }
 } // namespace arbitration_graphs::python_api
