@@ -43,15 +43,11 @@ public:
                        const std::string& suffix = "") const override {
         PYBIND11_OVERRIDE(std::string, BaseT, to_str, time, prefix, suffix);
     }
-
-    YAML::Node toYaml(const Time& time) const override {
-        PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
-    }
     // NOLINTEND(readability-function-size)
 
     std::string toYamlAsString(const Time& time) const {
         YAML::Emitter out;
-        out << toYaml(time);
+        out << BaseT::toYaml(time);
         return out.c_str();
     }
 };

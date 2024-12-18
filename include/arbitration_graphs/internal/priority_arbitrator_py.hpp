@@ -24,15 +24,11 @@ public:
     void addOption(const typename BaseT::Option::Ptr& behavior, const typename BaseT::Option::FlagsT& flags) {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags);
     }
-
-    YAML::Node toYaml(const Time& time) const override {
-        PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
-    }
     // NOLINTEND(readability-function-size)
 
     std::string toYamlAsString(const Time& time) const {
         YAML::Emitter out;
-        out << toYaml(time);
+        out << BaseT::toYaml(time);
         return out.c_str();
     }
 };

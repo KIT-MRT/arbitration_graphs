@@ -44,15 +44,11 @@ public:
     void loseControl(const Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time);
     }
-
-    YAML::Node toYaml(const Time& time) const override {
-        PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
-    }
     // NOLINTEND(readability-function-size)
 
     std::string toYamlAsString(const Time& time) const {
         YAML::Emitter out;
-        out << toYaml(time);
+        out << BaseT::toYaml(time);
         return out.c_str();
     }
 };

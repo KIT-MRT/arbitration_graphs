@@ -21,15 +21,9 @@ public:
             : BaseT(behavior, flags) {
     }
 
-    // NOLINTBEGIN(readability-function-size)
-    YAML::Node toYaml(const Time& time) const override {
-        PYBIND11_OVERRIDE(YAML::Node, BaseT, toYaml, time);
-    }
-    // NOLINTEND(readability-function-size)
-
     std::string toYamlAsString(const Time& time) const {
         YAML::Emitter out;
-        out << toYaml(time);
+        out << BaseT::toYaml(time);
         return out.c_str();
     }
 };
