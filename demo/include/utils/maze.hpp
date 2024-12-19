@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <optional>
 #include <utility>
 
@@ -56,7 +57,7 @@ public:
         if (isPassableCell(wrappedPosition)) {
             return wrappedPosition;
         }
-        return position;
+        return {std::clamp(position.x, 0, width() - 1), std::clamp(position.y, 0, height() - 1)};
     }
 
     bool isDot(const Position& position) const {
@@ -87,7 +88,7 @@ struct BaseCell {
     using TileType = demo::TileType;
     using Position = demo::Position;
 
-    BaseCell(const Position& position, const TileType& type) : position(position), type(type) {};
+    BaseCell(const Position& position, const TileType& type) : position(position), type(type){};
 
     double manhattanDistance(const Position& other) const {
         return std::abs(position.x - other.x) + std::abs(position.y - other.y);
@@ -112,7 +113,7 @@ public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
     using Position = demo::Position;
 
-    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}) {};
+    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}){};
 
     CellT& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {
