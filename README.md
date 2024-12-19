@@ -185,7 +185,8 @@ PYBIND11_MODULE(arbitration_graphs, m) {
     python_api::bindArbitrationGraphs<MyCommand>(m);
 }
 ```
-and use them in Python by for example implementing a custom behavior that inherits from the abstract `Behavior` class.
+and use them in Python.
+For example, you could implement a custom behavior that inherits from the abstract `Behavior` class.
 
 ```python
 from arbitration_graphs import Behavior
@@ -196,7 +197,6 @@ class MyBehavior(Behavior):
 ```
 We re-implemented all of the C++ unit tests in Python, so take a closer look at those for more advanced usage examples.
 
-</details>
 
 ## Development
 

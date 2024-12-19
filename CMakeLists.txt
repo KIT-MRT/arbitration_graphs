@@ -58,8 +58,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-find_package(Glog)
-
+find_package(Glog REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
@@ -153,3 +152,4 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
 include(cpack_config)
 include(CPack)
 
+message(STATUS "Components to pack: ${CPACK_COMPONENTS_ALL}")
