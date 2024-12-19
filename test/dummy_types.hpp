@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "behavior.hpp"
 #include "verification.hpp"
 
@@ -67,7 +69,7 @@ public:
 class BrokenDummyBehavior : public DummyBehavior {
 public:
     BrokenDummyBehavior(const bool invocation, const bool commitment, const std::string& name = "BrokenDummyBehavior")
-            : DummyBehavior(invocation, commitment, name){};
+            : DummyBehavior(invocation, commitment, name) {};
 
     DummyCommand getCommand(const Time& time) override {
         throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
@@ -75,6 +77,20 @@ public:
 };
 
 struct DummyResult : public verification::PlaceboResult {};
+
+struct DummyVerifier {
+    explicit DummyVerifier(std::string wrong = "", bool rejectAll = false)
+            : rejectAll_{rejectAll}, wrong_{std::move(wrong)} {
+    }
+    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+        if (rejectAll_ || data == wrong_) {
+            return DummyResult{false};
+        }
+        return DummyResult{true};
+    };
+    bool rejectAll_;
+    std::string wrong_;
+};
 
 } // namespace arbitration_graphs_tests
 
