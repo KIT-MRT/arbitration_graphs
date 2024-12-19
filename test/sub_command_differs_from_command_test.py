@@ -167,7 +167,7 @@ class TestRandomArbitratorWithSubCommand(unittest.TestCase):
         NO_FLAGS = ag_subcommand.RandomArbitrator.Option.Flags.NO_FLAGS
 
         test_behavior_high_weight = ag_subcommand.testing_types.DummyBehavior(
-            True, False, "___HighWeight___"
+            False, False, "___HighWeight___"
         )
         test_behavior_mid_weight = ag_subcommand.testing_types.DummyBehavior(
             True, False, "__MidWeight__"
