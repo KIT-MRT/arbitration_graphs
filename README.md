@@ -316,6 +316,7 @@ This library and repo has been crafted with ❤️ by
 Christoph and Piotr coded the core in a pair-programming session.
 Piotr also contributed the GUI and GitHub Page.
 Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+The Python bindings have been contributed by Nick and reviewed py Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;
 <a href="https://github.com/orzechow" aria-label="View GitHub profile">
