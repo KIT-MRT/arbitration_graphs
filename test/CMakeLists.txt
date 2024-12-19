@@ -141,7 +141,7 @@ if(pybind11_FOUND)
     configure_file(${_py_test} ${PY_TEST_NAME} COPYONLY)
 
     add_test(NAME ${PY_TEST_NAME}
-      COMMAND ${Python3_EXECUTABLE} ${PY_TEST_NAME}
+      COMMAND ${Python3_EXECUTABLE} -m unittest ${PY_TEST_NAME}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
   endforeach()
