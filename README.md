@@ -96,7 +96,7 @@ First make sure all dependencies are installed:
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [Crow](https://crowcpp.org) (optional, needed for GUI only)
-- [pybind11](https://pybind11.readthedocs.io/en/stable/) (optional, if you want to build Python bindings and unit tests)
+- [pybind11](https://pybind11.readthedocs.io/en/stable/) (optional, if you want to build Python bindings and Python unit tests)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 </details>
@@ -185,7 +185,8 @@ PYBIND11_MODULE(arbitration_graphs, m) {
     python_api::bindArbitrationGraphs<MyCommand>(m);
 }
 ```
-and use them in Python by for example implementing a custom behavior that inherits from the abstract `Behavior` class.
+and use them in Python.
+For example, you could implement a custom behavior that inherits from the abstract `Behavior` class.
 
 ```python
 from arbitration_graphs import Behavior
@@ -196,7 +197,6 @@ class MyBehavior(Behavior):
 ```
 We re-implemented all of the C++ unit tests in Python, so take a closer look at those for more advanced usage examples.
 
-</details>
 
 ## Development
 
@@ -222,7 +222,7 @@ There, you can edit the source code, compile and run the tests etc.
 <summary>Compiling unit tests</summary>
 
 To compile and run the C++ unit tests, make sure Googletest is available.
-For the python tests, make sure pybind11 is installed.
+For the Python tests, make sure pybind11 is installed.
 
 In order to compile with tests define `BUILD_TESTS=true`
 ```bash
