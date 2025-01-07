@@ -21,15 +21,15 @@ template <typename CommandT,
           typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
           typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
 void bindArbitrationGraphs(py::module& module,
-                           const std::string& behaviorCommandSuffix = "",
-                           const std::string& behaviorSubCommandSuffix = "") {
+                           const std::string& behaviorBindingName = "Behavior",
+                           const std::string& behaviorSubCommandBindingName = "BehaviorSubCommand") {
     bindExceptions(module);
     bindPlaceboVerifier<SubCommandT>(module);
 
-    bindBehavior<CommandT>(module, behaviorCommandSuffix);
-    // Only bind behavior for SubCommandT if it is different from CommandT
+    bindBehavior<CommandT>(module, behaviorBindingName);
+    // Bind the behavior for the SubCommandT only if it is different from the CommandT
     if constexpr (!std::is_same_v<CommandT, SubCommandT>) {
-        bindBehavior<SubCommandT>(module, behaviorSubCommandSuffix);
+        bindBehavior<SubCommandT>(module, behaviorSubCommandBindingName);
     }
 
     bindArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>(module);

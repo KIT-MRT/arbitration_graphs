@@ -101,7 +101,7 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
 }
 
 PYBIND11_MODULE(arbitration_graphs_py_with_subcommand, mainModule) {
-    python_api::bindArbitrationGraphs<DummyCommandInt, DummyCommand>(mainModule, "Int");
+    python_api::bindArbitrationGraphs<DummyCommandInt, DummyCommand>(mainModule, "BehaviorInt", "Behavior");
 
     py::module testingModule = mainModule.def_submodule("testing_types");
     bindTestingTypes(testingModule);

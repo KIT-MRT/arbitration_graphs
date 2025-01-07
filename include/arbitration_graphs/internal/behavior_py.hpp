@@ -53,11 +53,11 @@ public:
 };
 
 template <typename CommandT>
-void bindBehavior(py::module& module, const std::string& suffix = "") {
+void bindBehavior(py::module& module, const std::string& bindingName = "Behavior") {
     using BehaviorT = Behavior<CommandT>;
     using PyBehaviorT = PyBehavior<CommandT>;
 
-    py::class_<BehaviorT, PyBehaviorT, std::shared_ptr<BehaviorT>>(module, ("Behavior" + suffix).c_str())
+    py::class_<BehaviorT, PyBehaviorT, std::shared_ptr<BehaviorT>>(module, bindingName.c_str())
         .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
         .def("get_command", &BehaviorT::getCommand, py::arg("time"))
         .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
