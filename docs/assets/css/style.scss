@@ -27,6 +27,14 @@ img.github-logo {
   content: url({{ "/docs/assets/img/github-mark.svg" | relative_url }});
 }
 
+.main-content table th, .main-content table td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+.main-content table tr:last-child td {
+  border: none;
+}
+
 // Improve collapsible sections
 details summary {
   cursor: pointer;
