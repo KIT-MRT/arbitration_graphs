@@ -36,7 +36,7 @@ SDL::Window createWindow(int scaleFactor) {
                                                   SDL_WINDOWPOS_CENTERED,
                                                   tilesPx.x * scaleFactor,
                                                   tilesPx.y * scaleFactor,
-                                                  SDL_WINDOW_SHOWN))};
+                                                  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE))};
 }
 
 SDL::Renderer createRendererAndSetLogicalSize(const SDL::Window& window) {
@@ -73,6 +73,15 @@ void PacmanWrapper::handleUserInput() {
             }
             if (event.key.keysym.scancode == SDL_SCANCODE_P) {
                 renderPath_ = !renderPath_;
+                break;
+            }
+            if (event.key.keysym.scancode == SDL_SCANCODE_F) {
+                fullscreen_ = !fullscreen_;
+                if (fullscreen_) {
+                    SDL_SetWindowFullscreen(window_.get(), SDL_WINDOW_FULLSCREEN);
+                } else {
+                    SDL_SetWindowFullscreen(window_.get(), 0);
+                }
                 break;
             }
         }
@@ -117,6 +126,7 @@ void PacmanWrapper::printKeybindings() {
               << "\033[1;36m=====================================\033[0m\n"
               << "  \033[1;32mESC/Q\033[0m - Quit the demo\n"
               << "  \033[1;32mSpace\033[0m - Pause the demo\n"
+              << "  \033[1;32mF\033[0m     - Toggle fullscreen mode\n"
               << "  \033[1;32mP\033[0m     - Toggle path visualization\n"
               << "\033[1;36m=====================================\033[0m\n"
               << "  \033[1;32mGUI\033[0m   - Open http://localhost:8080\n"

@@ -45,6 +45,7 @@ private:
     bool pause_{false};
     bool quit_{false};
     bool renderPath_{false};
+    bool fullscreen_{false};
 };
 
 } // namespace utils
