@@ -37,6 +37,24 @@
 </details>
 
 
+<details>
+<summary>🤨 How does it compare to Behavior Trees?</summary>
+
+Behavior Trees (BTs) are great for a variety of applications and thrive within a vibrant community!  
+Kudos to [Petter Ögren's](https://www.kth.se/profile/petter/) crew, [Michele Colledanchise](https://miccol.github.io/behaviortrees/) and [Davide Faconti](https://github.com/facontidavide) 🖖
+
+But, Arbitration Graphs bring great value, especially for safety critical applications like self-driving cars and mobile robots in general – by strictly coupling preconditions to behaviors and tightly integrating behavior verification.
+A bit more in detail:
+
+|                   | Behavior Trees                                                                                                                 | Arbitration Graphs                                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Interfaces**    | Nodes return execution status (*success*, *failure*, or *running*). <br>⏵ more flexibility w.r.t. a node's actuator interfaces | Behavior components & arbitrators return commands (e.g., a trajectory). <br>⏵ control theory motivated interface ${f(\boldsymbol{x}) \to \boldsymbol{u}}$ <br>⏵ command can be verified by each arbitrator            |
+| **Preconditions** | Implemented by condition nodes distributed throughout the tree. <br>⏵ easy to reuse preconditions for multiple behaviors       | Require behavior components to define their own preconditions. <br>⏵ tight coupling of preconditions to behaviors <br>⏵ robustness and safety less dependent on node arrangement                                      |
+| **Safety**        | Each node decides on its success or failure. <br>⏵ can lead to safety and reliability issues, if not carefully managed         | Integrate safety into the selection mechanism, using node-independent verifiers. <br>⏵ reduces the burden on behavior engineers <br>⏵ allows an easy integration of unsafe behavior components (ML, probabilistic, …) |
+
+</details>
+
+
 ## Demo
 
 We provide a demo of this library using Pac-Man as an example application.  
