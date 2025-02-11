@@ -14,20 +14,27 @@
   Behavior components address *How to do it?* and *Can we do it?*, while Arbitrators decide *What to do?*
  - 🧠 **Meta-framework**  
   Integrate diverse methods in one decision-making framework. Why not combine optimization-based planning, probabilistic approaches (POMDPs), and machine learning (RL)? Use any approach where it performs best!
-- 📈 **Scalability**  
-  Stack behavior components in arbitrators to create hierarchical behavior models.
 - 🛠️ **Maintainability**  
   Add new behaviors without having to touch existing ones – did we mention strict modularity and functional decomposition?
-- 💡 **Transparency**  
-  Easily follow and understand the decision-making process.
 - 🛡️ **Behavior Verification**  
   Use tightly integrated verifiers to ensure that only safe and valid behavior commands are executed.
 - 🪂 **Graceful Degradation**  
   Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
+
+
+<details>
+<summary>😋 Click for more reasons!</summary>
+
+- 📈 **Scalability**  
+  Stack behavior components in arbitrators to create hierarchical behavior models.
+- 💡 **Transparency**  
+  Easily follow and understand the decision-making process, e.g., with our GUI.
 - 📦 **Header-Only**  
-  Simple integration – just include this header-only C++ library!
+  Simple integration – just include this header-only C++17 library!
 - 📜 **Permissive License**  
   Published under MIT license to ensure maximum flexibility for your projects.
+
+</details>
 
 
 ## Demo
