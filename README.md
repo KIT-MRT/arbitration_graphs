@@ -26,6 +26,8 @@
   Your behavior is unreliable or unsafe? Arbitrators will gracefully fall back to the next-best option.
 - 📦 **Header-Only**  
   Simple integration – just include this header-only C++ library!
+- 🐍 **Python Bindings**  
+  For easy prototyping, testing, and integration of machine learning algorithms, all the functionality is available via Python bindings.
 - 📜 **Permissive License**  
   Published under MIT license to ensure maximum flexibility for your projects.
 
@@ -94,6 +96,7 @@ First make sure all dependencies are installed:
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [Googletest](https://github.com/google/googletest) (optional, if you want to build unit tests)
 - [Crow](https://crowcpp.org) (optional, needed for GUI only)
+- [pybind11](https://pybind11.readthedocs.io/en/stable/) (optional, if you want to build Python bindings and Python unit tests)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 </details>
@@ -169,6 +172,31 @@ In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
 </details>
 
+## Python Bindings
+
+The library can be used in Python via pybind11 bindings.
+Since `arbitration_graphs` is a templated C++ library,
+  you need to explicitly instantiate the template for the types you want to use in Python.
+For this, we provide convenience functions to bind the library for the desired types.
+Simply call them in a pybind11 module definition, e.g.:
+
+```cpp
+PYBIND11_MODULE(arbitration_graphs, m) {
+    python_api::bindArbitrationGraphs<MyCommand>(m);
+}
+```
+and use them in Python.
+For example, you could implement a custom behavior that inherits from the abstract `Behavior` class.
+
+```python
+from arbitration_graphs import Behavior
+
+class MyBehavior(Behavior):
+    def __init__(self, "my_behavior"):
+        super().__init__(name)
+```
+We re-implemented all of the C++ unit tests in Python, so take a closer look at those for more advanced usage examples.
+
 
 ## Development
 
@@ -193,6 +221,9 @@ There, you can edit the source code, compile and run the tests etc.
 <details>
 <summary>Compiling unit tests</summary>
 
+To compile and run the C++ unit tests, make sure Googletest is available.
+For the Python tests, make sure pybind11 is installed.
+
 In order to compile with tests define `BUILD_TESTS=true`
 ```bash
 mkdir -p arbitration_graphs/build
@@ -201,14 +232,12 @@ cmake -DBUILD_TESTS=true ..
 cmake --build . -j9
 ```
 
-Run all unit tests with CTest:
+Run all unit tests (C++ and Python) with CTest:
 
 ```bash
 cmake --build . --target test
 ```
-
 </details>
-
 
 <details>
 <summary>Serving the WebApp GUI</summary>
@@ -287,6 +316,7 @@ This library and repo has been crafted with ❤️ by
 Christoph and Piotr coded the core in a pair-programming session.
 Piotr also contributed the GUI and GitHub Page.
 Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+The Python bindings have been contributed by Nick and reviewed py Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;
 <a href="https://github.com/orzechow" aria-label="View GitHub profile">

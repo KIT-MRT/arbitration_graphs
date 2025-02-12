@@ -1,0 +1,78 @@
+#pragma once
+
+#include <pybind11/pybind11.h>
+#include <yaml-cpp/yaml.h>
+
+#include "../arbitrator.hpp"
+#include "../behavior.hpp"
+#include "../priority_arbitrator.hpp"
+
+namespace arbitration_graphs::python_api {
+
+namespace py = pybind11;
+
+template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
+class PyPriorityArbitrator : public PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+public:
+    using BaseT = PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+
+    explicit PyPriorityArbitrator(const std::string& name, const VerifierT& verifier = VerifierT())
+            : BaseT(name, verifier) {
+    }
+
+    // NOLINTBEGIN(readability-function-size)
+    void addOption(const typename BaseT::Option::Ptr& behavior, const typename BaseT::Option::FlagsT& flags) {
+        PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags);
+    }
+    // NOLINTEND(readability-function-size)
+
+    std::string toYamlAsString(const Time& time) const {
+        YAML::Emitter out;
+        out << BaseT::toYaml(time);
+        return out.c_str();
+    }
+};
+
+template <typename CommandT,
+          typename SubCommandT = CommandT,
+          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
+          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+void bindPriorityArbitrator(py::module& module) {
+    using BehaviorT = Behavior<SubCommandT>;
+
+    using ArbitratorT = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorOptionT = typename ArbitratorT::Option;
+
+    using PriorityArbitratorT = PriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using PyPriorityArbitratorT = PyPriorityArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+
+    using OptionT = typename PriorityArbitratorT::Option;
+    using FlagsT = typename OptionT::FlagsT;
+
+    py::class_<PriorityArbitratorT, ArbitratorT, PyPriorityArbitratorT, std::shared_ptr<PriorityArbitratorT>>
+        priorityArbitrator(module, "PriorityArbitrator");
+    priorityArbitrator
+        .def(py::init<const std::string&, const VerifierT&>(),
+             py::arg("name") = "PriorityArbitrator",
+             py::arg("verifier") = VerifierT())
+        .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
+        .def(
+            "to_yaml_as_str",
+            [](const PriorityArbitratorT& self, const Time& time) {
+                return static_cast<const PyPriorityArbitratorT&>(self).toYamlAsString(time);
+            },
+            py::arg("time"))
+        .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
+
+    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
+    option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
+
+    py::enum_<typename OptionT::Flags>(option, "Flags")
+        .value("NO_FLAGS", OptionT::NO_FLAGS)
+        .value("INTERRUPTABLE", OptionT::INTERRUPTABLE)
+        .value("FALLBACK", OptionT::FALLBACK)
+        .export_values();
+}
+
+
+} // namespace arbitration_graphs::python_api
