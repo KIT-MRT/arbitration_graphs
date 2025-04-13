@@ -68,6 +68,11 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
         option->verificationResult_.reset();
 
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
+        // Catch all other exceptions and cache failed verification result
+    } catch (const std::exception& e) {
+        option->verificationResult_.cache(time, VerificationResultT{false});
+        VLOG(1) << "Given option " << option->behavior_->name_ << " threw an exception during getAndVerifyCommand(): "
+                << e.what();
     }
     return std::nullopt;
 }
