@@ -66,12 +66,23 @@ public:
 
 class BrokenDummyBehavior : public DummyBehavior {
 public:
-    BrokenDummyBehavior(const bool invocation, const bool commitment, const std::string& name = "BrokenDummyBehavior")
-            : DummyBehavior(invocation, commitment, name){};
+    BrokenDummyBehavior(const bool invocation,
+                        const bool commitment,
+                        const std::string& name = "BrokenDummyBehavior",
+                        int numGetCommandsUntilThrow = 0)
+            : DummyBehavior(invocation, commitment, name), numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
 
     DummyCommand getCommand(const Time& time) override {
-        throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
+        if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
+            throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
+        }
+
+        getCommandCounter_++;
+        return name_;
     }
+
+private:
+    int numGetCommandsUntilThrow_;
 };
 
 struct DummyResult : public verification::PlaceboResult {};
