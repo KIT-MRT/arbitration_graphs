@@ -10,17 +10,14 @@
 using namespace arbitration_graphs;
 using namespace arbitration_graphs_tests;
 
-class ExceptionHandlingTest : public ::testing::Test {
-protected:
+TEST(ExceptionHandlingTest, HandleExceptionInPriorityArbitrator) {
+    using OptionFlags = PriorityArbitrator<DummyCommand>::Option::Flags;
+
     BrokenDummyBehavior::Ptr testBehaviorHighPriority =
         std::make_shared<BrokenDummyBehavior>(true, true, "HighPriority");
     DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
 
     Time time{Clock::now()};
-};
-
-TEST_F(ExceptionHandlingTest, HandleException) {
-    using OptionFlags = PriorityArbitrator<DummyCommand>::Option::Flags;
 
     PriorityArbitrator<DummyCommand> testPriorityArbitrator;
 
@@ -49,4 +46,3 @@ TEST_F(ExceptionHandlingTest, HandleException) {
     // With no fallback, there is no option to call even if the invocation condition is true
     EXPECT_THROW(testPriorityArbitrator.getCommand(time), NoApplicableOptionPassedVerificationError);
 }
-
