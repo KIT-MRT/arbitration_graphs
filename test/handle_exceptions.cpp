@@ -1,8 +1,9 @@
 #include <optional>
-#include <string>
 #include "gtest/gtest.h"
 
 #include "behavior.hpp"
+#include "cost_arbitrator.hpp"
+#include "cost_estimator.hpp"
 #include "priority_arbitrator.hpp"
 
 #include "dummy_types.hpp"
@@ -82,4 +83,34 @@ TEST(ExceptionHandlingTest, HandleExceptionInCommitedBehavior) {
 
     EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
     EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
+}
+
+TEST(ExceptionHandlingTest, HandleExceptionsInCostArbitrator) {
+    using OptionFlags = CostArbitrator<DummyCommand>::Option::Flags;
+
+    BrokenDummyBehavior::Ptr testBehaviorLowCost = std::make_shared<BrokenDummyBehavior>(true, true, "LowCost");
+    DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "HighCost");
+
+    CostEstimatorFromCostMap::CostMap costMap{{"LowCost", 0}, {"HighCost", 1}};
+    CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
+
+    Time time{Clock::now()};
+
+    CostArbitrator<DummyCommand> testCostArbitrator;
+
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, costEstimator);
+
+    ASSERT_TRUE(testCostArbitrator.checkInvocationCondition(time));
+
+    testCostArbitrator.gainControl(time);
+
+    // The cost arbitrator calls getCommand of all options to estimate the costs
+    // Exceptions during the sorting of the options should be caught and handled
+    EXPECT_EQ("HighCost", testCostArbitrator.getCommand(time));
+    ASSERT_TRUE(testCostArbitrator.options().at(0)->verificationResult_.cached(time));
+    ASSERT_TRUE(testCostArbitrator.options().at(1)->verificationResult_.cached(time));
+
+    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
+    EXPECT_TRUE(testCostArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
 }
