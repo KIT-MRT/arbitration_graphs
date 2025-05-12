@@ -36,3 +36,30 @@ inline void bindCommandWrapper(py::module& module) {
 }
 
 } // namespace arbitration_graphs_py
+
+namespace pybind11 {
+namespace detail {
+
+namespace py = pybind11;
+
+template <>
+struct type_caster<arbitration_graphs_py::CommandWrapper> {
+public:
+    PYBIND11_TYPE_CASTER(arbitration_graphs_py::CommandWrapper, _("CommandWrapper"));
+
+    // Python -> C++
+    bool load(handle src, bool /*unused*/) {
+        value = arbitration_graphs_py::CommandWrapper(py::reinterpret_borrow<py::object>(src));
+        return true;
+    }
+
+    // C++ -> Python
+    static handle cast(const arbitration_graphs_py::CommandWrapper& src,
+                       return_value_policy /*unused*/,
+                       handle /*unused*/) {
+        return py::reinterpret_borrow<py::object>(src.value());
+    }
+};
+
+} // namespace detail
+} // namespace pybind11

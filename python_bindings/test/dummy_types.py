@@ -1,5 +1,4 @@
 from arbitration_graphs_py import Behavior
-from arbitration_graphs_py import CommandWrapper
 
 
 class PrintStrings:
@@ -26,7 +25,7 @@ class DummyBehaviorPy(Behavior):
         self.lose_control_counter = 0
 
     def get_command(self, time):
-        return CommandWrapper(self.name)
+        return self.name
 
     def check_invocation_condition(self, time) -> bool:
         return self.invocation_condition
