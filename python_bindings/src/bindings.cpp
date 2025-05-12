@@ -8,6 +8,9 @@
 #include "arbitration_graphs_py/priority_arbitrator.hpp"
 #include "arbitration_graphs_py/verification_wrapper.hpp"
 
+#define STRINGIFY(x) #x
+#define MACRO_STRINGIFY(x) STRINGIFY(x)
+
 namespace arbitration_graphs_py {
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
@@ -18,6 +21,13 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindBehavior(mainModule);
     bindArbitrator(mainModule);
     bindPriorityArbitrator(mainModule);
+
+
+#ifdef PROJECT_VERSION
+    mainModule.attr("__version__") = MACRO_STRINGIFY(PROJECT_VERSION);
+#else
+    mainModule.attr("__version__") = "dev";
+#endif
 }
 
 } // namespace arbitration_graphs_py
