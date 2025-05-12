@@ -27,14 +27,6 @@ private:
     py::object command_;
 };
 
-inline void bindCommandWrapper(py::module& module) {
-    py::class_<CommandWrapper>(module, "CommandWrapper")
-        .def(py::init<const CommandWrapper&>())
-        .def(py::init<py::object>())
-        .def("__iand__", &CommandWrapper::operator&=, py::is_operator())
-        .def("value", &CommandWrapper::value);
-}
-
 } // namespace arbitration_graphs_py
 
 namespace pybind11 {

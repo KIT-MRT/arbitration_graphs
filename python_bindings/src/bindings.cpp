@@ -4,7 +4,6 @@
 
 #include "arbitration_graphs_py/arbitrator.hpp"
 #include "arbitration_graphs_py/behavior.hpp"
-#include "arbitration_graphs_py/command_wrapper.hpp"
 #include "arbitration_graphs_py/exceptions.hpp"
 #include "arbitration_graphs_py/priority_arbitrator.hpp"
 #include "arbitration_graphs_py/verification_wrapper.hpp"
@@ -12,7 +11,6 @@
 namespace arbitration_graphs_py {
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
-    bindCommandWrapper(mainModule);
     bindVerificationWrapper(mainModule);
 
     bindExceptions(mainModule);
