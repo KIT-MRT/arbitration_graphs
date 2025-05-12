@@ -60,13 +60,13 @@ class TestPriorityArbitrator(unittest.TestCase):
         # Gain control and check command
         self.test_priority_arbitrator.gain_control(self.time)
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(0, self.test_behavior_mid_priority.lose_control_counter)
 
         # Mid priority behavior should lose control after the next get_command call
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(1, self.test_behavior_mid_priority.lose_control_counter)
 
@@ -79,13 +79,13 @@ class TestPriorityArbitrator(unittest.TestCase):
             self.test_priority_arbitrator.check_commitment_condition(self.time)
         )
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(0, self.test_behavior_low_priority.lose_control_counter)
 
         # Low priority behavior should not lose control if commitment is true
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(0, self.test_behavior_low_priority.lose_control_counter)
 
@@ -98,10 +98,10 @@ class TestPriorityArbitrator(unittest.TestCase):
             self.test_priority_arbitrator.check_commitment_condition(self.time)
         )
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
     def test_printout(self):
@@ -138,7 +138,7 @@ class TestPriorityArbitrator(unittest.TestCase):
 
         self.test_priority_arbitrator.gain_control(self.time)
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
         # fmt: off
@@ -254,10 +254,10 @@ class TestPriorityArbitrator(unittest.TestCase):
 
         self.test_priority_arbitrator.gain_control(self.time)
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
         self.test_behavior_mid_priority.invocation_condition = False
@@ -268,10 +268,10 @@ class TestPriorityArbitrator(unittest.TestCase):
             self.test_priority_arbitrator.check_commitment_condition(self.time)
         )
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(
-            "LowPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "LowPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
         self.test_behavior_mid_priority.invocation_condition = True
@@ -282,10 +282,10 @@ class TestPriorityArbitrator(unittest.TestCase):
             self.test_priority_arbitrator.check_commitment_condition(self.time)
         )
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
         self.assertEqual(
-            "MidPriority", self.test_priority_arbitrator.get_command(self.time).value()
+            "MidPriority", self.test_priority_arbitrator.get_command(self.time)
         )
 
 

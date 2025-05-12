@@ -57,7 +57,10 @@ inline void bindBehavior(py::module& module, const std::string& bindingName = "B
 
     py::class_<BehaviorT, PyBehavior, std::shared_ptr<BehaviorT>>(module, bindingName.c_str())
         .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
-        .def("get_command", &BehaviorT::getCommand, py::arg("time"))
+        .def(
+            "get_command",
+            [](BehaviorT& self, const Time& time) { return self.getCommand(time).value(); },
+            py::arg("time"))
         .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
         .def("check_commitment_condition", &BehaviorT::checkCommitmentCondition, py::arg("time"))
         .def("gain_control", &BehaviorT::gainControl, py::arg("time"))
