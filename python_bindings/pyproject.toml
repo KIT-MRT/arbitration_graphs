@@ -3,7 +3,7 @@ requires = ["scikit-build-core>=0.10", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "arbitration_graphs_py"
+name = "arbitration_graphs"
 version = "0.0.1"
 description="Python bindings for the arbitration graphs library"
 readme = "../README.md"

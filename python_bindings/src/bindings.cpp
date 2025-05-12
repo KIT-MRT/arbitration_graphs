@@ -10,7 +10,7 @@
 
 namespace arbitration_graphs_py {
 
-PYBIND11_MODULE(_core, mainModule) {
+PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindVerificationWrapper(mainModule);
 
     bindExceptions(mainModule);

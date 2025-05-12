@@ -1,4 +1,4 @@
-from arbitration_graphs_py import Behavior
+from arbitration_graphs import Behavior
 
 
 class PrintStrings:
