@@ -5,11 +5,18 @@ cmake_minimum_required(VERSION 3.22)
 ## Project settings ##
 ######################
 
-# Setup project
-project(arbitration_graphs_py
-  DESCRIPTION "Python bindings for the arbitration graphs library"
+# Read the project/package version from ./version file
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version" ver)
+string(REGEX MATCH "VERSION=v([0-9\.]*)" _ ${ver})
+set(PACKAGE_VERSION ${CMAKE_MATCH_1})
+
+project(
+  arbitration_graphs_py
+  VERSION ${PACKAGE_VERSION}
+  DESCRIPTION "Python bindings for the arbitration_graphs library"
   LANGUAGES CXX
 )
+
 
 ###############
 ## C++ setup ##
@@ -51,10 +58,19 @@ pybind11_add_module(${PROJECT_NAME}
   src/bindings.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
-    include
+  include
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC
   arbitration_graphs
 )
-install(TARGETS ${PROJECT_NAME} DESTINATION ${SKBUILD_PROJECT_NAME})
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  PROJECT_VERSION="${PROJECT_VERSION}"
+)
+
+
+#############
+## Install ##
+#############
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "arbitration_graphs")
 
