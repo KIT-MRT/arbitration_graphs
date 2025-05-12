@@ -47,14 +47,14 @@ find_package(Yaml-cpp REQUIRED)
 ## Build ##
 ###########
 
-pybind11_add_module(_core
+pybind11_add_module(${PROJECT_NAME}
   src/bindings.cpp
 )
-target_include_directories(_core PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
     include
 )
-target_link_libraries(_core PUBLIC
+target_link_libraries(${PROJECT_NAME} PUBLIC
   arbitration_graphs
 )
-install(TARGETS _core DESTINATION ${SKBUILD_PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME} DESTINATION ${SKBUILD_PROJECT_NAME})
 

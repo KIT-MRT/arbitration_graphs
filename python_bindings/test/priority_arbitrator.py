@@ -3,7 +3,7 @@ import time
 import unittest
 import yaml
 
-import arbitration_graphs_py as ag
+import arbitration_graphs as ag
 from dummy_types import DummyBehaviorPy, DummyCommandPy, PrintStrings
 
 
