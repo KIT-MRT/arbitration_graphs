@@ -1,0 +1,8 @@
+services:
+  devel:
+    build:
+      context: .
+      target: devel
+    env_file: .env
+    volumes:
+      - ..:/home/blinky/arbitration_graphs
