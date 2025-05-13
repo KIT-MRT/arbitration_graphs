@@ -6,6 +6,7 @@
 #include "arbitration_graphs_py/behavior.hpp"
 #include "arbitration_graphs_py/exceptions.hpp"
 #include "arbitration_graphs_py/priority_arbitrator.hpp"
+#include "arbitration_graphs_py/random_arbitrator.hpp"
 #include "arbitration_graphs_py/verification_wrapper.hpp"
 
 #define STRINGIFY(x) #x
@@ -21,6 +22,7 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindBehavior(mainModule);
     bindArbitrator(mainModule);
     bindPriorityArbitrator(mainModule);
+    bindRandomArbitrator(mainModule);
 
 
 #ifdef PROJECT_VERSION
