@@ -6,3 +6,10 @@ services:
     env_file: .env
     volumes:
       - ..:/home/blinky/arbitration_graphs
+
+  wheel-builder:
+    build:
+      context: .
+      target: wheel_builder
+    image: arbitration-graphs-wheel-builder
+
