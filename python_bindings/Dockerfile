@@ -26,3 +26,54 @@ RUN useradd --create-home --uid 1000 blinky
 USER blinky
 
 WORKDIR /home/blinky/
+
+
+# =============
+# Wheel builder
+# =============
+
+
+FROM quay.io/pypa/manylinux_2_28_x86_64 AS wheel_builder
+
+# Install build dependencies
+RUN yum update -y && \
+    yum install -y \
+      gcc gcc-c++ \
+      make \
+      cmake \
+      yaml-cpp-devel && \
+    yum clean all
+
+# Build glog from source to get up-to-date version that can be found without FindGlog.cmake
+RUN git clone https://github.com/google/glog.git && \
+    cd glog && \
+    mkdir build && \
+    cd build && \
+    cmake -DBUILD_SHARED_LIBS=OFF .. && \
+    make && \
+    make install && \
+    cd ../.. && \
+    rm -rf glog
+
+# Build util_caching
+RUN git clone https://github.com/KIT-MRT/util_caching.git && \
+    cd util_caching && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install && \
+    cd ../.. && \
+    rm -rf util_caching
+
+# Build arbitration_graphs
+RUN git clone https://github.com/KIT-MRT/arbitration_graphs.git && \
+    cd arbitration_graphs && \
+    mkdir build && \
+    cd build && \
+    cmake -DBUILD_GUI=false .. && \
+    make && \
+    make install && \
+    cd ../.. && \
+    rm -rf arbitration_graphs
+
