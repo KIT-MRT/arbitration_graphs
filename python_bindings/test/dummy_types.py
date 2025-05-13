@@ -11,11 +11,11 @@ class PrintStrings:
     commitment_false = "\033[31mCommitment\033[39m "
 
 
-class DummyCommandPy(str):
+class DummyCommand(str):
     pass
 
 
-class DummyBehaviorPy(Behavior):
+class DummyBehavior(Behavior):
     def __init__(
         self, invocation: bool, commitment: bool, name: str = "dummy_behavior"
     ):

@@ -4,14 +4,14 @@ import unittest
 import yaml
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehaviorPy, DummyCommandPy, PrintStrings
+from dummy_types import DummyBehavior, PrintStrings
 
 
 class TestPriorityArbitrator(unittest.TestCase):
     def setUp(self):
-        self.test_behavior_high_priority = DummyBehaviorPy(False, False, "HighPriority")
-        self.test_behavior_mid_priority = DummyBehaviorPy(True, False, "MidPriority")
-        self.test_behavior_low_priority = DummyBehaviorPy(True, True, "LowPriority")
+        self.test_behavior_high_priority = DummyBehavior(False, False, "HighPriority")
+        self.test_behavior_mid_priority = DummyBehavior(True, False, "MidPriority")
+        self.test_behavior_low_priority = DummyBehavior(True, True, "LowPriority")
 
         self.test_priority_arbitrator = ag.PriorityArbitrator("PriorityArbitrator")
 
