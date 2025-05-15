@@ -1,6 +1,7 @@
 #include <pybind11/chrono.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <util_caching/python_bindings.hpp>
 
 #include "arbitration_graphs_py/arbitrator.hpp"
 #include "arbitration_graphs_py/behavior.hpp"
@@ -17,6 +18,15 @@ namespace arbitration_graphs_py {
 
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindVerificationWrapper(mainModule);
+namespace {
+void bindUtilCaching(py::module& module) {
+    py::module utilCaching = module.def_submodule("util_caching");
+    using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
+    util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
+                                                                                                 "ApproximateTime");
+    util_caching::python_api::time_based::bindCache<Time, VerificationResultWrapper, ApproximateTimeT>(utilCaching);
+}
+} // namespace
 
     bindExceptions(mainModule);
 
@@ -25,6 +35,8 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindCostArbitrator(mainModule);
     bindPriorityArbitrator(mainModule);
     bindRandomArbitrator(mainModule);
+
+    bindUtilCaching(mainModule);
 
 
 #ifdef PROJECT_VERSION
