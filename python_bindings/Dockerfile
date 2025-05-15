@@ -27,6 +27,25 @@ USER blinky
 
 WORKDIR /home/blinky/
 
+# ==========
+# Unit tests
+# ==========
+
+FROM base AS unit_test
+
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY .README.md /tmp/arbitration_graphs/
+COPY pyproject.toml /tmp/arbitration_graphs/
+COPY version /tmp/arbitration_graphs/
+COPY include /tmp/arbitration_graphs/include
+COPY src /tmp/arbitration_graphs/src
+COPY test /tmp/arbitration_graphs/test
+
+WORKDIR /tmp/arbitration_graphs
+RUN pip install .
+
+CMD ["python3", "-m", "unittest", "discover", "-s", "test"]
+
 
 # =============
 # Wheel builder
