@@ -117,17 +117,44 @@ private:
     std::shared_ptr<py::object> verifier_;
 };
 
-
-inline void bindVerificationWrapper(py::module& module) {
-    py::class_<VerificationResultWrapper>(module, "VerificationResultWrapper")
-        .def(py::init<const VerificationResultWrapper&>())
-        .def(py::init<py::object>())
-        .def("value", &VerificationResultWrapper::value);
-
-    py::class_<VerifierWrapper>(module, "VerifierWrapper")
-        .def(py::init<py::object>())
-        .def("analyze", &VerifierWrapper::analyze);
-}
-
-
 } // namespace arbitration_graphs_py
+
+namespace pybind11 {
+namespace detail {
+
+template <>
+struct type_caster<arbitration_graphs_py::VerificationResultWrapper> {
+public:
+    PYBIND11_TYPE_CASTER(arbitration_graphs_py::VerificationResultWrapper, const_name("VerificationResultWrapper"));
+
+    bool load(handle src, bool /*unused*/) {
+        value = arbitration_graphs_py::VerificationResultWrapper(py::cast<py::object>(src));
+        return true;
+    }
+
+    static handle cast(const arbitration_graphs_py::VerificationResultWrapper& src,
+                       return_value_policy /*unused*/,
+                       handle /*unused*/) {
+        return py::object(src.value()).release();
+    }
+};
+
+template <>
+struct type_caster<arbitration_graphs_py::VerifierWrapper> {
+public:
+    PYBIND11_TYPE_CASTER(arbitration_graphs_py::VerifierWrapper, const_name("VerifierWrapper"));
+
+    bool load(handle src, bool /*unused*/) {
+        value = arbitration_graphs_py::VerifierWrapper(py::cast<py::object>(src));
+        return true;
+    }
+
+    static handle cast(const arbitration_graphs_py::VerifierWrapper& src,
+                       return_value_policy /*unused*/,
+                       handle /*unused*/) {
+        return py::object(src.value()).release();
+    }
+};
+
+} // namespace detail
+} // namespace pybind11
