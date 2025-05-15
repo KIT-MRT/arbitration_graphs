@@ -26,15 +26,15 @@ public:
     }
     VerificationResultWrapper(const VerificationResultWrapper&) = default;
     explicit VerificationResultWrapper(py::object verificationResult)
-            : verificationResult_{std::move(verificationResult)} {
+            : verificationResult_{std::make_shared<py::object>(std::move(verificationResult))} {
     }
 
     bool isOk() const {
-        if (!py::hasattr(verificationResult_, "is_ok")) {
+        if (!py::hasattr(value(), "is_ok")) {
             throw py::attribute_error("Python object must have an 'is_ok' attribute");
         }
 
-        py::object is_ok = verificationResult_.attr("is_ok"); // NOLINT(readability-identifier-naming)
+        py::object is_ok = value().attr("is_ok"); // NOLINT(readability-identifier-naming)
         if (!py::isinstance<py::function>(is_ok)) {
             throw py::type_error("Python object 'is_ok' attribute must be a function");
         }
@@ -43,11 +43,14 @@ public:
     }
 
     py::object value() const {
-        return verificationResult_;
+        if (!verificationResult_) {
+            throw std::runtime_error("VerificationResultWrapper is not initialized");
+        }
+        return *verificationResult_;
     }
 
 private:
-    py::object verificationResult_;
+    std::shared_ptr<py::object> verificationResult_;
 
     /// @brief Constructs a python object with an is_ok() method that returns the given isOk value
     void constructTrivialResult(bool isOk) {
@@ -57,7 +60,7 @@ private:
 
         result.attr("is_ok") = py::cpp_function([isOk]() { return isOk; });
 
-        verificationResult_ = result;
+        verificationResult_ = std::make_shared<py::object>(result);
     }
 };
 
@@ -78,23 +81,23 @@ inline std::ostream& operator<<(std::ostream& out, const VerificationResultWrapp
 
 class VerifierWrapper {
 public:
-    VerifierWrapper() : verifier_(py::none()) {
+    VerifierWrapper() : verifier_(std::make_shared<py::object>(py::none())) {
     }
     VerifierWrapper(const VerifierWrapper&) = default;
-    explicit VerifierWrapper(py::object verifier) : verifier_{std::move(verifier)} {
+    explicit VerifierWrapper(py::object verifier) : verifier_{std::make_shared<py::object>(std::move(verifier))} {
     }
 
     VerificationResultWrapper analyze(const arbitration_graphs::Time& time, const CommandWrapper& command) const {
-        if (verifier_.is(py::none())) {
+        if (value().is(py::none())) {
             // Analogous to the PlaceboVerifier, return a default constructed result,
             // if the verifier is default constructed
             return {};
         }
-        if (!py::hasattr(verifier_, "analyze")) {
+        if (!py::hasattr(value(), "analyze")) {
             throw py::attribute_error("Python object must have an 'analyze' attribute");
         }
 
-        py::object analyze = verifier_.attr("analyze");
+        py::object analyze = value().attr("analyze");
         if (!py::isinstance<py::function>(analyze)) {
             throw py::type_error("Python object 'analyze' attribute must be a function");
         }
@@ -102,9 +105,16 @@ public:
         return VerificationResultWrapper(analyze(time, command.value()));
     }
 
+    py::object value() const {
+        if (!verifier_) {
+            throw std::runtime_error("VerifierWrapper is not initialized");
+        }
+        return *verifier_;
+    }
+
 
 private:
-    py::object verifier_;
+    std::shared_ptr<py::object> verifier_;
 };
 
 

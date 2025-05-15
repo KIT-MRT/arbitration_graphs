@@ -11,8 +11,7 @@ namespace py = pybind11;
 class CommandWrapper {
 public:
     CommandWrapper() = default;
-    CommandWrapper(const CommandWrapper&) = default;
-    explicit CommandWrapper(py::object command) : command_{std::move(command)} {
+    explicit CommandWrapper(py::object command) : command_{std::make_shared<py::object>(std::move(command))} {
     }
 
     CommandWrapper& operator&=(const CommandWrapper& /*command*/) {
@@ -20,11 +19,14 @@ public:
     }
 
     py::object value() const {
-        return command_;
+        if (!command_) {
+            throw std::runtime_error("CommandWrapper is not initialized");
+        }
+        return *command_;
     }
 
 private:
-    py::object command_;
+    std::shared_ptr<py::object> command_;
 };
 
 } // namespace arbitration_graphs_py
