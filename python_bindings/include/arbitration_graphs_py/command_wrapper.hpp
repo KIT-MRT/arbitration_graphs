@@ -39,11 +39,14 @@ namespace py = pybind11;
 template <>
 struct type_caster<arbitration_graphs_py::CommandWrapper> {
 public:
-    PYBIND11_TYPE_CASTER(arbitration_graphs_py::CommandWrapper, _("CommandWrapper"));
+    PYBIND11_TYPE_CASTER(arbitration_graphs_py::CommandWrapper, const_name("CommandWrapper"));
 
     // Python -> C++
     bool load(handle src, bool /*unused*/) {
-        value = arbitration_graphs_py::CommandWrapper(py::reinterpret_borrow<py::object>(src));
+        // Copy the py::object to increment its reference count (Py_INCREF)
+        // This ensures that the C++ side holds a strong reference independently of Python
+        // Prevents use-after-free if Python drops its reference
+        value = arbitration_graphs_py::CommandWrapper(py::cast<py::object>(src));
         return true;
     }
 
@@ -51,7 +54,10 @@ public:
     static handle cast(const arbitration_graphs_py::CommandWrapper& src,
                        return_value_policy /*unused*/,
                        handle /*unused*/) {
-        return py::reinterpret_borrow<py::object>(src.value());
+        // Return a new reference to the Python object (increments ref count)
+        // This decouples the C++ object's lifetime from Python’s
+        // Avoids shared ownership issues and ensures Python can manage the object normally
+        return py::object(src.value()).release();
     }
 };
 
