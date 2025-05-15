@@ -16,8 +16,6 @@
 
 namespace arbitration_graphs_py {
 
-PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
-    bindVerificationWrapper(mainModule);
 namespace {
 void bindUtilCaching(py::module& module) {
     py::module utilCaching = module.def_submodule("util_caching");
@@ -28,6 +26,7 @@ void bindUtilCaching(py::module& module) {
 }
 } // namespace
 
+PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindExceptions(mainModule);
 
     bindBehavior(mainModule);
