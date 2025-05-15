@@ -35,3 +35,26 @@ class DummyBehavior(Behavior):
 
     def lose_control(self, time):
         self.lose_control_counter += 1
+
+
+class DummyResult:
+    def __init__(self, is_ok=True):
+        self._is_ok = is_ok
+
+    def is_ok(self):
+        return self._is_ok
+
+    def __str__(self):
+        return "is okay" if self.is_ok() else "is not okay"
+
+
+class DummyVerifier:
+    def __init__(self, wrong="", reject_all=False):
+        self.wrong = wrong
+        self.reject_all = reject_all
+
+    def analyze(self, time, command):
+        if self.reject_all or command == self.wrong:
+            return DummyResult(False)
+
+        return DummyResult(True)
