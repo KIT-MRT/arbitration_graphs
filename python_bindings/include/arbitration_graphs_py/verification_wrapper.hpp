@@ -18,14 +18,11 @@ class VerificationResultWrapper {
 public:
     VerificationResultWrapper() {
         // This is analogous to the PlaceboResult
-        // NOLINTNEXTLINE readability-identifier-naming
-        py::object SimpleNamespace = py::module_::import("types").attr("SimpleNamespace");
-        verificationResult_ = SimpleNamespace("is_ok"_a = true);
+        constructTrivialResult(true);
     }
     explicit VerificationResultWrapper(bool isOk) {
-        // NOLINTNEXTLINE readability-identifier-naming
-        py::object SimpleNamespace = py::module_::import("types").attr("SimpleNamespace");
-        verificationResult_ = SimpleNamespace("is_ok"_a = isOk);
+        // This is analogous the implicit default constructor of the PlaceboResult
+        constructTrivialResult(isOk);
     }
     VerificationResultWrapper(const VerificationResultWrapper&) = default;
     explicit VerificationResultWrapper(py::object verificationResult)
@@ -36,7 +33,7 @@ public:
         if (!py::hasattr(verificationResult_, "is_ok")) {
             throw std::runtime_error("Python object must have an 'is_ok' attribute");
         }
-        return verificationResult_.attr("is_ok").cast<bool>();
+        return verificationResult_.attr("is_ok")().cast<bool>();
     }
 
     py::object value() const {
@@ -45,6 +42,17 @@ public:
 
 private:
     py::object verificationResult_;
+
+    /// @brief Constructs a python object with an is_ok() method that returns the given isOk value
+    void constructTrivialResult(bool isOk) {
+        // NOLINTNEXTLINE readability-identifier-naming
+        py::object SimpleNamespace = py::module_::import("types").attr("SimpleNamespace");
+        py::object result = SimpleNamespace();
+
+        result.attr("is_ok") = py::cpp_function([isOk]() { return isOk; });
+
+        verificationResult_ = result;
+    }
 };
 
 inline std::ostream& operator<<(std::ostream& out, const VerificationResultWrapper& result) {
