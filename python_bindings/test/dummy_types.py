@@ -37,6 +37,16 @@ class DummyBehavior(Behavior):
         self.lose_control_counter += 1
 
 
+class BrokenDummyBehavior(DummyBehavior):
+    def __init__(
+        self, invocation: bool, commitment: bool, name: str = "dummy_behavior"
+    ):
+        super().__init__(invocation, commitment, name)
+
+    def get_command(self, time):
+        raise Exception("BrokenDummyBehavior::getCommand() is broken")
+
+
 class DummyResult:
     def __init__(self, is_ok=True):
         self._is_ok = is_ok
