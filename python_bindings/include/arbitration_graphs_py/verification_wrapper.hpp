@@ -31,9 +31,15 @@ public:
 
     bool isOk() const {
         if (!py::hasattr(verificationResult_, "is_ok")) {
-            throw std::runtime_error("Python object must have an 'is_ok' attribute");
+            throw py::attribute_error("Python object must have an 'is_ok' attribute");
         }
-        return verificationResult_.attr("is_ok")().cast<bool>();
+
+        py::object is_ok = verificationResult_.attr("is_ok"); // NOLINT(readability-identifier-naming)
+        if (!py::isinstance<py::function>(is_ok)) {
+            throw py::type_error("Python object 'is_ok' attribute must be a function");
+        }
+
+        return is_ok().cast<bool>();
     }
 
     py::object value() const {
@@ -85,17 +91,15 @@ public:
             return {};
         }
         if (!py::hasattr(verifier_, "analyze")) {
-            throw std::runtime_error("Python implemented verifier must have an 'analyze' method");
+            throw py::attribute_error("Python object must have an 'analyze' attribute");
         }
 
-        py::object verificationResult;
-        try {
-            verificationResult = verifier_.attr("analyze")(time, command.value());
-        } catch (const std::runtime_error& error) {
-            throw std::runtime_error(std::string("Error calling 'analyze': ") + error.what());
+        py::object analyze = verifier_.attr("analyze");
+        if (!py::isinstance<py::function>(analyze)) {
+            throw py::type_error("Python object 'analyze' attribute must be a function");
         }
 
-        return VerificationResultWrapper(verificationResult);
+        return VerificationResultWrapper(analyze(time, command.value()));
     }
 
 
