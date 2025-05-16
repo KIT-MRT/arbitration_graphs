@@ -6,6 +6,8 @@ The bindings are generated using `pybind11` and provide a convenient interface f
 The interface is identical to the C++ interface except that it is following Python naming conventions.
 See the [unit tests](test/) for examples of how to use the bindings.
 
+> **Note:** The coordinator types are not yet implemented in the Python bindings.
+
 ### Building the Bindings
 
 With the arbitration graph library installed (see [../README.md](../README.md)), you can build the Python bindings via pip:
