@@ -14,16 +14,18 @@
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
-using namespace arbitration_graphs;
+namespace ag = arbitration_graphs;
 
 inline void bindPriorityArbitrator(py::module& module) {
-    using BehaviorT = Behavior<CommandWrapper>;
+    using Time = ag::Time;
 
-    using ArbitratorT = Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
+    using BehaviorT = typename ArbitratorT::Behavior;
+
     using PriorityArbitratorT =
-        PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+        ag::PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
 
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;

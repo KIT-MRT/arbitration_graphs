@@ -7,17 +7,19 @@
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
-using namespace arbitration_graphs;
+namespace ag = arbitration_graphs;
 
 inline void bindExceptions(py::module& module) {
-    py::register_exception<GetCommandCalledWithoutGainControlError>(module, "GetCommandCalledWithoutGainControlError");
-    py::register_exception<InvocationConditionIsFalseError>(module, "InvocationConditionIsFalseError");
-    py::register_exception<MultipleReferencesToSameInstanceError>(module, "MultipleReferencesToSameInstanceError");
-    py::register_exception<InvalidArgumentsError>(module, "InvalidArgumentsError");
-    py::register_exception<VerificationError>(module, "VerificationError");
-    py::register_exception<NoApplicableOptionPassedVerificationError>(module,
-                                                                      "NoApplicableOptionPassedVerificationError");
-    py::register_exception<ApplicableOptionFailedVerificationError>(module, "ApplicableOptionFailedVerificationError");
+    py::register_exception<ag::GetCommandCalledWithoutGainControlError>(module,
+                                                                        "GetCommandCalledWithoutGainControlError");
+    py::register_exception<ag::InvocationConditionIsFalseError>(module, "InvocationConditionIsFalseError");
+    py::register_exception<ag::MultipleReferencesToSameInstanceError>(module, "MultipleReferencesToSameInstanceError");
+    py::register_exception<ag::InvalidArgumentsError>(module, "InvalidArgumentsError");
+    py::register_exception<ag::VerificationError>(module, "VerificationError");
+    py::register_exception<ag::NoApplicableOptionPassedVerificationError>(module,
+                                                                          "NoApplicableOptionPassedVerificationError");
+    py::register_exception<ag::ApplicableOptionFailedVerificationError>(module,
+                                                                        "ApplicableOptionFailedVerificationError");
 }
 
 } // namespace arbitration_graphs_py
