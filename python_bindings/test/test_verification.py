@@ -1,7 +1,6 @@
 import os
 import time
 import unittest
-import yaml
 
 import arbitration_graphs as ag
 
@@ -137,7 +136,7 @@ class TestCommandVerification(unittest.TestCase):
 
         self.assertEqual(expected_printout, actual_printout)
 
-        yaml_node = yaml.safe_load(test_priority_arbitrator.to_yaml_as_str(self.time))
+        yaml_node = test_priority_arbitrator.to_yaml(self.time)
         self.assertFalse("verificationResult" in yaml_node["options"][0])
         self.assertFalse("verificationResult" in yaml_node["options"][1])
         self.assertTrue("verificationResult" in yaml_node["options"][2])
@@ -231,7 +230,7 @@ class TestCommandVerification(unittest.TestCase):
 
         self.assertEqual(expected_printout, actual_printout)
 
-        yaml_node = yaml.safe_load(test_priority_arbitrator.to_yaml_as_str(self.time))
+        yaml_node = test_priority_arbitrator.to_yaml(self.time)
         self.assertFalse("verificationResult" in yaml_node["options"][0])
         self.assertFalse("verificationResult" in yaml_node["options"][1])
         self.assertTrue("verificationResult" in yaml_node["options"][2])
