@@ -31,10 +31,13 @@ public:
     }
     // NOLINTEND(readability-function-size)
 
-    std::string toYamlAsString(const Time& time) const {
+    py::object toYamlAsPythonObject(const Time& time) const {
         YAML::Emitter out;
         out << BaseT::toYaml(time);
-        return out.c_str();
+        std::string yamlStr = out.c_str();
+
+        py::object yaml = py::module_::import("yaml");
+        return yaml.attr("safe_load")(yamlStr);
     }
 };
 
@@ -58,8 +61,10 @@ inline void bindPriorityArbitrator(py::module& module) {
              py::arg("verifier") = VerifierWrapper())
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
-            "to_yaml_as_str",
-            [](const PyPriorityArbitrator& self, const Time& time) { return self.toYamlAsString(time); },
+            "to_yaml",
+            [](const PyPriorityArbitrator& self, const Time& time) -> py::object {
+                return self.toYamlAsPythonObject(time);
+            },
             py::arg("time"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
 
