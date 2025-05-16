@@ -46,13 +46,3 @@ class DummyBehaviorTest(unittest.TestCase):
         self.assertEqual("dummy_behavior", yaml_node["name"])
         self.assertTrue(yaml_node["invocationCondition"])
         self.assertTrue(yaml_node["commitmentCondition"])
-
-
-if __name__ == "__main__":
-    header = "Running " + os.path.basename(__file__)
-
-    print("=" * len(header))
-    print(header)
-    print("=" * len(header) + "\n")
-    unittest.main(exit=False)
-    print("=" * len(header) + "\n")

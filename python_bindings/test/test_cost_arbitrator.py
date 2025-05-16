@@ -333,13 +333,3 @@ class CostArbitratorTest(unittest.TestCase):
         self.assertTrue(self.test_cost_arbitrator.check_commitment_condition(self.time))
         self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
         self.assertEqual("mid_cost", self.test_cost_arbitrator.get_command(self.time))
-
-
-if __name__ == "__main__":
-    header = "Running " + os.path.basename(__file__)
-
-    print("=" * len(header))
-    print(header)
-    print("=" * len(header) + "\n")
-    unittest.main(exit=False)
-    print("=" * len(header) + "\n")

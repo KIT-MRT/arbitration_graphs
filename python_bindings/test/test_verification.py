@@ -318,13 +318,3 @@ class TestCommandVerification(unittest.TestCase):
 
         with self.assertRaises(ag.NoApplicableOptionPassedVerificationError):
             test_cost_arbitrator.get_command(self.time)
-
-
-if __name__ == "__main__":
-    header = "Running " + os.path.basename(__file__)
-
-    print("=" * len(header))
-    print(header)
-    print("=" * len(header) + "\n")
-    unittest.main(exit=False)
-    print("=" * len(header) + "\n")
