@@ -3,13 +3,14 @@ services:
     build:
       context: .
       target: devel
+    image: arbitration_graphs_pybind_devel
     env_file: .env
     volumes:
       - ..:/home/blinky/arbitration_graphs
 
-  wheel-builder:
+  wheel_builder:
     build:
       context: .
       target: wheel_builder
-    image: arbitration-graphs-wheel-builder
+    image: arbitration_graphs_wheel_builder
 
