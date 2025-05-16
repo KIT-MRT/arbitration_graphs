@@ -14,6 +14,11 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
+/// @brief A thin wrapper class for the VerificationResult to allow the instantiation of the arbitration graph classes.
+/// @details Analogous to the CommandWrapper, this wrapper holds a generic Python object.
+///          A default constructed VerificationResultWrapper will always return true for isOk(), analogous to the
+///          PlaceboResult.
+/// @throws: This wrapper will throw an exception if the Python object does not implement an is_ok() method.
 class VerificationResultWrapper {
 public:
     VerificationResultWrapper() {
@@ -64,6 +69,7 @@ private:
     }
 };
 
+/// @brief Output stream operator utilizing the Python __repr__ or __str__ method of the object.
 inline std::ostream& operator<<(std::ostream& out, const VerificationResultWrapper& result) {
     if (py::hasattr(result.value(), "__repr__")) {
         out << result.value().attr("__repr__")().cast<std::string>();
@@ -79,6 +85,9 @@ inline std::ostream& operator<<(std::ostream& out, const VerificationResultWrapp
     return out;
 }
 
+/// @brief A thin wrapper class for the Verifier analogous to the CommandWrapper and the VerificationResultWrapper.
+/// @throws This wrapper will throw an exception if the Python object does not implement an analyze method that takes a
+/// Time and a Command as arguments and returns a VerificationResult.
 class VerifierWrapper {
 public:
     VerifierWrapper() : verifier_(std::make_shared<py::object>(py::none())) {
@@ -122,6 +131,7 @@ private:
 namespace pybind11 {
 namespace detail {
 
+/// @brief Type caster specialization analogous to the CommandWrapper.
 template <>
 struct type_caster<arbitration_graphs_py::VerificationResultWrapper> {
 public:
@@ -139,6 +149,7 @@ public:
     }
 };
 
+/// @brief Type caster specialization analogous to the CommandWrapper.
 template <>
 struct type_caster<arbitration_graphs_py::VerifierWrapper> {
 public:

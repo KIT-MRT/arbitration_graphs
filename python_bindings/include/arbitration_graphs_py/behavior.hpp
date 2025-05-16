@@ -12,6 +12,7 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 using namespace arbitration_graphs;
 
+/// @brief A wrapper class (a.k.a. trampoline class) for the Behavior class to allow Python overrides
 class PyBehavior : public arbitration_graphs::Behavior<CommandWrapper> {
 public:
     using BaseT = arbitration_graphs::Behavior<CommandWrapper>;
@@ -47,26 +48,29 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
-inline void bindBehavior(py::module& module, const std::string& bindingName = "Behavior") {
+inline void bindBehavior(py::module& module) {
     using BehaviorT = arbitration_graphs::Behavior<CommandWrapper>;
 
-    py::class_<BehaviorT, PyBehavior, std::shared_ptr<BehaviorT>>(module, bindingName.c_str())
-        .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
-        .def(
-            "get_command",
-            [](BehaviorT& self, const Time& time) { return self.getCommand(time).value(); },
-            py::arg("time"))
-        .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
-        .def("check_commitment_condition", &BehaviorT::checkCommitmentCondition, py::arg("time"))
-        .def("gain_control", &BehaviorT::gainControl, py::arg("time"))
-        .def("lose_control", &BehaviorT::loseControl, py::arg("time"))
-        .def("to_str", &BehaviorT::to_str, py::arg("time"), py::arg("prefix") = "", py::arg("suffix") = "")
-        .def(
-            "to_yaml",
-            [](const BehaviorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
-            py::arg("time"))
-        .def_readonly("name", &BehaviorT::name_)
-        .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });
+    py::class_<BehaviorT,                  // The base class
+               PyBehavior,                 // The trampoline class enabling Python overrides
+               std::shared_ptr<BehaviorT>> // The holder type enabling shared ownership
+        (module, "Behavior")
+            .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
+            .def(
+                "get_command",
+                [](BehaviorT& self, const Time& time) { return self.getCommand(time).value(); },
+                py::arg("time"))
+            .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
+            .def("check_commitment_condition", &BehaviorT::checkCommitmentCondition, py::arg("time"))
+            .def("gain_control", &BehaviorT::gainControl, py::arg("time"))
+            .def("lose_control", &BehaviorT::loseControl, py::arg("time"))
+            .def("to_str", &BehaviorT::to_str, py::arg("time"), py::arg("prefix") = "", py::arg("suffix") = "")
+            .def(
+                "to_yaml",
+                [](const BehaviorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
+                py::arg("time"))
+            .def_readonly("name", &BehaviorT::name_)
+            .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });
 }
 
 } // namespace arbitration_graphs_py

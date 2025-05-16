@@ -26,6 +26,9 @@ void bindUtilCaching(py::module& module) {
 }
 } // namespace
 
+///@brief Bindings for the arbitration_graphs library
+///@details This is where it all comes together. The bindings for the individual classes are
+///         created here in the main arbitration_graphs module.
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindExceptions(mainModule);
 
@@ -35,9 +38,10 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindPriorityArbitrator(mainModule);
     bindRandomArbitrator(mainModule);
 
+    // Bind util_caching to be able to access cached verification results
     bindUtilCaching(mainModule);
 
-
+    // Add the __version__ attribute to the module
 #ifdef PROJECT_VERSION
     mainModule.attr("__version__") = MACRO_STRINGIFY(PROJECT_VERSION);
 #else
