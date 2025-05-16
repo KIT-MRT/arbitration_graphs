@@ -14,9 +14,10 @@
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
-using namespace arbitration_graphs;
+namespace ag = arbitration_graphs;
 
-class PyCostEstimator : public CostEstimator<CommandWrapper> {
+/// @brief A wrapper class for the CostEstimator class to allow Python overrides.
+class PyCostEstimator : public ag::CostEstimator<CommandWrapper> {
 public:
     // NOLINTBEGIN(readability-function-size)
     double estimateCost(const CommandWrapper& command, const bool isActive) override {
@@ -27,17 +28,19 @@ public:
 };
 
 inline void bindCostArbitrator(py::module& module) {
-    using BehaviorT = Behavior<CommandWrapper>;
+    using Time = ag::Time;
 
-    using ArbitratorT = Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
-    using CostArbitratorT = CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using BehaviorT = typename ArbitratorT::Behavior;
+
+    using CostArbitratorT =
+        ag::CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using CostEstimatorT = ag::CostEstimator<CommandWrapper>;
 
     using OptionT = typename CostArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
-
-    using CostEstimatorT = CostEstimator<CommandWrapper>;
 
     py::class_<CostEstimatorT, PyCostEstimator, std::shared_ptr<CostEstimatorT>>(module, "CostEstimator")
         .def(py::init<>());

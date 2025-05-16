@@ -7,10 +7,9 @@
 namespace arbitration_graphs_py::yaml_helper {
 
 namespace py = pybind11;
-using namespace arbitration_graphs;
 
 template <typename BaseT>
-inline py::object toYamlAsPythonObject(const BaseT& base, const Time& time) {
+inline py::object toYamlAsPythonObject(const BaseT& base, const arbitration_graphs::Time& time) {
     YAML::Emitter out;
     out << base.toYaml(time);
     std::string yamlStr = out.c_str();
