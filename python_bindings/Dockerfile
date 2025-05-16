@@ -27,6 +27,7 @@ USER blinky
 
 WORKDIR /home/blinky/
 
+
 # ==========
 # Unit tests
 # ==========
@@ -50,7 +51,6 @@ CMD ["python3", "-m", "unittest", "discover", "-s", "test"]
 # =============
 # Wheel builder
 # =============
-
 
 FROM quay.io/pypa/manylinux_2_28_x86_64 AS wheel_builder
 
