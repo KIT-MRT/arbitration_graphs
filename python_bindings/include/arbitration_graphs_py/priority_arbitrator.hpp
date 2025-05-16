@@ -16,23 +16,6 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 using namespace arbitration_graphs;
 
-class PyPriorityArbitrator
-        : public PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper> {
-public:
-    using BaseT = PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
-
-    explicit PyPriorityArbitrator(const std::string& name, const VerifierWrapper& verifier = VerifierWrapper())
-            : BaseT(name, verifier) {
-    }
-
-    // NOLINTBEGIN(readability-function-size)
-    void addOption(const typename BaseT::Behavior::Ptr& behavior,
-                   const typename BaseT::Option::FlagsT& flags) override {
-        PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags);
-    }
-    // NOLINTEND(readability-function-size)
-};
-
 inline void bindPriorityArbitrator(py::module& module) {
     using BehaviorT = Behavior<CommandWrapper>;
 
@@ -45,8 +28,8 @@ inline void bindPriorityArbitrator(py::module& module) {
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    py::class_<PriorityArbitratorT, ArbitratorT, PyPriorityArbitrator, std::shared_ptr<PriorityArbitratorT>>
-        priorityArbitrator(module, "PriorityArbitrator");
+    py::class_<PriorityArbitratorT, ArbitratorT, std::shared_ptr<PriorityArbitratorT>> priorityArbitrator(
+        module, "PriorityArbitrator");
     priorityArbitrator
         .def(py::init<const std::string&, const VerifierWrapper&>(),
              py::arg("name") = "PriorityArbitrator",
@@ -69,6 +52,5 @@ inline void bindPriorityArbitrator(py::module& module) {
         .value("FALLBACK", OptionT::FALLBACK)
         .export_values();
 }
-
 
 } // namespace arbitration_graphs_py
