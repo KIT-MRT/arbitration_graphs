@@ -182,13 +182,3 @@ class NestedArbitratorsTest(unittest.TestCase):
 
         self.assertTrue("activeBehavior" in yaml_node["options"][0]["behavior"])
         self.assertEqual(1, yaml_node["options"][0]["behavior"]["activeBehavior"])
-
-
-if __name__ == "__main__":
-    header = "Running " + os.path.basename(__file__)
-
-    print("=" * len(header))
-    print(header)
-    print("=" * len(header) + "\n")
-    unittest.main(exit=False)
-    print("=" * len(header) + "\n")
