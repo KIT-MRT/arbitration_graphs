@@ -5,6 +5,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "command_wrapper.hpp"
+#include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
 
@@ -44,12 +45,6 @@ public:
         PYBIND11_OVERRIDE(std::string, BaseT, to_str, time, prefix, suffix);
     }
     // NOLINTEND(readability-function-size)
-
-    std::string toYamlAsString(const Time& time) const {
-        YAML::Emitter out;
-        out << BaseT::toYaml(time);
-        return out.c_str();
-    }
 };
 
 inline void bindBehavior(py::module& module, const std::string& bindingName = "Behavior") {
@@ -67,8 +62,8 @@ inline void bindBehavior(py::module& module, const std::string& bindingName = "B
         .def("lose_control", &BehaviorT::loseControl, py::arg("time"))
         .def("to_str", &BehaviorT::to_str, py::arg("time"), py::arg("prefix") = "", py::arg("suffix") = "")
         .def(
-            "to_yaml_as_str",
-            [](const PyBehavior& self, const Time& time) { return self.toYamlAsString(time); },
+            "to_yaml",
+            [](const BehaviorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
             py::arg("time"))
         .def_readonly("name", &BehaviorT::name_)
         .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });

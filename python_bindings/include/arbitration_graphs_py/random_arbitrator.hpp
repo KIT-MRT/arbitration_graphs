@@ -9,6 +9,7 @@
 
 #include "command_wrapper.hpp"
 #include "verification_wrapper.hpp"
+#include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
 
@@ -31,12 +32,6 @@ public:
         PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags, weight);
     }
     // NOLINTEND(readability-function-size)
-
-    std::string toYamlAsString(const Time& time) const {
-        YAML::Emitter out;
-        out << BaseT::toYaml(time);
-        return out.c_str();
-    }
 };
 
 inline void bindRandomArbitrator(py::module& module) {
@@ -59,8 +54,10 @@ inline void bindRandomArbitrator(py::module& module) {
              py::arg("verifier") = VerifierWrapper())
         .def("add_option", &RandomArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("weight") = 1)
         .def(
-            "to_yaml_as_str",
-            [](const PyRandomArbitrator& self, const Time& time) { return self.toYamlAsString(time); },
+            "to_yaml",
+            [](const RandomArbitratorT& self, const Time& time) {
+                return yaml_helper::toYamlAsPythonObject(self, time);
+            },
             py::arg("time"))
         .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name_ + "'>"; });
 
