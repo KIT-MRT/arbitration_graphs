@@ -31,6 +31,8 @@
   Easily follow and understand the decision-making process, e.g., with our GUI.
 - 📦 **Header-Only**  
   Simple integration – just include this header-only C++17 library!
+- 🐍 **Python Bindings**  
+  For easy prototyping, testing, and integration of machine learning algorithms, all the functionality is available via Python bindings.
 - 📜 **Permissive License**  
   Published under MIT license to ensure maximum flexibility for your projects.
 
@@ -210,6 +212,10 @@ In order to skip compiling the GUI, use `cmake -DBUILD_GUI=false ..` instead.
 
 </details>
 
+## Python Bindings
+
+The library provides a Python interface via [pybind11](https://pybind11.readthedocs.io).
+See [`python_bindings/README.md`](python_bindings/README.md) for details on how to install and use the arbitration_graphs Python package.
 
 ## Development
 
