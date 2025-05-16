@@ -16,7 +16,7 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 namespace ag = arbitration_graphs;
 
-/// @brief A wrapper class for the CostEstimator class to allow Python overrides.
+/// @brief A wrapper class (a.k.a. trampoline class) for the CostEstimator class to allow Python overrides.
 class PyCostEstimator : public ag::CostEstimator<CommandWrapper> {
 public:
     // NOLINTBEGIN(readability-function-size)

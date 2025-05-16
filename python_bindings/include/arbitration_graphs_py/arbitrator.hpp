@@ -21,7 +21,10 @@ inline void bindArbitrator(py::module& module) {
     using OptionT = typename ArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    py::class_<ArbitratorT, BehaviorT, std::shared_ptr<ArbitratorT>> arbitrator(module, "Arbitrator");
+    py::class_<ArbitratorT,                  // The derived class we want to bind
+               BehaviorT,                    // The base class
+               std::shared_ptr<ArbitratorT>> // The holder type enabling shared ownership
+        arbitrator(module, "Arbitrator");
     arbitrator.def("add_option", &ArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def("options", &ArbitratorT::options)
         .def("check_invocation_condition", &ArbitratorT::checkInvocationCondition, py::arg("time"))

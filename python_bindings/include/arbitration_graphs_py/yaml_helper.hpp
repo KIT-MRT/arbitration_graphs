@@ -8,10 +8,13 @@ namespace arbitration_graphs_py::yaml_helper {
 
 namespace py = pybind11;
 
-template <typename BaseT>
-inline py::object toYamlAsPythonObject(const BaseT& base, const arbitration_graphs::Time& time) {
+/// @brief Extracts a python YAML representation of the given object.
+/// @tparam YamlRepresentableT Object type to convert to YAML. Must implement the toYaml(const Time&) method.
+template <typename YamlRepresentableT>
+inline py::object toYamlAsPythonObject(const YamlRepresentableT& yamlRepresentable,
+                                       const arbitration_graphs::Time& time) {
     YAML::Emitter out;
-    out << base.toYaml(time);
+    out << yamlRepresentable.toYaml(time);
     std::string yamlStr = out.c_str();
 
     py::object yaml = py::module_::import("yaml");
