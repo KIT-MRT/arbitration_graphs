@@ -9,6 +9,7 @@
 
 #include "command_wrapper.hpp"
 #include "verification_wrapper.hpp"
+#include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
 
@@ -30,15 +31,6 @@ public:
         PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags);
     }
     // NOLINTEND(readability-function-size)
-
-    py::object toYamlAsPythonObject(const Time& time) const {
-        YAML::Emitter out;
-        out << BaseT::toYaml(time);
-        std::string yamlStr = out.c_str();
-
-        py::object yaml = py::module_::import("yaml");
-        return yaml.attr("safe_load")(yamlStr);
-    }
 };
 
 inline void bindPriorityArbitrator(py::module& module) {
@@ -62,8 +54,8 @@ inline void bindPriorityArbitrator(py::module& module) {
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
             "to_yaml",
-            [](const PyPriorityArbitrator& self, const Time& time) -> py::object {
-                return self.toYamlAsPythonObject(time);
+            [](const PriorityArbitratorT& self, const Time& time) -> py::object {
+                return yaml_helper::toYamlAsPythonObject(self, time);
             },
             py::arg("time"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
