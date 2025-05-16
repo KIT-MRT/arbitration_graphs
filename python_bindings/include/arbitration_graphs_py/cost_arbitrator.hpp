@@ -26,40 +26,6 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
-class PyCostArbitratorOption
-        : public CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>::Option {
-public:
-    using BaseT =
-        typename CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>::Option;
-    using FlagsT = typename BaseT::FlagsT;
-    using CostEstimatorT = CostEstimator<CommandWrapper>;
-
-    explicit PyCostArbitratorOption(const typename Behavior<CommandWrapper>::Ptr& behavior,
-                                    const FlagsT& flags,
-                                    const typename CostEstimatorT::Ptr& costEstimator)
-            : BaseT(behavior, flags, costEstimator) {
-    }
-};
-
-class PyCostArbitrator
-        : public CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper> {
-public:
-    using BaseT = CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
-    using CostEstimatorT = CostEstimator<CommandWrapper>;
-
-    explicit PyCostArbitrator(const std::string& name, const VerifierWrapper& verifier = VerifierWrapper())
-            : BaseT(name, verifier) {
-    }
-
-    // NOLINTBEGIN(readability-function-size)
-    void addOption(const typename BaseT::Behavior::Ptr& behavior,
-                   const typename BaseT::Option::FlagsT& flags,
-                   const typename CostEstimator<CommandWrapper>::Ptr& costEstimator) {
-        PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags, costEstimator);
-    }
-    // NOLINTEND(readability-function-size)
-};
-
 inline void bindCostArbitrator(py::module& module) {
     using BehaviorT = Behavior<CommandWrapper>;
 
@@ -69,7 +35,6 @@ inline void bindCostArbitrator(py::module& module) {
     using CostArbitratorT = CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
 
     using OptionT = typename CostArbitratorT::Option;
-    using PyOptionT = PyCostArbitratorOption;
     using FlagsT = typename OptionT::FlagsT;
 
     using CostEstimatorT = CostEstimator<CommandWrapper>;
@@ -77,8 +42,7 @@ inline void bindCostArbitrator(py::module& module) {
     py::class_<CostEstimatorT, PyCostEstimator, std::shared_ptr<CostEstimatorT>>(module, "CostEstimator")
         .def(py::init<>());
 
-    py::class_<CostArbitratorT, ArbitratorT, PyCostArbitrator, std::shared_ptr<CostArbitratorT>> costArbitrator(
-        module, "CostArbitrator");
+    py::class_<CostArbitratorT, ArbitratorT, std::shared_ptr<CostArbitratorT>> costArbitrator(module, "CostArbitrator");
     costArbitrator
         .def(py::init<const std::string&, const VerifierWrapper&>(),
              py::arg("name") = "CostArbitrator",
@@ -91,7 +55,7 @@ inline void bindCostArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, PyOptionT, std::shared_ptr<OptionT>> option(costArbitrator, "Option");
+    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(costArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
                py::arg("behavior"),
                py::arg("flags"),

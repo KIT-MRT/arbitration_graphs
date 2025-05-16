@@ -16,24 +16,6 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 using namespace arbitration_graphs;
 
-class PyRandomArbitrator
-        : public RandomArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper> {
-public:
-    using BaseT = RandomArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
-
-    explicit PyRandomArbitrator(const std::string& name, const VerifierWrapper& verifier = VerifierWrapper())
-            : BaseT(name, verifier) {
-    }
-
-    // NOLINTBEGIN(readability-function-size)
-    void addOption(const typename BaseT::Behavior::Ptr& behavior,
-                   const typename BaseT::Option::FlagsT& flags,
-                   const double& weight = 1) {
-        PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags, weight);
-    }
-    // NOLINTEND(readability-function-size)
-};
-
 inline void bindRandomArbitrator(py::module& module) {
     using BehaviorT = Behavior<CommandWrapper>;
 
@@ -46,8 +28,8 @@ inline void bindRandomArbitrator(py::module& module) {
     using OptionT = typename RandomArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    py::class_<RandomArbitratorT, ArbitratorT, PyRandomArbitrator, std::shared_ptr<RandomArbitratorT>> randomArbitrator(
-        module, "RandomArbitrator");
+    py::class_<RandomArbitratorT, ArbitratorT, std::shared_ptr<RandomArbitratorT>> randomArbitrator(module,
+                                                                                                    "RandomArbitrator");
     randomArbitrator
         .def(py::init<const std::string&, const VerifierWrapper&>(),
              py::arg("name") = "RandomArbitrator",
