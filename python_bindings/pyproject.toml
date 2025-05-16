@@ -16,6 +16,9 @@ maintainers = [
   { name = "Nick Le Large" },
 ]
 description="Hierarchical behavior models for complex decision-making and behavior generation in robotics"
+dependencies = [
+  "pyyaml",
+]
 readme = ".README.md"
 license = { text = "MIT" }
 keywords = ["robotics", "decision-making", "behavior generation", "hierarchical behavior models"]
