@@ -9,6 +9,7 @@
 
 #include "command_wrapper.hpp"
 #include "verification_wrapper.hpp"
+#include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
 
@@ -38,12 +39,6 @@ public:
                                     const typename CostEstimatorT::Ptr& costEstimator)
             : BaseT(behavior, flags, costEstimator) {
     }
-
-    std::string toYamlAsString(const Time& time) const {
-        YAML::Emitter out;
-        out << BaseT::toYaml(time);
-        return out.c_str();
-    }
 };
 
 class PyCostArbitrator
@@ -63,12 +58,6 @@ public:
         PYBIND11_OVERRIDE_NAME(void, BaseT, "add_option", addOption, behavior, flags, costEstimator);
     }
     // NOLINTEND(readability-function-size)
-
-    std::string toYamlAsString(const Time& time) const {
-        YAML::Emitter out;
-        out << BaseT::toYaml(time);
-        return out.c_str();
-    }
 };
 
 inline void bindCostArbitrator(py::module& module) {
@@ -97,8 +86,8 @@ inline void bindCostArbitrator(py::module& module) {
         .def(
             "add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("cost_estimator"))
         .def(
-            "to_yaml_as_str",
-            [](const PyCostArbitrator& self, const Time& time) { return self.toYamlAsString(time); },
+            "to_yaml",
+            [](const CostArbitratorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
             py::arg("time"))
         .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
 
