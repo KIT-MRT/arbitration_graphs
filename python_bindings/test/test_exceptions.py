@@ -1,7 +1,6 @@
 import os
 import time
 import unittest
-import yaml
 
 import arbitration_graphs as ag
 
@@ -9,7 +8,6 @@ from dummy_types import BrokenDummyBehavior, DummyBehavior
 
 
 class TestExceptionHandling(unittest.TestCase):
-
     def setUp(self):
         self.test_behavior_high_priority = BrokenDummyBehavior(
             True, True, "HighPriority"

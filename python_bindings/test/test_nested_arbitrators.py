@@ -1,7 +1,6 @@
 import os
 import time
 import unittest
-import yaml
 
 import arbitration_graphs as ag
 
@@ -129,9 +128,7 @@ class NestedArbitratorsTest(unittest.TestCase):
             ag.PriorityArbitrator.Option.Flags.NO_FLAGS,
         )
 
-        yaml_node = yaml.safe_load(
-            self.test_root_priority_arbitrator.to_yaml_as_str(self.time)
-        )
+        yaml_node = self.test_root_priority_arbitrator.to_yaml(self.time)
 
         self.assertEqual("PriorityArbitrator", yaml_node["type"])
         self.assertEqual("root priority arbitrator", yaml_node["name"])
@@ -175,9 +172,7 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.test_priority_arbitrator.gain_control(self.time)
         self.test_root_priority_arbitrator.get_command(self.time)
 
-        yaml_node = yaml.safe_load(
-            self.test_root_priority_arbitrator.to_yaml_as_str(self.time)
-        )
+        yaml_node = self.test_root_priority_arbitrator.to_yaml(self.time)
 
         self.assertTrue(yaml_node["invocationCondition"])
         self.assertTrue(yaml_node["commitmentCondition"])

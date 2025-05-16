@@ -1,7 +1,6 @@
 import os
 import time
 import unittest
-import yaml
 
 from collections import defaultdict
 
@@ -154,9 +153,7 @@ class TestRandomArbitrator(unittest.TestCase):
             self.test_behavior_low_weight, NO_FLAGS, 0
         )
 
-        yaml_node = yaml.safe_load(
-            self.test_random_arbitrator.to_yaml_as_str(self.time)
-        )
+        yaml_node = self.test_random_arbitrator.to_yaml(self.time)
 
         self.assertEqual("RandomArbitrator", yaml_node["type"])
         self.assertEqual("RandomArbitrator", yaml_node["name"])
@@ -185,9 +182,7 @@ class TestRandomArbitrator(unittest.TestCase):
         self.test_random_arbitrator.gain_control(self.time)
         self.test_random_arbitrator.get_command(self.time)
 
-        yaml_node = yaml.safe_load(
-            self.test_random_arbitrator.to_yaml_as_str(self.time)
-        )
+        yaml_node = self.test_random_arbitrator.to_yaml(self.time)
 
         self.assertEqual(True, yaml_node["invocationCondition"])
         self.assertEqual(True, yaml_node["commitmentCondition"])

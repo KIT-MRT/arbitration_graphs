@@ -2,8 +2,6 @@ import os
 import time
 import unittest
 
-import yaml
-
 import arbitration_graphs as ag
 from dummy_types import DummyBehavior, DummyCommand, PrintStrings
 from cost_estimator import CostEstimatorFromCostMap
@@ -170,7 +168,7 @@ class CostArbitratorTest(unittest.TestCase):
             self.cost_estimator,
         )
 
-        yaml_node = yaml.safe_load(self.test_cost_arbitrator.to_yaml_as_str(self.time))
+        yaml_node = self.test_cost_arbitrator.to_yaml(self.time)
 
         self.assertEqual("CostArbitrator", yaml_node["type"])
         self.assertEqual("CostArbitrator", yaml_node["name"])
@@ -201,7 +199,7 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.gain_control(self.time)
         self.test_cost_arbitrator.get_command(self.time)
 
-        yaml_node = yaml.safe_load(self.test_cost_arbitrator.to_yaml_as_str(self.time))
+        yaml_node = self.test_cost_arbitrator.to_yaml(self.time)
 
         self.assertTrue(yaml_node["invocationCondition"])
         self.assertTrue(yaml_node["commitmentCondition"])

@@ -2,8 +2,6 @@ import os
 import time
 import unittest
 
-import yaml
-
 import arbitration_graphs as ag
 from dummy_types import DummyBehavior, DummyCommand, PrintStrings
 
@@ -42,7 +40,7 @@ class DummyBehaviorTest(unittest.TestCase):
         self.assertEqual(expected_printout, actual_printout)
 
     def test_to_yaml(self):
-        yaml_node = yaml.safe_load(self.test_behavior_true.to_yaml_as_str(self.time))
+        yaml_node = self.test_behavior_true.to_yaml(self.time)
 
         self.assertEqual("Behavior", yaml_node["type"])
         self.assertEqual("dummy_behavior", yaml_node["name"])
