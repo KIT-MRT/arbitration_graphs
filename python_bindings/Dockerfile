@@ -35,7 +35,7 @@ WORKDIR /home/blinky/
 FROM base AS unit_test
 
 COPY CMakeLists.txt /tmp/arbitration_graphs/
-COPY .README.md /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
 COPY pyproject.toml /tmp/arbitration_graphs/
 COPY version /tmp/arbitration_graphs/
 COPY include /tmp/arbitration_graphs/include
