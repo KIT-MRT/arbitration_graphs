@@ -19,7 +19,7 @@ description="Hierarchical behavior models for complex decision-making and behavi
 dependencies = [
   "pyyaml",
 ]
-readme = ".README.md"
+readme = "README.md"
 license = { text = "MIT" }
 keywords = ["robotics", "decision-making", "behavior generation", "hierarchical behavior models"]
 
