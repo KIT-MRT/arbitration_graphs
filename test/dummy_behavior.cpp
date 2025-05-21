@@ -52,30 +52,31 @@ using namespace arbitration_graphs_tests;
 class DummyBehaviorTest : public ::testing::Test {
 protected:
     DummyBehavior testBehaviorTrue{true, true};
+    DummyEnvironmentModel environmentModel;
 
-    DummyCommand expected_command{"DummyBehavior"};
+    DummyCommand expected_command{"DummyBehavior using RobotState"};
 
     Time time{Clock::now()};
 };
 
 TEST_F(DummyBehaviorTest, BasicInterface) {
-    EXPECT_EQ(expected_command, testBehaviorTrue.getCommand(time));
-    EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition(time));
-    EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition(time));
-    EXPECT_NO_THROW(testBehaviorTrue.gainControl(time));
-    EXPECT_NO_THROW(testBehaviorTrue.loseControl(time));
+    EXPECT_EQ(expected_command, testBehaviorTrue.getCommand(time, environmentModel));
+    EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition(time, environmentModel));
+    EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition(time, environmentModel));
+    EXPECT_NO_THROW(testBehaviorTrue.gainControl(time, environmentModel));
+    EXPECT_NO_THROW(testBehaviorTrue.loseControl(time, environmentModel));
 }
 
 TEST_F(DummyBehaviorTest, Printout) {
     const std::string expected_printout = invocationTrueString + commitmentTrueString + "DummyBehavior";
-    std::string actual_printout = testBehaviorTrue.to_str(time);
+    std::string actual_printout = testBehaviorTrue.to_str(time, environmentModel);
     std::cout << actual_printout << std::endl;
 
     EXPECT_EQ(expected_printout, actual_printout);
 }
 
 TEST_F(DummyBehaviorTest, ToYaml) {
-    YAML::Node yaml = testBehaviorTrue.toYaml(time);
+    YAML::Node yaml = testBehaviorTrue.toYaml(time, environmentModel);
 
     EXPECT_EQ("Behavior", yaml["type"].as<std::string>());
     EXPECT_EQ("DummyBehavior", yaml["name"].as<std::string>());

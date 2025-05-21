@@ -37,24 +37,28 @@ bool operator==(const int command_int, const DummyCommandInt& command_object) {
     return command_int == command_object.command_;
 }
 
-class DummyBehavior : public Behavior<DummyCommand> {
+struct DummyEnvironmentModel {
+    std::string state_{"RobotState"};
+};
+
+class DummyBehavior : public Behavior<DummyCommand, DummyEnvironmentModel> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
-    DummyCommand getCommand(const Time& time) override {
+    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
         getCommandCounter_++;
-        return name_;
+        return name_ + " using " + environmentModel.state_;
     }
-    bool checkInvocationCondition(const Time& time) const override {
+    bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
         return invocationCondition_;
     }
-    bool checkCommitmentCondition(const Time& time) const override {
+    bool checkCommitmentCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
         return commitmentCondition_;
     }
-    virtual void loseControl(const Time& time) override {
+    virtual void loseControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
         loseControlCounter_++;
     }
 
@@ -72,13 +76,13 @@ public:
                         int numGetCommandsUntilThrow = 0)
             : DummyBehavior(invocation, commitment, name), numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
 
-    DummyCommand getCommand(const Time& time) override {
+    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
         if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
             throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
         }
 
         getCommandCounter_++;
-        return name_;
+        return name_ + " using " + environmentModel.state_;
     }
 
 private:
