@@ -10,37 +10,37 @@
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
-using namespace arbitration_graphs;
+namespace ag = arbitration_graphs;
 
 /// @brief A wrapper class (a.k.a. trampoline class) for the Behavior class to allow Python overrides
-class PyBehavior : public arbitration_graphs::Behavior<CommandWrapper> {
+class PyBehavior : public ag::Behavior<CommandWrapper> {
 public:
-    using BaseT = arbitration_graphs::Behavior<CommandWrapper>;
+    using BaseT = ag::Behavior<CommandWrapper>;
 
     using Behavior::Behavior;
 
     // NOLINTBEGIN(readability-function-size)
-    CommandWrapper getCommand(const Time& time) override {
+    CommandWrapper getCommand(const ag::Time& time) override {
         PYBIND11_OVERRIDE_PURE_NAME(CommandWrapper, BaseT, "get_command", getCommand, time);
     }
 
-    bool checkInvocationCondition(const Time& time) const override {
+    bool checkInvocationCondition(const ag::Time& time) const override {
         PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_invocation_condition", checkInvocationCondition, time);
     }
 
-    bool checkCommitmentCondition(const Time& time) const override {
+    bool checkCommitmentCondition(const ag::Time& time) const override {
         PYBIND11_OVERRIDE_NAME(bool, BaseT, "check_commitment_condition", checkCommitmentCondition, time);
     }
 
-    void gainControl(const Time& time) override {
+    void gainControl(const ag::Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "gain_control", gainControl, time);
     }
 
-    void loseControl(const Time& time) override {
+    void loseControl(const ag::Time& time) override {
         PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time);
     }
 
-    std::string to_str(const Time& time,
+    std::string to_str(const ag::Time& time,
                        const std::string& prefix = "",
                        const std::string& suffix = "") const override {
         PYBIND11_OVERRIDE(std::string, BaseT, to_str, time, prefix, suffix);
@@ -49,7 +49,7 @@ public:
 };
 
 inline void bindBehavior(py::module& module) {
-    using BehaviorT = arbitration_graphs::Behavior<CommandWrapper>;
+    using BehaviorT = ag::Behavior<CommandWrapper>;
 
     py::class_<BehaviorT,                  // The base class
                PyBehavior,                 // The trampoline class enabling Python overrides
@@ -58,7 +58,7 @@ inline void bindBehavior(py::module& module) {
             .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
             .def(
                 "get_command",
-                [](BehaviorT& self, const Time& time) { return self.getCommand(time).value(); },
+                [](BehaviorT& self, const ag::Time& time) { return self.getCommand(time).value(); },
                 py::arg("time"))
             .def("check_invocation_condition", &BehaviorT::checkInvocationCondition, py::arg("time"))
             .def("check_commitment_condition", &BehaviorT::checkCommitmentCondition, py::arg("time"))
@@ -67,7 +67,9 @@ inline void bindBehavior(py::module& module) {
             .def("to_str", &BehaviorT::to_str, py::arg("time"), py::arg("prefix") = "", py::arg("suffix") = "")
             .def(
                 "to_yaml",
-                [](const BehaviorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
+                [](const BehaviorT& self, const ag::Time& time) {
+                    return yaml_helper::toYamlAsPythonObject(self, time);
+                },
                 py::arg("time"))
             .def_readonly("name", &BehaviorT::name_)
             .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });

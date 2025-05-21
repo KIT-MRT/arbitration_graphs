@@ -18,6 +18,8 @@ namespace arbitration_graphs_py {
 
 namespace {
 void bindUtilCaching(py::module& module) {
+    using Time = arbitration_graphs::Time;
+
     py::module utilCaching = module.def_submodule("util_caching");
     using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
     util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
