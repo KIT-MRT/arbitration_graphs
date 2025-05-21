@@ -21,10 +21,6 @@ public:
     explicit CommandWrapper(py::object command) : command_{std::make_shared<py::object>(std::move(command))} {
     }
 
-    CommandWrapper& operator&=(const CommandWrapper& /*command*/) {
-        throw std::runtime_error("This operator is not implemented");
-    }
-
     py::object value() const {
         if (!command_) {
             throw std::runtime_error("CommandWrapper is not initialized");
