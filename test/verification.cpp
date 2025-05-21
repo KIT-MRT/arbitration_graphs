@@ -246,7 +246,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     std::string expectedPrintout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
                         "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
                         "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    - (cost: 0.500) " + strikeThroughOn
+                        "    - (cost:  n.a.) " + strikeThroughOn
                                   + invocationTrueString + commitmentFalseString + "MidPriority"
                                   + strikeThroughOff + "\n"
                         " -> - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "LowPriority";

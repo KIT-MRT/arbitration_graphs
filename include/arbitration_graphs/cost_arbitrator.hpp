@@ -116,14 +116,19 @@ private:
 
             const bool isActive = this->isActive(option);
 
-            double cost;
+            std::optional<SubCommandT> command;
             if (isActive) {
-                cost = option->costEstimator_->estimateCost(option->getCommand(time), isActive);
+                command = this->getAndVerifyCommand(option, time);
             } else {
                 option->behavior_->gainControl(time);
-                cost = option->costEstimator_->estimateCost(option->getCommand(time), isActive);
+                command = this->getAndVerifyCommand(option, time);
                 option->behavior_->loseControl(time);
             }
+            if (!command) {
+                continue;
+            }
+
+            double cost = option->costEstimator_->estimateCost(command.value(), isActive);
             option->last_estimated_cost_ = cost;
             sortedOptionsMap.insert({cost, option});
         }

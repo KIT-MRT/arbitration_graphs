@@ -68,6 +68,11 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
         option->verificationResult_.reset();
 
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
+    } catch (const std::exception& e) {
+        // Catch all other exceptions and cache failed verification result
+        option->verificationResult_.cache(time, VerificationResultT{false});
+        VLOG(1) << "Given option " << option->behavior_->name_
+                << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
     return std::nullopt;
 }
@@ -109,17 +114,9 @@ SubCommandT Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::g
         }
         // otherwise we have bestOption == activeBehavior_ which already gained control
 
-        // an arbitrator as option might not return a command, if its applicable options fail verification:
-        std::optional<SubCommandT> command;
-        try {
-            command = getAndVerifyCommand(bestOption, time);
-        } catch (const std::exception& e) {
-            VLOG(1) << bestOption->behavior_->name_ << " threw an exception during getAndVerifyCommand(): " << e.what();
-            bestOption->verificationResult_.cache(time, VerificationResultT{false});
-            bestOption->behavior_->loseControl(time);
-            continue;
-        }
-
+        // an arbitrator as option might not return a command,
+        // if its applicable options fail verification or throw an exception:
+        const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time);
         if (command) {
             if (activeBehavior_ && bestOption != activeBehavior_) {
                 // finally, prevent two behaviors from having control
