@@ -298,7 +298,7 @@ class TestCommandVerification(unittest.TestCase):
             ps.invocation_true + ps.commitment_true + "CostArbitrator\n"
             "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
             "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    - (cost: 0.500) " + ps.strike_through_on
+            "    - (cost:  n.a.) " + ps.strike_through_on
                                    + ps.invocation_true + ps.commitment_false + "MidPriority"
                                    + ps.strike_through_off + "\n"
             " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
