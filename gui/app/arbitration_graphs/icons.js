@@ -14,10 +14,6 @@ let iconRandomComponent = {
     name: 'icon-random',
     template: '#icon-random-template'
 }
-let iconMergingComponent = {
-    name: 'icon-merging',
-    template: '#icon-merging-template'
-}
 let iconFailedComponent = {
     name: 'icon-failed',
     template: '#icon-failed-template'
