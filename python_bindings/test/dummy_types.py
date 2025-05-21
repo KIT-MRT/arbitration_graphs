@@ -39,12 +39,22 @@ class DummyBehavior(Behavior):
 
 class BrokenDummyBehavior(DummyBehavior):
     def __init__(
-        self, invocation: bool, commitment: bool, name: str = "dummy_behavior"
+        self,
+        invocation: bool,
+        commitment: bool,
+        name: str = "broken_dummy_behavior",
+        num_get_commands_until_raise: int = 0,
     ):
         super().__init__(invocation, commitment, name)
+        self.num_get_commands_until_raise = num_get_commands_until_raise
+        self.get_command_counter = 0
 
     def get_command(self, time):
-        raise Exception("BrokenDummyBehavior::getCommand() is broken")
+        if self.get_command_counter >= self.num_get_commands_until_raise:
+            raise Exception("BrokenDummyBehavior::getCommand() is broken")
+
+        self.get_command_counter += 1
+        return self.name
 
 
 class DummyResult:
