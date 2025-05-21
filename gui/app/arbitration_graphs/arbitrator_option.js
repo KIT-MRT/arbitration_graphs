@@ -6,7 +6,6 @@ let ArbitratorOptionComponent = {
         'icon-sequence': iconSequenceComponent,
         'icon-cost': iconCostComponent,
         'icon-random': iconRandomComponent,
-        'icon-merging': iconMergingComponent,
         'icon-failed': iconFailedComponent,
         'icon-delayed': iconDelayedComponent,
         'icon-reboot': iconRebootComponent,
