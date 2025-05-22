@@ -10,13 +10,10 @@
 
 namespace arbitration_graphs {
 
-template <typename CommandT,
-          typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
-          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+template <typename CommandT, typename SubCommandT = CommandT>
+class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<CommandT, SubCommandT>;
 
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
@@ -52,8 +49,10 @@ public:
                                         const std::string& suffix = "") const;
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
-            : ArbitratorBase(name, verifier){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator",
+                       typename verification::AbstractVerifier<SubCommandT>::Ptr verifier =
+                           std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+            : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
