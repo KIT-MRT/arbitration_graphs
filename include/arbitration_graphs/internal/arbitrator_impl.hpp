@@ -3,16 +3,14 @@
 #include "../arbitrator.hpp"
 
 #include <glog/logging.h>
+#include "verification.hpp"
 
 
 namespace arbitration_graphs {
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-typename Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Options Arbitrator<
-    CommandT,
-    SubCommandT,
-    VerifierT,
-    VerificationResultT>::applicableOptions(const Time& time) const {
+template <typename CommandT, typename SubCommandT>
+typename Arbitrator<CommandT, SubCommandT>::Options Arbitrator<CommandT, SubCommandT>::applicableOptions(
+    const Time& time) const {
 
     Options options;
     std::copy_if(behaviorOptions_.begin(),
@@ -22,22 +20,19 @@ typename Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Opti
     return options;
 };
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-bool Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::isActive(
-    const typename Option::Ptr& option) const {
+template <typename CommandT, typename SubCommandT>
+bool Arbitrator<CommandT, SubCommandT>::isActive(const typename Option::Ptr& option) const {
     return activeBehavior_ && option == activeBehavior_;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-bool Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::isApplicable(const typename Option::Ptr& option,
-                                                                                     const Time& time) const {
+template <typename CommandT, typename SubCommandT>
+bool Arbitrator<CommandT, SubCommandT>::isApplicable(const typename Option::Ptr& option, const Time& time) const {
     const bool isActiveAndCanBeContinued = isActive(option) && option->behavior_->checkCommitmentCondition(time);
     return isActiveAndCanBeContinued || option->behavior_->checkInvocationCondition(time);
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::size_t Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::getOptionIndex(
-    const typename Option::ConstPtr& behaviorOption) const {
+template <typename CommandT, typename SubCommandT>
+std::size_t Arbitrator<CommandT, SubCommandT>::getOptionIndex(const typename Option::ConstPtr& behaviorOption) const {
     const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
 
     if (it != behaviorOptions_.end()) {
@@ -47,17 +42,17 @@ std::size_t Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::g
         "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::getAndVerifyCommand(
-    const typename Option::Ptr& option, const Time& time) const {
+template <typename CommandT, typename SubCommandT>
+std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT>::getAndVerifyCommand(const typename Option::Ptr& option,
+                                                                                  const Time& time) const {
     try {
         const SubCommandT command = option->getCommand(time);
 
-        const VerificationResultT verificationResult = verifier_.analyze(time, command);
+        verification::AbstractResult::Ptr verificationResult = verifier_->analyze(time, command);
         option->verificationResult_.cache(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification
-        if (verificationResult.isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
+        if (verificationResult->isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
             return command;
         }
         // given option is applicable, but not safe
@@ -70,16 +65,15 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
-        option->verificationResult_.cache(time, VerificationResultT{false});
+        option->verificationResult_.cache(time, std::make_shared<verification::PlaceboResult>(false));
         VLOG(1) << "Given option " << option->behavior_->name_
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
     return std::nullopt;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::
-    getAndVerifyCommandFromActive(const Time& time) {
+template <typename CommandT, typename SubCommandT>
+std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT>::getAndVerifyCommandFromActive(const Time& time) {
     bool activeBehaviorCanBeContinued = activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time);
 
     if (activeBehavior_ && !activeBehaviorCanBeContinued) {
@@ -103,9 +97,9 @@ std::optional<SubCommandT> Arbitrator<CommandT, SubCommandT, VerifierT, Verifica
     return std::nullopt;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-SubCommandT Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::getAndVerifyCommandFromApplicable(
-    const Options& options, const Time& time) {
+template <typename CommandT, typename SubCommandT>
+SubCommandT Arbitrator<CommandT, SubCommandT>::getAndVerifyCommandFromApplicable(const Options& options,
+                                                                                 const Time& time) {
     for (const auto& bestOption : options) {
         if (!activeBehavior_ || bestOption != activeBehavior_) {
             // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
