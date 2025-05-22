@@ -31,13 +31,17 @@ namespace arbitration_graphs {
  *      only about their commitment/invocation conditions and optionally other abstract (quality) measures
  *      (e.g. priority, expected reward, etc.).
  */
-template <typename CommandT>
+template <typename CommandT, typename EnvironmentModelT>
 class Behavior {
 public:
     using Ptr = std::shared_ptr<Behavior>;
     using ConstPtr = std::shared_ptr<const Behavior>;
 
-    Behavior(const std::string& name = "Behavior") : name_{name} {
+    using EnvironmentModelPtr = std::shared_ptr<EnvironmentModelT>;
+    using EnvironmentModelConstPtr = std::shared_ptr<const EnvironmentModelT>;
+
+    Behavior(const EnvironmentModelConstPtr& environmentModel, const std::string& name = "Behavior")
+            : name_{name}, environmentModel_{environmentModel} {
     }
 
     /*!
@@ -148,6 +152,7 @@ public:
     virtual YAML::Node toYaml(const Time& time) const;
 
     const std::string name_;
+    EnvironmentModelConstPtr environmentModel_;
 };
 } // namespace arbitration_graphs
 
