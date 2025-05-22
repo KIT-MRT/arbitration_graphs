@@ -37,16 +37,24 @@ bool operator==(const int command_int, const DummyCommandInt& command_object) {
     return command_int == command_object.command_;
 }
 
-class DummyBehavior : public Behavior<DummyCommand> {
+struct DummyEnvironmentModel {
+    std::string state{"RobotState"};
+};
+
+class DummyBehavior : public Behavior<DummyCommand, DummyEnvironmentModel> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
+    using EnvironmentModelConstPtr = std::shared_ptr<const DummyEnvironmentModel>;
 
-    DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
+    DummyBehavior(const bool invocation,
+                  const bool commitment,
+                  const EnvironmentModelConstPtr& environmentModel,
+                  const std::string& name = "DummyBehavior")
+            : Behavior(environmentModel, name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
     DummyCommand getCommand(const Time& time) override {
         getCommandCounter_++;
-        return name_;
+        return name_ + " using " + environmentModel_->state;
     }
     bool checkInvocationCondition(const Time& time) const override {
         return invocationCondition_;
@@ -68,9 +76,11 @@ class BrokenDummyBehavior : public DummyBehavior {
 public:
     BrokenDummyBehavior(const bool invocation,
                         const bool commitment,
+                        const EnvironmentModelConstPtr& environmentModel,
                         const std::string& name = "BrokenDummyBehavior",
                         int numGetCommandsUntilThrow = 0)
-            : DummyBehavior(invocation, commitment, name), numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
+            : DummyBehavior(invocation, commitment, environmentModel, name),
+              numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
 
     DummyCommand getCommand(const Time& time) override {
         if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
@@ -78,7 +88,7 @@ public:
         }
 
         getCommandCounter_++;
-        return name_;
+        return name_ + " using " + environmentModel_->state;
     }
 
 private:

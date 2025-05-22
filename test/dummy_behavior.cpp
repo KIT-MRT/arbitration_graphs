@@ -51,9 +51,10 @@ using namespace arbitration_graphs_tests;
 
 class DummyBehaviorTest : public ::testing::Test {
 protected:
-    DummyBehavior testBehaviorTrue{true, true};
+    std::shared_ptr<DummyEnvironmentModel> environmentModel = std::make_shared<DummyEnvironmentModel>();
+    DummyBehavior testBehaviorTrue{true, true, environmentModel};
 
-    DummyCommand expected_command{"DummyBehavior"};
+    DummyCommand expected_command{"DummyBehavior using RobotState"};
 
     Time time{Clock::now()};
 };
