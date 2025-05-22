@@ -17,15 +17,12 @@ using namespace arbitration_graphs_tests;
 
 using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyCommand>;
 
-struct DummyVerifier {
-    // This could be made static here, but we want to challenge the compiler in deducing VerificationResultT.
-    // Unfortunately in such non-static cases VerificationResultT cannot be deduced
-    // and has to be passed on as template argument, see e.g. the DummyVerifierInPriorityArbitrator test
-    DummyResult analyze(const Time& /*time*/, const DummyCommand& data) const {
+struct DummyVerifier : public verification::AbstractVerifier<DummyCommand> {
+    verification::AbstractResult::Ptr analyze(const Time& /*time*/, const DummyCommand& data) const override {
         if (data == wrong_) {
-            return DummyResult{false};
+            return std::make_shared<DummyResult>(false);
         }
-        return DummyResult{true};
+        return std::make_shared<DummyResult>(true);
     };
     std::string wrong_{"MidPriority"};
 };
@@ -67,9 +64,9 @@ TEST_F(CommandVerificationTest, DefaultVerifier) {
 
 // Same as for DefaultVerification
 TEST_F(CommandVerificationTest, PlaceboVerifier) {
-    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand, DummyPlaceboVerifier>::Option::Flags;
+    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand>::Option::Flags;
 
-    PriorityArbitrator<DummyCommand, DummyCommand, DummyPlaceboVerifier> testPriorityArbitrator;
+    PriorityArbitrator<DummyCommand, DummyCommand> testPriorityArbitrator;
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -92,9 +89,10 @@ TEST_F(CommandVerificationTest, PlaceboVerifier) {
 
 // Now DummyVerifier classifies the "MidPriority" command as invalid
 TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
-    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand>::Option::Flags;
 
-    PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> testPriorityArbitrator;
+    PriorityArbitrator<DummyCommand, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
+                                                                          std::make_shared<DummyVerifier>());
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -157,9 +155,10 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
 
 // Two "MidPriority" options, the second one defined as fallback option, so it should be selected, even if it is invalid
 TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
-    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    using OptionFlags = PriorityArbitrator<DummyCommand, DummyCommand>::Option::Flags;
 
-    PriorityArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> testPriorityArbitrator;
+    PriorityArbitrator<DummyCommand, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
+                                                                          std::make_shared<DummyVerifier>());
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -217,9 +216,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
 
 
 TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
-    using OptionFlags = CostArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult>::Option::Flags;
+    using OptionFlags = CostArbitrator<DummyCommand, DummyCommand>::Option::Flags;
 
-    CostArbitrator<DummyCommand, DummyCommand, DummyVerifier, DummyResult> testCostArbitrator;
+    CostArbitrator<DummyCommand, DummyCommand> testCostArbitrator("CostArbitrator", std::make_shared<DummyVerifier>());
 
     CostEstimatorFromCostMap::CostMap costMap{{"HighPriority", 0}, {"MidPriority", 0.5}, {"LowPriority", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
