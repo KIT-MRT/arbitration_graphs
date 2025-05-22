@@ -85,7 +85,7 @@ private:
     int numGetCommandsUntilThrow_;
 };
 
-struct DummyResult : public verification::PlaceboResult {};
+using DummyResult = verification::PlaceboResult;
 
 } // namespace arbitration_graphs_tests
 
