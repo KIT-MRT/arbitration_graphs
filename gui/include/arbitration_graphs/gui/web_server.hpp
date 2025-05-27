@@ -41,7 +41,8 @@ public:
     WebServer(int port, bool autostart = false, crow::LogLevel loglevel = crow::LogLevel::Warning)
             : static_directory_{crow::utility::normalize_path(dataDirectory())}, port_{port}, autostart_{autostart} {
 
-        app_.loglevel(loglevel);
+        // Set loglevel and turn off Crow's signal handler
+        app_.loglevel(loglevel).signal_clear();
 
         CROW_ROUTE(app_, "/")
         ([this]() {
