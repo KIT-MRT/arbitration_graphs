@@ -89,10 +89,17 @@ if(GTEST_FOUND)
       arbitration_graphs
     )
 
-    add_test(NAME ${TEST_TARGET_NAME}
-      COMMAND ${TEST_TARGET_NAME}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
+    if(TEST_TARGET_NAME MATCHES "sigint")
+      add_test(NAME ${TEST_TARGET_NAME}
+        COMMAND ${CMAKE_SOURCE_DIR}/gui/test/sigint_test.sh $<TARGET_FILE:${TEST_TARGET_NAME}>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      )
+    else()
+      add_test(NAME ${TEST_TARGET_NAME}
+        COMMAND ${TEST_TARGET_NAME}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      )
+    endif()
   endforeach()
 else()
   message(WARNING "GTest not found. Cannot compile tests!")

@@ -12,12 +12,37 @@
 
 namespace arbitration_graphs::gui {
 
+/**
+ * @brief Serves the arbitration_graphs GUI via HTTP and WebSocket using the Crow framework.
+ *
+ * @param port The TCP port number on which the web server will listen for incoming HTTP/WebSocket connections.
+ *             This allows you to specify which port the arbitration_graphs GUI will be accessible from.
+ *
+ * @param autostart If set to true, the server will automatically start upon construction and run asynchronously.
+ *                  If set to false (default), you must manually start/stop the server by calling start()/stop().
+ * @param loglevel The logging verbosity for the Crow application (default: crow::LogLevel::Warning).
+ *
+ * The server serves static GUI files from a directory determined by environment variables or predefined paths.
+ * The "/" route serves the main index.html file, while "/<path>" serves other static files.
+ * The "/status" WebSocket route allows clients to connect for real-time updates; use broadcast() to send messages to
+ * all connected clients.
+ *
+ * Example usage:
+ * @code
+ *   WebServer server(8080, true); // Starts server on port 8080 immediately
+ *   // or
+ *   WebServer server(8080, false);
+ *   server.start(); // Start server manually
+ *   server.stop();  // Stop server manually
+ * @endcode
+ */
 class WebServer {
 public:
     WebServer(int port, bool autostart = false, crow::LogLevel loglevel = crow::LogLevel::Warning)
             : static_directory_{crow::utility::normalize_path(dataDirectory())}, port_{port}, autostart_{autostart} {
 
-        app_.loglevel(loglevel);
+        // Set loglevel and turn off Crow's signal handler
+        app_.loglevel(loglevel).signal_clear();
 
         CROW_ROUTE(app_, "/")
         ([this]() {
