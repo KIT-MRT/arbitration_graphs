@@ -54,6 +54,22 @@ A bit more in detail:
 
 </details>
 
+## At a Glance
+
+**Arbitration Graphs** break down complex decision-making into atomic behavior components and arbitrators.
+
+**Behavior components** compute a command (e.g., a trajectory) based on the current state of the world.
+They define whether they can be executed in the current state using their invocation condition.
+
+**Arbitrators** select the best option based on a defined decision-making policy.
+Options can be behavior components or nested arbitrators.
+
+**Verifiers** check whether the command of a behavior component is safe and valid prior to being selected by an arbitrator.
+
+<p align="center">
+  <img src="docs/assets/img/arbitration_graphs_at_a_glance.svg" />
+</p>
+
 
 ## Demo
 
