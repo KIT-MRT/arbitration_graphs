@@ -5,8 +5,8 @@
 
 namespace arbitration_graphs {
 
-template <typename CommandT, typename EnvironmentModelT>
-std::string Behavior<CommandT, EnvironmentModelT>::to_str(const Time& time,
+template <typename EnvironmentModelT, typename CommandT>
+std::string Behavior<EnvironmentModelT, CommandT>::to_str(const Time& time,
                                                           const EnvironmentModelT& environmentModel,
                                                           const std::string& prefix,
                                                           const std::string& suffix) const {
@@ -15,8 +15,8 @@ std::string Behavior<CommandT, EnvironmentModelT>::to_str(const Time& time,
     return ss.str();
 }
 
-template <typename CommandT, typename EnvironmentModelT>
-std::ostream& Behavior<CommandT, EnvironmentModelT>::to_stream(std::ostream& output,
+template <typename EnvironmentModelT, typename CommandT>
+std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& output,
                                                                const Time& time,
                                                                const EnvironmentModelT& environmentModel,
                                                                const std::string& prefix,
@@ -36,8 +36,8 @@ std::ostream& Behavior<CommandT, EnvironmentModelT>::to_stream(std::ostream& out
     return output;
 }
 
-template <typename CommandT, typename EnvironmentModelT>
-YAML::Node Behavior<CommandT, EnvironmentModelT>::toYaml(const Time& time,
+template <typename EnvironmentModelT, typename CommandT>
+YAML::Node Behavior<EnvironmentModelT, CommandT>::toYaml(const Time& time,
                                                          const EnvironmentModelT& environmentModel) const {
     YAML::Node node;
     node["type"] = "Behavior";

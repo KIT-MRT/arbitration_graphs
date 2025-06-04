@@ -33,7 +33,7 @@ namespace arbitration_graphs {
  *      only about their commitment/invocation conditions and optionally other abstract (quality) measures
  *      (e.g. priority, expected reward, etc.).
  */
-template <typename CommandT, typename EnvironmentModelT>
+template <typename EnvironmentModelT, typename CommandT>
 class Behavior {
 public:
     using Ptr = std::shared_ptr<Behavior>;

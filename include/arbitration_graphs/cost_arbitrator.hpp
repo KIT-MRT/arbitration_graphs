@@ -20,13 +20,14 @@ struct CostEstimator {
     virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
 };
 
-template <typename CommandT,
+template <typename EnvironmentModelT,
+          typename CommandT,
           typename SubCommandT = CommandT,
           typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
           typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class CostArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+class CostArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
@@ -38,7 +39,7 @@ public:
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
 
-        Option(const typename Behavior<SubCommandT>::Ptr& behavior,
+        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
                const typename CostEstimator<SubCommandT>::Ptr& costEstimator)
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
@@ -49,6 +50,7 @@ public:
          *
          * \param output        Output stream to write into, will be returned also
          * \param time          Expected execution time point of this behaviors command
+         * \param environmentModel  Environment model at the time of execution
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -58,6 +60,7 @@ public:
          */
         virtual std::ostream& to_stream(std::ostream& output,
                                         const Time& time,
+                                        const EnvironmentModelT& environmentModel,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const;
@@ -68,7 +71,7 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time) const override;
+        virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
         typename CostEstimator<SubCommandT>::Ptr costEstimator_;
         mutable std::optional<double> last_estimated_cost_;
@@ -79,7 +82,7 @@ public:
             : ArbitratorBase(name, verifier) {};
 
 
-    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
+    void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags,
                    const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
@@ -92,7 +95,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override;
+    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 private:
     /*!
@@ -100,8 +103,10 @@ private:
      *
      * @return  Applicable option with lowest costs (can also be the currently active option)
      */
-    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
-                                                              const Time& time) const override {
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(
+        const typename ArbitratorBase::Options& options,
+        const Time& time,
+        const EnvironmentModelT& environmentModel) const override {
         // reset last_estimated_cost_ for all behaviorOptions_
         for (const auto& optionBase : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
@@ -118,11 +123,11 @@ private:
 
             std::optional<SubCommandT> command;
             if (isActive) {
-                command = this->getAndVerifyCommand(option, time);
+                command = this->getAndVerifyCommand(option, time, environmentModel);
             } else {
-                option->behavior_->gainControl(time);
-                command = this->getAndVerifyCommand(option, time);
-                option->behavior_->loseControl(time);
+                option->behavior_->gainControl(time, environmentModel);
+                command = this->getAndVerifyCommand(option, time, environmentModel);
+                option->behavior_->loseControl(time, environmentModel);
             }
             if (!command) {
                 continue;

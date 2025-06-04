@@ -54,11 +54,11 @@ using namespace arbitration_graphs_tests;
 
 class NestedArbitratorsTest : public ::testing::Test {
 protected:
-    using PriorityOptionFlags = PriorityArbitrator<DummyCommand>::Option::Flags;
-    using CostOptionFlags = CostArbitrator<DummyCommand>::Option::Flags;
+    using PriorityOptionFlags = PriorityArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
+    using CostOptionFlags = CostArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
-    using CostArbitratorT = CostArbitrator<DummyCommand>;
-    using PriorityArbitratorT = PriorityArbitrator<DummyCommand>;
+    using CostArbitratorT = CostArbitrator<DummyEnvironmentModel, DummyCommand>;
+    using PriorityArbitratorT = PriorityArbitrator<DummyEnvironmentModel, DummyCommand>;
 
     DummyBehavior::Ptr testBehaviorHighPriority = std::make_shared<DummyBehavior>(false, false, "HighPriority");
     DummyBehavior::Ptr testBehaviorLowPriority = std::make_shared<DummyBehavior>(true, true, "LowPriority");
@@ -75,6 +75,8 @@ protected:
 
     PriorityArbitratorT::Ptr testRootPriorityArbitrator =
         std::make_shared<PriorityArbitratorT>("root priority arbitrator");
+
+    DummyEnvironmentModel environmentModel;
 
     Time time{Clock::now()};
 };
@@ -101,18 +103,18 @@ TEST_F(NestedArbitratorsTest, Printout) {
     // clang-format on
 
     // 1. test to_str()
-    EXPECT_EQ(expected_printout, testRootPriorityArbitrator->to_str(time));
+    EXPECT_EQ(expected_printout, testRootPriorityArbitrator->to_str(time, environmentModel));
 
     // 1. test to_stream()
     std::stringstream actual_printout_stream;
-    testRootPriorityArbitrator->to_stream(actual_printout_stream, time);
+    testRootPriorityArbitrator->to_stream(actual_printout_stream, time, environmentModel);
     EXPECT_EQ(expected_printout, actual_printout_stream.str());
 
     std::cout << actual_printout_stream.str() << std::endl;
 
 
-    testPriorityArbitrator->gainControl(time);
-    EXPECT_EQ("high_cost", testRootPriorityArbitrator->getCommand(time));
+    testPriorityArbitrator->gainControl(time, environmentModel);
+    EXPECT_EQ("high_cost", testRootPriorityArbitrator->getCommand(time, environmentModel));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "root priority arbitrator\n"
@@ -123,7 +125,7 @@ TEST_F(NestedArbitratorsTest, Printout) {
                         "        1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
                         "        2. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testRootPriorityArbitrator->to_str(time);
+    std::string actual_printout = testRootPriorityArbitrator->to_str(time, environmentModel);
     EXPECT_EQ(expected_printout, actual_printout);
 
     std::cout << actual_printout << std::endl;
@@ -140,7 +142,7 @@ TEST_F(NestedArbitratorsTest, ToYaml) {
     testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NO_FLAGS);
     testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NO_FLAGS);
 
-    YAML::Node yaml = testRootPriorityArbitrator->toYaml(time);
+    YAML::Node yaml = testRootPriorityArbitrator->toYaml(time, environmentModel);
 
     //    std::cout << yaml << std::endl << std::endl;
 
@@ -169,10 +171,10 @@ TEST_F(NestedArbitratorsTest, ToYaml) {
 
     EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
 
-    testPriorityArbitrator->gainControl(time);
-    testRootPriorityArbitrator->getCommand(time);
+    testPriorityArbitrator->gainControl(time, environmentModel);
+    testRootPriorityArbitrator->getCommand(time, environmentModel);
 
-    yaml = testRootPriorityArbitrator->toYaml(time);
+    yaml = testRootPriorityArbitrator->toYaml(time, environmentModel);
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());

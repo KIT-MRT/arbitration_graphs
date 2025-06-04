@@ -41,7 +41,7 @@ struct DummyEnvironmentModel {
     std::string state_{"RobotState"};
 };
 
-class DummyBehavior : public Behavior<DummyCommand, DummyEnvironmentModel> {
+class DummyBehavior : public Behavior<DummyEnvironmentModel, DummyCommand> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 

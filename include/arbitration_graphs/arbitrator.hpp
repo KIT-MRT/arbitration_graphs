@@ -29,11 +29,12 @@ namespace arbitration_graphs {
  * \note As long as VerifierT::analyze() is static the VerificationResultT type can be deduced by the compiler,
  *       otherwise you have to pass it as template argument
  */
-template <typename CommandT,
+template <typename EnvironmentModelT,
+          typename CommandT,
           typename SubCommandT = CommandT,
           typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
           typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class Arbitrator : public Behavior<CommandT> {
+class Arbitrator : public Behavior<EnvironmentModelT, CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
@@ -55,19 +56,19 @@ public:
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
         using FlagsT = std::underlying_type_t<Flags>;
 
-        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
+        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : behavior_{behavior}, flags_{flags} {
         }
         virtual ~Option() = default;
 
-        typename Behavior<SubCommandT>::Ptr behavior_;
+        typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
         FlagsT flags_;
         mutable util_caching::Cache<Time, SubCommandT> command_;
         mutable util_caching::Cache<Time, VerificationResultT> verificationResult_;
 
-        SubCommandT getCommand(const Time& time) const {
+        SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
             if (!command_.cached(time)) {
-                command_.cache(time, behavior_->getCommand(time));
+                command_.cache(time, behavior_->getCommand(time, environmentModel));
             }
             return command_.cached(time).value();
         }
@@ -81,6 +82,7 @@ public:
          *
          * \param output        Output stream to write into, will be returned also
          * \param time          Expected execution time point of this behaviors command
+         * \param environmentModel Environment model for the behavior
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -90,6 +92,7 @@ public:
          */
         virtual std::ostream& to_stream(std::ostream& output,
                                         const Time& time,
+                                        const EnvironmentModelT& environmentModel,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const;
@@ -100,35 +103,36 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time) const;
+        virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const;
     };
     using Options = std::vector<typename Option::Ptr>;
     using ConstOptions = std::vector<typename Option::ConstPtr>;
 
 
     Arbitrator(const std::string& name = "Arbitrator", const VerifierT& verifier = VerifierT())
-            : Behavior<CommandT>(name), verifier_{verifier} {};
+            : Behavior<EnvironmentModelT, CommandT>(name), verifier_{verifier} {};
 
 
-    virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
+    virtual void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
+                           const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }
 
-    CommandT getCommand(const Time& time) override {
+    CommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) override {
         // first try to continue an active option, if one exists
-        std::optional<SubCommandT> command = getAndVerifyCommandFromActive(time);
+        std::optional<SubCommandT> command = getAndVerifyCommandFromActive(time, environmentModel);
 
         if (command) {
             return command.value();
         }
 
         // otherwise take all options equally into account, including the active option (if it exists)
-        const auto applicableOptions = this->applicableOptions(time);
+        const auto applicableOptions = this->applicableOptions(time, environmentModel);
 
         if (!applicableOptions.empty()) {
-            const auto bestApplicableOptions = sortOptionsByGivenPolicy(applicableOptions, time);
-            return getAndVerifyCommandFromApplicable(bestApplicableOptions, time);
+            const auto bestApplicableOptions = sortOptionsByGivenPolicy(applicableOptions, time, environmentModel);
+            return getAndVerifyCommandFromApplicable(bestApplicableOptions, time, environmentModel);
         }
 
         throw InvocationConditionIsFalseError(
@@ -140,31 +144,30 @@ public:
         return ConstOptions(behaviorOptions_.begin(), behaviorOptions_.end());
     }
 
-    bool checkInvocationCondition(const Time& time) const override {
+    bool checkInvocationCondition(const Time& time, const EnvironmentModelT& environmentModel) const override {
         for (auto& option : behaviorOptions_) {
-            if (option->behavior_->checkInvocationCondition(time)) {
+            if (option->behavior_->checkInvocationCondition(time, environmentModel)) {
                 return true;
             }
         }
         return false;
     }
-    bool checkCommitmentCondition(const Time& time) const override {
+    bool checkCommitmentCondition(const Time& time, const EnvironmentModelT& environmentModel) const override {
         if (activeBehavior_) {
-            if (activeBehavior_->behavior_->checkCommitmentCondition(time)) {
+            if (activeBehavior_->behavior_->checkCommitmentCondition(time, environmentModel)) {
                 return true;
-            } else {
-                return checkInvocationCondition(time);
             }
+            return checkInvocationCondition(time, environmentModel);
         }
         return false;
     }
 
-    virtual void gainControl(const Time& time) override {
+    virtual void gainControl(const Time& time, const EnvironmentModelT& environmentModel) override {
     }
 
-    virtual void loseControl(const Time& time) override {
+    virtual void loseControl(const Time& time, const EnvironmentModelT& environmentModel) override {
         if (activeBehavior_) {
-            activeBehavior_->behavior_->loseControl(time);
+            activeBehavior_->behavior_->loseControl(time, environmentModel);
         }
         activeBehavior_.reset();
     }
@@ -178,6 +181,7 @@ public:
      *
      * \param output    Output stream to write into, will be returned also
      * \param time      Expected execution time point of this behaviors command
+     * \param environmentModel Environment model for the behavior
      * \param prefix    A string that should be prepended to each line that is written to the output stream
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
@@ -186,6 +190,7 @@ public:
      */
     virtual std::ostream& to_stream(std::ostream& output,
                                     const Time& time,
+                                    const EnvironmentModelT& environmentModel,
                                     const std::string& prefix = "",
                                     const std::string& suffix = "") const override;
 
@@ -195,7 +200,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override;
+    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 
 protected:
@@ -207,7 +212,9 @@ protected:
      * @param time  Expected execution time point of this behaviors command
      * @return  Behavior options sorted according to your policy
      */
-    virtual Options sortOptionsByGivenPolicy(const Options& options, const Time& time) const = 0;
+    virtual Options sortOptionsByGivenPolicy(const Options& options,
+                                             const Time& time,
+                                             const EnvironmentModelT& environmentModel) const = 0;
 
     /*!
      * @brief   Returns all behavior options with true invocation condition or
@@ -216,10 +223,12 @@ protected:
      * @param time  Expected execution time point of this behaviors command
      * @return  Vector of applicable behavior options
      */
-    Options applicableOptions(const Time& time) const;
+    Options applicableOptions(const Time& time, const EnvironmentModelT& environmentModel) const;
 
     bool isActive(const typename Option::Ptr& option) const;
-    bool isApplicable(const typename Option::Ptr& option, const Time& time) const;
+    bool isApplicable(const typename Option::Ptr& option,
+                      const Time& time,
+                      const EnvironmentModelT& environmentModel) const;
 
     std::size_t getOptionIndex(const typename Option::ConstPtr& behaviorOption) const;
 
@@ -230,7 +239,9 @@ protected:
      * @param time      Expected execution time point of this behaviors command
      * @return Command of the given option, if it passed verification, otherwise nullopt
      */
-    std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option, const Time& time) const;
+    std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option,
+                                                   const Time& time,
+                                                   const EnvironmentModelT& environmentModel) const;
 
     /*!
      * @brief Get and verify the command from the active behavior, if there is an active one
@@ -239,7 +250,8 @@ protected:
      * @return Command of the active option, if it exists, can be continued and it passed verification,
      *         otherwise nullopt
      */
-    std::optional<SubCommandT> getAndVerifyCommandFromActive(const Time& time);
+    std::optional<SubCommandT> getAndVerifyCommandFromActive(const Time& time,
+                                                             const EnvironmentModelT& environmentModel);
 
     /*!
      * @brief Get and verify the command from the best option that passes verification
@@ -248,7 +260,9 @@ protected:
      * @param time      Expected execution time point of this behaviors command
      * @return Command of best option passing verification, throws if none passes
      */
-    SubCommandT getAndVerifyCommandFromApplicable(const Options& options, const Time& time);
+    SubCommandT getAndVerifyCommandFromApplicable(const Options& options,
+                                                  const Time& time,
+                                                  const EnvironmentModelT& environmentModel);
 
     Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;

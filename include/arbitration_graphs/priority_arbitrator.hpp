@@ -10,13 +10,14 @@
 
 namespace arbitration_graphs {
 
-template <typename CommandT,
+template <typename EnvironmentModelT,
+          typename CommandT,
           typename SubCommandT = CommandT,
           typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
           typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class PriorityArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+class PriorityArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>;
 
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
@@ -29,7 +30,7 @@ public:
 
         enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
 
-        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags)
+        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior, const FlagsT& flags)
                 : ArbitratorBase::Option(behavior, flags) {
         }
 
@@ -38,6 +39,7 @@ public:
          *
          * \param output        Output stream to write into, will be returned also
          * \param time          Expected execution time point of this behaviors command
+         * \param environmentModel  Environment model at the time of execution
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -47,6 +49,7 @@ public:
          */
         virtual std::ostream& to_stream(std::ostream& output,
                                         const Time& time,
+                                        const EnvironmentModelT& environmentModel,
                                         const int& option_index,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const;
@@ -55,7 +58,8 @@ public:
     PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
             : ArbitratorBase(name, verifier){};
 
-    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
+    void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
+                   const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }
@@ -66,7 +70,7 @@ public:
      * \param time  Expected execution time point of this behaviors command
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override;
+    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 protected:
     /*!
@@ -75,7 +79,8 @@ protected:
      * @return  Behavior options sorted by priority
      */
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
-                                                              const Time& time) const override {
+                                                              const Time& time,
+                                                              const EnvironmentModelT& environmentModel) const override {
         // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
         return options;
     }
