@@ -60,7 +60,6 @@ A bit more in detail:
 
 **Behavior components** compute a command (e.g., a trajectory) based on the current state of the world.
 They define whether they can be executed in the current state using their invocation condition.
-An active behavior component signals that it can be continued using its commitment condition.
 
 **Arbitrators** select the best option based on a defined decision-making policy.
 Options can be behavior components or nested arbitrators.
