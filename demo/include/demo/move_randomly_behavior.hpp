@@ -27,7 +27,7 @@ public:
             : Behavior{name}, parameters_{parameters} {
     }
 
-    Command getCommand(const Time& time) override;
+    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& /*time*/) const override;
     bool checkCommitmentCondition(const Time& /*time*/) const override;

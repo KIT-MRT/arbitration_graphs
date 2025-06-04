@@ -63,7 +63,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandLeft) {
     environmentModel_->setGhostPositions({2, 1});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time);
+    Command command = avoidGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::LEFT);
 }
 
@@ -77,7 +77,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
     environmentModel_->setGhostPositions({0, 1});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time);
+    Command command = avoidGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
 }
 
@@ -91,7 +91,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
     environmentModel_->setGhostPositions({1, 0});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time);
+    Command command = avoidGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::DOWN);
 }
 
@@ -105,7 +105,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
     environmentModel_->setGhostPositions({1, 2});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time);
+    Command command = avoidGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::UP);
 }
 
@@ -120,7 +120,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandAwayFromWall) {
 
     // Even though there is a ghost, pacman should not move towards a wall.
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time);
+    Command command = avoidGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
 }
 

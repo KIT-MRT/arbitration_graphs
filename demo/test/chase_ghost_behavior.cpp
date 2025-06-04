@@ -91,7 +91,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
     environmentModel_->setScaredCountdown(40);
 
     Time time = Clock::now();
-    Command command = chaseGhostBehavior_.getCommand(time);
+    Command command = chaseGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::LEFT);
 }
 
@@ -107,7 +107,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
     environmentModel_->setScaredCountdown(40);
 
     Time time = Clock::now();
-    Command command = chaseGhostBehavior_.getCommand(time);
+    Command command = chaseGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
 }
 
@@ -123,7 +123,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
     environmentModel_->setScaredCountdown(40);
 
     Time time = Clock::now();
-    Command command = chaseGhostBehavior_.getCommand(time);
+    Command command = chaseGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::DOWN);
 }
 
@@ -139,7 +139,7 @@ TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
     environmentModel_->setScaredCountdown(40);
 
     Time time = Clock::now();
-    Command command = chaseGhostBehavior_.getCommand(time);
+    Command command = chaseGhostBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::UP);
 }
 
