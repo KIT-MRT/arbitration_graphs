@@ -122,6 +122,9 @@ It's based on this demo and guides you through all important concepts:
 
 ## Installation
 
+> **Note:** We are currently working on a new major release of the library which will include some breaking changes.
+> See the corresponding [issue](https://github.com/KIT-MRT/arbitration_graphs/issues/116) and [pull request](https://github.com/KIT-MRT/arbitration_graphs/pull/123) for details and the current status.
+
 The `arbitration_graphs` library consists of two parts
 - **Core**  
   This is what it's all about – base classes for arbitrators and behavior components, implementations of various arbitration schemes, behavior verification, …

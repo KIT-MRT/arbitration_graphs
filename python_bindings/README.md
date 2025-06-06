@@ -108,6 +108,9 @@ In this scene,
 
 ## Installation
 
+> **Note:** We are currently working on a new major release of the library which will include some breaking changes.
+> See the corresponding [issue](https://github.com/KIT-MRT/arbitration_graphs/issues/116) and [pull request](https://github.com/KIT-MRT/arbitration_graphs/pull/123) for details and the current status.
+
 The Python interface to the arbitration graph library is generated using `pybind11` and provides a convenient interface to utilize the full power of the arbitration graph library in Python.
 
 <details>
