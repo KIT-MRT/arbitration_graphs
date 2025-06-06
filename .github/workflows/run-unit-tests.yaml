@@ -52,10 +52,9 @@ jobs:
         run: |
           docker run --rm ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_tests:${{ env.VERSION }}
 
-      - name: Make Readme and version available in docker context
+      - name: Make version available in docker context
         run: |
-          rm python_bindings/.README.md python_bindings/version
-          cp README.md python_bindings/.README.md
+          rm python_bindings/version
           cp version python_bindings/version
 
       - name: Build python bindings unit test Docker image
