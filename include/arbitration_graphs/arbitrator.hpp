@@ -104,7 +104,7 @@ public:
 
     Arbitrator(const std::string& name = "Arbitrator",
                VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
-            : Behavior<CommandT>(name), verifier_{std::move(verifier)} {};
+            : Behavior<CommandT>(name), verifier_(verifier) {};
 
 
     virtual void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
