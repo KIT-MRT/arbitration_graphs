@@ -28,6 +28,8 @@ public:
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+
     struct Option : ArbitratorBase::Option {
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
@@ -73,8 +75,7 @@ public:
 
 
     CostArbitrator(const std::string& name = "CostArbitrator",
-                   typename verification::AbstractVerifier<SubCommandT>::Ptr verifier =
-                       std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+                   VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
             : ArbitratorBase(name, verifier) {};
 
 
