@@ -159,8 +159,8 @@ Clone the repository and run the development image
 ```bash
 git clone https://github.com/KIT-MRT/arbitration_graphs.git
 cd arbitration_graphs/python_bindings
-docker compose build devel
-docker compose run --rm devel
+docker compose build arbitration_graphs_pybind_devel
+docker compose run --rm arbitration_graphs_pybind_devel
 ```
 
 This mounts the source into the container's `/home/blinky/arbitration_graphs` folder.

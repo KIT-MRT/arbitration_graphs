@@ -1,5 +1,5 @@
 services:
-  devel:
+  arbitration_graphs_pybind_devel:
     build:
       context: .
       target: devel
