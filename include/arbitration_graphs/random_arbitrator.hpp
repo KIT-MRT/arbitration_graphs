@@ -17,6 +17,8 @@ public:
     using Ptr = std::shared_ptr<RandomArbitrator>;
     using ConstPtr = std::shared_ptr<const RandomArbitrator>;
 
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+
     struct Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
@@ -54,8 +56,7 @@ public:
     using Options = std::vector<typename Option::Ptr>;
 
     RandomArbitrator(const std::string& name = "RandomArbitrator",
-                     typename verification::AbstractVerifier<SubCommandT>::Ptr verifier =
-                         std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+                     VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
             : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
