@@ -45,7 +45,7 @@ endif()
 
 find_package(arbitration_graphs REQUIRED)
 find_package(Glog REQUIRED)
-find_package(pybind11 CONFIG)
+find_package(pybind11 CONFIG REQUIRED)
 find_package(util_caching REQUIRED)
 find_package(Yaml-cpp REQUIRED)
 
