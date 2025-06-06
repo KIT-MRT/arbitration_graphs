@@ -32,6 +32,8 @@ public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+
     /*!
      * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags
      *
@@ -101,8 +103,7 @@ public:
 
 
     Arbitrator(const std::string& name = "Arbitrator",
-               typename verification::AbstractVerifier<SubCommandT>::Ptr verifier =
-                   std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+               VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
             : Behavior<CommandT>(name), verifier_{std::move(verifier)} {};
 
 

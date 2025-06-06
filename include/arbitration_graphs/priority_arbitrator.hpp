@@ -18,6 +18,8 @@ public:
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
 
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+
     struct Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
@@ -50,8 +52,7 @@ public:
     };
 
     PriorityArbitrator(const std::string& name = "PriorityArbitrator",
-                       typename verification::AbstractVerifier<SubCommandT>::Ptr verifier =
-                           std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+                       VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
             : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<SubCommandT>::Ptr& behavior, const typename Option::FlagsT& flags) {
