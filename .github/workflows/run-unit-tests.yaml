@@ -51,3 +51,25 @@ jobs:
       - name: Run demo unit tests
         run: |
           docker run --rm ghcr.io/kit-mrt/arbitration_graphs_pacman_demo_tests:${{ env.VERSION }}
+
+      - name: Make version available in docker context
+        run: |
+          rm python_bindings/version
+          cp version python_bindings/version
+
+      - name: Build python bindings unit test Docker image
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            VERSION=${{ env.VERSION }}
+          context: python_bindings
+          file: python_bindings/Dockerfile
+          push: false
+          tags: |
+            ghcr.io/kit-mrt/arbitration_graphs_python_bindings_tests:latest
+            ghcr.io/kit-mrt/arbitration_graphs_python_bindings_tests:${{ env.VERSION }}
+          target: unit_test
+
+      - name: Run python bindings unit tests
+        run: |
+          docker run --rm ghcr.io/kit-mrt/arbitration_graphs_python_bindings_tests:${{ env.VERSION }}

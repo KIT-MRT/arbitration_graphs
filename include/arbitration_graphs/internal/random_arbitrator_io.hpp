@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iomanip>
+
 #include "../random_arbitrator.hpp"
 
 
