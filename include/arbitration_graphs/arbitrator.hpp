@@ -57,7 +57,7 @@ public:
         typename Behavior<SubCommandT>::Ptr behavior_;
         FlagsT flags_;
         mutable util_caching::Cache<Time, SubCommandT> command_;
-        mutable util_caching::Cache<Time, verification::AbstractResult::Ptr> verificationResult_;
+        mutable util_caching::Cache<Time, verification::AbstractResult::ConstPtr> verificationResult_;
 
         SubCommandT getCommand(const Time& time) const {
             if (!command_.cached(time)) {
