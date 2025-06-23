@@ -44,6 +44,7 @@ inline void bindVerifier(py::module& module) {
     using PlaceboVerifierT = agv::PlaceboVerifier<CommandWrapper>;
 
     py::class_<agv::AbstractResult, PyAbstractResult, std::shared_ptr<agv::AbstractResult>>(module, "AbstractResult")
+        .def(py::init<>())
         .def("is_ok", &agv::AbstractResult::isOk);
 
     py::class_<agv::PlaceboResult, agv::AbstractResult, std::shared_ptr<agv::PlaceboResult>>(module, "PlaceboResult")
@@ -51,6 +52,7 @@ inline void bindVerifier(py::module& module) {
         .def("is_ok", &agv::PlaceboResult::isOk);
 
     py::class_<AbstractVerifierT, PyAbstractVerifier, std::shared_ptr<AbstractVerifierT>>(module, "AbstractVerifier")
+        .def(py::init<>())
         .def("analyze", &AbstractVerifierT::analyze);
 
     py::class_<PlaceboVerifierT, AbstractVerifierT, std::shared_ptr<PlaceboVerifierT>>(module, "PlaceboVerifier")

@@ -8,7 +8,7 @@
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
-#include "verification_wrapper.hpp"
+#include "verification.hpp"
 #include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
@@ -19,23 +19,25 @@ namespace ag = arbitration_graphs;
 inline void bindPriorityArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using PriorityArbitratorT =
-        ag::PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using PriorityArbitratorT = ag::PriorityArbitrator<CommandWrapper, CommandWrapper>;
 
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
+    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
+
     py::class_<PriorityArbitratorT, ArbitratorT, std::shared_ptr<PriorityArbitratorT>> priorityArbitrator(
         module, "PriorityArbitrator");
     priorityArbitrator
-        .def(py::init<const std::string&, const VerifierWrapper&>(),
+        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "PriorityArbitrator",
-             py::arg("verifier") = VerifierWrapper())
+             py::arg("verifier") = PlaceboVerifierT())
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
             "to_yaml",
