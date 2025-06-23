@@ -8,7 +8,6 @@
 #include <arbitration_graphs/cost_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
-#include "verification_wrapper.hpp"
 #include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
@@ -30,26 +29,28 @@ public:
 inline void bindCostArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using CostArbitratorT =
-        ag::CostArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using CostArbitratorT = ag::CostArbitrator<CommandWrapper, CommandWrapper>;
     using CostEstimatorT = ag::CostEstimator<CommandWrapper>;
 
     using OptionT = typename CostArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
+
+    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
 
     py::class_<CostEstimatorT, PyCostEstimator, std::shared_ptr<CostEstimatorT>>(module, "CostEstimator")
         .def(py::init<>());
 
     py::class_<CostArbitratorT, ArbitratorT, std::shared_ptr<CostArbitratorT>> costArbitrator(module, "CostArbitrator");
     costArbitrator
-        .def(py::init<const std::string&, const VerifierWrapper&>(),
+        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
-             py::arg("verifier") = VerifierWrapper())
+             py::arg("verifier") = PlaceboVerifierT())
         .def(
             "add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("cost_estimator"))
         .def(

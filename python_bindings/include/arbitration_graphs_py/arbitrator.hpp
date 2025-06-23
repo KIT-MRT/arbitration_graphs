@@ -8,16 +8,16 @@
 #include <arbitration_graphs/behavior.hpp>
 
 #include "command_wrapper.hpp"
-#include "verification_wrapper.hpp"
 
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
 
 inline void bindArbitrator(py::module& module) {
-    using ArbitratorT =
-        arbitration_graphs::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = arbitration_graphs::Arbitrator<CommandWrapper, CommandWrapper>;
+
     using BehaviorT = typename ArbitratorT::Behavior;
+
     using OptionT = typename ArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
