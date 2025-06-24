@@ -3,9 +3,10 @@
 
 // Set custom colors
 @import 'variables';
+@import 'colors-auto';
 
 // Use the Cayman theme
-@import 'jekyll-theme-cayman';
+@import 'cayman-override';
 
 // Change fonts and syntax highlighting
 @import 'fonts';
@@ -25,6 +26,10 @@
 // Switch to light theme logo
 img.github-logo {
   content: url({{ "/docs/assets/img/github-mark.svg" | relative_url }});
+
+  @media screen and (prefers-color-scheme: dark) {
+    content: url({{ "/docs/assets/img/github-mark-white.svg" | relative_url }});
+  }
 }
 
 .main-content table th, .main-content table td {
@@ -45,4 +50,16 @@ details summary {
 
 details[open] summary {
   list-style-type: disclosure-open;
+}
+
+
+// Fix code box styles
+.highlight {
+  background-color: var(--bg-color);
+  color: var(--code-text-color);
+}
+.highlight pre {
+  background-color: var(--code-bg-color);
+  color: var(--code-text-color);
+  // border: none;
 }
