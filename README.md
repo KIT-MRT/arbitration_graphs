@@ -69,7 +69,7 @@ Options can be behavior components or nested arbitrators.
 **Verifiers** check whether the command of a behavior component is safe and valid prior to being selected by an arbitrator.
 
 <p align="center">
-  <img src="docs/assets/img/arbitration_graphs_at_a_glance.svg" />
+  <img src="docs/assets/img/arbitration_graphs_at_a_glance_v2.svg" />
 </p>
 
 
