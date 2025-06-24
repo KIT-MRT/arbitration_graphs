@@ -69,7 +69,11 @@ Options can be behavior components or nested arbitrators.
 **Verifiers** check whether the command of a behavior component is safe and valid prior to being selected by an arbitrator.
 
 <p align="center">
-  <img src="../docs/assets/img/arbitration_graphs_at_a_glance.svg" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+    <img src="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+  </picture>
 </p>
 
 
@@ -191,7 +195,11 @@ This library and repo has been crafted with ❤️ by
 **Christoph Burger**
 &nbsp;
 <a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
   ChristophBurger89
 </a>
 &nbsp;
@@ -207,7 +215,11 @@ This library and repo has been crafted with ❤️ by
 **Nick Le Large**
 &nbsp;
 <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
   ll-nick
 </a>
 &nbsp;
@@ -223,7 +235,11 @@ This library and repo has been crafted with ❤️ by
 **Piotr Spieker**
 &nbsp;
 <a href="https://github.com/orzechow" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
   orzechow
 </a>
 &nbsp;
@@ -244,13 +260,21 @@ The Python bindings have been contributed by Nick and reviewed by Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;
 <a href="https://github.com/orzechow" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
   orzechow
 </a>
 and
 Nick Le Large&nbsp;
 <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
   ll-nick
 </a>.
 
