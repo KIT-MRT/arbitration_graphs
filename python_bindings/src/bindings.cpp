@@ -34,7 +34,8 @@ void bindUtilCaching(py::module& module) {
 ///         created here in the main arbitration_graphs module.
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindExceptions(mainModule);
-    bindVerifier(mainModule);
+    py::module verificationModule = mainModule.def_submodule("verification");
+    bindVerifier(verificationModule);
 
     bindBehavior(mainModule);
     bindArbitrator(mainModule);
