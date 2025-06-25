@@ -8,30 +8,18 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.2 (1:1.4.2+202505120738+ebf0e940d0)"
-   sodipodi:docname="arbitration_graphs_at_a_glance.svg"
+   sodipodi:docname="arbitration_graphs_at_a_glance_v2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <style
      id="style1">
-    :root {
-       color-scheme: light dark;
-    }
-
     /* Light mode (default) */
     .box, .box-filled { fill: #1e1e2e; stroke: #1e1e2e; }
     .arrow { fill: #b4befe; }
     .label, .label * { fill: #1e1e2e; }
     .title { fill: #eeeeee; }
-
-    /* Dark mode overrides */
-    @media (prefers-color-scheme: dark) {
-      .box, .box-filled { fill: #1e1e2e; stroke: #1e1e2e; }
-      .arrow { fill: #b4befe; }
-      .label, .label * { fill: #eeeeee; }
-      .title { fill: #eeeeee; }
-    }
   </style>
   <sodipodi:namedview
      id="namedview1"

@@ -1,0 +1,47 @@
+@mixin header-colors {
+  --header-heading-color: #fff;
+  --header-bg-color: #008383;
+  --header-bg-color-secondary: #00001D;
+}
+
+@mixin light-colors {
+  // Text
+  --section-headings-color: #257180;
+  --body-text-color: #606c71;
+  --body-link-color: #008383;
+  --blockquote-text-color: #819198;
+
+  // Code
+  --code-bg-color: #272822;
+  --code-text-color: #f8f8f2;
+
+  // Borders
+  --border-color: #dce6f0;
+  --table-border-color: #e9ebec;
+  --hr-border-color: #eff0f1;
+
+  // Miscellaneous
+  --bg-color: #fff;
+  --section-bg-color: var(--bg-color);
+}
+
+@mixin dark-colors {
+  // Text
+  --section-headings-color: #{lighten(#257180, 15%)};
+  --body-text-color: #ffffff;
+  --body-link-color: #{lighten(#257180, 20%)};
+  --blockquote-text-color: #b4b4b4;
+
+  // Code
+  --code-bg-color: #272822;
+  --code-text-color: #f8f8f2;
+
+  // Borders
+  --border-color: #606468;
+  --table-border-color: #3a3a3a;
+  --hr-border-color: #242424;
+
+  // Miscellaneous
+  --bg-color:hsl(0, 0%, 10%);
+  --section-bg-color: var(--bg-color);
+}
