@@ -5,6 +5,11 @@
 }
 
 @mixin light-colors {
+  // Navigation
+  --nav-text-color: hsl(0, 0%, 80%);
+  --nav-text-active-color: hsl(0, 0%, 20%);
+  --nav-text-focus-color: hsl(0, 0%, 40%);
+
   // Text
   --section-headings-color: #257180;
   --body-text-color: #606c71;
@@ -19,13 +24,19 @@
   --border-color: #dce6f0;
   --table-border-color: #e9ebec;
   --hr-border-color: #eff0f1;
+  --nav-border-color: hsl(0, 0%, 90%);
 
   // Miscellaneous
-  --bg-color: #fff;
+  --bg-color: hsl(0, 0%, 100%);
   --section-bg-color: var(--bg-color);
 }
 
 @mixin dark-colors {
+  // Navigation
+  --nav-text-color: hsl(0, 0%, 30%);
+  --nav-text-active-color: hsl(0, 0%, 90%);
+  --nav-text-focus-color: hsl(0, 0%, 70%);
+
   // Text
   --section-headings-color: #{lighten(#257180, 15%)};
   --body-text-color: #ffffff;
@@ -40,6 +51,7 @@
   --border-color: #606468;
   --table-border-color: #3a3a3a;
   --hr-border-color: #242424;
+  --nav-border-color: hsl(0, 0%, 20%);
 
   // Miscellaneous
   --bg-color:hsl(0, 0%, 10%);
