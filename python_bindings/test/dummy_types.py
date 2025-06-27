@@ -60,6 +60,7 @@ class BrokenDummyBehavior(DummyBehavior):
 
 class DummyResult(AbstractResult):
     def __init__(self, is_ok=True):
+        AbstractResult.__init__(self)
         self._is_ok = is_ok
 
     def is_ok(self):
@@ -71,7 +72,7 @@ class DummyResult(AbstractResult):
 
 class DummyVerifier(AbstractVerifier):
     def __init__(self, wrong="", reject_all=False):
-        super().__init__()
+        AbstractVerifier.__init__(self)
         self.wrong = wrong
         self.reject_all = reject_all
 
