@@ -16,7 +16,7 @@ namespace py = pybind11;
 namespace ag = arbitration_graphs;
 
 /// @brief A wrapper class (a.k.a. trampoline class) for the CostEstimator class to allow Python overrides.
-class PyCostEstimator : public ag::CostEstimator<CommandWrapper> {
+class PyCostEstimator : public ag::CostEstimator<CommandWrapper>, py::trampoline_self_life_support {
 public:
     // NOLINTBEGIN(readability-function-size)
     double estimateCost(const CommandWrapper& command, const bool isActive) override {
@@ -43,10 +43,9 @@ inline void bindCostArbitrator(py::module& module) {
     using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
 
-    py::class_<CostEstimatorT, PyCostEstimator, std::shared_ptr<CostEstimatorT>>(module, "CostEstimator")
-        .def(py::init<>());
+    py::classh<CostEstimatorT, PyCostEstimator>(module, "CostEstimator").def(py::init<>());
 
-    py::class_<CostArbitratorT, ArbitratorT, std::shared_ptr<CostArbitratorT>> costArbitrator(module, "CostArbitrator");
+    py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
         .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
@@ -59,7 +58,7 @@ inline void bindCostArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(costArbitrator, "Option");
+    py::classh<OptionT, ArbitratorOptionT> option(costArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
                py::arg("behavior"),
                py::arg("flags"),

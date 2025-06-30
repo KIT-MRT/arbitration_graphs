@@ -32,8 +32,7 @@ inline void bindPriorityArbitrator(py::module& module) {
     using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
 
-    py::class_<PriorityArbitratorT, ArbitratorT, std::shared_ptr<PriorityArbitratorT>> priorityArbitrator(
-        module, "PriorityArbitrator");
+    py::classh<PriorityArbitratorT, ArbitratorT> priorityArbitrator(module, "PriorityArbitrator");
     priorityArbitrator
         .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "PriorityArbitrator",
@@ -47,7 +46,7 @@ inline void bindPriorityArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
+    py::classh<OptionT, ArbitratorOptionT> option(priorityArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")

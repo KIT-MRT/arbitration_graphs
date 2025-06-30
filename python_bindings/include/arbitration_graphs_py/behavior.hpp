@@ -13,7 +13,7 @@ namespace py = pybind11;
 namespace ag = arbitration_graphs;
 
 /// @brief A wrapper class (a.k.a. trampoline class) for the Behavior class to allow Python overrides
-class PyBehavior : public ag::Behavior<CommandWrapper> {
+class PyBehavior : public ag::Behavior<CommandWrapper>, py::trampoline_self_life_support {
 public:
     using BaseT = ag::Behavior<CommandWrapper>;
 
@@ -51,9 +51,8 @@ public:
 inline void bindBehavior(py::module& module) {
     using BehaviorT = ag::Behavior<CommandWrapper>;
 
-    py::class_<BehaviorT,                  // The base class
-               PyBehavior,                 // The trampoline class enabling Python overrides
-               std::shared_ptr<BehaviorT>> // The holder type enabling shared ownership
+    py::classh<BehaviorT,  // The base class
+               PyBehavior> // The trampoline class enabling Python overrides
         (module, "Behavior")
             .def(py::init<const std::string&>(), py::arg("name") = "Behavior")
             .def(

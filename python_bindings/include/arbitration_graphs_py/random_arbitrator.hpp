@@ -32,8 +32,7 @@ inline void bindRandomArbitrator(py::module& module) {
     using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
 
-    py::class_<RandomArbitratorT, ArbitratorT, std::shared_ptr<RandomArbitratorT>> randomArbitrator(module,
-                                                                                                    "RandomArbitrator");
+    py::classh<RandomArbitratorT, ArbitratorT> randomArbitrator(module, "RandomArbitrator");
     randomArbitrator
         .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "RandomArbitrator",
@@ -47,7 +46,7 @@ inline void bindRandomArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(randomArbitrator, "Option");
+    py::classh<OptionT, ArbitratorOptionT> option(randomArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const double&>(),
                py::arg("behavior"),
                py::arg("flags"),
