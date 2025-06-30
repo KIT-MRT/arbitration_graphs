@@ -93,7 +93,8 @@ TEST_F(CommandVerificationTest, PlaceboVerifier) {
 TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     using OptionFlags = PriorityArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
-    PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
+    PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
+                                                                                   std::make_shared<DummyVerifier>());
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -158,7 +159,8 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
 TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
     using OptionFlags = PriorityArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
-    PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
+    PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
+                                                                                   std::make_shared<DummyVerifier>());
 
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
@@ -218,7 +220,8 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
 TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     using OptionFlags = CostArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator;
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator("CostArbitrator",
+                                                                           std::make_shared<DummyVerifier>());
 
     CostEstimatorFromCostMap::CostMap costMap{{"HighPriority", 0}, {"MidPriority", 0.5}, {"LowPriority", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
