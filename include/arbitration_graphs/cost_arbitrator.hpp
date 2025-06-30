@@ -12,12 +12,14 @@
 
 namespace arbitration_graphs {
 
-template <typename SubCommandT>
+template <typename EnvironmentModelT, typename SubCommandT>
 struct CostEstimator {
     using Ptr = std::shared_ptr<CostEstimator>;
     using ConstPtr = std::shared_ptr<const CostEstimator>;
 
-    virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
+    virtual double estimateCost(const EnvironmentModelT& environmentModel,
+                                const SubCommandT& command,
+                                const bool isActive) = 0;
 };
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
@@ -28,6 +30,7 @@ public:
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
+    using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
     using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
 
     struct Option : ArbitratorBase::Option {
@@ -39,7 +42,7 @@ public:
 
         Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
-               const typename CostEstimator<SubCommandT>::Ptr& costEstimator)
+               const typename CostEstimatorT::Ptr& costEstimator)
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
@@ -71,7 +74,7 @@ public:
          */
         virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
-        typename CostEstimator<SubCommandT>::Ptr costEstimator_;
+        typename CostEstimatorT::Ptr costEstimator_;
         mutable std::optional<double> last_estimated_cost_;
     };
 
@@ -83,7 +86,7 @@ public:
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags,
-                   const typename CostEstimator<SubCommandT>::Ptr& costEstimator) {
+                   const typename CostEstimatorT::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
         this->behaviorOptions_.push_back(option);
     }
@@ -132,7 +135,7 @@ private:
                 continue;
             }
 
-            double cost = option->costEstimator_->estimateCost(command.value(), isActive);
+            double cost = option->costEstimator_->estimateCost(environmentModel, command.value(), isActive);
             option->last_estimated_cost_ = cost;
             sortedOptionsMap.insert({cost, option});
         }
