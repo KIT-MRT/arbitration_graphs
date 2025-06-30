@@ -1,8 +1,5 @@
 #pragma once
 
-#include <ostream>
-#include <stdexcept>
-
 #include <arbitration_graphs/types.hpp>
 #include <arbitration_graphs/verification.hpp>
 #include <pybind11/pybind11.h>
