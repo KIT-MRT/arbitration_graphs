@@ -25,19 +25,14 @@ namespace arbitration_graphs {
  * \note If CommandT != SubCommandT either
  *       - override getCommand() in your specialized Arbitrator or
  *       - provide a CommandT(const SubCommandT&) constructor
- *
- * \note As long as VerifierT::analyze() is static the VerificationResultT type can be deduced by the compiler,
- *       otherwise you have to pass it as template argument
  */
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
-          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
 class Arbitrator : public Behavior<EnvironmentModelT, CommandT> {
 public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
+
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
 
     /*!
      * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags
@@ -64,7 +59,7 @@ public:
         typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
         FlagsT flags_;
         mutable util_caching::Cache<Time, SubCommandT> command_;
-        mutable util_caching::Cache<Time, VerificationResultT> verificationResult_;
+        mutable util_caching::Cache<Time, verification::AbstractResult::ConstPtr> verificationResult_;
 
         SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
             if (!command_.cached(time)) {
@@ -109,8 +104,9 @@ public:
     using ConstOptions = std::vector<typename Option::ConstPtr>;
 
 
-    Arbitrator(const std::string& name = "Arbitrator", const VerifierT& verifier = VerifierT())
-            : Behavior<EnvironmentModelT, CommandT>(name), verifier_{verifier} {};
+    Arbitrator(const std::string& name = "Arbitrator",
+               VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+            : Behavior<EnvironmentModelT, CommandT>(name), verifier_(verifier) {};
 
 
     virtual void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
@@ -267,7 +263,7 @@ protected:
     Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;
 
-    VerifierT verifier_;
+    typename verification::AbstractVerifier<SubCommandT>::Ptr verifier_;
 };
 } // namespace arbitration_graphs
 

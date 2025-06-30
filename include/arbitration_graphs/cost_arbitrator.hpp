@@ -20,17 +20,15 @@ struct CostEstimator {
     virtual double estimateCost(const SubCommandT& command, const bool isActive) = 0;
 };
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
-          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class CostArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT> {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
+class CostArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT> {
 public:
-    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT>;
 
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
+
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
 
     struct Option : ArbitratorBase::Option {
         using Ptr = std::shared_ptr<Option>;
@@ -78,7 +76,8 @@ public:
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator", const VerifierT& verifier = VerifierT())
+    CostArbitrator(const std::string& name = "CostArbitrator",
+                   VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
             : ArbitratorBase(name, verifier) {};
 
 

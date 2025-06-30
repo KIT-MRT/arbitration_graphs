@@ -40,8 +40,8 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInPriorityArbitrator) {
     ASSERT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
 
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
-    EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time).value()->isOk());
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
@@ -74,7 +74,7 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInCommitedBehavior) {
     // On the first call, the high priority behavior should be selected like it normally would
     EXPECT_EQ("HighPriority", testPriorityArbitrator.getCommand(time, environmentModel));
     ASSERT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time).value()->isOk());
 
     // Progress time to not retreive cached commands
     time += Duration(1);
@@ -85,8 +85,8 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInCommitedBehavior) {
     ASSERT_TRUE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
     ASSERT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
 
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
-    EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time).value()->isOk());
 }
 
 TEST_F(ExceptionHandlingTest, HandleExceptionsInCostArbitrator) {
@@ -113,6 +113,6 @@ TEST_F(ExceptionHandlingTest, HandleExceptionsInCostArbitrator) {
     ASSERT_TRUE(testCostArbitrator.options().at(0)->verificationResult_.cached(time));
     ASSERT_TRUE(testCostArbitrator.options().at(1)->verificationResult_.cached(time));
 
-    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult_.cached(time)->isOk());
-    EXPECT_TRUE(testCostArbitrator.options().at(1)->verificationResult_.cached(time)->isOk());
+    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_TRUE(testCostArbitrator.options().at(1)->verificationResult_.cached(time).value()->isOk());
 }

@@ -10,17 +10,15 @@
 
 namespace arbitration_graphs {
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
-          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class PriorityArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT> {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
+class PriorityArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT> {
 public:
-    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT>;
 
     using Ptr = std::shared_ptr<PriorityArbitrator>;
     using ConstPtr = std::shared_ptr<const PriorityArbitrator>;
+
+    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
 
     struct Option : public ArbitratorBase::Option {
     public:
@@ -55,8 +53,9 @@ public:
                                         const std::string& suffix = "") const;
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator", const VerifierT& verifier = VerifierT())
-            : ArbitratorBase(name, verifier){};
+    PriorityArbitrator(const std::string& name = "PriorityArbitrator",
+                       VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+            : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags) {
@@ -78,9 +77,10 @@ protected:
      *
      * @return  Behavior options sorted by priority
      */
-    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
-                                                              const Time& time,
-                                                              const EnvironmentModelT& environmentModel) const override {
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(
+        const typename ArbitratorBase::Options& options,
+        const Time& time,
+        const EnvironmentModelT& environmentModel) const override {
         // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
         return options;
     }

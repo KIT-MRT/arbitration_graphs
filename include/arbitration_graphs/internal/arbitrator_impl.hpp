@@ -3,21 +3,16 @@
 #include "../arbitrator.hpp"
 
 #include <glog/logging.h>
+#include "verification.hpp"
 
 
 namespace arbitration_graphs {
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-typename Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::Options Arbitrator<
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+typename Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Options Arbitrator<
     EnvironmentModelT,
     CommandT,
-    SubCommandT,
-    VerifierT,
-    VerificationResultT>::applicableOptions(const Time& time, const EnvironmentModelT& environmentModel) const {
+    SubCommandT>::applicableOptions(const Time& time, const EnvironmentModelT& environmentModel) const {
 
     Options options;
     std::copy_if(behaviorOptions_.begin(),
@@ -27,34 +22,21 @@ typename Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, Verific
     return options;
 };
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::isActive(
-    const typename Option::Ptr& option) const {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::isActive(const typename Option::Ptr& option) const {
     return activeBehavior_ && option == activeBehavior_;
 }
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::isApplicable(
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::isApplicable(
     const typename Option::Ptr& option, const Time& time, const EnvironmentModelT& environmentModel) const {
     const bool isActiveAndCanBeContinued =
         isActive(option) && option->behavior_->checkCommitmentCondition(time, environmentModel);
     return isActiveAndCanBeContinued || option->behavior_->checkInvocationCondition(time, environmentModel);
 }
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-std::size_t Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::getOptionIndex(
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::size_t Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getOptionIndex(
     const typename Option::ConstPtr& behaviorOption) const {
     const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
 
@@ -65,23 +47,17 @@ std::size_t Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, Veri
         "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
 }
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::
-    getAndVerifyCommand(const typename Option::Ptr& option,
-                        const Time& time,
-                        const EnvironmentModelT& environmentModel) const {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCommand(
+    const typename Option::Ptr& option, const Time& time, const EnvironmentModelT& environmentModel) const {
     try {
         const SubCommandT command = option->getCommand(time, environmentModel);
 
-        const VerificationResultT verificationResult = verifier_.analyze(time, command);
+        const verification::AbstractResult::ConstPtr verificationResult = verifier_->analyze(time, command);
         option->verificationResult_.cache(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification
-        if (verificationResult.isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
+        if (verificationResult->isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
             return command;
         }
         // given option is applicable, but not safe
@@ -94,20 +70,16 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT, 
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
-        option->verificationResult_.cache(time, VerificationResultT{false});
+        option->verificationResult_.cache(time, std::make_shared<verification::PlaceboResult>(false));
         VLOG(1) << "Given option " << option->behavior_->name_
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
     return std::nullopt;
 }
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::
-    getAndVerifyCommandFromActive(const Time& time, const EnvironmentModelT& environmentModel) {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCommandFromActive(
+    const Time& time, const EnvironmentModelT& environmentModel) {
     bool activeBehaviorCanBeContinued =
         activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time, environmentModel);
 
@@ -132,15 +104,9 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT, 
     return std::nullopt;
 }
 
-template <typename EnvironmentModelT,
-          typename CommandT,
-          typename SubCommandT,
-          typename VerifierT,
-          typename VerificationResultT>
-SubCommandT Arbitrator<EnvironmentModelT, CommandT, SubCommandT, VerifierT, VerificationResultT>::
-    getAndVerifyCommandFromApplicable(const Options& options,
-                                      const Time& time,
-                                      const EnvironmentModelT& environmentModel) {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+SubCommandT Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCommandFromApplicable(
+    const Options& options, const Time& time, const EnvironmentModelT& environmentModel) {
     for (const auto& bestOption : options) {
         if (!activeBehavior_ || bestOption != activeBehavior_) {
             // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
