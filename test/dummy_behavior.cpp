@@ -54,17 +54,23 @@ protected:
     DummyBehavior testBehaviorTrue{true, true};
     DummyEnvironmentModel environmentModel;
 
-    DummyCommand expected_command{"DummyBehavior using RobotState"};
+    DummyCommand expected_command{"DummyBehavior"};
 
     Time time{Clock::now()};
 };
 
 TEST_F(DummyBehaviorTest, BasicInterface) {
+    EXPECT_EQ(0, environmentModel.getAccessCounter());
     EXPECT_EQ(expected_command, testBehaviorTrue.getCommand(time, environmentModel));
+    EXPECT_EQ(1, environmentModel.getAccessCounter());
     EXPECT_TRUE(testBehaviorTrue.checkCommitmentCondition(time, environmentModel));
+    EXPECT_EQ(2, environmentModel.getAccessCounter());
     EXPECT_TRUE(testBehaviorTrue.checkInvocationCondition(time, environmentModel));
+    EXPECT_EQ(3, environmentModel.getAccessCounter());
     EXPECT_NO_THROW(testBehaviorTrue.gainControl(time, environmentModel));
+    EXPECT_EQ(4, environmentModel.getAccessCounter());
     EXPECT_NO_THROW(testBehaviorTrue.loseControl(time, environmentModel));
+    EXPECT_EQ(5, environmentModel.getAccessCounter());
 }
 
 TEST_F(DummyBehaviorTest, Printout) {

@@ -38,7 +38,15 @@ bool operator==(const int command_int, const DummyCommandInt& command_object) {
 }
 
 struct DummyEnvironmentModel {
-    std::string state_{"RobotState"};
+    // A mock getter function that simply simulates accessing the environment model.
+    void getObservation() const {
+        accessCounter++;
+    }
+    int getAccessCounter() const {
+        return accessCounter;
+    }
+
+    mutable int accessCounter{0};
 };
 
 class DummyBehavior : public Behavior<DummyEnvironmentModel, DummyCommand> {
@@ -50,15 +58,22 @@ public:
 
     DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
         getCommandCounter_++;
-        return name_ + " using " + environmentModel.state_;
+        environmentModel.getObservation();
+        return name_;
     }
     bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+        environmentModel.getObservation();
         return invocationCondition_;
     }
     bool checkCommitmentCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+        environmentModel.getObservation();
         return commitmentCondition_;
     }
-    virtual void loseControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+    void gainControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+        environmentModel.getObservation();
+    }
+    void loseControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+        environmentModel.getObservation();
         loseControlCounter_++;
     }
 
@@ -80,9 +95,10 @@ public:
         if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
             throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
         }
+        environmentModel.getObservation();
 
         getCommandCounter_++;
-        return name_ + " using " + environmentModel.state_;
+        return name_;
     }
 
 private:

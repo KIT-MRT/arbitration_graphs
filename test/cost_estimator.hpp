@@ -20,16 +20,11 @@ struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, Du
     virtual double estimateCost(const DummyEnvironmentModel& environmentModel,
                                 const DummyCommand& command,
                                 const bool isActive) override {
-
-        // Strip the "using <state>" part from the command
-        std::string toRemove = " using " + environmentModel.state_;
-        size_t pos = command.find(toRemove);
-        std::string strippedCommand = (pos != std::string::npos) ? command.substr(0, pos) : command;
-
+        environmentModel.getObservation();
         if (isActive) {
-            return costMap_.at(strippedCommand) / (1 + activationCosts_);
+            return costMap_.at(command) / (1 + activationCosts_);
         } else {
-            return (costMap_.at(strippedCommand) + activationCosts_) / (1 + activationCosts_);
+            return (costMap_.at(command) + activationCosts_) / (1 + activationCosts_);
         }
     }
 
