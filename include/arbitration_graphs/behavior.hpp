@@ -110,6 +110,7 @@ public:
      * \brief Returns a string representation of the behavior object with its current state using to_stream()
      *
      * \param time      Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \param prefix    A string that should be prepended to each line this function writes
      * \param suffix    A string that should be appended to each line this function writes
      * \return          String representation of this behavior
@@ -154,6 +155,7 @@ public:
      * \brief Returns a yaml representation of the behavior object with its current state
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const;

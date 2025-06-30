@@ -37,7 +37,7 @@ public:
          *
          * \param output        Output stream to write into, will be returned also
          * \param time          Expected execution time point of this behaviors command
-         * \param environmentModel  Environment model at the time of execution
+         * \param environmentModel  A read-only object containing the current state of the environment
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -67,6 +67,7 @@ public:
      * \brief Returns a yaml representation of the arbitrator object with its current state
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;

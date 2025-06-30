@@ -77,7 +77,7 @@ public:
          *
          * \param output        Output stream to write into, will be returned also
          * \param time          Expected execution time point of this behaviors command
-         * \param environmentModel Environment model for the behavior
+         * \param environmentModel  A read-only object containing the current state of the environment
          * \param option_index  Position index of this option within behaviorOptions_
          * \param prefix        A string that should be prepended to each line that is written to the output stream
          * \param suffix        A string that should be appended to each line that is written to the output stream
@@ -177,7 +177,7 @@ public:
      *
      * \param output    Output stream to write into, will be returned also
      * \param time      Expected execution time point of this behaviors command
-     * \param environmentModel Environment model for the behavior
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \param prefix    A string that should be prepended to each line that is written to the output stream
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
@@ -194,6 +194,7 @@ public:
      * \brief Returns a yaml representation of the arbitrator object with its current state
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
     virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
@@ -233,6 +234,7 @@ protected:
      *
      * @param option    Behavior option to call and verify
      * @param time      Expected execution time point of this behaviors command
+     * @param environmentModel  A read-only object containing the current state of the environment
      * @return Command of the given option, if it passed verification, otherwise nullopt
      */
     std::optional<SubCommandT> getAndVerifyCommand(const typename Option::Ptr& option,
@@ -243,6 +245,7 @@ protected:
      * @brief Get and verify the command from the active behavior, if there is an active one
      *
      * @param time  Expected execution time point of this behaviors command
+     * @param environmentModel  A read-only object containing the current state of the environment
      * @return Command of the active option, if it exists, can be continued and it passed verification,
      *         otherwise nullopt
      */
@@ -254,6 +257,7 @@ protected:
      *
      * @param options   Applicable behavior options, sorted by custom policy (descending: first is best)
      * @param time      Expected execution time point of this behaviors command
+     * @param environmentModel  A read-only object containing the current state of the environment
      * @return Command of best option passing verification, throws if none passes
      */
     SubCommandT getAndVerifyCommandFromApplicable(const Options& options,
