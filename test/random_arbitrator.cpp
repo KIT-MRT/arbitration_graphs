@@ -88,26 +88,18 @@ TEST_F(RandomArbitratorTest, BasicFunctionality) {
     testRandomArbitrator.gainControl(time, environmentModel);
 
     int sampleSize = 1000;
-    std::map<std::string, int> commandCounter{{"Unavailable using RobotState", 0},
-                                              {"HighWeight using RobotState", 0},
-                                              {"MidWeight using RobotState", 0},
-                                              {"LowWeight using RobotState", 0}};
+    std::map<std::string, int> commandCounter{
+        {"Unavailable", 0}, {"HighWeight", 0}, {"MidWeight", 0}, {"LowWeight", 0}};
 
     for (int i = 0; i < sampleSize; i++) {
         std::string command = testRandomArbitrator.getCommand(time, environmentModel);
         commandCounter[command]++;
     }
 
-    EXPECT_EQ(0, commandCounter["Unavailable using RobotState"]);
-    EXPECT_NEAR(2.5 / weightSumOfAvailableOptions,
-                commandCounter["HighWeight using RobotState"] / static_cast<double>(sampleSize),
-                0.1);
-    EXPECT_NEAR(1.0 / weightSumOfAvailableOptions,
-                commandCounter["MidWeight using RobotState"] / static_cast<double>(sampleSize),
-                0.1);
-    EXPECT_NEAR(0.5 / weightSumOfAvailableOptions,
-                commandCounter["LowWeight using RobotState"] / static_cast<double>(sampleSize),
-                0.1);
+    EXPECT_EQ(0, commandCounter["Unavailable"]);
+    EXPECT_NEAR(2.5 / weightSumOfAvailableOptions, commandCounter["HighWeight"] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(1.0 / weightSumOfAvailableOptions, commandCounter["MidWeight"] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(0.5 / weightSumOfAvailableOptions, commandCounter["LowWeight"] / static_cast<double>(sampleSize), 0.1);
 }
 
 TEST_F(RandomArbitratorTest, Printout) {
@@ -133,7 +125,7 @@ TEST_F(RandomArbitratorTest, Printout) {
 
 
     testRandomArbitrator.gainControl(time, environmentModel);
-    EXPECT_EQ("MidWeight using RobotState", testRandomArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "RandomArbitrator\n"
@@ -212,6 +204,6 @@ TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
 
     testRandomArbitrator.gainControl(time, environmentModel);
 
-    std::string expected = "__MidWeight__ using RobotState";
+    std::string expected = "__MidWeight__";
     EXPECT_EQ(expected.length(), testRandomArbitrator.getCommand(time, environmentModel));
 }
