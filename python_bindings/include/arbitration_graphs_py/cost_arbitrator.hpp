@@ -18,10 +18,19 @@ namespace ag = arbitration_graphs;
 /// @brief A wrapper class (a.k.a. trampoline class) for the CostEstimator class to allow Python overrides.
 class PyCostEstimator : public ag::CostEstimator<CommandWrapper>, py::trampoline_self_life_support {
 public:
+    using BaseT = ag::CostEstimator<CommandWrapper>;
+
+    using BaseT::BaseT;
+
+    virtual ~PyCostEstimator() = default;
+    PyCostEstimator(const PyCostEstimator&) = default;
+    PyCostEstimator(PyCostEstimator&&) = default;
+    PyCostEstimator& operator=(const PyCostEstimator&) = delete;
+    PyCostEstimator& operator=(PyCostEstimator&&) = delete;
+
     // NOLINTBEGIN(readability-function-size)
     double estimateCost(const CommandWrapper& command, const bool isActive) override {
-        PYBIND11_OVERRIDE_PURE_NAME(
-            double, CostEstimator<CommandWrapper>, "estimate_cost", estimateCost, command, isActive);
+        PYBIND11_OVERRIDE_PURE_NAME(double, BaseT, "estimate_cost", estimateCost, command, isActive);
     }
     // NOLINTEND(readability-function-size)
 };

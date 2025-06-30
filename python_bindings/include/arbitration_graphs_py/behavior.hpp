@@ -17,7 +17,13 @@ class PyBehavior : public ag::Behavior<CommandWrapper>, py::trampoline_self_life
 public:
     using BaseT = ag::Behavior<CommandWrapper>;
 
-    using Behavior::Behavior;
+    using BaseT::BaseT;
+
+    virtual ~PyBehavior() = default;
+    PyBehavior(const PyBehavior&) = default;
+    PyBehavior(PyBehavior&&) = default;
+    PyBehavior& operator=(const PyBehavior&) = delete;
+    PyBehavior& operator=(PyBehavior&&) = delete;
 
     // NOLINTBEGIN(readability-function-size)
     CommandWrapper getCommand(const ag::Time& time) override {
