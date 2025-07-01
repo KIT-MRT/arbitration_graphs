@@ -31,10 +31,10 @@ public:
             : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
     }
 
-    Command getCommand(const Time& time) override;
+    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
-    bool checkInvocationCondition(const Time& time) const override;
-    bool checkCommitmentCondition(const Time& time) const override;
+    bool checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const override;
+    bool checkCommitmentCondition(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 private:
     EnvironmentModel::Ptr environmentModel_;

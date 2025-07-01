@@ -64,8 +64,8 @@ public:
                                        PriorityArbitrator::Option::FALLBACK);
     }
 
-    Command getCommand(const Time& time) {
-        return rootArbitrator_->getCommand(time);
+    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) {
+        return rootArbitrator_->getCommand(time, environmentModel);
     }
 
     void updateEnvironmentModel(const entt::Game& game) {
@@ -76,18 +76,18 @@ public:
         return environmentModel_;
     }
 
-    std::ostream& to_stream(std::ostream& output, const Time& time) const {
+    std::ostream& to_stream(std::ostream& output, const Time& time, const EnvironmentModel& environmentModel) const {
         return rootArbitrator_->to_stream(output, time);
     }
-    std::string to_str(const Time& time) const {
+    std::string to_str(const Time& time, const EnvironmentModel& environmentModel) const {
         std::stringstream stringStream;
         to_stream(stringStream, time);
         return stringStream.str();
     }
-    std::string yamlString(const Time& time) const {
+    std::string yamlString(const Time& time, const EnvironmentModel& environmentModel) const {
         YAML::Node node;
         node["type"] = "PacmanArbitrator";
-        node["arbitration"] = rootArbitrator_->toYaml(time);
+        node["arbitration"] = rootArbitrator_->toYaml(time, environmentModel);
         std::stringstream yamlString;
         yamlString << node;
         return yamlString.str();

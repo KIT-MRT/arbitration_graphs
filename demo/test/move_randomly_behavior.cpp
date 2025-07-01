@@ -19,10 +19,10 @@ TEST(MoveRandomlyTest, getCachedCommand) {
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
-    Command firstCommand = moveRandomlyBehavior.getCommand(time);
+    Command firstCommand = moveRandomlyBehavior.getCommand(time, environmentModel);
 
     time += 0.5 * selectionValidFor;
-    Command secondCommand = moveRandomlyBehavior.getCommand(time);
+    Command secondCommand = moveRandomlyBehavior.getCommand(time, environmentModel);
 
     // We return the first selection until after selectionValidFor so the commands should be identical
     ASSERT_EQ(firstCommand.nextDirection(), secondCommand.nextDirection());
@@ -39,7 +39,7 @@ TEST(MoveRandomlyTest, getRandomCommand) {
         {Direction::UP, 0}, {Direction::DOWN, 0}, {Direction::LEFT, 0}, {Direction::RIGHT, 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        Direction direction = moveRandomlyBehavior.getCommand(time).nextDirection();
+        Direction direction = moveRandomlyBehavior.getCommand(time, environmentModel).nextDirection();
         directionCounter[direction]++;
 
         // We need to progress time to force a re-selection of a new direction

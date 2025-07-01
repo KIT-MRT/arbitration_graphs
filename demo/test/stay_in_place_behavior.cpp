@@ -30,19 +30,19 @@ TEST_F(StayInPlaceBehaviorTest, getCommand) {
     Time time = Clock::now();
 
     environmentModel_->setPacmanDirection(Direction::LEFT);
-    Command command = stayInPlaceBehavior_.getCommand(time);
+    Command command = stayInPlaceBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
 
     environmentModel_->setPacmanDirection(Direction::RIGHT);
-    command = stayInPlaceBehavior_.getCommand(time);
+    command = stayInPlaceBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::LEFT);
 
     environmentModel_->setPacmanDirection(Direction::UP);
-    command = stayInPlaceBehavior_.getCommand(time);
+    command = stayInPlaceBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::DOWN);
 
     environmentModel_->setPacmanDirection(Direction::DOWN);
-    command = stayInPlaceBehavior_.getCommand(time);
+    command = stayInPlaceBehavior_.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::UP);
 }
 
