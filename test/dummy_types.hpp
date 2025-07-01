@@ -42,9 +42,6 @@ struct DummyEnvironmentModel {
     void getObservation() const {
         accessCounter++;
     }
-    int getAccessCounter() const {
-        return accessCounter;
-    }
 
     mutable int accessCounter{0};
 };

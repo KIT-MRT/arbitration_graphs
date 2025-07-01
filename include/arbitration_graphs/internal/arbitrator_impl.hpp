@@ -117,7 +117,7 @@ SubCommandT Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCo
         // otherwise we have bestOption == activeBehavior_ which already gained control
 
         // an arbitrator as option might not return a command,
-        // if its applicable options fail verification or throw an excjection:
+        // if its applicable options fail verification or throw an exception:
         const std::optional<SubCommandT> command = getAndVerifyCommand(bestOption, time, environmentModel);
         if (command) {
             if (activeBehavior_ && bestOption != activeBehavior_) {
