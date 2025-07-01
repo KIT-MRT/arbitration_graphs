@@ -17,7 +17,8 @@ struct CostEstimator {
     using Ptr = std::shared_ptr<CostEstimator>;
     using ConstPtr = std::shared_ptr<const CostEstimator>;
 
-    virtual double estimateCost(const EnvironmentModelT& environmentModel,
+    virtual double estimateCost(const Time& time,
+                                const EnvironmentModelT& environmentModel,
                                 const SubCommandT& command,
                                 const bool isActive) = 0;
 };
@@ -137,7 +138,7 @@ private:
                 continue;
             }
 
-            double cost = option->costEstimator_->estimateCost(environmentModel, command.value(), isActive);
+            double cost = option->costEstimator_->estimateCost(time, environmentModel, command.value(), isActive);
             option->last_estimated_cost_ = cost;
             sortedOptionsMap.insert({cost, option});
         }

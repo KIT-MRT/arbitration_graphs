@@ -17,7 +17,8 @@ struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, Du
     CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
             : costMap_{costMap}, activationCosts_{activationCosts} {};
 
-    virtual double estimateCost(const DummyEnvironmentModel& environmentModel,
+    virtual double estimateCost(const Time& /*time*/,
+                                const DummyEnvironmentModel& environmentModel,
                                 const DummyCommand& command,
                                 const bool isActive) override {
         environmentModel.getObservation();
