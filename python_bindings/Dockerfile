@@ -64,26 +64,24 @@ RUN yum update -y && \
     yum clean all
 
 # Build glog from source to get up-to-date version that can be found without FindGlog.cmake
-RUN git clone https://github.com/google/glog.git && \
-    cd glog && \
+RUN git clone https://github.com/google/glog.git /tmp/glog && \
+    cd /tmp/glog && \
     mkdir build && \
     cd build && \
     cmake -DBUILD_SHARED_LIBS=OFF .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf glog
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/glog
 
 # Build util_caching
-RUN git clone https://github.com/KIT-MRT/util_caching.git && \
-    cd util_caching && \
+RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
+    cd /tmp/util_caching && \
     mkdir build && \
     cd build && \
     cmake .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf util_caching
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/util_caching
 
 # Build arbitration_graphs
 COPY cmake /tmp/arbitration_graphs/cmake
