@@ -10,7 +10,8 @@ services:
 
   wheel_builder:
     build:
-      context: .
+      context: ..
+      dockerfile: python_bindings/Dockerfile
       target: wheel_builder
     image: arbitration_graphs_wheel_builder
 

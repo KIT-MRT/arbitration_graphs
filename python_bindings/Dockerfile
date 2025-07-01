@@ -86,13 +86,17 @@ RUN git clone https://github.com/KIT-MRT/util_caching.git && \
     rm -rf util_caching
 
 # Build arbitration_graphs
-RUN git clone https://github.com/KIT-MRT/arbitration_graphs.git && \
-    cd arbitration_graphs && \
-    mkdir build && \
-    cd build && \
-    cmake -DBUILD_GUI=false .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf arbitration_graphs
+COPY cmake /tmp/arbitration_graphs/cmake
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY include /tmp/arbitration_graphs/include
+COPY LICENSE /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
+COPY version /tmp/arbitration_graphs/
+
+WORKDIR /tmp/arbitration_graphs/build
+
+RUN cmake -DBUILD_GUI=false .. && \
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/arbitration_graphs
 
