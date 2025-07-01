@@ -64,35 +64,37 @@ RUN yum update -y && \
     yum clean all
 
 # Build glog from source to get up-to-date version that can be found without FindGlog.cmake
-RUN git clone https://github.com/google/glog.git && \
-    cd glog && \
+RUN git clone https://github.com/google/glog.git /tmp/glog && \
+    cd /tmp/glog && \
     mkdir build && \
     cd build && \
     cmake -DBUILD_SHARED_LIBS=OFF .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf glog
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/glog
 
 # Build util_caching
-RUN git clone https://github.com/KIT-MRT/util_caching.git && \
-    cd util_caching && \
+RUN git clone https://github.com/KIT-MRT/util_caching.git /tmp/util_caching && \
+    cd /tmp/util_caching && \
     mkdir build && \
     cd build && \
     cmake .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf util_caching
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/util_caching
 
 # Build arbitration_graphs
-RUN git clone https://github.com/KIT-MRT/arbitration_graphs.git && \
-    cd arbitration_graphs && \
-    mkdir build && \
-    cd build && \
-    cmake -DBUILD_GUI=false .. && \
-    make && \
-    make install && \
-    cd ../.. && \
-    rm -rf arbitration_graphs
+COPY cmake /tmp/arbitration_graphs/cmake
+COPY CMakeLists.txt /tmp/arbitration_graphs/
+COPY include /tmp/arbitration_graphs/include
+COPY LICENSE /tmp/arbitration_graphs/
+COPY README.md /tmp/arbitration_graphs/
+COPY version /tmp/arbitration_graphs/
+
+WORKDIR /tmp/arbitration_graphs/build
+
+RUN cmake -DBUILD_GUI=false .. && \
+    cmake --build . && \
+    cmake --install . && \
+    rm -rf /tmp/arbitration_graphs
 
