@@ -15,10 +15,12 @@
 using namespace arbitration_graphs;
 using namespace arbitration_graphs_tests;
 
-using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyCommand>;
+using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyEnvironmentModel, DummyCommand>;
 
-struct DummyVerifier : public verification::AbstractVerifier<DummyCommand> {
-    verification::AbstractResult::Ptr analyze(const Time& /*time*/, const DummyCommand& data) const override {
+struct DummyVerifier : public verification::AbstractVerifier<DummyEnvironmentModel, DummyCommand> {
+    verification::AbstractResult::Ptr analyze(const Time& /*time*/,
+                                              const DummyEnvironmentModel& environmentModel,
+                                              const DummyCommand& data) const override {
         if (data == wrong_) {
             return std::make_shared<DummyResult>(false);
         }

@@ -18,15 +18,17 @@ public:
     virtual bool isOk() const = 0;
 };
 
-template <typename DataT>
+template <typename EnvironmentModelT, typename DataT>
 class AbstractVerifier {
 public:
-    using Ptr = std::shared_ptr<AbstractVerifier<DataT>>;
-    using ConstPtr = std::shared_ptr<const AbstractVerifier<DataT>>;
+    using Ptr = std::shared_ptr<AbstractVerifier>;
+    using ConstPtr = std::shared_ptr<const AbstractVerifier>;
 
     virtual ~AbstractVerifier() = default;
 
-    virtual AbstractResult::Ptr analyze(const Time& time, const DataT& data) const = 0;
+    virtual AbstractResult::Ptr analyze(const Time& time,
+                                        const EnvironmentModelT& environmentModel,
+                                        const DataT& data) const = 0;
 };
 
 /*!
@@ -46,9 +48,11 @@ public:
 private:
     bool isOk_{true};
 };
-template <typename DataT>
-struct PlaceboVerifier : public AbstractVerifier<DataT> {
-    AbstractResult::Ptr analyze(const Time& /*time*/, const DataT& /*data*/) const override {
+template <typename EnvironmentModelT, typename DataT>
+struct PlaceboVerifier : public AbstractVerifier<EnvironmentModelT, DataT> {
+    AbstractResult::Ptr analyze(const Time& /*time*/,
+                                const EnvironmentModelT& /*environmentModel*/,
+                                const DataT& /*data*/) const override {
         return std::make_shared<PlaceboResult>();
     };
 };

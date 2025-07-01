@@ -32,7 +32,8 @@ public:
     using Ptr = std::shared_ptr<Arbitrator>;
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
-    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+    using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
 
     /*!
      * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags
@@ -105,7 +106,7 @@ public:
 
 
     Arbitrator(const std::string& name = "Arbitrator",
-               VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+               typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : Behavior<EnvironmentModelT, CommandT>(name), verifier_(verifier) {};
 
 
@@ -267,7 +268,7 @@ protected:
     Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;
 
-    typename verification::AbstractVerifier<SubCommandT>::Ptr verifier_;
+    typename VerifierT::Ptr verifier_;
 };
 } // namespace arbitration_graphs
 

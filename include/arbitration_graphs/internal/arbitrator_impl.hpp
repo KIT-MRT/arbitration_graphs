@@ -53,7 +53,8 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
     try {
         const SubCommandT command = option->getCommand(time, environmentModel);
 
-        const verification::AbstractResult::ConstPtr verificationResult = verifier_->analyze(time, command);
+        const verification::AbstractResult::ConstPtr verificationResult =
+            verifier_->analyze(time, environmentModel, command);
         option->verificationResult_.cache(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification

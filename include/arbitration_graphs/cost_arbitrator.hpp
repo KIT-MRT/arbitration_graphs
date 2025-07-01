@@ -31,7 +31,8 @@ public:
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
     using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
-    using VerifierPtr = std::shared_ptr<verification::AbstractVerifier<SubCommandT>>;
+    using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
 
     struct Option : ArbitratorBase::Option {
         using Ptr = std::shared_ptr<Option>;
@@ -80,7 +81,7 @@ public:
 
 
     CostArbitrator(const std::string& name = "CostArbitrator",
-                   VerifierPtr verifier = std::make_shared<verification::PlaceboVerifier<SubCommandT>>())
+                   typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
 
