@@ -54,8 +54,11 @@ public:
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
     DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
-        getCommandCounter_++;
+        // While computing a command, we can read the environment model to get the required context. In this mock
+        // implementation, we merely simulate this access to assure that this interaction is possible. You will find
+        // analogous calls to the environment model in the other methods of this class.
         environmentModel.getObservation();
+        getCommandCounter_++;
         return name_;
     }
     bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
