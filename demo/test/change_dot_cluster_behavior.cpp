@@ -125,7 +125,7 @@ TEST_F(ChangeDotClusterBehaviorTest, getCommand) {
     changeDotClusterBehavior_.gainControl(time);
 
     // The resulting command should navigate us towards the closest cluster center
-    Command command = changeDotClusterBehavior_.getCommand(time, environmentModel);
+    Command command = changeDotClusterBehavior_.getCommand(time);
     ASSERT_EQ(command.nextDirection(), Direction::UP);
 }
 

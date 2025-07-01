@@ -2,7 +2,7 @@
 
 namespace demo {
 
-Command MoveRandomlyBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
+Command MoveRandomlyBehavior::getCommand(const Time& time) {
     util_caching::policies::ApproximateTime<Time, std::chrono::seconds> approximateTimePolicy{
         parameters_.selectionFixedFor.count()};
     if (directionCache_.cached(time, approximateTimePolicy)) {

@@ -54,9 +54,9 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
 
     testPriorityArbitrator.gainControl(time);
-    testPriorityArbitrator.getCommand(time, environmentModel);
+    testPriorityArbitrator.getCommand(time);
 
-    const auto yaml = testPriorityArbitrator.toYaml(time, environmentModel);
+    const auto yaml = testPriorityArbitrator.toYaml(time);
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
     EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
     EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
@@ -88,7 +88,7 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
 
     testPriorityArbitrator.gainControl(time);
 
-    EXPECT_THROW(testPriorityArbitrator.getCommand(time, environmentModel),
+    EXPECT_THROW(testPriorityArbitrator.getCommand(time),
                  arbitration_graphs::NoApplicableOptionPassedVerificationError);
 }
 
