@@ -37,7 +37,8 @@ public:
     };
 
     explicit PacmanAgent(const entt::Game& game)
-            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)}, verifier_{environmentModel_} {
+            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)},
+              verifier_{std::make_shared<Verifier>(environmentModel_)} {
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);

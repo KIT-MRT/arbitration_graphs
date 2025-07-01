@@ -42,7 +42,7 @@ TEST_F(VerifierTest, basicVerification) {
 }
 
 TEST_F(VerifierTest, verifierInPriorityArbitrator) {
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command, Verifier, VerificationResult>;
+    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command>;
 
     PriorityArbitrator testPriorityArbitrator("PriorityArbitrator", verifier);
 
