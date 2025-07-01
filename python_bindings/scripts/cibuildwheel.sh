@@ -1,9 +1,9 @@
 #!/bin/env bash
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 cd $SCRIPT_DIR/..
 
-docker compose build wheel_builder
+docker compose build --pull wheel_builder
 
 # Temporary replace the symlinked version with a copy as the link can not be resolved inside the docker container
 rm version
