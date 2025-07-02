@@ -70,9 +70,9 @@ Options can be behavior components or nested arbitrators.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
-    <img src="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/arbitration_graphs_at_a_glance_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+    <img src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
   </picture>
 </p>
 
@@ -104,10 +104,10 @@ In this scene,
 - thus, the least-prioritized *Stay in Place* behavior is being executed → green background.
 
 <p align="center">
-  <img src="../docs/assets/img/pacman_scenario_cropped.png" width="300" />
+  <img src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/pacman_scenario_cropped.png" width="300" />
 </p>
 <p align="center">
-  <img src="../docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
+  <img src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/pacman_arbitrator_safe.svg" width="500" /> 
 </p>
 
 ## Installation
@@ -195,20 +195,20 @@ This library and repo has been crafted with ❤️ by
 **Christoph Burger**
 <span>&nbsp;
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
-    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
   </picture>
   <a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
     ChristophBurger89
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
     christoph-burger
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
     0009-0002-9147-8749
   </a>
@@ -218,20 +218,20 @@ This library and repo has been crafted with ❤️ by
 <span>
   &nbsp;
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
-    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
   </picture>
   <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
     ll-nick
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
     nick-le-large
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
     0009-0006-5191-9043
   </a>
@@ -241,20 +241,20 @@ This library and repo has been crafted with ❤️ by
 <span>
 &nbsp;
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
-    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
   </picture>
   <a href="https://github.com/orzechow" aria-label="View GitHub profile">
     orzechow
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
     piotr-spieker
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
     0000-0002-0449-3741
   </a>
@@ -268,9 +268,9 @@ The Python bindings have been contributed by Nick and reviewed by Piotr.
 The repository is maintained by Piotr Spieker&nbsp;
 <span>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
-    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
   </picture>
   <a href="https://github.com/orzechow" aria-label="View GitHub profile">
     orzechow
@@ -280,9 +280,9 @@ and
 Nick Le Large&nbsp;
 <span>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
-    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
   </picture>
   <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
     ll-nick
