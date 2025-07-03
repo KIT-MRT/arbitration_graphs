@@ -218,12 +218,12 @@ This library and repo has been crafted with ❤️ by
     ChristophBurger89
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
     christoph-burger
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
     0009-0002-9147-8749
   </a>
@@ -241,12 +241,12 @@ This library and repo has been crafted with ❤️ by
     ll-nick
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
     nick-le-large
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
     0009-0006-5191-9043
   </a>
@@ -264,12 +264,12 @@ This library and repo has been crafted with ❤️ by
     orzechow
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
     piotr-spieker
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
     0000-0002-0449-3741
   </a>
