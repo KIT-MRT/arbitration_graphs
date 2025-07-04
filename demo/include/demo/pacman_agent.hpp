@@ -25,8 +25,8 @@ namespace demo {
  */
 class PacmanAgent {
 public:
-    using CostArbitrator = arbitration_graphs::CostArbitrator<Command>;
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
+    using CostArbitrator = arbitration_graphs::CostArbitrator<EnvironmentModel, Command>;
+    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<EnvironmentModel, Command>;
 
     struct Parameters {
         AvoidGhostBehavior::Parameters avoidGhostBehavior;
@@ -36,19 +36,16 @@ public:
         CostEstimator::Parameters costEstimator;
     };
 
-    explicit PacmanAgent(const entt::Game& game)
-            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)},
-              verifier_{std::make_shared<Verifier>(environmentModel_)} {
-
-        avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
-        changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
-        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
-        eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
+    explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+        avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
+        changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>();
+        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+        eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
         moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
-        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
+        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
 
         eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
-        costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
+        costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
         eatDotsArbitrator_->addOption(
             changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
         eatDotsArbitrator_->addOption(
@@ -64,37 +61,37 @@ public:
                                        PriorityArbitrator::Option::FALLBACK);
     }
 
-    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) {
-        return rootArbitrator_->getCommand(time, environmentModel);
+    Command getCommand(const Time& time) {
+        return rootArbitrator_->getCommand(time, environmentModel_);
     }
 
     void updateEnvironmentModel(const entt::Game& game) {
-        environmentModel_->update(game);
+        environmentModel_.update(game);
     }
 
-    EnvironmentModel::ConstPtr environmentModel() const {
+    const EnvironmentModel& environmentModel() const {
         return environmentModel_;
     }
 
     std::ostream& to_stream(std::ostream& output, const Time& time, const EnvironmentModel& environmentModel) const {
-        return rootArbitrator_->to_stream(output, time);
+        return rootArbitrator_->to_stream(output, time, environmentModel);
     }
     std::string to_str(const Time& time, const EnvironmentModel& environmentModel) const {
         std::stringstream stringStream;
-        to_stream(stringStream, time);
+        to_stream(stringStream, time, environmentModel);
         return stringStream.str();
     }
-    std::string yamlString(const Time& time, const EnvironmentModel& environmentModel) const {
+    std::string yamlString(const Time& time) const {
         YAML::Node node;
         node["type"] = "PacmanArbitrator";
-        node["arbitration"] = rootArbitrator_->toYaml(time, environmentModel);
+        node["arbitration"] = rootArbitrator_->toYaml(time, environmentModel_);
         std::stringstream yamlString;
         yamlString << node;
         return yamlString.str();
     }
 
 private:
-    EnvironmentModel::Ptr environmentModel_;
+    EnvironmentModel environmentModel_;
     Parameters parameters_;
 
     AvoidGhostBehavior::Ptr avoidGhostBehavior_;
