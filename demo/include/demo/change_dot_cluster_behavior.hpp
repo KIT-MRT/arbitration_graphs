@@ -12,7 +12,7 @@ namespace demo {
  * @brief The ChangeDotClusterBehavior makes Pacman move towards the closest dot cluster
  * that he is not currently inside of.
  */
-class ChangeDotClusterBehavior : public arbitration_graphs::Behavior<Command> {
+class ChangeDotClusterBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<ChangeDotClusterBehavior>;
     using ConstPtr = std::shared_ptr<const ChangeDotClusterBehavior>;
@@ -20,28 +20,25 @@ public:
     using Cluster = utils::Cluster;
     using Clusters = utils::DotClusterFinder::Clusters;
 
-    explicit ChangeDotClusterBehavior(EnvironmentModel::Ptr environmentModel,
-                                      const std::string& name = "ChangeDotCluster")
-            : Behavior(name), environmentModel_{std::move(environmentModel)} {
+    explicit ChangeDotClusterBehavior(const std::string& name = "ChangeDotCluster") : Behavior(name) {
     }
 
-    Command getCommand(const Time& /*time*/) override;
+    Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
-    bool checkInvocationCondition(const Time& /*time*/) const override;
-    bool checkCommitmentCondition(const Time& /*time*/) const override;
+    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
+    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
 
-    void gainControl(const Time& /*time*/) override {
-        setTargetCluster();
+    void gainControl(const Time& /*time*/, const EnvironmentModel& environmentModel) override {
+        setTargetCluster(environmentModel);
     }
-    void loseControl(const Time& /*time*/) override {
+    void loseControl(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) override {
         targetCluster_.reset();
     }
 
 private:
-    void setTargetCluster();
+    void setTargetCluster(const EnvironmentModel& environmentModel);
 
     std::optional<Cluster> targetCluster_;
-    EnvironmentModel::Ptr environmentModel_;
 };
 
 } // namespace demo

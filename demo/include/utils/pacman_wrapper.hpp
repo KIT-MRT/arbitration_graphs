@@ -18,7 +18,7 @@ public:
         SDL_Quit();
     }
 
-    void progressGame(const demo::Command& command, const demo::EnvironmentModel::ConstPtr& environmentModel);
+    void progressGame(const demo::Command& command, const demo::EnvironmentModel& environmentModel);
 
     bool quit() const {
         return quit_;

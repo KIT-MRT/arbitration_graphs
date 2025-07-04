@@ -24,10 +24,7 @@ bool clusterExists(const std::vector<Cluster>& clusters, const ExpectedCluster& 
 
 class ClusterTest : public ::testing::Test {
 protected:
-    ClusterTest() : environmentModel_(std::make_shared<MockEnvironmentModel>()) {
-    }
-
-    MockEnvironmentModel::Ptr environmentModel_;
+    MockEnvironmentModel environmentModel_;
 };
 
 TEST_F(ClusterTest, dotClusters) {
@@ -36,9 +33,9 @@ TEST_F(ClusterTest, dotClusters) {
                         "     "
                         "#.. #"
                         "#####"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    DotClusterFinder dotClusterFinder(environmentModel_->maze());
+    DotClusterFinder dotClusterFinder(environmentModel_.maze());
     std::vector<Cluster> clusters = dotClusterFinder.clusters();
     ASSERT_EQ(clusters.size(), 2);
 
