@@ -37,24 +37,43 @@ bool operator==(const int command_int, const DummyCommandInt& command_object) {
     return command_int == command_object.command_;
 }
 
-class DummyBehavior : public Behavior<DummyCommand> {
+struct DummyEnvironmentModel {
+    // A mock getter function that simply simulates accessing the environment model.
+    void getObservation() const {
+        accessCounter++;
+    }
+
+    mutable int accessCounter{0};
+};
+
+class DummyBehavior : public Behavior<DummyEnvironmentModel, DummyCommand> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
 
-    DummyCommand getCommand(const Time& time) override {
+    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+        // While computing a command, we can read the environment model to get the required context. In this mock
+        // implementation, we merely simulate this access to assure that this interaction is possible. You will find
+        // analogous calls to the environment model in the other methods of this class.
+        environmentModel.getObservation();
         getCommandCounter_++;
         return name_;
     }
-    bool checkInvocationCondition(const Time& time) const override {
+    bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+        environmentModel.getObservation();
         return invocationCondition_;
     }
-    bool checkCommitmentCondition(const Time& time) const override {
+    bool checkCommitmentCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+        environmentModel.getObservation();
         return commitmentCondition_;
     }
-    virtual void loseControl(const Time& time) override {
+    void gainControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+        environmentModel.getObservation();
+    }
+    void loseControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+        environmentModel.getObservation();
         loseControlCounter_++;
     }
 
@@ -72,10 +91,11 @@ public:
                         int numGetCommandsUntilThrow = 0)
             : DummyBehavior(invocation, commitment, name), numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
 
-    DummyCommand getCommand(const Time& time) override {
+    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
         if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
             throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
         }
+        environmentModel.getObservation();
 
         getCommandCounter_++;
         return name_;

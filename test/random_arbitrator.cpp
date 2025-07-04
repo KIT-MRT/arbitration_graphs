@@ -52,15 +52,16 @@ using namespace arbitration_graphs_tests;
 
 class RandomArbitratorTest : public ::testing::Test {
 protected:
-    using OptionFlags = RandomArbitrator<DummyCommand>::Option::Flags;
+    using OptionFlags = RandomArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorUnavailable = std::make_shared<DummyBehavior>(false, false, "Unavailable");
     DummyBehavior::Ptr testBehaviorHighWeight = std::make_shared<DummyBehavior>(true, false, "HighWeight");
     DummyBehavior::Ptr testBehaviorMidWeight = std::make_shared<DummyBehavior>(true, false, "MidWeight");
     DummyBehavior::Ptr testBehaviorLowWeight = std::make_shared<DummyBehavior>(true, false, "LowWeight");
 
+    RandomArbitrator<DummyEnvironmentModel, DummyCommand> testRandomArbitrator;
 
-    RandomArbitrator<DummyCommand> testRandomArbitrator;
+    DummyEnvironmentModel environmentModel;
 
     Time time{Clock::now()};
 };
@@ -68,30 +69,30 @@ protected:
 
 TEST_F(RandomArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
     testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
     testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 2.5);
     testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
     testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0.5);
     double weightSumOfAvailableOptions = 2.5 + 1.0 + 0.5;
 
-    EXPECT_TRUE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    EXPECT_TRUE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testRandomArbitrator.gainControl(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
 
     int sampleSize = 1000;
     std::map<std::string, int> commandCounter{
         {"Unavailable", 0}, {"HighWeight", 0}, {"MidWeight", 0}, {"LowWeight", 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        std::string command = testRandomArbitrator.getCommand(time);
+        std::string command = testRandomArbitrator.getCommand(time, environmentModel);
         commandCounter[command]++;
     }
 
@@ -117,14 +118,14 @@ TEST_F(RandomArbitratorTest, Printout) {
                                     "    - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
                                     "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
     // clang-format on
-    std::string actual_printout = testRandomArbitrator.to_str(time);
+    std::string actual_printout = testRandomArbitrator.to_str(time, environmentModel);
     std::cout << actual_printout << std::endl;
 
     EXPECT_EQ(expected_printout, actual_printout);
 
 
-    testRandomArbitrator.gainControl(time);
-    EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time));
+    testRandomArbitrator.gainControl(time, environmentModel);
+    EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
     expected_printout = invocationTrueString + commitmentTrueString + "RandomArbitrator\n"
@@ -134,7 +135,7 @@ TEST_F(RandomArbitratorTest, Printout) {
                         " -> - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
                         "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
     // clang-format on
-    actual_printout = testRandomArbitrator.to_str(time);
+    actual_printout = testRandomArbitrator.to_str(time, environmentModel);
     std::cout << actual_printout << std::endl;
 
     EXPECT_EQ(expected_printout, actual_printout);
@@ -147,7 +148,7 @@ TEST_F(RandomArbitratorTest, ToYaml) {
     testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::INTERRUPTABLE);
     testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
 
-    YAML::Node yaml = testRandomArbitrator.toYaml(time);
+    YAML::Node yaml = testRandomArbitrator.toYaml(time, environmentModel);
 
     EXPECT_EQ("RandomArbitrator", yaml["type"].as<std::string>());
     EXPECT_EQ("RandomArbitrator", yaml["name"].as<std::string>());
@@ -173,10 +174,10 @@ TEST_F(RandomArbitratorTest, ToYaml) {
 
     EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
 
-    testRandomArbitrator.gainControl(time);
-    testRandomArbitrator.getCommand(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
+    testRandomArbitrator.getCommand(time, environmentModel);
 
-    yaml = testRandomArbitrator.toYaml(time);
+    yaml = testRandomArbitrator.toYaml(time, environmentModel);
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
@@ -187,21 +188,22 @@ TEST_F(RandomArbitratorTest, ToYaml) {
 
 TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
     Time time{Clock::now()};
+    DummyEnvironmentModel environmentModel;
 
-    using OptionFlags = RandomArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
+    using OptionFlags = RandomArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorHighWeight = std::make_shared<DummyBehavior>(false, false, "___HighWeight___");
     DummyBehavior::Ptr testBehaviorMidWeight = std::make_shared<DummyBehavior>(true, false, "__MidWeight__");
     DummyBehavior::Ptr testBehaviorLowWeight = std::make_shared<DummyBehavior>(true, true, "_LowWeight_");
 
-    RandomArbitrator<DummyCommandInt, DummyCommand> testRandomArbitrator;
+    RandomArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testRandomArbitrator;
 
     testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS);
     testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
     testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
 
-    testRandomArbitrator.gainControl(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
 
     std::string expected = "__MidWeight__";
-    EXPECT_EQ(expected.length(), testRandomArbitrator.getCommand(time));
+    EXPECT_EQ(expected.length(), testRandomArbitrator.getCommand(time, environmentModel));
 }
