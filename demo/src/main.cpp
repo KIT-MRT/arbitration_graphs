@@ -26,7 +26,7 @@ int main() {
 
             const Time time = Clock::now();
 
-            Command command = agent.getCommand(time, environmentModel);
+            Command command = agent.getCommand(time);
 
             server.broadcast(agent.yamlString(time));
 
