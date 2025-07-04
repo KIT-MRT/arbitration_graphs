@@ -13,7 +13,7 @@ namespace demo {
  * The behavior returns the command which decreases the distance between Pacman and the ghost that's currently closest
  * to him. It is applicable once Pacman at a power pill and the ghosts are scared of him.
  */
-class ChaseGhostBehavior : public arbitration_graphs::Behavior<Command> {
+class ChaseGhostBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<ChaseGhostBehavior>;
     using ConstPtr = std::shared_ptr<const ChaseGhostBehavior>;
@@ -25,19 +25,16 @@ public:
         int minScaredTicksLeft{5};
     };
 
-    explicit ChaseGhostBehavior(EnvironmentModel::Ptr environmentModel,
-                                const Parameters& parameters,
-                                const std::string& name = "ChaseGhost")
-            : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
+    explicit ChaseGhostBehavior(const Parameters& parameters, const std::string& name = "ChaseGhost")
+            : Behavior(name), parameters_{parameters} {
     }
 
     Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const override;
-    bool checkCommitmentCondition(const Time& time, const EnvironmentModelT& environmentModel) const override;
+    bool checkCommitmentCondition(const Time& time, const EnvironmentModel& environmentModel) const override;
 
 private:
-    EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 };
 

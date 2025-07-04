@@ -2,7 +2,7 @@
 
 namespace demo {
 
-Command MoveRandomlyBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
+Command MoveRandomlyBehavior::getCommand(const Time& time, const EnvironmentModel& /*environmentModel*/) {
     util_caching::policies::ApproximateTime<Time, std::chrono::seconds> approximateTimePolicy{
         parameters_.selectionFixedFor.count()};
     if (directionCache_.cached(time, approximateTimePolicy)) {
@@ -22,10 +22,12 @@ Direction MoveRandomlyBehavior::selectRandomDirection() {
     return randomMove.direction;
 }
 
-bool MoveRandomlyBehavior::checkInvocationCondition(const Time& /*time*/) const {
+bool MoveRandomlyBehavior::checkInvocationCondition(const Time& /*time*/,
+                                                    const EnvironmentModel& /*environmentModel*/) const {
     return true;
 }
-bool MoveRandomlyBehavior::checkCommitmentCondition(const Time& /*time*/) const {
+bool MoveRandomlyBehavior::checkCommitmentCondition(const Time& /*time*/,
+                                                    const EnvironmentModel& /*environmentModel*/) const {
     return false;
 }
 

@@ -10,22 +10,18 @@ namespace demo {
 /**
  * @brief The EatClosestDotBehavior makes pacman move towards the closest dot.
  */
-class EatClosestDotBehavior : public arbitration_graphs::Behavior<Command> {
+class EatClosestDotBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<EatClosestDotBehavior>;
     using ConstPtr = std::shared_ptr<const EatClosestDotBehavior>;
 
-    explicit EatClosestDotBehavior(EnvironmentModel::Ptr environmentModel, const std::string& name = "EatClosestDot")
-            : Behavior(name), environmentModel_{std::move(environmentModel)} {
+    explicit EatClosestDotBehavior(const std::string& name = "EatClosestDot") : Behavior(name) {
     }
 
-    Command getCommand(const Time& /*time*/) override;
+    Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
-    bool checkInvocationCondition(const Time& /*time*/) const override;
-    bool checkCommitmentCondition(const Time& /*time*/) const override;
-
-private:
-    EnvironmentModel::Ptr environmentModel_;
+    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
+    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
 };
 
 } // namespace demo
