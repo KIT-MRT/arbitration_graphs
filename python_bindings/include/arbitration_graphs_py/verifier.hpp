@@ -5,6 +5,7 @@
 #include <pybind11/pybind11.h>
 
 #include "command_wrapper.hpp"
+#include "environment_model_wrapper.hpp"
 
 namespace arbitration_graphs_py {
 
@@ -25,20 +26,23 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
-class PyAbstractVerifier : public agv::AbstractVerifier<CommandWrapper>, py::trampoline_self_life_support {
+class PyAbstractVerifier : public agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>,
+                           py::trampoline_self_life_support {
 public:
-    using AbstractVerifierT = agv::AbstractVerifier<CommandWrapper>;
+    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     // NOLINTBEGIN(readability-function-size)
-    agv::AbstractResult::Ptr analyze(const ag::Time& time, const CommandWrapper& data) const override {
-        PYBIND11_OVERRIDE_PURE(agv::AbstractResult::Ptr, AbstractVerifierT, analyze, time, data);
+    agv::AbstractResult::Ptr analyze(const ag::Time& time,
+                                     const EnvironmentModelWrapper& environmentModel,
+                                     const CommandWrapper& data) const override {
+        PYBIND11_OVERRIDE_PURE(agv::AbstractResult::Ptr, AbstractVerifierT, analyze, time, environmentModel, data);
     }
     // NOLINTEND(readability-function-size)
 };
 
 inline void bindVerifier(py::module& module) {
-    using AbstractVerifierT = agv::AbstractVerifier<CommandWrapper>;
-    using PlaceboVerifierT = agv::PlaceboVerifier<CommandWrapper>;
+    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboVerifierT = agv::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<agv::AbstractResult, PyAbstractResult>(module, "AbstractResult")
         .def(py::init<>())
@@ -50,7 +54,7 @@ inline void bindVerifier(py::module& module) {
 
     py::classh<AbstractVerifierT, PyAbstractVerifier>(module, "AbstractVerifier")
         .def(py::init<>())
-        .def("analyze", &AbstractVerifierT::analyze);
+        .def("analyze", &AbstractVerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("data"));
 
     py::classh<PlaceboVerifierT, AbstractVerifierT>(module, "PlaceboVerifier").def(py::init<>());
 }
