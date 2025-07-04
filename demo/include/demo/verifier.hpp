@@ -23,28 +23,23 @@ private:
 };
 
 
-class Verifier : public arbitration_graphs::verification::AbstractVerifier<Command> {
+class Verifier : public arbitration_graphs::verification::AbstractVerifier<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<Verifier>;
     using ConstPtr = std::shared_ptr<const Verifier>;
 
-    explicit Verifier(EnvironmentModel::Ptr environmentModel) : environmentModel_{std::move(environmentModel)} {
-    }
-
     arbitration_graphs::verification::AbstractResult::Ptr analyze(const Time& /*time*/,
+                                                                  const EnvironmentModel& environmentModel,
                                                                   const Command& command) const override {
         Move nextMove = Move{command.path.front()};
-        Position nextPosition = environmentModel_->pacmanPosition() + nextMove.deltaPosition;
+        Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
-        if (environmentModel_->isPassableCell(nextPosition)) {
+        if (environmentModel.isPassableCell(nextPosition)) {
             return std::make_shared<VerificationResult>(true);
         }
 
         return std::make_shared<VerificationResult>(false);
     }
-
-private:
-    EnvironmentModel::Ptr environmentModel_;
 };
 } // namespace demo
 
