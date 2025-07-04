@@ -2,20 +2,23 @@
 
 #include <gtest/gtest.h>
 
+#include "mock_environment_model.hpp"
+
 namespace demo {
 
 TEST(MoveRandomlyTest, checkInvocationConditionTrue) {
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
-    ASSERT_TRUE(moveRandomlyBehavior.checkInvocationCondition(Clock::now()));
+    ASSERT_TRUE(moveRandomlyBehavior.checkInvocationCondition(Clock::now(), MockEnvironmentModel()));
 }
 
 TEST(MoveRandomlyTest, checkCommitmentConditionFalse) {
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
-    ASSERT_FALSE(moveRandomlyBehavior.checkCommitmentCondition(Clock::now()));
+    ASSERT_FALSE(moveRandomlyBehavior.checkCommitmentCondition(Clock::now(), MockEnvironmentModel()));
 }
 
 TEST(MoveRandomlyTest, getCachedCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
+    MockEnvironmentModel environmentModel;
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
@@ -30,6 +33,7 @@ TEST(MoveRandomlyTest, getCachedCommand) {
 
 TEST(MoveRandomlyTest, getRandomCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
+    MockEnvironmentModel environmentModel{};
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
