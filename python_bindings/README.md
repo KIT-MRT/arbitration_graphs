@@ -116,7 +116,7 @@ The Python interface to the arbitration graph library is generated using `pybind
 First make sure all dependencies are installed:
 - The arbitration graph core library (see [../README.md](../README.md))
 - Python 3.8 or higher
-- [pybind11](https://pybind11.readthedocs.io/en/stable/installing.html)
+- [pybind11](https://pybind11.readthedocs.io/en/stable/installing.html) >= 3.0.0
 - [ninja](https://ninja-build.org/)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
@@ -144,7 +144,8 @@ Clone the repository and build the package using CMake:
 ```bash
 mkdir -p arbitration_graphs/python_bindings/build
 cd arbitration_graphs/python_bindings/build
-cmake ..
+# Point to the pybind11 CMake configuration directory, if not installed globally (e.g., via pip in a virtual environment)
+cmake -Dpybind11_DIR=$(pybind11-config --cmakedir) ..
 cmake --build .
 ```
 </details>

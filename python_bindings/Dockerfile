@@ -10,9 +10,7 @@ RUN apt-get update && \
       ninja-build \
       pybind11-dev \
       python3-dev \
-      python3-pip \
-      python3-pybind11 \
-      python3-yaml && \
+      python3-pip && \
     apt-get clean
 
 
