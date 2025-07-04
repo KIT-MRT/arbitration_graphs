@@ -9,12 +9,9 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 
 /// @brief A thin wrapper class for the Command class allowing the instantiation of the arbitration graph classes.
-/// @details To work around the issue of the arbitration graph library being a highly templated C++ library, we use this
-///          wrapper class to allow the instantiation of the arbitration graph classes with arbitrary Python. This way,
-///          we can compile the Python bindings without needing to know the exact types of the commands and verifiers at
-///          compile time. This of course comes at the price of potential runtime errors if the Python objects do not
-///          provide the expected interfaces. In the case of the Command class, a pure data class, this
-///          shouldn't lead to issues though.
+/// @details To work around the issue of the arbitration graph library being a templated C++ library, we use this
+///          wrapper class to allow the instantiation of the arbitration graph classes with arbitrary Python types. This
+///          way, we can compile the Python bindings without needing to know the exact types at compile time.
 class CommandWrapper {
 public:
     CommandWrapper() = default;
