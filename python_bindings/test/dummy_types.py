@@ -12,6 +12,15 @@ class PrintStrings:
     commitment_false = "\033[31mCommitment\033[39m "
 
 
+class DummyEnvironmentModel:
+    def __init__(self):
+        self.access_counter = 0
+
+    # A mock getter function that simulates accessing the environment model.
+    def get_observation(self):
+        self.access_counter += 1
+
+
 class DummyCommand(str):
     pass
 
@@ -25,16 +34,26 @@ class DummyBehavior(Behavior):
         self.commitment_condition = commitment
         self.lose_control_counter = 0
 
-    def get_command(self, time):
+    def get_command(self, time, environment_model):
+        # While computing a command, we can read the environment model to get the required context. In this mock
+        # implementation, we merely simulate this access to assure that this interaction is possible. You will find
+        # analogous calls to the environment model in the other methods of this class.
+        environment_model.get_observation()
         return self.name
 
-    def check_invocation_condition(self, time) -> bool:
+    def check_invocation_condition(self, time, environment_model) -> bool:
+        environment_model.get_observation()
         return self.invocation_condition
 
-    def check_commitment_condition(self, time) -> bool:
+    def check_commitment_condition(self, time, environment_model) -> bool:
+        environment_model.get_observation()
         return self.commitment_condition
 
-    def lose_control(self, time):
+    def gain_control(self, time, environment_model):
+        environment_model.get_observation()
+
+    def lose_control(self, time, environment_model):
+        environment_model.get_observation()
         self.lose_control_counter += 1
 
 
@@ -50,9 +69,10 @@ class BrokenDummyBehavior(DummyBehavior):
         self.num_get_commands_until_raise = num_get_commands_until_raise
         self.get_command_counter = 0
 
-    def get_command(self, time):
+    def get_command(self, time, environment_model):
         if self.get_command_counter >= self.num_get_commands_until_raise:
             raise Exception("BrokenDummyBehavior::getCommand() is broken")
+        environment_model.get_observation()
 
         self.get_command_counter += 1
         return self.name
@@ -76,7 +96,7 @@ class DummyVerifier(AbstractVerifier):
         self.wrong = wrong
         self.reject_all = reject_all
 
-    def analyze(self, time, command):
+    def analyze(self, time, environment_model, command):
         if self.reject_all or command == self.wrong:
             return DummyResult(False)
 
