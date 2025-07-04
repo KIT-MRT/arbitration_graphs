@@ -8,6 +8,7 @@
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
+#include "environment_model_wrapper.hpp"
 #include "verification.hpp"
 #include "yaml_helper.hpp"
 
@@ -19,18 +20,18 @@ namespace ag = arbitration_graphs;
 inline void bindPriorityArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
+    using ArbitratorT = ag::Arbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using PriorityArbitratorT = ag::PriorityArbitrator<CommandWrapper, CommandWrapper>;
+    using PriorityArbitratorT = ag::PriorityArbitrator<EnvironmentModelWrapper, CommandWrapper>;
 
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
-    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
+    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<PriorityArbitratorT, ArbitratorT> priorityArbitrator(module, "PriorityArbitrator");
     priorityArbitrator
@@ -40,10 +41,11 @@ inline void bindPriorityArbitrator(py::module& module) {
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
             "to_yaml",
-            [](const PriorityArbitratorT& self, const Time& time) -> py::object {
-                return yaml_helper::toYamlAsPythonObject(self, time);
+            [](const PriorityArbitratorT& self, const Time& time, const EnvironmentModelWrapper& environmentModel) {
+                return yaml_helper::toYamlAsPythonObject(self, time, environmentModel);
             },
-            py::arg("time"))
+            py::arg("time"),
+            py::arg("environment_model"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(priorityArbitrator, "Option");

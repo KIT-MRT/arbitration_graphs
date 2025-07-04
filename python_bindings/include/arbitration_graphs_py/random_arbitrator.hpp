@@ -8,6 +8,7 @@
 #include <arbitration_graphs/random_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
+#include "environment_model_wrapper.hpp"
 #include "verification.hpp"
 #include "yaml_helper.hpp"
 
@@ -19,18 +20,18 @@ namespace ag = arbitration_graphs;
 inline void bindRandomArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
+    using ArbitratorT = ag::Arbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using RandomArbitratorT = ag::RandomArbitrator<CommandWrapper, CommandWrapper>;
+    using RandomArbitratorT = ag::RandomArbitrator<EnvironmentModelWrapper, CommandWrapper>;
 
     using OptionT = typename RandomArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
-    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
+    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<RandomArbitratorT, ArbitratorT> randomArbitrator(module, "RandomArbitrator");
     randomArbitrator
@@ -40,10 +41,11 @@ inline void bindRandomArbitrator(py::module& module) {
         .def("add_option", &RandomArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("weight") = 1)
         .def(
             "to_yaml",
-            [](const RandomArbitratorT& self, const Time& time) {
-                return yaml_helper::toYamlAsPythonObject(self, time);
+            [](const RandomArbitratorT& self, const Time& time, const EnvironmentModelWrapper& environmentModel) {
+                return yaml_helper::toYamlAsPythonObject(self, time, environmentModel);
             },
-            py::arg("time"))
+            py::arg("time"),
+            py::arg("environment_model"))
         .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name_ + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(randomArbitrator, "Option");
