@@ -25,8 +25,8 @@ namespace demo {
  */
 class PacmanAgent {
 public:
-    using CostArbitrator = arbitration_graphs::CostArbitrator<Command, Command, Verifier, VerificationResult>;
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command, Verifier, VerificationResult>;
+    using CostArbitrator = arbitration_graphs::CostArbitrator<Command>;
+    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command>;
 
     struct Parameters {
         AvoidGhostBehavior::Parameters avoidGhostBehavior;
@@ -37,7 +37,8 @@ public:
     };
 
     explicit PacmanAgent(const entt::Game& game)
-            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)}, verifier_{environmentModel_} {
+            : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)},
+              verifier_{std::make_shared<Verifier>(environmentModel_)} {
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
         changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
@@ -107,7 +108,7 @@ private:
     CostArbitrator::Ptr eatDotsArbitrator_;
 
     CostEstimator::Ptr costEstimator_;
-    Verifier verifier_;
+    Verifier::Ptr verifier_;
 };
 
 } // namespace demo
