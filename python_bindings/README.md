@@ -117,20 +117,35 @@ In this scene,
 
 The Python interface to the arbitration graph library is generated using `pybind11` and provides a convenient interface to utilize the full power of the arbitration graph library in Python.
 
+### Via PyPI (Recommended)
+
+Even more good news: The package is available on PyPI, so installing it is as easy as running:
+
+```bash
+pip install arbitration-graphs
+```
+
+> **Note:** The package requires Python 3.8 or higher and currently only supports a limited set of platforms.
+> Let us know if you need support for an additional platform and we will see what we can do!
+
+### From Source
+
+You can also build the package from source.
+Handy for development or if your target platform is currently not supported by the pre-built package.
+
 <details>
 <summary>Prerequisites</summary>
 
 First make sure all dependencies are installed:
 - The arbitration graph core library (see [../README.md](../README.md))
 - Python 3.8 or higher
-- [pybind11](https://pybind11.readthedocs.io/en/stable/installing.html)
 - [ninja](https://ninja-build.org/)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
 </details>
 
 <details>
-<summary>From source via pip</summary>
+<summary>Via pip</summary>
 
 
 ```bash
@@ -145,7 +160,7 @@ pip install git+https://github.com/KIT-MRT/arbitration_graphs.git#subdirectory=p
 </details>
 
 <details>
-<summary>From source via CMake</summary>
+<summary>Via CMake</summary>
 
 Clone the repository and build the package using CMake:
 ```bash
@@ -203,12 +218,12 @@ This library and repo has been crafted with ❤️ by
     ChristophBurger89
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
     christoph-burger
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
     0009-0002-9147-8749
   </a>
@@ -226,12 +241,12 @@ This library and repo has been crafted with ❤️ by
     ll-nick
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
     nick-le-large
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
     0009-0006-5191-9043
   </a>
@@ -249,12 +264,12 @@ This library and repo has been crafted with ❤️ by
     orzechow
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
   <a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
     piotr-spieker
   </a>
   &nbsp;
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
   <a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
     0000-0002-0449-3741
   </a>
