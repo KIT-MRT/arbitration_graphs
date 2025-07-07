@@ -72,9 +72,9 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::to_stream(st
         bool isActive = activeBehavior_ && (option == activeBehavior_);
 
         if (isActive) {
-            output << suffix << std::endl << prefix << " -> ";
+            output << suffix << '\n' << prefix << " -> ";
         } else {
-            output << suffix << std::endl << prefix << "    ";
+            output << suffix << '\n' << prefix << "    ";
         }
         option->to_stream(output, time, environmentModel, i, "    " + prefix, suffix);
     }
