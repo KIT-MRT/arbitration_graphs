@@ -60,8 +60,8 @@ public:
     };
     using Options = std::vector<typename Option::Ptr>;
 
-    RandomArbitrator(const std::string& name = "RandomArbitrator",
-                     typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+    explicit RandomArbitrator(const std::string& name = "RandomArbitrator",
+                              typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,

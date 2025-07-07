@@ -13,7 +13,7 @@ using namespace arbitration_graphs;
 struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, DummyCommand> {
     using CostMap = std::map<DummyCommand, double>;
 
-    CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
+    explicit CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
             : costMap_{costMap}, activationCosts_{activationCosts} {};
 
     virtual double estimateCost(const Time& /*time*/,

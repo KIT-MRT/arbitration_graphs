@@ -79,8 +79,8 @@ public:
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator",
-                   typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+    explicit CostArbitrator(const std::string& name = "CostArbitrator",
+                            typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
 
