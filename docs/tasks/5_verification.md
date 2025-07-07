@@ -59,7 +59,6 @@ Add the `MoveRandomly` behavior component as a last resort fallback layer.
 - Compile and run the unit tests for the `Verifier` to verify that your implementation is correct.
 - Add an instance of the `Verifier` to the `PacmanAgent` class and initialize it in the constructor.
 - Pass the `Verifier` instance to the constructors of the arbitrators.
-  (Hint: You'll need to adjust the template parameters of the arbitrators.)
 - Add the `StayInPlace` behavior component analogously to the other behavior components.
 - Mark the `StayInPlace` behavior component as a last resort fallback layer.
 - Try breaking a behavior component on purpose and see how the system reacts.
