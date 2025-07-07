@@ -8,12 +8,11 @@
 namespace demo {
 
 /**
- * @brief The DoNothingBehavior does just that. Nothing.
+ * @brief The StayInPlaceBehavior does just that. Since Pac-Man cannot stop moving, this behavior will oscillate between
+ * the current direction and the opposite direction.
  *
- * The behavior can be called any time and will always return a command with direction NONE.
- * It is intended to be used as a fallback behavior when no other behavior is available.
- * Due to the fact that Pacman will never stop moving, this means that when this behavior is called, Pacman will keep
- * moving in the same direction as before.
+ * The behavior can be called any time. It is intended to be used as a fallback behavior when no other behavior is
+ * available.
  */
 class StayInPlaceBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:

@@ -17,11 +17,11 @@
 namespace demo {
 
 /**
- * @brief The main arbitrator class for the Pacman demo.
+ * @brief The main arbitrator class for the Pac-Man demo.
  *
  * The PacmanArbitrator class defines the arbitration graph by adding the individual behaviors.
  * It is the represents the top level of the hierarchy and will be called in each time step to return the command that
- * Pacman should execute.
+ * Pac-Man should execute.
  */
 class PacmanAgent {
 public:
@@ -53,7 +53,7 @@ public:
         eatDotsArbitrator_->addOption(
             eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
 
-        rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman", verifier_);
+        rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);

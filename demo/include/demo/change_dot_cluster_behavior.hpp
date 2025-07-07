@@ -9,7 +9,7 @@
 namespace demo {
 
 /**
- * @brief The ChangeDotClusterBehavior makes Pacman move towards the closest dot cluster
+ * @brief The ChangeDotClusterBehavior makes Pac-Man move towards the closest dot cluster
  * that he is not currently inside of.
  */
 class ChangeDotClusterBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {

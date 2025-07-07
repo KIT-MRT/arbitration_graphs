@@ -8,10 +8,10 @@
 namespace demo {
 
 /**
- * @brief The ChaseGhostBehavior makes Pacman run away from the ghost.
+ * @brief The ChaseGhostBehavior makes Pac-Man run away from the ghost.
  *
- * The behavior returns the command which decreases the distance between Pacman and the ghost that's currently closest
- * to him. It is applicable once Pacman at a power pill and the ghosts are scared of him.
+ * The behavior returns the command which decreases the distance between Pac-Man and the ghost that's currently closest
+ * to him. It is applicable once Pac-Man ate a power pill and the ghosts are scared of him.
  */
 class ChaseGhostBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:

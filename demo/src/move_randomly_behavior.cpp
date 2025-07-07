@@ -15,13 +15,6 @@ Command MoveRandomlyBehavior::getCommand(const Time& time, const EnvironmentMode
     return Command{randomDirection};
 }
 
-Direction MoveRandomlyBehavior::selectRandomDirection() {
-    int randomIndex = discreteRandomDistribution_(randomGenerator_);
-    Move randomMove = Move::possibleMoves().at(randomIndex);
-
-    return randomMove.direction;
-}
-
 bool MoveRandomlyBehavior::checkInvocationCondition(const Time& /*time*/,
                                                     const EnvironmentModel& /*environmentModel*/) const {
     return true;
@@ -29,6 +22,13 @@ bool MoveRandomlyBehavior::checkInvocationCondition(const Time& /*time*/,
 bool MoveRandomlyBehavior::checkCommitmentCondition(const Time& /*time*/,
                                                     const EnvironmentModel& /*environmentModel*/) const {
     return false;
+}
+
+Direction MoveRandomlyBehavior::selectRandomDirection() {
+    int randomIndex = discreteRandomDistribution_(randomGenerator_);
+    Move randomMove = Move::possibleMoves().at(randomIndex);
+
+    return randomMove.direction;
 }
 
 } // namespace demo

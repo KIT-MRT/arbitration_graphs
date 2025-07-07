@@ -9,7 +9,7 @@
 namespace demo {
 
 /**
- * @brief The MoveRandomly moves Pacman in a random direction.
+ * @brief The MoveRandomly moves Pac-Man in a random direction.
  *
  * This behavior will not consider ghosts or walls. Once a direction is selected, it will be returned for a defined
  * amount of time to avoid changing the direction too frequently.
@@ -28,10 +28,10 @@ public:
             : Behavior{name}, parameters_{parameters} {
     }
 
-    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
+    Command getCommand(const Time& time, const EnvironmentModel& /*environmentModel*/) override;
 
-    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
-    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
+    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;
+    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;
 
 private:
     Direction selectRandomDirection();

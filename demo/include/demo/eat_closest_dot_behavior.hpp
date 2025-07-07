@@ -8,7 +8,7 @@
 namespace demo {
 
 /**
- * @brief The EatClosestDotBehavior makes pacman move towards the closest dot.
+ * @brief The EatClosestDotBehavior makes Pac-Man move towards the closest dot.
  */
 class EatClosestDotBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
@@ -20,8 +20,8 @@ public:
 
     Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
-    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
-    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
+    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;
+    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;
 };
 
 } // namespace demo
