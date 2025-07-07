@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
 
 #include <yaml-cpp/yaml.h>
 
@@ -38,7 +39,7 @@ public:
     using Ptr = std::shared_ptr<Behavior>;
     using ConstPtr = std::shared_ptr<const Behavior>;
 
-    explicit Behavior(const std::string& name = "Behavior") : name_{name} {
+    explicit Behavior(std::string name = "Behavior") : name_{std::move(name)} {
     }
 
     /*!
