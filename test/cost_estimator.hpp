@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "cost_arbitrator.hpp"
 
 #include "dummy_types.hpp"
@@ -13,8 +15,8 @@ using namespace arbitration_graphs;
 struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, DummyCommand> {
     using CostMap = std::map<DummyCommand, double>;
 
-    explicit CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
-            : costMap_{costMap}, activationCosts_{activationCosts} {};
+    explicit CostEstimatorFromCostMap(CostMap costMap, const double activationCosts = 0)
+            : costMap_{std::move(costMap)}, activationCosts_{activationCosts} {};
 
     double estimateCost(const Time& /*time*/,
                         const DummyEnvironmentModel& environmentModel,
