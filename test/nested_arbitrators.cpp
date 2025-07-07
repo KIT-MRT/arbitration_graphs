@@ -37,7 +37,8 @@
 //=======================================================================================================================================================
 #include <memory>
 #include <string>
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 #include "behavior.hpp"
 #include "cost_arbitrator.hpp"

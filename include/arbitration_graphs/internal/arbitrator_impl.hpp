@@ -3,6 +3,7 @@
 #include "../arbitrator.hpp"
 
 #include <glog/logging.h>
+
 #include "verification.hpp"
 
 

@@ -4,9 +4,8 @@
 #include <optional>
 #include <vector>
 
-#include <yaml-cpp/yaml.h>
-
 #include <util_caching/cache.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include "behavior.hpp"
 #include "exceptions.hpp"

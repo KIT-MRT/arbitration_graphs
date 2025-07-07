@@ -35,10 +35,10 @@
 //	  ASSERT_FLOAT_EQ((10.0f + 2.0f) * 3.0f, 10.0f * 3.0f + 2.0f * 3.0f)
 //}
 //=======================================================================================================================================================
-#include <map>
 #include <memory>
 #include <string>
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 #include "behavior.hpp"
 #include "cost_arbitrator.hpp"
