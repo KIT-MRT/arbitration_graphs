@@ -18,7 +18,7 @@ struct CostEstimator {
     virtual double estimateCost(const Time& time,
                                 const EnvironmentModelT& environmentModel,
                                 const SubCommandT& command,
-                                const bool isActive) = 0;
+                                bool isActive) = 0;
 };
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
