@@ -39,10 +39,10 @@ bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::isApplicable(
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 std::size_t Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getOptionIndex(
     const typename Option::ConstPtr& behaviorOption) const {
-    const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
+    const auto optionIt = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
 
-    if (it != behaviorOptions_.end()) {
-        return std::distance(behaviorOptions_.begin(), it);
+    if (optionIt != behaviorOptions_.end()) {
+        return std::distance(behaviorOptions_.begin(), optionIt);
     }
     throw InvalidArgumentsError(
         "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");

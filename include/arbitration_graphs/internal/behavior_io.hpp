@@ -10,9 +10,9 @@ std::string Behavior<EnvironmentModelT, CommandT>::to_str(const Time& time,
                                                           const EnvironmentModelT& environmentModel,
                                                           const std::string& prefix,
                                                           const std::string& suffix) const {
-    std::stringstream ss;
-    to_stream(ss, time, environmentModel, prefix, suffix);
-    return ss.str();
+    std::stringstream stream;
+    to_stream(stream, time, environmentModel, prefix, suffix);
+    return stream.str();
 }
 
 template <typename EnvironmentModelT, typename CommandT>
