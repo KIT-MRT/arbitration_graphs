@@ -63,9 +63,9 @@ The invocation condition of `ChaseGhost` is a subset of the `AvoidGhost` invocat
 explicit PacmanAgent(const entt::Game& game)
         : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
 
-    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
     // Initialize the ChaseGhost behavior component
-    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior); 
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior); 
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");

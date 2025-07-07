@@ -72,12 +72,17 @@ Add the `MoveRandomly` behavior component as a last resort fallback layer.
 
 In the `Verifier::analyze()` method (in `include/demo/verifier.hpp`), we simply check if the command would lead to an invalid position:
 ```cpp
-VerificationResult analyze(const Time /*time*/, const Command& command) const {
+arbitration_graphs::verification::AbstractResult::Ptr analyze(const Time& /*time*/,
+                                                          const EnvironmentModel& environmentModel,
+                                                          const Command& command) const override {
     Move nextMove = Move{command.path.front()};
-    Position nextPosition = environmentModel_->pacmanPosition() + nextMove.deltaPosition;
+    Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
-    // The command is considered safe if the next position is in bounds and not a wall
-    return VerificationResult{environmentModel_->isPassableCell(nextPosition)};
+    if (environmentModel.isPassableCell(nextPosition)) {
+        return std::make_shared<VerificationResult>(true);
+    }
+
+    return std::make_shared<VerificationResult>(false);
 }
 ```
 
@@ -88,56 +93,48 @@ Also, include `stay_in_place_behavior.hpp`.
 #include "verifier.hpp"
 ```
 
-Adjust the template parameters in the alias definitions to contain the verifier types:
-```cpp
-public:
-    using CostArbitrator = arbitration_graphs::CostArbitrator<Command, Command, Verifier, VerificationResult>;
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command, Verifier, VerificationResult>;
-```
-
 Add the verifier and the fallback behavior component as members of the `PacmanAgent` class:
 ```cpp
 private:
     StayInPlaceBehavior::Ptr stayInPlaceBehavior_;
 
-    Verifier verifier_;
+    Verifier::Ptr verifier_;
 ```
 
 In the constructor of the `PacmanAgent` class, initialize the verifier and the `StayInPlace` behavior component.
 Make sure to also pass the verifier to the arbitrator constructors:
 ```cpp
-    explicit PacmanAgent(const entt::Game& game)
-            : parameters_{},
-              environmentModel_{std::make_shared<EnvironmentModel>(game)},
-              verifier_{environmentModel_} { // We can initialize the verifier in the member initializer list
+explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+    // Initialize the verifier
+    verifier_ = std::make_shared<Verifier>();
 
-        avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
-        changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
-        chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
-        eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
-        moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
-        // Initialize the StayInPlace behavior component
-        stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>(environmentModel_);
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
+    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>();
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
+    moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
+    // Initialize the StayInPlace behavior component
+    stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
 
-        // Pass the verifier instance to the cost arbitrator
-        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
-        costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
-        eatDotsArbitrator_->addOption(
-            changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
-        eatDotsArbitrator_->addOption(
-            eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+    // Pass the verifier instance to the cost arbitrator
+    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
+    costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
+    eatDotsArbitrator_->addOption(
+        changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+    eatDotsArbitrator_->addOption(
+        eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
 
-        // Pass the verifier instance to the priority arbitrator
-        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        // Add the StayInPlace behavior component. Mark it as a last resort fallback layer using the FALLBACK flag.
-        rootArbitrator_->addOption(stayInPlaceBehavior_,
-                                   PriorityArbitrator::Option::Flags::INTERRUPTABLE |
-                                       PriorityArbitrator::Option::FALLBACK);
-    }
+    // Pass the verifier instance to the priority arbitrator
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    // Add the StayInPlace behavior component. Mark it as a last resort fallback layer using the FALLBACK flag.
+    rootArbitrator_->addOption(stayInPlaceBehavior_,
+                               PriorityArbitrator::Option::Flags::INTERRUPTABLE |
+                                   PriorityArbitrator::Option::FALLBACK);
+}
 ```
 </details>
 
