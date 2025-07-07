@@ -19,6 +19,8 @@ protected:
                             "###"};
         environmentModel.setMaze({3, 3}, str);
         environmentModel.setPacmanPosition({1, 1});
+
+        verifier = std::make_shared<Verifier>();
     }
 
     Command goodCommand{Direction::RIGHT};
