@@ -268,5 +268,5 @@ protected:
 };
 } // namespace arbitration_graphs
 
-#include "internal/arbitrator_impl.hpp"
-#include "internal/arbitrator_io.hpp"
+#include "internal/arbitrator_impl.hpp" // IWYU pragma: keep
+#include "internal/arbitrator_io.hpp"   // IWYU pragma: keep
