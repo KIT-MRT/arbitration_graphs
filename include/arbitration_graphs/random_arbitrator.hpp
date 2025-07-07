@@ -48,12 +48,12 @@ public:
          *
          * \see Arbitrator::to_stream()
          */
-        virtual std::ostream& to_stream(std::ostream& output,
-                                        const Time& time,
-                                        const EnvironmentModelT& environmentModel,
-                                        const int& optionIndex,
-                                        const std::string& prefix = "",
-                                        const std::string& suffix = "") const;
+        std::ostream& to_stream(std::ostream& output,
+                                const Time& time,
+                                const EnvironmentModelT& environmentModel,
+                                const int& optionIndex,
+                                const std::string& prefix = "",
+                                const std::string& suffix = "") const override;
 
         //! The option has a chance of weight_ divided by the sum of all options' weights to be selected.
         double weight_;
