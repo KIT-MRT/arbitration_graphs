@@ -45,13 +45,16 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 
 Finish the implementation of the `CostEstimator` class in `cost_estimator.cpp`:
 ```cpp
-double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
-    Positions absolutePath = environmentModel_->toAbsolutePath(command.path);
+double CostEstimator::estimateCost(const Time& /*time*/,
+                               const EnvironmentModel& environmentModel,
+                               const Command& command,
+                               bool /*isActive*/) {
+    Positions absolutePath = environmentModel.toAbsolutePath(command.path);
 
     // Compute the number of dots along the path and in the neighborhood of the path end using helper functions
-    const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel_);
+    const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel);
     const int nDotsInRadius =
-        utils::dotsInRadius(absolutePath.back(), environmentModel_, parameters_.pathEndNeighborhoodRadius);
+        utils::dotsInRadius(absolutePath.back(), environmentModel, parameters_.pathEndNeighborhoodRadius);
     const int nDots = nDotsAlongPath + nDotsInRadius;
 
     if (nDots == 0) {
@@ -80,7 +83,7 @@ Also, include `cost_estimator.hpp`:
 To keep things tidy and consistent, add an alias definition analogous to the existing ones:
 
 ```cpp
-using CostArbitrator = arbitration_graphs::CostArbitrator<Command, Command>;
+using CostArbitrator = arbitration_graphs::CostArbitrator<EnvironmentModel, Command>;
 ```
 
 Change the type of the `eatDotsArbitrator_` member in the `PacmanAgent` class to `CostArbitrator` and add an instance of the `CostEstimator`:
@@ -106,19 +109,17 @@ struct Parameters {
 As always, the magic happens in the constructor of the `PacmanAgent` class.
 Instantiate the cost estimator and pass it in the `addOption` calls:
 ```cpp
-explicit PacmanAgent(const entt::Game& game)
-        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
-
-    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
-    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
-    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
-    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
+explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
+    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>();
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
     // This is now a cost arbitrator
     eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots");
     // Construct the cost estimator
-    costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
+    costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
     // Add the ChangeDotCluster and EatClosestDot behavior components as options to the
     // cost arbitrator while also passing the cost estimator
     eatDotsArbitrator_->addOption(
@@ -131,9 +132,6 @@ explicit PacmanAgent(const entt::Game& game)
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(stayInPlaceBehavior_,
-                               PriorityArbitrator::Option::Flags::INTERRUPTABLE |
-                                   PriorityArbitrator::Option::FALLBACK);
 }
 ```
 
