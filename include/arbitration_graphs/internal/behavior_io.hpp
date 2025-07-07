@@ -32,7 +32,7 @@ std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& out
         output << "\033[31mCommitment\033[39m ";
     }
 
-    output << name_;
+    output << name();
     return output;
 }
 
@@ -41,7 +41,7 @@ YAML::Node Behavior<EnvironmentModelT, CommandT>::toYaml(const Time& time,
                                                          const EnvironmentModelT& environmentModel) const {
     YAML::Node node;
     node["type"] = "Behavior";
-    node["name"] = name_;
+    node["name"] = name();
     node["invocationCondition"] = checkInvocationCondition(time, environmentModel);
     node["commitmentCondition"] = checkCommitmentCondition(time, environmentModel);
     return node;

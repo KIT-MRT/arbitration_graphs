@@ -59,7 +59,7 @@ public:
         // analogous calls to the environment model in the other methods of this class.
         environmentModel.getObservation();
         getCommandCounter_++;
-        return name_;
+        return name();
     }
     bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
         environmentModel.getObservation();
@@ -98,7 +98,7 @@ public:
         environmentModel.getObservation();
 
         getCommandCounter_++;
-        return name_;
+        return name();
     }
 
 private:

@@ -160,7 +160,12 @@ public:
      */
     virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const;
 
-    const std::string name_;
+    const std::string& name() const {
+        return name_;
+    }
+
+private:
+    std::string name_;
 };
 } // namespace arbitration_graphs
 
