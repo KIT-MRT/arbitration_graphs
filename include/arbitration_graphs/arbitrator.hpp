@@ -45,7 +45,7 @@ public:
         using Ptr = std::shared_ptr<Option>;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
+        enum Flags { NoFlags = 0b0, Interruptable = 0b1, Fallback = 0b10 };
         using FlagsT = std::underlying_type_t<Flags>;
 
         Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior, const FlagsT& flags)

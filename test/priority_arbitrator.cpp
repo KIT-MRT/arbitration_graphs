@@ -38,13 +38,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
@@ -80,10 +80,10 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
 TEST_F(PriorityArbitratorTest, Printout) {
     DummyEnvironmentModel environmentModel;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     // clang-format off
     std::string expected_printout = invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
@@ -117,10 +117,10 @@ TEST_F(PriorityArbitratorTest, Printout) {
 TEST_F(PriorityArbitratorTest, ToYaml) {
     DummyEnvironmentModel environmentModel;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::INTERRUPTABLE);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::Interruptable);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time, environmentModel);
 
@@ -166,13 +166,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::Interruptable);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::Interruptable);
     EXPECT_FALSE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::INTERRUPTABLE);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::INTERRUPTABLE);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::Interruptable);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::Interruptable);
 
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
@@ -206,10 +206,10 @@ TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
 
     PriorityArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testPriorityArbitrator;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     testPriorityArbitrator.gainControl(time, environmentModel);
 

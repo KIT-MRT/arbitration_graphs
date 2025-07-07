@@ -43,11 +43,11 @@ YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
     if (verificationResult_.cached(time)) {
         node["verificationResult"] = verificationResult_.cached(time).value()->isOk() ? "passed" : "failed";
     }
-    if (hasFlag(Option::Flags::INTERRUPTABLE)) {
-        node["flags"].push_back("INTERRUPTABLE");
+    if (hasFlag(Option::Flags::Interruptable)) {
+        node["flags"].push_back("Interruptable");
     }
-    if (hasFlag(Option::Flags::FALLBACK)) {
-        node["flags"].push_back("FALLBACK");
+    if (hasFlag(Option::Flags::Fallback)) {
+        node["flags"].push_back("Fallback");
     }
 
     return node;

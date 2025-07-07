@@ -37,13 +37,13 @@ TEST_F(RandomArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
     EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 2.5);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0.5);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 2.5);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0.5);
     double weightSumOfAvailableOptions = 2.5 + 1.0 + 0.5;
 
     EXPECT_TRUE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
@@ -68,11 +68,11 @@ TEST_F(RandomArbitratorTest, BasicFunctionality) {
 
 TEST_F(RandomArbitratorTest, Printout) {
     // Force midWeight behavior by setting all applicable behavior's weights to 0
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS, 2.5);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags, 2.5);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
     // clang-format off
     std::string expected_printout = invocationTrueString + commitmentFalseString + "RandomArbitrator\n"
@@ -106,11 +106,11 @@ TEST_F(RandomArbitratorTest, Printout) {
 }
 
 TEST_F(RandomArbitratorTest, ToYaml) {
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::INTERRUPTABLE);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::Interruptable);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
     YAML::Node yaml = testRandomArbitrator.toYaml(time, environmentModel);
 
@@ -162,9 +162,9 @@ TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
 
     RandomArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testRandomArbitrator;
 
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
     testRandomArbitrator.gainControl(time, environmentModel);
 
