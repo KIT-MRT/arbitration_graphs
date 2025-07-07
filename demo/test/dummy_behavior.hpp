@@ -2,6 +2,7 @@
 
 #include <arbitration_graphs/behavior.hpp>
 
+#include "demo/environment_model.hpp"
 #include "demo/types.hpp"
 
 
@@ -16,7 +17,7 @@ const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
 const std::string commitmentFalseString = "\033[31mCommitment\033[39m ";
 
 
-class DummyBehavior : public arbitration_graphs::Behavior<Command> {
+class DummyBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
@@ -26,14 +27,14 @@ public:
                   const std::string& name = "DummyBehavior")
             : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, command_{command} {};
 
-    Command getCommand(const Time& /*time*/) override {
+    Command getCommand(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) override {
         return command_;
     }
 
-    bool checkInvocationCondition(const Time& /*time*/) const override {
+    bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override {
         return invocationCondition_;
     }
-    bool checkCommitmentCondition(const Time& /*time*/) const override {
+    bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override {
         return commitmentCondition_;
     }
 

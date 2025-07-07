@@ -50,7 +50,7 @@ Finish the implementation of the `checkInvocationCondition()` and `getCommand()`
 
 Fix the invocation condition in `src/chase_ghost_behavior.cpp`:
 ```cpp
-bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
+bool ChaseGhostBehavior::checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const {
     return environmentModel_->closestScaredGhost(time).has_value() &&
            environmentModel_->closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
            environmentModel_->closestScaredGhost(time)->distance < parameters_.invocationMinDistance; // Only applicable if a ghost is close by
@@ -59,7 +59,7 @@ bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
 
 Add the missing piece of the `getCommand()` function in `src/chase_ghost_behavior.cpp`:
 ```cpp
-Command ChaseGhostBehavior::getCommand(const Time& time) {
+Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
     auto pacmanPosition = environmentModel_->pacmanPosition();
 
     auto closestScaredGhost = environmentModel_->closestScaredGhost(time);

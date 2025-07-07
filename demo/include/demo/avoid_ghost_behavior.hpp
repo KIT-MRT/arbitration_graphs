@@ -8,13 +8,13 @@
 namespace demo {
 
 /**
- * @brief The AvoidGhostBehavior makes Pacman run away from the closest ghost.
+ * @brief The AvoidGhostBehavior makes Pac-Man run away from the closest ghost.
  *
- * The behavior returns the command which increases the distance between Pacman and the ghost that's currently closest
- * to him. It is applicable once a ghost is within a certain distance to Pacman. To prevent oscillating behavior
+ * The behavior returns the command which increases the distance between Pac-Man and the ghost that's currently closest
+ * to him. It is applicable once a ghost is within a certain distance to Pac-Man. To prevent oscillating behavior
  * switches, the commitment condition should remain active for longer than the invocation condition.
  */
-class AvoidGhostBehavior : public arbitration_graphs::Behavior<Command> {
+class AvoidGhostBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<AvoidGhostBehavior>;
     using ConstPtr = std::shared_ptr<const AvoidGhostBehavior>;
@@ -24,19 +24,16 @@ public:
         double commitmentMinDistance{7};
     };
 
-    explicit AvoidGhostBehavior(EnvironmentModel::Ptr environmentModel,
-                                const Parameters& parameters,
-                                const std::string& name = "AvoidGhost")
-            : Behavior(name), environmentModel_{std::move(environmentModel)}, parameters_{parameters} {
+    explicit AvoidGhostBehavior(const Parameters& parameters, const std::string& name = "AvoidGhost")
+            : Behavior(name), parameters_{parameters} {
     }
 
-    Command getCommand(const Time& time) override;
+    Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
-    bool checkInvocationCondition(const Time& time) const override;
-    bool checkCommitmentCondition(const Time& time) const override;
+    bool checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const override;
+    bool checkCommitmentCondition(const Time& time, const EnvironmentModel& environmentModel) const override;
 
 private:
-    EnvironmentModel::Ptr environmentModel_;
     Parameters parameters_;
 };
 

@@ -13,15 +13,14 @@ class VerifierTest : public ::testing::Test {
 protected:
     using AbstractResult = arbitration_graphs::verification::AbstractResult;
 
-    VerifierTest()
-            : environmentModel(std::make_shared<MockEnvironmentModel>()),
-              verifier(std::make_shared<Verifier>(environmentModel)) {
-
+    VerifierTest() {
         const char str[] = {"###"
                             "#  "
                             "###"};
-        environmentModel->setMaze({3, 3}, str);
-        environmentModel->setPacmanPosition({1, 1});
+        environmentModel.setMaze({3, 3}, str);
+        environmentModel.setPacmanPosition({1, 1});
+
+        verifier = std::make_shared<Verifier>();
     }
 
     Command goodCommand{Direction::RIGHT};
@@ -32,21 +31,21 @@ protected:
         std::make_shared<DummyBehavior>(true, false, badCommand, "MidPriority");
     DummyBehavior::Ptr testBehaviorLowPriority =
         std::make_shared<DummyBehavior>(true, true, goodCommand, "LowPriority");
-    MockEnvironmentModel::Ptr environmentModel;
+    MockEnvironmentModel environmentModel;
     Time time{Clock::now()};
     Verifier::Ptr verifier;
 };
 
 TEST_F(VerifierTest, basicVerification) {
-    AbstractResult::Ptr goodResult = verifier->analyze(time, goodCommand);
+    AbstractResult::Ptr goodResult = verifier->analyze(time, environmentModel, goodCommand);
     EXPECT_TRUE(goodResult->isOk());
 
-    AbstractResult::Ptr badResult = verifier->analyze(time, badCommand);
+    AbstractResult::Ptr badResult = verifier->analyze(time, environmentModel, badCommand);
     EXPECT_FALSE(badResult->isOk());
 }
 
 TEST_F(VerifierTest, verifierInPriorityArbitrator) {
-    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<Command, Command>;
+    using PriorityArbitrator = arbitration_graphs::PriorityArbitrator<EnvironmentModel, Command>;
 
     PriorityArbitrator testPriorityArbitrator("PriorityArbitrator", verifier);
 
@@ -55,12 +54,12 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     testPriorityArbitrator.addOption(testBehaviorMidPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
     testPriorityArbitrator.addOption(testBehaviorLowPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
 
-    ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
-    testPriorityArbitrator.gainControl(time);
-    testPriorityArbitrator.getCommand(time);
+    testPriorityArbitrator.gainControl(time, environmentModel);
+    testPriorityArbitrator.getCommand(time, environmentModel);
 
-    const auto yaml = testPriorityArbitrator.toYaml(time);
+    const auto yaml = testPriorityArbitrator.toYaml(time, environmentModel);
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
     EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
     EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
@@ -85,19 +84,19 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
                                   + strikeThroughOff + "\n"
                         " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testPriorityArbitrator.to_str(time);
+    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
     std::cout << actualPrintout << std::endl;
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
-    testPriorityArbitrator.loseControl(time);
+    testPriorityArbitrator.loseControl(time, environmentModel);
 
     testBehaviorLowPriority->invocationCondition_ = false;
-    ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time));
+    ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
-    testPriorityArbitrator.gainControl(time);
+    testPriorityArbitrator.gainControl(time, environmentModel);
 
-    EXPECT_THROW(testPriorityArbitrator.getCommand(time),
+    EXPECT_THROW(testPriorityArbitrator.getCommand(time, environmentModel),
                  arbitration_graphs::NoApplicableOptionPassedVerificationError);
 }
 

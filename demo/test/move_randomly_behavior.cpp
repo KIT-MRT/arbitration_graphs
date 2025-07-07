@@ -2,27 +2,30 @@
 
 #include <gtest/gtest.h>
 
+#include "mock_environment_model.hpp"
+
 namespace demo {
 
 TEST(MoveRandomlyTest, checkInvocationConditionTrue) {
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
-    ASSERT_TRUE(moveRandomlyBehavior.checkInvocationCondition(Clock::now()));
+    ASSERT_TRUE(moveRandomlyBehavior.checkInvocationCondition(Clock::now(), MockEnvironmentModel()));
 }
 
 TEST(MoveRandomlyTest, checkCommitmentConditionFalse) {
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{});
-    ASSERT_FALSE(moveRandomlyBehavior.checkCommitmentCondition(Clock::now()));
+    ASSERT_FALSE(moveRandomlyBehavior.checkCommitmentCondition(Clock::now(), MockEnvironmentModel()));
 }
 
 TEST(MoveRandomlyTest, getCachedCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
+    MockEnvironmentModel environmentModel;
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
-    Command firstCommand = moveRandomlyBehavior.getCommand(time);
+    Command firstCommand = moveRandomlyBehavior.getCommand(time, environmentModel);
 
     time += 0.5 * selectionValidFor;
-    Command secondCommand = moveRandomlyBehavior.getCommand(time);
+    Command secondCommand = moveRandomlyBehavior.getCommand(time, environmentModel);
 
     // We return the first selection until after selectionValidFor so the commands should be identical
     ASSERT_EQ(firstCommand.nextDirection(), secondCommand.nextDirection());
@@ -30,6 +33,7 @@ TEST(MoveRandomlyTest, getCachedCommand) {
 
 TEST(MoveRandomlyTest, getRandomCommand) {
     Duration selectionValidFor{std::chrono::seconds(1)};
+    MockEnvironmentModel environmentModel{};
     MoveRandomlyBehavior moveRandomlyBehavior(MoveRandomlyBehavior::Parameters{selectionValidFor});
 
     Time time = Clock::now();
@@ -39,7 +43,7 @@ TEST(MoveRandomlyTest, getRandomCommand) {
         {Direction::UP, 0}, {Direction::DOWN, 0}, {Direction::LEFT, 0}, {Direction::RIGHT, 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        Direction direction = moveRandomlyBehavior.getCommand(time).nextDirection();
+        Direction direction = moveRandomlyBehavior.getCommand(time, environmentModel).nextDirection();
         directionCounter[direction]++;
 
         // We need to progress time to force a re-selection of a new direction

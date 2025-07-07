@@ -3,20 +3,20 @@
 
 namespace demo {
 
-Command AvoidGhostBehavior::getCommand(const Time& time) {
-    auto pacmanPosition = environmentModel_->pacmanPosition();
-    auto ghostPosition = environmentModel_->closestGhost(time).ghost.position;
+Command AvoidGhostBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
+    auto pacmanPosition = environmentModel.pacmanPosition();
+    auto ghostPosition = environmentModel.closestGhost(time).ghost.position;
 
     std::optional<Direction> direction;
     double maxDistance = -1;
     for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
+        auto nextPosition = environmentModel.positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
-        if (environmentModel_->isWall(nextPosition)) {
+        if (environmentModel.isWall(nextPosition)) {
             continue;
         }
 
-        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
+        auto nextDistance = environmentModel.mazeDistance(nextPosition, ghostPosition);
         if (nextDistance > maxDistance) {
             direction = move.direction;
             maxDistance = nextDistance;
@@ -30,12 +30,12 @@ Command AvoidGhostBehavior::getCommand(const Time& time) {
     return Command{direction.value()};
 }
 
-bool AvoidGhostBehavior::checkInvocationCondition(const Time& time) const {
-    return environmentModel_->closestGhost(time).distance < parameters_.invocationMinDistance;
+bool AvoidGhostBehavior::checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const {
+    return environmentModel.closestGhost(time).distance < parameters_.invocationMinDistance;
 }
 
-bool AvoidGhostBehavior::checkCommitmentCondition(const Time& time) const {
-    return environmentModel_->closestGhost(time).distance < parameters_.commitmentMinDistance;
+bool AvoidGhostBehavior::checkCommitmentCondition(const Time& time, const EnvironmentModel& environmentModel) const {
+    return environmentModel.closestGhost(time).distance < parameters_.commitmentMinDistance;
 }
 
 } // namespace demo

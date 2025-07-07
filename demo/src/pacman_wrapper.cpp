@@ -88,8 +88,7 @@ void PacmanWrapper::handleUserInput() {
     }
 }
 
-void PacmanWrapper::progressGame(const demo::Command& command,
-                                 const demo::EnvironmentModel::ConstPtr& environmentModel) {
+void PacmanWrapper::progressGame(const demo::Command& command, const demo::EnvironmentModel& environmentModel) {
     handleUserInput();
 
     game_.input(command.scancode());
@@ -110,7 +109,7 @@ void PacmanWrapper::progressGame(const demo::Command& command,
     game_.render(writer_, frame_ % tileSize);
 
     if (renderPath_) {
-        renderPath(environmentModel->toAbsolutePath(command.path));
+        renderPath(environmentModel.toAbsolutePath(command.path));
     }
 
     frame_++;

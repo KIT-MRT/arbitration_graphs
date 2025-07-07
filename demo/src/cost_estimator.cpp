@@ -4,12 +4,15 @@
 
 namespace demo {
 
-double CostEstimator::estimateCost(const Command& command, bool /*isActive*/) {
-    Positions absolutePath = environmentModel_->toAbsolutePath(command.path);
+double CostEstimator::estimateCost(const Time& /*time*/,
+                                   const EnvironmentModel& environmentModel,
+                                   const Command& command,
+                                   bool /*isActive*/) {
+    Positions absolutePath = environmentModel.toAbsolutePath(command.path);
 
-    const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel_);
+    const int nDotsAlongPath = utils::dotsAlongPath(absolutePath, environmentModel);
     const int nDotsInRadius =
-        utils::dotsInRadius(absolutePath.back(), environmentModel_, parameters_.pathEndNeighborhoodRadius);
+        utils::dotsInRadius(absolutePath.back(), environmentModel, parameters_.pathEndNeighborhoodRadius);
     const int nDots = nDotsAlongPath + nDotsInRadius;
 
     if (nDots == 0) {

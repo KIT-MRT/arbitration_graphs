@@ -6,12 +6,19 @@
 
 namespace demo {
 
+inline entt::Game makeDummyGame() {
+    entt::Game game;
+    game.init();
+    return game;
+}
+
 class MockEnvironmentModel : public EnvironmentModel {
 public:
     using Ptr = std::shared_ptr<MockEnvironmentModel>;
     using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
 
-    MockEnvironmentModel() : EnvironmentModel(dummyGame_) {
+    explicit MockEnvironmentModel(entt::Game game = makeDummyGame())
+            : EnvironmentModel(game), dummyGame_{std::move(game)} {
         initializeEntitiesInOppositeCorners();
         setEmptyMaze();
     }
