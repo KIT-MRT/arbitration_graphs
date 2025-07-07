@@ -14,7 +14,7 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_s
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
-    const int& option_index,
+    const int& optionIndex,
     const std::string& prefix,
     const std::string& suffix) const {
 
