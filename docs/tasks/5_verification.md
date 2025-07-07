@@ -128,7 +128,6 @@ Make sure to also pass the verifier to the arbitrator constructors:
             eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
 
         // Pass the verifier instance to the priority arbitrator
-        rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman", verifier_);
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
         rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
@@ -138,6 +137,7 @@ Make sure to also pass the verifier to the arbitrator constructors:
                                    PriorityArbitrator::Option::Flags::INTERRUPTABLE |
                                        PriorityArbitrator::Option::FALLBACK);
     }
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
 ```
 </details>
 

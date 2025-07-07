@@ -68,7 +68,7 @@ explicit PacmanAgent(const entt::Game& game)
     chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior); 
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
-    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     // Add the ChaseGhost behavior component to the priority arbitrator (before the AvoidGhost behavior component!)
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
