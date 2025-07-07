@@ -21,9 +21,9 @@ using DummyCommand = std::string;
 
 class DummyCommandInt {
 public:
-    DummyCommandInt(const int command) : command_{command} {
+    explicit DummyCommandInt(const int command) : command_{command} {
     }
-    DummyCommandInt(const DummyCommand& command) {
+    DummyCommandInt(const DummyCommand& command) { // NOLINT(google-explicit-constructor)
         command_ = static_cast<std::string>(command).length();
     }
 
@@ -59,7 +59,7 @@ public:
         // analogous calls to the environment model in the other methods of this class.
         environmentModel.getObservation();
         getCommandCounter++;
-        return name();
+        return {name()};
     }
     bool checkInvocationCondition(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) const override {
         environmentModel.getObservation();
