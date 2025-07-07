@@ -58,7 +58,7 @@ public:
             : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
-                   const typename Option::FlagsT& flags) {
+                   const typename Option::FlagsT& flags) override {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->behaviorOptions_.push_back(option);
     }
