@@ -45,14 +45,14 @@ protected:
 };
 
 TEST_F(NestedArbitratorsTest, Printout) {
-    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NO_FLAGS);
-    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NO_FLAGS);
+    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NoFlags);
+    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NoFlags);
 
-    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NO_FLAGS, cost_estimator);
-    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags, cost_estimator);
 
-    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NO_FLAGS);
-    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NO_FLAGS);
+    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NoFlags);
+    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NoFlags);
 
 
     // clang-format off
@@ -96,14 +96,14 @@ TEST_F(NestedArbitratorsTest, Printout) {
 
 
 TEST_F(NestedArbitratorsTest, ToYaml) {
-    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NO_FLAGS);
-    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NO_FLAGS);
+    testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NoFlags);
+    testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NoFlags);
 
-    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NO_FLAGS, cost_estimator);
-    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NO_FLAGS, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags, cost_estimator);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags, cost_estimator);
 
-    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NO_FLAGS);
-    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NO_FLAGS);
+    testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NoFlags);
+    testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NoFlags);
 
     YAML::Node yaml = testRootPriorityArbitrator->toYaml(time, environmentModel);
 

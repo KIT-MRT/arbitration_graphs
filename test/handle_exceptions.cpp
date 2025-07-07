@@ -29,8 +29,8 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInPriorityArbitrator) {
 
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
@@ -65,8 +65,8 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInCommitedBehavior) {
 
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
@@ -101,8 +101,8 @@ TEST_F(ExceptionHandlingTest, HandleExceptionsInCostArbitrator) {
 
     CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator;
 
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NO_FLAGS, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NO_FLAGS, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags, costEstimator);
 
     ASSERT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 

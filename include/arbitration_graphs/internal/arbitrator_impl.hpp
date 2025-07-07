@@ -58,7 +58,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
         option->verificationResult_.cache(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification
-        if (verificationResult->isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
+        if (verificationResult->isOk() || option->hasFlag(Option::Flags::Fallback)) {
             return command;
         }
         // given option is applicable, but not safe
@@ -89,7 +89,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
         activeBehavior_.reset();
     }
 
-    bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
+    bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::Interruptable));
 
     // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
     if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
