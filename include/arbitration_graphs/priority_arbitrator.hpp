@@ -53,8 +53,8 @@ public:
                                         const std::string& suffix = "") const;
     };
 
-    PriorityArbitrator(const std::string& name = "PriorityArbitrator",
-                       typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+    explicit PriorityArbitrator(const std::string& name = "PriorityArbitrator",
+                                typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,

@@ -38,7 +38,7 @@ public:
     using Ptr = std::shared_ptr<Behavior>;
     using ConstPtr = std::shared_ptr<const Behavior>;
 
-    Behavior(const std::string& name = "Behavior") : name_{name} {
+    explicit Behavior(const std::string& name = "Behavior") : name_{name} {
     }
 
     /*!

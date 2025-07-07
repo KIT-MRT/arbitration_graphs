@@ -101,8 +101,8 @@ public:
     using ConstOptions = std::vector<typename Option::ConstPtr>;
 
 
-    Arbitrator(const std::string& name = "Arbitrator",
-               typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+    explicit Arbitrator(const std::string& name = "Arbitrator",
+                        typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : Behavior<EnvironmentModelT, CommandT>(name), verifier_(verifier) {};
 
 
