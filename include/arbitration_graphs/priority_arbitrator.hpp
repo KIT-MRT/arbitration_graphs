@@ -35,20 +35,20 @@ public:
         /*!
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
-         * \param output        Output stream to write into, will be returned also
-         * \param time          Expected execution time point of this behaviors command
+         * \param output            Output stream to write into, will be returned also
+         * \param time              Expected execution time point of this behaviors command
          * \param environmentModel  A read-only object containing the current state of the environment
-         * \param option_index  Position index of this option within behaviorOptions_
-         * \param prefix        A string that should be prepended to each line that is written to the output stream
-         * \param suffix        A string that should be appended to each line that is written to the output stream
-         * \return              The same given input stream (signature similar to std::ostream& operator<<())
+         * \param optionIndex       Position index of this option within behaviorOptions_
+         * \param prefix            A string that should be prepended to each line that is written to the output stream
+         * \param suffix            A string that should be appended to each line that is written to the output stream
+         * \return                  The same given input stream (signature similar to std::ostream& operator<<())
          *
          * \see Arbitrator::to_stream()
          */
         virtual std::ostream& to_stream(std::ostream& output,
                                         const Time& time,
                                         const EnvironmentModelT& environmentModel,
-                                        const int& option_index,
+                                        const int& optionIndex,
                                         const std::string& prefix = "",
                                         const std::string& suffix = "") const;
     };
