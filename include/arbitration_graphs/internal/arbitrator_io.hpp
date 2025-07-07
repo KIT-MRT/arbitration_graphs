@@ -18,17 +18,17 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_s
     const std::string& prefix,
     const std::string& suffix) const {
 
-    if (verificationResult_.cached(time) && !verificationResult_.cached(time).value()->isOk()) {
+    if (verificationResult(time) && !verificationResult(time).value()->isOk()) {
         // ANSI backspace: \010
         // ANSI strikethrough on: \033[9m
         output << "×××\010\010\010\033[9m";
-        behavior_->to_stream(output, time, environmentModel, prefix, suffix);
+        behavior()->to_stream(output, time, environmentModel, prefix, suffix);
         // ANSI strikethrough off: \033[29m
         // ANSI hide on: \033[8m
         // ANSI hide off: \033[28m
         output << "\033[29m\033[8m×××\033[28m";
     } else {
-        behavior_->to_stream(output, time, environmentModel, prefix, suffix);
+        behavior()->to_stream(output, time, environmentModel, prefix, suffix);
     }
 
     return output;
@@ -39,9 +39,9 @@ YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
     const Time& time, const EnvironmentModelT& environmentModel) const {
     YAML::Node node;
     node["type"] = "Option";
-    node["behavior"] = behavior_->toYaml(time, environmentModel);
-    if (verificationResult_.cached(time)) {
-        node["verificationResult"] = verificationResult_.cached(time).value()->isOk() ? "passed" : "failed";
+    node["behavior"] = behavior()->toYaml(time, environmentModel);
+    if (verificationResult(time)) {
+        node["verificationResult"] = verificationResult(time).value()->isOk() ? "passed" : "failed";
     }
     if (hasFlag(Option::Flags::Interruptable)) {
         node["flags"].push_back("Interruptable");

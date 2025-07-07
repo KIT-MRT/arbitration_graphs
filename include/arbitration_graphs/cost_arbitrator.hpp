@@ -129,9 +129,9 @@ private:
             if (isActive) {
                 command = this->getAndVerifyCommand(option, time, environmentModel);
             } else {
-                option->behavior_->gainControl(time, environmentModel);
+                option->behavior()->gainControl(time, environmentModel);
                 command = this->getAndVerifyCommand(option, time, environmentModel);
-                option->behavior_->loseControl(time, environmentModel);
+                option->behavior()->loseControl(time, environmentModel);
             }
             if (!command) {
                 continue;

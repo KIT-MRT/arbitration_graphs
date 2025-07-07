@@ -48,21 +48,31 @@ public:
         enum Flags { NoFlags = 0b0, Interruptable = 0b1, Fallback = 0b10 };
         using FlagsT = std::underlying_type_t<Flags>;
 
-        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior, const FlagsT& flags)
-                : behavior_{behavior}, flags_{flags} {
+        using BehaviorT = Behavior<EnvironmentModelT, SubCommandT>;
+
+        Option(const typename BehaviorT::Ptr& behavior, const FlagsT& flags) : behavior_{behavior}, flags_{flags} {
         }
         virtual ~Option() = default;
-
-        typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
-        FlagsT flags_;
-        mutable util_caching::Cache<Time, SubCommandT> command_;
-        mutable util_caching::Cache<Time, verification::Result::ConstPtr> verificationResult_;
 
         SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
             if (!command_.cached(time)) {
                 command_.cache(time, behavior_->getCommand(time, environmentModel));
             }
             return command_.cached(time).value();
+        }
+
+        const typename BehaviorT::Ptr& behavior() const {
+            return behavior_;
+        }
+
+        std::optional<verification::AbstractResult::ConstPtr> verificationResult(const Time& time) const {
+            return verificationResult_.cached(time);
+        }
+        void cacheVerificationResult(const Time& time, const verification::AbstractResult::ConstPtr& result) const {
+            verificationResult_.cache(time, result);
+        }
+        void resetVerificationResult() const {
+            verificationResult_.reset();
         }
 
         bool hasFlag(const FlagsT& flagToCheck) const {
@@ -96,6 +106,12 @@ public:
          * \return      Yaml representation of this behavior
          */
         virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const;
+
+    private:
+        typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
+        FlagsT flags_;
+        mutable util_caching::Cache<Time, SubCommandT> command_;
+        mutable util_caching::Cache<Time, verification::Result::ConstPtr> verificationResult_;
     };
     using Options = std::vector<typename Option::Ptr>;
     using ConstOptions = std::vector<typename Option::ConstPtr>;
@@ -139,7 +155,7 @@ public:
 
     bool checkInvocationCondition(const Time& time, const EnvironmentModelT& environmentModel) const override {
         for (auto& option : behaviorOptions_) {
-            if (option->behavior_->checkInvocationCondition(time, environmentModel)) {
+            if (option->behavior()->checkInvocationCondition(time, environmentModel)) {
                 return true;
             }
         }
@@ -147,7 +163,7 @@ public:
     }
     bool checkCommitmentCondition(const Time& time, const EnvironmentModelT& environmentModel) const override {
         if (activeBehavior_) {
-            if (activeBehavior_->behavior_->checkCommitmentCondition(time, environmentModel)) {
+            if (activeBehavior_->behavior()->checkCommitmentCondition(time, environmentModel)) {
                 return true;
             }
             return checkInvocationCondition(time, environmentModel);
@@ -160,7 +176,7 @@ public:
 
     void loseControl(const Time& time, const EnvironmentModelT& environmentModel) override {
         if (activeBehavior_) {
-            activeBehavior_->behavior_->loseControl(time, environmentModel);
+            activeBehavior_->behavior()->loseControl(time, environmentModel);
         }
         activeBehavior_.reset();
     }
