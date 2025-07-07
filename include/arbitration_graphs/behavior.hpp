@@ -168,4 +168,4 @@ private:
 };
 } // namespace arbitration_graphs
 
-#include "internal/behavior_io.hpp"
+#include "internal/behavior_io.hpp" // IWYU pragma: keep

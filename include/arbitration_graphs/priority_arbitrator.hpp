@@ -88,4 +88,4 @@ protected:
 };
 } // namespace arbitration_graphs
 
-#include "internal/priority_arbitrator_io.hpp"
+#include "internal/priority_arbitrator_io.hpp" // IWYU pragma: keep

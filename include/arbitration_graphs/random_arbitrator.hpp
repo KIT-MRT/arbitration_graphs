@@ -118,4 +118,4 @@ protected:
 }; // namespace arbitration_graphs
 } // namespace arbitration_graphs
 
-#include "internal/random_arbitrator_io.hpp"
+#include "internal/random_arbitrator_io.hpp" // IWYU pragma: keep

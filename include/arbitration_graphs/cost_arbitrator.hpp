@@ -152,4 +152,4 @@ private:
 };
 } // namespace arbitration_graphs
 
-#include "internal/cost_arbitrator_io.hpp"
+#include "internal/cost_arbitrator_io.hpp" // IWYU pragma: keep
