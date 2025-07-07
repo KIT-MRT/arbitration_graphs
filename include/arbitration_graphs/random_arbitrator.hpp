@@ -56,6 +56,11 @@ public:
                                 const std::string& suffix = "") const override;
 
         //! The option has a chance of weight_ divided by the sum of all options' weights to be selected.
+        double weight() const {
+            return weight_;
+        }
+
+    private:
         double weight_;
     };
     using Options = std::vector<typename Option::Ptr>;
@@ -97,7 +102,7 @@ protected:
         weights.reserve(options.size());
         for (const auto& optionBase : options) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-            weights.push_back(option->weight_);
+            weights.push_back(option->weight());
         }
 
         std::random_device randomDevice;
