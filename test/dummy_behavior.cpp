@@ -36,7 +36,7 @@ TEST_F(DummyBehaviorTest, BasicInterface) {
 TEST_F(DummyBehaviorTest, Printout) {
     const std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "DummyBehavior";
     std::string actualPrintout = testBehaviorTrue.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 }

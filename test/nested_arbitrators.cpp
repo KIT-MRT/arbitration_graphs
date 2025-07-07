@@ -73,7 +73,7 @@ TEST_F(NestedArbitratorsTest, Printout) {
     testRootPriorityArbitrator->to_stream(actualPrintoutStream, time, environmentModel);
     EXPECT_EQ(expectedPrintout, actualPrintoutStream.str());
 
-    std::cout << actualPrintoutStream.str() << std::endl;
+    std::cout << actualPrintoutStream.str() << '\n';
 
 
     testPriorityArbitrator->gainControl(time, environmentModel);
@@ -91,7 +91,7 @@ TEST_F(NestedArbitratorsTest, Printout) {
     std::string actualPrintout = testRootPriorityArbitrator->to_str(time, environmentModel);
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 }
 
 

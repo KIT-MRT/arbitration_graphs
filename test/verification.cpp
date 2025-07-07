@@ -117,9 +117,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     EXPECT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
 
     std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name() << ": "
-              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
+              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << '\n';
     std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name() << ": "
-              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
+              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << '\n';
 
     // clang-format off
     std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
@@ -131,7 +131,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
                         " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
@@ -185,9 +185,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
     EXPECT_FALSE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
 
     std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name() << ": "
-              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
+              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << '\n';
     std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name() << ": "
-              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
+              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << '\n';
 
     // clang-format off
     std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
@@ -202,7 +202,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
                         "    5. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
@@ -256,7 +256,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
                         " -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testCostArbitrator.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
