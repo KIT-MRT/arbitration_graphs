@@ -21,20 +21,20 @@ using DummyCommand = std::string;
 
 class DummyCommandInt {
 public:
-    explicit DummyCommandInt(const int command) : command_{command} {
+    explicit DummyCommandInt(const int command) : command{command} {
     }
-    DummyCommandInt(const DummyCommand& command) { // NOLINT(google-explicit-constructor)
-        command_ = static_cast<std::string>(command).length();
-    }
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    DummyCommandInt(const DummyCommand& strCommand)
+            : command{static_cast<int>(static_cast<std::string>(strCommand).length())} {};
 
     bool operator==(const int otherCommand) const {
-        return command_ == otherCommand;
+        return command == otherCommand;
     }
 
-    int command_;
+    int command;
 };
 inline bool operator==(const int commandInt, const DummyCommandInt& commandObject) {
-    return commandInt == commandObject.command_;
+    return commandInt == commandObject.command;
 }
 
 struct DummyEnvironmentModel {
