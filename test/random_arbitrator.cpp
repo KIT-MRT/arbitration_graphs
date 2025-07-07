@@ -75,12 +75,12 @@ TEST_F(RandomArbitratorTest, Printout) {
     testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentFalseString + "RandomArbitrator\n"
-                                    "    - (weight: 1.000) " + invocationFalseString + commitmentFalseString + "Unavailable\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                                    "    - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
+    std::string expected_printout = InvocationTrueString + CommitmentFalseString + "RandomArbitrator\n"
+                                    "    - (weight: 1.000) " + InvocationFalseString + CommitmentFalseString + "Unavailable\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                                    "    - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
     std::string actual_printout = testRandomArbitrator.to_str(time, environmentModel);
     std::cout << actual_printout << std::endl;
@@ -92,12 +92,12 @@ TEST_F(RandomArbitratorTest, Printout) {
     EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
-    expected_printout = invocationTrueString + commitmentTrueString + "RandomArbitrator\n"
-                        "    - (weight: 1.000) " + invocationFalseString + commitmentFalseString + "Unavailable\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                        " -> - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
+    expected_printout = InvocationTrueString + CommitmentTrueString + "RandomArbitrator\n"
+                        "    - (weight: 1.000) " + InvocationFalseString + CommitmentFalseString + "Unavailable\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                        " -> - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
     actual_printout = testRandomArbitrator.to_str(time, environmentModel);
     std::cout << actual_printout << std::endl;

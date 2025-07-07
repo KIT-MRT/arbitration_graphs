@@ -122,18 +122,18 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
               << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::cout << actualPrintout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time, environmentModel);
@@ -190,21 +190,21 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
               << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        "    5. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        "    5. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::cout << actualPrintout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time, environmentModel);
@@ -247,13 +247,13 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     EXPECT_TRUE(testCostArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
 
     // clang-format off
-    std::string expectedPrintout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
-                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    - (cost:  n.a.) " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "CostArbitrator\n"
+                        "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    - (cost:  n.a.) " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testCostArbitrator.to_str(time, environmentModel);
     std::cout << actualPrintout << std::endl;

@@ -8,13 +8,13 @@ namespace arbitration_graphs_tests {
 
 using namespace arbitration_graphs;
 
-const std::string strikeThroughOn = "×××\010\010\010\033[9m";
-const std::string strikeThroughOff = "\033[29m\033[8m×××\033[28m";
+const std::string StrikeThroughOn = "×××\010\010\010\033[9m";
+const std::string StrikeThroughOff = "\033[29m\033[8m×××\033[28m";
 
-const std::string invocationTrueString = "\033[32mINVOCATION\033[39m ";
-const std::string invocationFalseString = "\033[31mInvocation\033[39m ";
-const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
-const std::string commitmentFalseString = "\033[31mCommitment\033[39m ";
+const std::string InvocationTrueString = "\033[32mINVOCATION\033[39m ";
+const std::string InvocationFalseString = "\033[31mInvocation\033[39m ";
+const std::string CommitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
+const std::string CommitmentFalseString = "\033[31mCommitment\033[39m ";
 
 
 using DummyCommand = std::string;
@@ -27,14 +27,14 @@ public:
         command_ = static_cast<std::string>(command).length();
     }
 
-    bool operator==(const int other_command) const {
-        return command_ == other_command;
+    bool operator==(const int otherCommand) const {
+        return command_ == otherCommand;
     }
 
     int command_;
 };
-bool operator==(const int command_int, const DummyCommandInt& command_object) {
-    return command_int == command_object.command_;
+bool operator==(const int commandInt, const DummyCommandInt& commandObject) {
+    return commandInt == commandObject.command_;
 }
 
 struct DummyEnvironmentModel {
