@@ -40,7 +40,7 @@ public:
      * \note When using addOption(), make sure to use the Flags of the correct Arbitrator.
      *       The compiler wouldn't notice a confusion unfortunately.
      */
-    struct Option {
+    class Option {
     public:
         using Ptr = std::shared_ptr<Option>;
         using ConstPtr = std::shared_ptr<const Option>;
