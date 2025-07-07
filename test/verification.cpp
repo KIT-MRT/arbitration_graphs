@@ -116,9 +116,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
     EXPECT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
 
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name_ << ": "
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name() << ": "
               << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name_ << ": "
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name() << ": "
               << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
 
     // clang-format off
@@ -184,9 +184,9 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
     EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
     EXPECT_FALSE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
 
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name_ << ": "
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name() << ": "
               << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name_ << ": "
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name() << ": "
               << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
 
     // clang-format off

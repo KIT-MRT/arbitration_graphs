@@ -61,17 +61,17 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
             return command;
         }
         // given option is applicable, but not safe
-        VLOG(1) << "Given option " << option->behavior_->name_ << " is applicable, but not safe";
+        VLOG(1) << "Given option " << option->behavior_->name() << " is applicable, but not safe";
         VLOG(2) << "verification result: " << verificationResult;
     } catch (VerificationError& e) {
         // given option is arbitrator without safe applicable option
         option->verificationResult_.reset();
 
-        VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
+        VLOG(1) << "Given option " << option->behavior_->name() << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
         option->verificationResult_.cache(time, std::make_shared<verification::SimpleResult>(false));
-        VLOG(1) << "Given option " << option->behavior_->name_
+        VLOG(1) << "Given option " << option->behavior_->name()
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
     return std::nullopt;
