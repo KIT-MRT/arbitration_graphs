@@ -17,6 +17,11 @@ struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, Du
 
     explicit CostEstimatorFromCostMap(CostMap costMap, const double activationCosts = 0)
             : costMap_{std::move(costMap)}, activationCosts_{activationCosts} {};
+    CostEstimatorFromCostMap(const CostEstimatorFromCostMap&) = default;
+    CostEstimatorFromCostMap(CostEstimatorFromCostMap&&) = default;
+    CostEstimatorFromCostMap& operator=(const CostEstimatorFromCostMap&) = default;
+    CostEstimatorFromCostMap& operator=(CostEstimatorFromCostMap&&) = default;
+    virtual ~CostEstimatorFromCostMap() = default;
 
     double estimateCost(const Time& /*time*/,
                         const DummyEnvironmentModel& environmentModel,

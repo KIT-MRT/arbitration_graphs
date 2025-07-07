@@ -13,6 +13,11 @@ public:
     using Ptr = std::shared_ptr<AbstractResult>;
     using ConstPtr = std::shared_ptr<const AbstractResult>;
 
+    AbstractResult() = default;
+    AbstractResult(const AbstractResult&) = default;
+    AbstractResult(AbstractResult&&) = default;
+    AbstractResult& operator=(const AbstractResult&) = default;
+    AbstractResult& operator=(AbstractResult&&) = default;
     virtual ~AbstractResult() = default;
 
     virtual bool isOk() const = 0;
@@ -24,6 +29,11 @@ public:
     using Ptr = std::shared_ptr<AbstractVerifier>;
     using ConstPtr = std::shared_ptr<const AbstractVerifier>;
 
+    AbstractVerifier() = default;
+    AbstractVerifier(const AbstractVerifier&) = default;
+    AbstractVerifier(AbstractVerifier&&) = default;
+    AbstractVerifier& operator=(const AbstractVerifier&) = default;
+    AbstractVerifier& operator=(AbstractVerifier&&) = default;
     virtual ~AbstractVerifier() = default;
 
     virtual AbstractResult::Ptr analyze(const Time& time,
