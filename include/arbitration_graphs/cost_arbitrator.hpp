@@ -33,7 +33,8 @@ public:
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
     using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
-    struct Option : ArbitratorBase::Option {
+    class Option : public ArbitratorBase::Option {
+    public:
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
