@@ -86,32 +86,32 @@ TEST_F(PriorityArbitratorTest, Printout) {
     testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentFalseString + "PriorityArbitrator\n"
-                                    "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                                    "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                                    "    3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
-                                    "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentFalseString + "PriorityArbitrator\n"
+                                    "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                                    "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                                    "    3. " + InvocationTrueString + CommitmentFalseString + "MidPriority\n"
+                                    "    4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::cout << actualPrintout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     testPriorityArbitrator.gainControl(time, environmentModel);
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
-    expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        " -> 3. " + invocationTrueString + commitmentFalseString + "MidPriority\n"
-                        "    4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        " -> 3. " + InvocationTrueString + CommitmentFalseString + "MidPriority\n"
+                        "    4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::cout << actualPrintout << std::endl;
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 }
 
 TEST_F(PriorityArbitratorTest, ToYaml) {
