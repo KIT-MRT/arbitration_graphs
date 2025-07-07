@@ -126,7 +126,7 @@ explicit PacmanAgent(const entt::Game& game)
     eatDotsArbitrator_->addOption(
         eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
 
-    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);

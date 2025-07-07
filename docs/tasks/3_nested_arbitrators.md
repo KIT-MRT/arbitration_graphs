@@ -14,7 +14,7 @@ We have now implemented a behavior component and integrated it into the arbitrat
 So far, all behavior components are children of the root arbitrator.
 
 Let's make things a bit more interesting by adding a long-term behavior component that's also about eating dots.
-The `ChangeDotCluster` behavior will move Pac-man to an area in the maze where there is a higher density of dots.
+The `ChangeDotCluster` behavior will move Pac-Man to an area in the maze where there is a higher density of dots.
 
 For now, we'll just decide between the two dot eating strategies using chance.
 We can achieve that by adding them to a random arbitrator which is then added as an option to the root arbitrator.
@@ -77,7 +77,7 @@ explicit PacmanAgent(const entt::Game& game)
     eatDotsArbitrator_->addOption( changeDotClusterBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
     eatDotsArbitrator_->addOption( eatClosestDotBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
 
-    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     // The EatDot arbitrator is itself an option of the root arbitrator
