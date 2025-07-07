@@ -47,6 +47,16 @@ public:
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
+        typename CostEstimatorT::Ptr costEstimator() const {
+            return costEstimator_;
+        }
+        void setLastEstimatedCost(double cost) const {
+            lastEstimatedCost_ = cost;
+        }
+        void resetLastEstimatedCost() const {
+            lastEstimatedCost_.reset();
+        }
+
         /*!
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
@@ -75,6 +85,7 @@ public:
          */
         YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
+    private:
         typename CostEstimatorT::Ptr costEstimator_;
         mutable std::optional<double> lastEstimatedCost_;
     };
@@ -111,10 +122,10 @@ private:
         const typename ArbitratorBase::Options& options,
         const Time& time,
         const EnvironmentModelT& environmentModel) const override {
-        // reset lastEstimatedCost_ for all behaviorOptions_
+        // reset lastEstimatedCost for all behaviorOptions_
         for (const auto& optionBase : this->behaviorOptions_) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-            option->lastEstimatedCost_ = std::nullopt;
+            option->resetLastEstimatedCost();
         }
 
         // sort given options by using a multiset
@@ -137,8 +148,8 @@ private:
                 continue;
             }
 
-            double cost = option->costEstimator_->estimateCost(time, environmentModel, command.value(), isActive);
-            option->lastEstimatedCost_ = cost;
+            double cost = option->costEstimator()->estimateCost(time, environmentModel, command.value(), isActive);
+            option->setLastEstimatedCost(cost);
             sortedOptionsMap.insert({cost, option});
         }
 
