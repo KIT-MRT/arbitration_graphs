@@ -88,8 +88,8 @@ protected:
      */
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(
         const typename ArbitratorBase::Options& options,
-        const Time& time,
-        const EnvironmentModelT& environmentModel) const override {
+        const Time& /*time*/,
+        const EnvironmentModelT& /*environmentModel*/) const override {
         typename ArbitratorBase::Options shuffledOptions;
         shuffledOptions.reserve(options.size());
 

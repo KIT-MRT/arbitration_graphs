@@ -19,8 +19,8 @@ template <typename EnvironmentModelT, typename CommandT>
 std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& output,
                                                                const Time& time,
                                                                const EnvironmentModelT& environmentModel,
-                                                               const std::string& prefix,
-                                                               const std::string& suffix) const {
+                                                               const std::string& /*prefix*/,
+                                                               const std::string& /*suffix*/) const {
     if (checkInvocationCondition(time, environmentModel)) {
         output << "\033[32mINVOCATION\033[39m ";
     } else {

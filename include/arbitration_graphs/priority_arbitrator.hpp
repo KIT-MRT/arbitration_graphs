@@ -80,8 +80,8 @@ protected:
      */
     typename ArbitratorBase::Options sortOptionsByGivenPolicy(
         const typename ArbitratorBase::Options& options,
-        const Time& time,
-        const EnvironmentModelT& environmentModel) const override {
+        const Time& /*time*/,
+        const EnvironmentModelT& /*environmentModel*/) const override {
         // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
         return options;
     }

@@ -60,7 +60,7 @@ public:
      * \param environmentModel  A read-only object containing the current state of the environment
      * \return      true if this behavior can be activated
      */
-    virtual bool checkInvocationCondition(const Time& time, const EnvironmentModelT& environmentModel) const {
+    virtual bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModelT& /*environmentModel*/) const {
         return false;
     }
 
@@ -73,7 +73,7 @@ public:
      * \param environmentModel  A read-only object containing the current state of the environment
      * \return      true if this behavior can be continued
      */
-    virtual bool checkCommitmentCondition(const Time& time, const EnvironmentModelT& environmentModel) const {
+    virtual bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModelT& /*environmentModel*/) const {
         return false;
     }
 
