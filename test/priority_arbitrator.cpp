@@ -52,25 +52,25 @@ TEST_F(PriorityArbitratorTest, BasicFunctionality) {
     testPriorityArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(0, testBehaviorMidPriority->loseControlCounter_);
+    EXPECT_EQ(0, testBehaviorMidPriority->loseControlCounter);
 
     // testBehaviorMidPriority.loseControl(time) should be called within getCommand since commitment condition is false
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(1, testBehaviorMidPriority->loseControlCounter_);
+    EXPECT_EQ(1, testBehaviorMidPriority->loseControlCounter);
 
-    testBehaviorMidPriority->invocationCondition_ = false;
+    testBehaviorMidPriority->invocationCondition = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
 
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
+    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter);
 
     // testBehaviorLowPriority.loseControl(time) should NOT be called within getCommand since commitment condition is
     // true
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter_);
+    EXPECT_EQ(0, testBehaviorLowPriority->loseControlCounter);
 
-    testBehaviorMidPriority->invocationCondition_ = true;
+    testBehaviorMidPriority->invocationCondition = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
@@ -181,13 +181,13 @@ TEST_F(PriorityArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
 
-    testBehaviorMidPriority->invocationCondition_ = false;
+    testBehaviorMidPriority->invocationCondition = false;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
 
-    testBehaviorMidPriority->invocationCondition_ = true;
+    testBehaviorMidPriority->invocationCondition = true;
     EXPECT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testPriorityArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));

@@ -21,12 +21,12 @@ struct DummyVerifier : public verification::Verifier<DummyEnvironmentModel, Dumm
     verification::Result::Ptr analyze(const Time& /*time*/,
                                       const DummyEnvironmentModel& /*environmentModel*/,
                                       const DummyCommand& command) const override {
-        if (command == wrong_) {
+        if (command == wrong) {
             return std::make_shared<DummyResult>(false);
         }
         return std::make_shared<DummyResult>(true);
     };
-    std::string wrong_{"MidPriority"};
+    std::string wrong{"MidPriority"};
 };
 
 class CommandVerificationTest : public ::testing::Test {
@@ -148,7 +148,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
@@ -263,7 +263,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
 
     testCostArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 
     testCostArbitrator.gainControl(time, environmentModel);

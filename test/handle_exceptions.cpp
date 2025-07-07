@@ -46,7 +46,7 @@ TEST_F(ExceptionHandlingTest, HandleExceptionInPriorityArbitrator) {
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);

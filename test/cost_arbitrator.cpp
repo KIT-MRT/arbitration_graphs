@@ -56,25 +56,25 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     testCostArbitrator.gainControl(time, environmentModel);
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
     //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
-    EXPECT_EQ(1, testBehaviorMidCost->loseControlCounter_);
+    EXPECT_EQ(1, testBehaviorMidCost->loseControlCounter);
 
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
     //! \note This should be 1, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
-    EXPECT_EQ(3, testBehaviorMidCost->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorMidCost->loseControlCounter);
 
-    testBehaviorMidCost->invocationCondition_ = false;
+    testBehaviorMidCost->invocationCondition = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
 
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
     //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
-    EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter);
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
     //! \note This should be 0, if we estimate costs without calling getCommand (and thus gain/loseControl, see c2b2a93)
-    EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter_);
+    EXPECT_EQ(3, testBehaviorHighCost->loseControlCounter);
 
     // high_cost behavior is not interruptable -> high_cost should stay active
-    testBehaviorMidCost->invocationCondition_ = true;
+    testBehaviorMidCost->invocationCondition = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
@@ -89,26 +89,26 @@ TEST_F(CostArbitratorTest, CommandCaching) {
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
-    EXPECT_EQ(0, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ(0, testBehaviorMidCost->getCommandCounter);
 
     testCostArbitrator.gainControl(time, environmentModel);
 
     // Even though the cost arbitrator needs to compute the command to estimate the costs, the behaviors getCommand
     // should only be called once since the result is cached
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter);
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
     // For a second call to getCommand, we can still use the cached command
-    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ(1, testBehaviorMidCost->getCommandCounter);
 
     time = time + Duration(1);
 
     // The cached command should be invalidated after the time has passed
     // Therefore the behavior should be called again once for the new time
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter);
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter_);
+    EXPECT_EQ(2, testBehaviorMidCost->getCommandCounter);
 }
 
 TEST_F(CostArbitratorTest, Printout) {
@@ -226,14 +226,14 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivati
 
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
 
-    testBehaviorMidCost->invocationCondition_ = false;
+    testBehaviorMidCost->invocationCondition = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
 
     // high_cost behavior is not interruptable -> high_cost should stay active
-    testBehaviorMidCost->invocationCondition_ = true;
+    testBehaviorMidCost->invocationCondition = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
@@ -263,14 +263,14 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
 
-    testBehaviorMidCost->invocationCondition_ = false;
+    testBehaviorMidCost->invocationCondition = false;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
 
     // high_cost behavior is interruptable -> mid_cost should become active again
-    testBehaviorMidCost->invocationCondition_ = true;
+    testBehaviorMidCost->invocationCondition = true;
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
     EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
