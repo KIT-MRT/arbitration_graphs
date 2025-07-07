@@ -1,9 +1,8 @@
 #pragma once
 
-#include "dummy_types.hpp"
-
-#include "behavior.hpp"
 #include "cost_arbitrator.hpp"
+
+#include "dummy_types.hpp"
 
 
 namespace arbitration_graphs_tests {

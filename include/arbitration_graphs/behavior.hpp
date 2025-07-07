@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <memory>
-#include <sstream>
 
 #include <yaml-cpp/yaml.h>
 
