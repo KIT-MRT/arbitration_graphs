@@ -19,7 +19,7 @@ using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyEnvironmentModel
 
 struct DummyVerifier : public verification::Verifier<DummyEnvironmentModel, DummyCommand> {
     verification::Result::Ptr analyze(const Time& /*time*/,
-                                      const DummyEnvironmentModel& environmentModel,
+                                      const DummyEnvironmentModel& /*environmentModel*/,
                                       const DummyCommand& command) const override {
         if (command == wrong_) {
             return std::make_shared<DummyResult>(false);
