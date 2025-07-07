@@ -33,9 +33,8 @@ struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, Du
         environmentModel.getObservation();
         if (isActive) {
             return costMap_.at(command) / (1 + activationCosts_);
-        } else {
-            return (costMap_.at(command) + activationCosts_) / (1 + activationCosts_);
         }
+        return (costMap_.at(command) + activationCosts_) / (1 + activationCosts_);
     }
 
 private:
