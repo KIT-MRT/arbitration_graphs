@@ -52,6 +52,11 @@ public:
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
             : Behavior(name), invocationCondition{invocation}, commitmentCondition{commitment} {};
+    DummyBehavior(const DummyBehavior&) = default;
+    DummyBehavior(DummyBehavior&&) = delete;
+    DummyBehavior& operator=(const DummyBehavior&) = default;
+    DummyBehavior& operator=(DummyBehavior&&) = delete;
+    virtual ~DummyBehavior() = default;
 
     DummyCommand getCommand(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) override {
         // While computing a command, we can read the environment model to get the required context. In this mock

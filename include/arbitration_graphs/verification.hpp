@@ -13,6 +13,11 @@ public:
     using Ptr = std::shared_ptr<Result>;
     using ConstPtr = std::shared_ptr<const Result>;
 
+    Result() = default;
+    Result(const Result&) = default;
+    Result(Result&&) = default;
+    Result& operator=(const Result&) = default;
+    Result& operator=(Result&&) = default;
     virtual ~Result() = default;
 
     virtual bool isOk() const = 0;
@@ -24,6 +29,11 @@ public:
     using Ptr = std::shared_ptr<Verifier>;
     using ConstPtr = std::shared_ptr<const Verifier>;
 
+    Verifier() = default;
+    Verifier(const Verifier&) = default;
+    Verifier(Verifier&&) = default;
+    Verifier& operator=(const Verifier&) = default;
+    Verifier& operator=(Verifier&&) = default;
     virtual ~Verifier() = default;
 
     virtual Result::Ptr analyze(const Time& time,

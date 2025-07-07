@@ -52,6 +52,10 @@ public:
 
         Option(const typename BehaviorT::Ptr& behavior, const FlagsT& flags) : behavior_{behavior}, flags_{flags} {
         }
+        Option(const Option&) = default;
+        Option(Option&&) = default;
+        Option& operator=(const Option&) = default;
+        Option& operator=(Option&&) = default;
         virtual ~Option() = default;
 
         SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
