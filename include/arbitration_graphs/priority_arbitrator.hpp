@@ -70,7 +70,7 @@ public:
      * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
+    YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 protected:
     /*!

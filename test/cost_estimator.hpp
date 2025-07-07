@@ -16,10 +16,10 @@ struct CostEstimatorFromCostMap : public CostEstimator<DummyEnvironmentModel, Du
     explicit CostEstimatorFromCostMap(const CostMap& costMap, const double activationCosts = 0)
             : costMap_{costMap}, activationCosts_{activationCosts} {};
 
-    virtual double estimateCost(const Time& /*time*/,
-                                const DummyEnvironmentModel& environmentModel,
-                                const DummyCommand& command,
-                                const bool isActive) override {
+    double estimateCost(const Time& /*time*/,
+                        const DummyEnvironmentModel& environmentModel,
+                        const DummyCommand& command,
+                        const bool isActive) override {
         // In an actual application, you might want to get data from the environment model here to help you determine
         // the cost of a command. In this mock implementation, we simply simulate this access to show that we could do
         // so.

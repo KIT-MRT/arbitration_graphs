@@ -155,10 +155,10 @@ public:
         return false;
     }
 
-    virtual void gainControl(const Time& time, const EnvironmentModelT& environmentModel) override {
+    void gainControl(const Time& time, const EnvironmentModelT& environmentModel) override {
     }
 
-    virtual void loseControl(const Time& time, const EnvironmentModelT& environmentModel) override {
+    void loseControl(const Time& time, const EnvironmentModelT& environmentModel) override {
         if (activeBehavior_) {
             activeBehavior_->behavior_->loseControl(time, environmentModel);
         }
@@ -181,11 +181,11 @@ public:
      *
      * \see Behavior::to_stream()
      */
-    virtual std::ostream& to_stream(std::ostream& output,
-                                    const Time& time,
-                                    const EnvironmentModelT& environmentModel,
-                                    const std::string& prefix = "",
-                                    const std::string& suffix = "") const override;
+    std::ostream& to_stream(std::ostream& output,
+                            const Time& time,
+                            const EnvironmentModelT& environmentModel,
+                            const std::string& prefix = "",
+                            const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -194,7 +194,7 @@ public:
      * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
+    YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 
 protected:
