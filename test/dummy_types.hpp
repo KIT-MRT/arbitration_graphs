@@ -33,7 +33,7 @@ public:
 
     int command_;
 };
-bool operator==(const int commandInt, const DummyCommandInt& commandObject) {
+inline bool operator==(const int commandInt, const DummyCommandInt& commandObject) {
     return commandInt == commandObject.command_;
 }
 
