@@ -41,7 +41,7 @@ public:
          * \param output            Output stream to write into, will be returned also
          * \param time              Expected execution time point of this behaviors command
          * \param environmentModel  A read-only object containing the current state of the environment
-         * \param optionIndex       Position index of this option within behaviorOptions_
+         * \param optionIndex       Position index of this option within options()
          * \param prefix            A string that should be prepended to each line that is written to the output stream
          * \param suffix            A string that should be appended to each line that is written to the output stream
          * \return                  The same given input stream (signature similar to std::ostream& operator<<())
@@ -73,7 +73,7 @@ public:
                    const typename Option::FlagsT& flags,
                    const double& weight = 1) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, weight);
-        this->behaviorOptions_.push_back(option);
+        this->addOptionInternal(option);
     }
 
     /*!

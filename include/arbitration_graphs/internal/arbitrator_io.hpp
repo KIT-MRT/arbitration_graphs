@@ -67,8 +67,8 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::toStream(std
 
     Behavior<EnvironmentModelT, CommandT>::toStream(output, time, environmentModel, prefix, suffix);
 
-    for (int i = 0; i < static_cast<int>(behaviorOptions_.size()); ++i) {
-        const typename Option::Ptr& option = behaviorOptions_.at(i);
+    for (int i = 0; i < static_cast<int>(options().size()); ++i) {
+        const typename Option::ConstPtr option = options().at(i);
         bool isActive = activeBehavior_ && (option == activeBehavior_);
 
         if (isActive) {
@@ -87,7 +87,7 @@ YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
     YAML::Node node = Behavior<EnvironmentModelT, CommandT>::toYaml(time, environmentModel);
 
     node["type"] = "Arbitrator";
-    for (const typename Option::Ptr& option : behaviorOptions_) {
+    for (const typename Option::ConstPtr& option : options()) {
         YAML::Node yaml = option->toYaml(time, environmentModel);
         node["options"].push_back(yaml);
     }
