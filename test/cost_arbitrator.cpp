@@ -124,7 +124,7 @@ TEST_F(CostArbitratorTest, Printout) {
                                     "    - (cost:  n.a.) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
                                     "    - (cost:  n.a.) " + InvocationTrueString + CommitmentFalseString + "mid_cost";
     // clang-format on
-    std::string actualPrintout = testCostArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testCostArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
@@ -140,7 +140,7 @@ TEST_F(CostArbitratorTest, Printout) {
                         "    - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
                         " -> - (cost: 0.500) " + InvocationTrueString + CommitmentFalseString + "mid_cost";
     // clang-format on
-    actualPrintout = testCostArbitrator.to_str(time, environmentModel);
+    actualPrintout = testCostArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);

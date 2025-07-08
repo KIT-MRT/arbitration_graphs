@@ -46,14 +46,14 @@ public:
          * \param suffix            A string that should be appended to each line that is written to the output stream
          * \return                  The same given input stream (signature similar to std::ostream& operator<<())
          *
-         * \see Arbitrator::to_stream()
+         * \see Arbitrator::toStream()
          */
-        std::ostream& to_stream(std::ostream& output,
-                                const Time& time,
-                                const EnvironmentModelT& environmentModel,
-                                const int& optionIndex,
-                                const std::string& prefix = "",
-                                const std::string& suffix = "") const override;
+        std::ostream& toStream(std::ostream& output,
+                               const Time& time,
+                               const EnvironmentModelT& environmentModel,
+                               const int& optionIndex,
+                               const std::string& prefix = "",
+                               const std::string& suffix = "") const override;
 
         //! The option has a chance of weight_ divided by the sum of all options' weights to be selected.
         double weight() const {

@@ -130,7 +130,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
                                   + StrikeThroughOff + "\n"
                         " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
@@ -201,7 +201,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
                                   + StrikeThroughOff + "\n"
                         "    5. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
@@ -255,7 +255,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
                                   + StrikeThroughOff + "\n"
                         " -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testCostArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testCostArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);

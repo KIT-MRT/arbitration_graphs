@@ -94,14 +94,14 @@ public:
          * \param suffix            A string that should be appended to each line that is written to the output stream
          * \return                  The same given input stream (signature similar to std::ostream& operator<<())
          *
-         * \see Arbitrator::to_stream()
+         * \see Arbitrator::toStream()
          */
-        virtual std::ostream& to_stream(std::ostream& output,
-                                        const Time& time,
-                                        const EnvironmentModelT& environmentModel,
-                                        const int& optionIndex,
-                                        const std::string& prefix = "",
-                                        const std::string& suffix = "") const;
+        virtual std::ostream& toStream(std::ostream& output,
+                                       const Time& time,
+                                       const EnvironmentModelT& environmentModel,
+                                       const int& optionIndex,
+                                       const std::string& prefix = "",
+                                       const std::string& suffix = "") const;
 
         /*!
          * \brief Returns a yaml representation of this option with its current state
@@ -199,13 +199,13 @@ public:
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
      *
-     * \see Behavior::to_stream()
+     * \see Behavior::toStream()
      */
-    std::ostream& to_stream(std::ostream& output,
-                            const Time& time,
-                            const EnvironmentModelT& environmentModel,
-                            const std::string& prefix = "",
-                            const std::string& suffix = "") const override;
+    std::ostream& toStream(std::ostream& output,
+                           const Time& time,
+                           const EnvironmentModelT& environmentModel,
+                           const std::string& prefix = "",
+                           const std::string& suffix = "") const override;
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
