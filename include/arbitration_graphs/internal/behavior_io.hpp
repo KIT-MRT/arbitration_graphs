@@ -6,21 +6,21 @@
 namespace arbitration_graphs {
 
 template <typename EnvironmentModelT, typename CommandT>
-std::string Behavior<EnvironmentModelT, CommandT>::to_str(const Time& time,
-                                                          const EnvironmentModelT& environmentModel,
-                                                          const std::string& prefix,
-                                                          const std::string& suffix) const {
+std::string Behavior<EnvironmentModelT, CommandT>::toString(const Time& time,
+                                                            const EnvironmentModelT& environmentModel,
+                                                            const std::string& prefix,
+                                                            const std::string& suffix) const {
     std::stringstream stream;
-    to_stream(stream, time, environmentModel, prefix, suffix);
+    toStream(stream, time, environmentModel, prefix, suffix);
     return stream.str();
 }
 
 template <typename EnvironmentModelT, typename CommandT>
-std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& output,
-                                                               const Time& time,
-                                                               const EnvironmentModelT& environmentModel,
-                                                               const std::string& /*prefix*/,
-                                                               const std::string& /*suffix*/) const {
+std::ostream& Behavior<EnvironmentModelT, CommandT>::toStream(std::ostream& output,
+                                                              const Time& time,
+                                                              const EnvironmentModelT& environmentModel,
+                                                              const std::string& /*prefix*/,
+                                                              const std::string& /*suffix*/) const {
     if (checkInvocationCondition(time, environmentModel)) {
         output << "\033[32mINVOCATION\033[39m ";
     } else {

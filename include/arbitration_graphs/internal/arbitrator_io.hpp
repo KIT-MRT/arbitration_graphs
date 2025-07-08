@@ -10,7 +10,7 @@ namespace arbitration_graphs {
 //////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_stream(
+std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
@@ -22,13 +22,13 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_s
         // ANSI backspace: \010
         // ANSI strikethrough on: \033[9m
         output << "×××\010\010\010\033[9m";
-        behavior()->to_stream(output, time, environmentModel, prefix, suffix);
+        behavior()->toStream(output, time, environmentModel, prefix, suffix);
         // ANSI strikethrough off: \033[29m
         // ANSI hide on: \033[8m
         // ANSI hide off: \033[28m
         output << "\033[29m\033[8m×××\033[28m";
     } else {
-        behavior()->to_stream(output, time, environmentModel, prefix, suffix);
+        behavior()->toStream(output, time, environmentModel, prefix, suffix);
     }
 
     return output;
@@ -59,13 +59,13 @@ YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
 //////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::to_stream(std::ostream& output,
-                                                                              const Time& time,
-                                                                              const EnvironmentModelT& environmentModel,
-                                                                              const std::string& prefix,
-                                                                              const std::string& suffix) const {
+std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::toStream(std::ostream& output,
+                                                                             const Time& time,
+                                                                             const EnvironmentModelT& environmentModel,
+                                                                             const std::string& prefix,
+                                                                             const std::string& suffix) const {
 
-    Behavior<EnvironmentModelT, CommandT>::to_stream(output, time, environmentModel, prefix, suffix);
+    Behavior<EnvironmentModelT, CommandT>::toStream(output, time, environmentModel, prefix, suffix);
 
     for (int i = 0; i < static_cast<int>(behaviorOptions_.size()); ++i) {
         const typename Option::Ptr& option = behaviorOptions_.at(i);
@@ -76,7 +76,7 @@ std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::to_stream(st
         } else {
             output << suffix << '\n' << prefix << "    ";
         }
-        option->to_stream(output, time, environmentModel, i, "    " + prefix, suffix);
+        option->toStream(output, time, environmentModel, i, "    " + prefix, suffix);
     }
     return output;
 }

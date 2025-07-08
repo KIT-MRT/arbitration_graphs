@@ -65,12 +65,12 @@ TEST_F(NestedArbitratorsTest, Printout) {
                                     "        2. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
 
-    // 1. test to_str()
-    EXPECT_EQ(expectedPrintout, testRootPriorityArbitrator->to_str(time, environmentModel));
+    // 1. test toString()
+    EXPECT_EQ(expectedPrintout, testRootPriorityArbitrator->toString(time, environmentModel));
 
-    // 1. test to_stream()
+    // 1. test toStream()
     std::stringstream actualPrintoutStream;
-    testRootPriorityArbitrator->to_stream(actualPrintoutStream, time, environmentModel);
+    testRootPriorityArbitrator->toStream(actualPrintoutStream, time, environmentModel);
     EXPECT_EQ(expectedPrintout, actualPrintoutStream.str());
 
     std::cout << actualPrintoutStream.str() << '\n';
@@ -88,7 +88,7 @@ TEST_F(NestedArbitratorsTest, Printout) {
                         "        1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
                         "        2. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testRootPriorityArbitrator->to_str(time, environmentModel);
+    std::string actualPrintout = testRootPriorityArbitrator->toString(time, environmentModel);
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
     std::cout << actualPrintout << '\n';

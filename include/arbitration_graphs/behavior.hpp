@@ -107,7 +107,7 @@ public:
     }
 
     /*!
-     * \brief Returns a string representation of the behavior object with its current state using to_stream()
+     * \brief Returns a string representation of the behavior object with its current state using toStream()
      *
      * \param time      Expected execution time point of this behaviors command
      * \param environmentModel  A read-only object containing the current state of the environment
@@ -115,12 +115,12 @@ public:
      * \param suffix    A string that should be appended to each line this function writes
      * \return          String representation of this behavior
      *
-     * \see to_stream()
+     * \see toStream()
      */
-    virtual std::string to_str(const Time& time,
-                               const EnvironmentModelT& environmentModel,
-                               const std::string& prefix = "",
-                               const std::string& suffix = "") const;
+    virtual std::string toString(const Time& time,
+                                 const EnvironmentModelT& environmentModel,
+                                 const std::string& prefix = "",
+                                 const std::string& suffix = "") const;
 
     /*!
      * \brief Writes a string representation of the behavior object with its current state to the given output stream.
@@ -145,11 +145,11 @@ public:
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
      */
-    virtual std::ostream& to_stream(std::ostream& output,
-                                    const Time& time,
-                                    const EnvironmentModelT& environmentModel,
-                                    const std::string& prefix = "",
-                                    const std::string& suffix = "") const;
+    virtual std::ostream& toStream(std::ostream& output,
+                                   const Time& time,
+                                   const EnvironmentModelT& environmentModel,
+                                   const std::string& prefix = "",
+                                   const std::string& suffix = "") const;
 
     /*!
      * \brief Returns a yaml representation of the behavior object with its current state

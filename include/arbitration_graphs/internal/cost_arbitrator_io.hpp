@@ -12,7 +12,7 @@ namespace arbitration_graphs {
 //////////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_stream(
+std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
@@ -26,7 +26,7 @@ std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::
         output << "- (cost:  n.a.) ";
     }
 
-    ArbitratorBase::Option::to_stream(output, time, environmentModel, optionIndex, prefix, suffix);
+    ArbitratorBase::Option::toStream(output, time, environmentModel, optionIndex, prefix, suffix);
     return output;
 }
 

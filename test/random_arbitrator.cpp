@@ -82,7 +82,7 @@ TEST_F(RandomArbitratorTest, Printout) {
                                     "    - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
                                     "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
-    std::string actualPrintout = testRandomArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testRandomArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
@@ -99,7 +99,7 @@ TEST_F(RandomArbitratorTest, Printout) {
                         " -> - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
                         "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
-    actualPrintout = testRandomArbitrator.to_str(time, environmentModel);
+    actualPrintout = testRandomArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
