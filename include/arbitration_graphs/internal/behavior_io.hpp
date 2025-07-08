@@ -6,21 +6,21 @@
 namespace arbitration_graphs {
 
 template <typename EnvironmentModelT, typename CommandT>
-std::string Behavior<EnvironmentModelT, CommandT>::to_str(const Time& time,
-                                                          const EnvironmentModelT& environmentModel,
-                                                          const std::string& prefix,
-                                                          const std::string& suffix) const {
-    std::stringstream ss;
-    to_stream(ss, time, environmentModel, prefix, suffix);
-    return ss.str();
+std::string Behavior<EnvironmentModelT, CommandT>::toString(const Time& time,
+                                                            const EnvironmentModelT& environmentModel,
+                                                            const std::string& prefix,
+                                                            const std::string& suffix) const {
+    std::stringstream stream;
+    toStream(stream, time, environmentModel, prefix, suffix);
+    return stream.str();
 }
 
 template <typename EnvironmentModelT, typename CommandT>
-std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& output,
-                                                               const Time& time,
-                                                               const EnvironmentModelT& environmentModel,
-                                                               const std::string& prefix,
-                                                               const std::string& suffix) const {
+std::ostream& Behavior<EnvironmentModelT, CommandT>::toStream(std::ostream& output,
+                                                              const Time& time,
+                                                              const EnvironmentModelT& environmentModel,
+                                                              const std::string& /*prefix*/,
+                                                              const std::string& /*suffix*/) const {
     if (checkInvocationCondition(time, environmentModel)) {
         output << "\033[32mINVOCATION\033[39m ";
     } else {
@@ -32,7 +32,7 @@ std::ostream& Behavior<EnvironmentModelT, CommandT>::to_stream(std::ostream& out
         output << "\033[31mCommitment\033[39m ";
     }
 
-    output << name_;
+    output << name();
     return output;
 }
 
@@ -41,7 +41,7 @@ YAML::Node Behavior<EnvironmentModelT, CommandT>::toYaml(const Time& time,
                                                          const EnvironmentModelT& environmentModel) const {
     YAML::Node node;
     node["type"] = "Behavior";
-    node["name"] = name_;
+    node["name"] = name();
     node["invocationCondition"] = checkInvocationCondition(time, environmentModel);
     node["commitmentCondition"] = checkCommitmentCondition(time, environmentModel);
     return node;

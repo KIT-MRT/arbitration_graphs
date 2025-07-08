@@ -11,15 +11,15 @@ namespace arbitration_graphs {
 //////////////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& PriorityArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_stream(
+std::ostream& PriorityArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
-    const int& option_index,
+    const int& optionIndex,
     const std::string& prefix,
     const std::string& suffix) const {
-    output << option_index + 1 << ". ";
-    ArbitratorBase::Option::to_stream(output, time, environmentModel, option_index, prefix, suffix);
+    output << optionIndex + 1 << ". ";
+    ArbitratorBase::Option::toStream(output, time, environmentModel, optionIndex, prefix, suffix);
     return output;
 }
 

@@ -8,33 +8,33 @@ namespace arbitration_graphs_tests {
 
 using namespace arbitration_graphs;
 
-const std::string strikeThroughOn = "×××\010\010\010\033[9m";
-const std::string strikeThroughOff = "\033[29m\033[8m×××\033[28m";
+const std::string StrikeThroughOn = "×××\010\010\010\033[9m";
+const std::string StrikeThroughOff = "\033[29m\033[8m×××\033[28m";
 
-const std::string invocationTrueString = "\033[32mINVOCATION\033[39m ";
-const std::string invocationFalseString = "\033[31mInvocation\033[39m ";
-const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
-const std::string commitmentFalseString = "\033[31mCommitment\033[39m ";
+const std::string InvocationTrueString = "\033[32mINVOCATION\033[39m ";
+const std::string InvocationFalseString = "\033[31mInvocation\033[39m ";
+const std::string CommitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
+const std::string CommitmentFalseString = "\033[31mCommitment\033[39m ";
 
 
 using DummyCommand = std::string;
 
 class DummyCommandInt {
 public:
-    DummyCommandInt(const int command) : command_{command} {
+    explicit DummyCommandInt(const int command) : command{command} {
     }
-    DummyCommandInt(const DummyCommand& command) {
-        command_ = static_cast<std::string>(command).length();
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    DummyCommandInt(const DummyCommand& strCommand)
+            : command{static_cast<int>(static_cast<std::string>(strCommand).length())} {};
+
+    bool operator==(const int otherCommand) const {
+        return command == otherCommand;
     }
 
-    bool operator==(const int other_command) const {
-        return command_ == other_command;
-    }
-
-    int command_;
+    int command;
 };
-bool operator==(const int command_int, const DummyCommandInt& command_object) {
-    return command_int == command_object.command_;
+inline bool operator==(const int commandInt, const DummyCommandInt& commandObject) {
+    return commandInt == commandObject.command;
 }
 
 struct DummyEnvironmentModel {
@@ -51,36 +51,41 @@ public:
     using Ptr = std::shared_ptr<DummyBehavior>;
 
     DummyBehavior(const bool invocation, const bool commitment, const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment} {};
+            : Behavior(name), invocationCondition{invocation}, commitmentCondition{commitment} {};
+    DummyBehavior(const DummyBehavior&) = default;
+    DummyBehavior(DummyBehavior&&) = delete;
+    DummyBehavior& operator=(const DummyBehavior&) = default;
+    DummyBehavior& operator=(DummyBehavior&&) = delete;
+    virtual ~DummyBehavior() = default;
 
-    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+    DummyCommand getCommand(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) override {
         // While computing a command, we can read the environment model to get the required context. In this mock
         // implementation, we merely simulate this access to assure that this interaction is possible. You will find
         // analogous calls to the environment model in the other methods of this class.
         environmentModel.getObservation();
-        getCommandCounter_++;
-        return name_;
+        getCommandCounter++;
+        return {name()};
     }
-    bool checkInvocationCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+    bool checkInvocationCondition(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) const override {
         environmentModel.getObservation();
-        return invocationCondition_;
+        return invocationCondition;
     }
-    bool checkCommitmentCondition(const Time& time, const DummyEnvironmentModel& environmentModel) const override {
+    bool checkCommitmentCondition(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) const override {
         environmentModel.getObservation();
-        return commitmentCondition_;
+        return commitmentCondition;
     }
-    void gainControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+    void gainControl(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) override {
         environmentModel.getObservation();
     }
-    void loseControl(const Time& time, const DummyEnvironmentModel& environmentModel) override {
+    void loseControl(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) override {
         environmentModel.getObservation();
-        loseControlCounter_++;
+        loseControlCounter++;
     }
 
-    bool invocationCondition_;
-    bool commitmentCondition_;
-    int getCommandCounter_{0};
-    int loseControlCounter_{0};
+    bool invocationCondition;
+    bool commitmentCondition;
+    int getCommandCounter{0};
+    int loseControlCounter{0};
 };
 
 class BrokenDummyBehavior : public DummyBehavior {
@@ -91,14 +96,14 @@ public:
                         int numGetCommandsUntilThrow = 0)
             : DummyBehavior(invocation, commitment, name), numGetCommandsUntilThrow_{numGetCommandsUntilThrow} {};
 
-    DummyCommand getCommand(const Time& time, const DummyEnvironmentModel& environmentModel) override {
-        if (getCommandCounter_ >= numGetCommandsUntilThrow_) {
+    DummyCommand getCommand(const Time& /*time*/, const DummyEnvironmentModel& environmentModel) override {
+        if (getCommandCounter >= numGetCommandsUntilThrow_) {
             throw std::runtime_error("BrokenDummyBehavior::getCommand() is broken");
         }
         environmentModel.getObservation();
 
-        getCommandCounter_++;
-        return name_;
+        getCommandCounter++;
+        return name();
     }
 
 private:

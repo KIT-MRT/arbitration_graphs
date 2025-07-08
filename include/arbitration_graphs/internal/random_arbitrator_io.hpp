@@ -13,15 +13,15 @@ namespace arbitration_graphs {
 //////////////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& RandomArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_stream(
+std::ostream& RandomArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
-    const int& option_index,
+    const int& optionIndex,
     const std::string& prefix,
     const std::string& suffix) const {
     output << std::fixed << std::setprecision(3) << "- (weight: " << weight_ << ") ";
-    ArbitratorBase::Option::to_stream(output, time, environmentModel, option_index, prefix, suffix);
+    ArbitratorBase::Option::toStream(output, time, environmentModel, optionIndex, prefix, suffix);
     return output;
 }
 
