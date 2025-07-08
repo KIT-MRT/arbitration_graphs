@@ -129,7 +129,7 @@ public:
     virtual void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                            const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
-        this->behaviorOptions_.push_back(option);
+        addOptionInternal(option);
     }
 
     CommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) override {
@@ -158,7 +158,7 @@ public:
     }
 
     bool checkInvocationCondition(const Time& time, const EnvironmentModelT& environmentModel) const override {
-        for (auto& option : behaviorOptions_) {
+        for (auto& option : options()) {
             if (option->behavior()->checkInvocationCondition(time, environmentModel)) {
                 return true;
             }
@@ -218,6 +218,10 @@ public:
 
 
 protected:
+    void addOptionInternal(const typename Option::Ptr& option) {
+        behaviorOptions_.push_back(option);
+    }
+
     /*!
      * @brief   Override this function in a specialized Arbitrator in order to
      *          sort given behavior options according to your policy in descending order (first is best)
@@ -281,6 +285,7 @@ protected:
                                                   const Time& time,
                                                   const EnvironmentModelT& environmentModel);
 
+private:
     Options behaviorOptions_;
     typename Option::Ptr activeBehavior_;
 

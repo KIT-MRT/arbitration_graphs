@@ -63,7 +63,7 @@ public:
          * \param output            Output stream to write into, will be returned also
          * \param time              Expected execution time point of this behaviors command
          * \param environmentModel  A read-only object containing the current state of the environment
-         * \param optionIndex       Position index of this option within behaviorOptions_
+         * \param optionIndex       Position index of this option within options()
          * \param prefix            A string that should be prepended to each line that is written to the output stream
          * \param suffix            A string that should be appended to each line that is written to the output stream
          * \return                  The same given input stream (signature similar to std::ostream& operator<<())
@@ -100,7 +100,7 @@ public:
                    const typename Option::FlagsT& flags,
                    const typename CostEstimatorT::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
-        this->behaviorOptions_.push_back(option);
+        this->addOptionInternal(option);
     }
 
     /*!
@@ -122,9 +122,9 @@ private:
         const typename ArbitratorBase::Options& options,
         const Time& time,
         const EnvironmentModelT& environmentModel) const override {
-        // reset lastEstimatedCost for all behaviorOptions_
-        for (const auto& optionBase : this->behaviorOptions_) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+        // reset lastEstimatedCost for all behaviorOptions
+        for (const auto& optionBase : this->options()) {
+            typename Option::ConstPtr option = std::dynamic_pointer_cast<const Option>(optionBase);
             option->resetLastEstimatedCost();
         }
 

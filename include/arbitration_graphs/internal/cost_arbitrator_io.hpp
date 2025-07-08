@@ -52,7 +52,7 @@ YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
 
     node["type"] = "CostArbitrator";
     node["options"] = YAML::Null;
-    for (const auto& option : this->behaviorOptions_) {
+    for (const auto& option : this->options()) {
         node["options"].push_back(option->toYaml(time, environmentModel));
     }
 

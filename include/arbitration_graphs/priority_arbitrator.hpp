@@ -38,7 +38,7 @@ public:
          * \param output            Output stream to write into, will be returned also
          * \param time              Expected execution time point of this behaviors command
          * \param environmentModel  A read-only object containing the current state of the environment
-         * \param optionIndex       Position index of this option within behaviorOptions_
+         * \param optionIndex       Position index of this option within options()
          * \param prefix            A string that should be prepended to each line that is written to the output stream
          * \param suffix            A string that should be appended to each line that is written to the output stream
          * \return                  The same given input stream (signature similar to std::ostream& operator<<())
@@ -60,7 +60,7 @@ public:
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags) override {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
-        this->behaviorOptions_.push_back(option);
+        this->addOptionInternal(option);
     }
 
     /*!
@@ -82,7 +82,7 @@ protected:
         const typename ArbitratorBase::Options& options,
         const Time& /*time*/,
         const EnvironmentModelT& /*environmentModel*/) const override {
-        // Options are already sorted by priority in behaviorOptions_ and thus in options (which keeps the order)
+        // Options are already sorted by priority in options (which keeps the order)
         return options;
     }
 };
