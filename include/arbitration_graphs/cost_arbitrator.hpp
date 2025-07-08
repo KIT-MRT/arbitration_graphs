@@ -47,11 +47,13 @@ public:
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
-        typename CostEstimatorT::Ptr costEstimator() const {
-            return costEstimator_;
-        }
-        void setLastEstimatedCost(double cost) const {
+        double estimateCost(const Time& time,
+                            const EnvironmentModelT& environmentModel,
+                            const SubCommandT& command,
+                            bool isActive) const {
+            double cost = costEstimator_->estimateCost(time, environmentModel, command, isActive);
             lastEstimatedCost_ = cost;
+            return cost;
         }
         void resetLastEstimatedCost() const {
             lastEstimatedCost_.reset();
@@ -148,8 +150,7 @@ private:
                 continue;
             }
 
-            double cost = option->costEstimator()->estimateCost(time, environmentModel, command.value(), isActive);
-            option->setLastEstimatedCost(cost);
+            double cost = option->estimateCost(time, environmentModel, command.value(), isActive);
             sortedOptionsMap.insert({cost, option});
         }
 
