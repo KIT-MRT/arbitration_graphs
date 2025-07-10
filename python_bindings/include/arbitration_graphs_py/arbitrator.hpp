@@ -8,13 +8,14 @@
 #include <arbitration_graphs/behavior.hpp>
 
 #include "command_wrapper.hpp"
+#include "environment_model_wrapper.hpp"
 
 namespace arbitration_graphs_py {
 
 namespace py = pybind11;
 
 inline void bindArbitrator(py::module& module) {
-    using ArbitratorT = arbitration_graphs::Arbitrator<CommandWrapper, CommandWrapper>;
+    using ArbitratorT = arbitration_graphs::Arbitrator<EnvironmentModelWrapper, CommandWrapper>;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
@@ -27,10 +28,16 @@ inline void bindArbitrator(py::module& module) {
         arbitrator(module, "Arbitrator");
     arbitrator.def("add_option", &ArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def("options", &ArbitratorT::options)
-        .def("check_invocation_condition", &ArbitratorT::checkInvocationCondition, py::arg("time"))
-        .def("check_commitment_condition", &ArbitratorT::checkCommitmentCondition, py::arg("time"))
-        .def("gain_control", &ArbitratorT::gainControl, py::arg("time"))
-        .def("lose_control", &ArbitratorT::loseControl, py::arg("time"))
+        .def("check_invocation_condition",
+             &ArbitratorT::checkInvocationCondition,
+             py::arg("time"),
+             py::arg("environment_model"))
+        .def("check_commitment_condition",
+             &ArbitratorT::checkCommitmentCondition,
+             py::arg("time"),
+             py::arg("environment_model"))
+        .def("gain_control", &ArbitratorT::gainControl, py::arg("time"), py::arg("environment_model"))
+        .def("lose_control", &ArbitratorT::loseControl, py::arg("time"), py::arg("environment_model"))
         .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name_ + "'>"; });
 
     py::classh<OptionT> option(arbitrator, "Option");

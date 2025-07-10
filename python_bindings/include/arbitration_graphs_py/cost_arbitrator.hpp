@@ -8,6 +8,7 @@
 #include <arbitration_graphs/cost_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
+#include "environment_model_wrapper.hpp"
 #include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
@@ -16,9 +17,10 @@ namespace py = pybind11;
 namespace ag = arbitration_graphs;
 
 /// @brief A wrapper class (a.k.a. trampoline class) for the CostEstimator class to allow Python overrides.
-class PyCostEstimator : public ag::CostEstimator<CommandWrapper>, py::trampoline_self_life_support {
+class PyCostEstimator : public ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>,
+                        py::trampoline_self_life_support {
 public:
-    using BaseT = ag::CostEstimator<CommandWrapper>;
+    using BaseT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
     using BaseT::BaseT;
 
@@ -29,8 +31,12 @@ public:
     PyCostEstimator& operator=(PyCostEstimator&&) = delete;
 
     // NOLINTBEGIN(readability-function-size)
-    double estimateCost(const CommandWrapper& command, const bool isActive) override {
-        PYBIND11_OVERRIDE_PURE_NAME(double, BaseT, "estimate_cost", estimateCost, command, isActive);
+    double estimateCost(const ag::Time& time,
+                        const EnvironmentModelWrapper& environmentModel,
+                        const CommandWrapper& command,
+                        const bool isActive) override {
+        PYBIND11_OVERRIDE_PURE_NAME(
+            double, BaseT, "estimate_cost", estimateCost, time, environmentModel, command, isActive);
     }
     // NOLINTEND(readability-function-size)
 };
@@ -38,19 +44,19 @@ public:
 inline void bindCostArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
+    using ArbitratorT = ag::Arbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using CostArbitratorT = ag::CostArbitrator<CommandWrapper, CommandWrapper>;
-    using CostEstimatorT = ag::CostEstimator<CommandWrapper>;
+    using CostArbitratorT = ag::CostArbitrator<EnvironmentModelWrapper, CommandWrapper>;
+    using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
     using OptionT = typename CostArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
-    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
+    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<CostEstimatorT, PyCostEstimator>(module, "CostEstimator").def(py::init<>());
 
@@ -63,8 +69,11 @@ inline void bindCostArbitrator(py::module& module) {
             "add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("cost_estimator"))
         .def(
             "to_yaml",
-            [](const CostArbitratorT& self, const Time& time) { return yaml_helper::toYamlAsPythonObject(self, time); },
-            py::arg("time"))
+            [](const CostArbitratorT& self, const Time& time, const EnvironmentModelWrapper& environmentModel) {
+                return yaml_helper::toYamlAsPythonObject(self, time, environmentModel);
+            },
+            py::arg("time"),
+            py::arg("environment_model"))
         .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(costArbitrator, "Option");

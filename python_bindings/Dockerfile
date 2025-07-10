@@ -8,8 +8,6 @@ FROM ghcr.io/kit-mrt/arbitration_graphs:$VERSION AS base
 RUN apt-get update && \
     apt-get install -y \
       ninja-build \
-      pybind11-dev \
-      python3-dev \
       python3-pip && \
     apt-get clean
 
