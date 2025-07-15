@@ -10,7 +10,7 @@ rm version
 cp ../version .
 
 # Temporarily replace the relative image paths in the README with absolute URLs to be able to display them on PyPI
-cp README.md /tmp/README.md.bak
+cp README.md README.md.bak
 sed -i 's|\.\./docs/assets|https://raw.githubusercontent.com/KIT-MRT/arbitration_graphs/main/docs/assets|g' README.md
 
 # Build the wheels
@@ -20,4 +20,4 @@ CIBW_SKIP="*-musllinux_*" CIBW_MANYLINUX_X86_64_IMAGE=arbitration_graphs_wheel_b
 # Be a good citizen and undo the changes above
 rm version
 ln -s ../version .
-mv /tmp/README.md.bak README.md
+mv README.md.bak README.md
