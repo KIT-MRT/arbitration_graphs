@@ -4,7 +4,7 @@ import unittest
 
 import arbitration_graphs as ag
 
-from dummy_types import DummyBehavior, PrintStrings
+from dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 from cost_estimator import CostEstimatorFromCostMap
 
 
@@ -26,6 +26,8 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.test_root_priority_arbitrator = ag.PriorityArbitrator(
             "root priority arbitrator"
         )
+
+        self.environment_model = DummyEnvironmentModel()
 
         self.time = time.time()
 
@@ -72,13 +74,18 @@ class NestedArbitratorsTest(unittest.TestCase):
         )
         # fmt: on
 
-        actual_printout = self.test_root_priority_arbitrator.to_str(self.time)
+        actual_printout = self.test_root_priority_arbitrator.to_str(
+            self.time, self.environment_model
+        )
         self.assertEqual(expected_printout, actual_printout)
         print(actual_printout)
 
-        self.test_priority_arbitrator.gain_control(self.time)
+        self.test_priority_arbitrator.gain_control(self.time, self.environment_model)
         self.assertEqual(
-            "high_cost", self.test_root_priority_arbitrator.get_command(self.time)
+            "high_cost",
+            self.test_root_priority_arbitrator.get_command(
+                self.time, self.environment_model
+            ),
         )
 
         # fmt: off
@@ -94,7 +101,9 @@ class NestedArbitratorsTest(unittest.TestCase):
         )
         # fmt: on
 
-        actual_printout = self.test_root_priority_arbitrator.to_str(self.time)
+        actual_printout = self.test_root_priority_arbitrator.to_str(
+            self.time, self.environment_model
+        )
         self.assertEqual(expected_printout_after_command, actual_printout)
         print(actual_printout)
 
@@ -128,7 +137,9 @@ class NestedArbitratorsTest(unittest.TestCase):
             ag.PriorityArbitrator.Option.Flags.NO_FLAGS,
         )
 
-        yaml_node = self.test_root_priority_arbitrator.to_yaml(self.time)
+        yaml_node = self.test_root_priority_arbitrator.to_yaml(
+            self.time, self.environment_model
+        )
 
         self.assertEqual("PriorityArbitrator", yaml_node["type"])
         self.assertEqual("root priority arbitrator", yaml_node["name"])
@@ -169,10 +180,14 @@ class NestedArbitratorsTest(unittest.TestCase):
 
         self.assertFalse("activeBehavior" in yaml_node)
 
-        self.test_priority_arbitrator.gain_control(self.time)
-        self.test_root_priority_arbitrator.get_command(self.time)
+        self.test_priority_arbitrator.gain_control(self.time, self.environment_model)
+        self.test_root_priority_arbitrator.get_command(
+            self.time, self.environment_model
+        )
 
-        yaml_node = self.test_root_priority_arbitrator.to_yaml(self.time)
+        yaml_node = self.test_root_priority_arbitrator.to_yaml(
+            self.time, self.environment_model
+        )
 
         self.assertTrue(yaml_node["invocationCondition"])
         self.assertTrue(yaml_node["commitmentCondition"])

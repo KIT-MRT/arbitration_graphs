@@ -4,7 +4,13 @@ import unittest
 
 import arbitration_graphs as ag
 
-from dummy_types import DummyBehavior, DummyCommand, DummyVerifier, PrintStrings
+from dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    DummyVerifier,
+    PrintStrings,
+)
 from cost_estimator import CostEstimatorFromCostMap
 
 
@@ -13,6 +19,8 @@ class TestCommandVerification(unittest.TestCase):
         self.test_behavior_high_priority = DummyBehavior(False, False, "HighPriority")
         self.test_behavior_mid_priority = DummyBehavior(True, False, "MidPriority")
         self.test_behavior_low_priority = DummyBehavior(True, True, "LowPriority")
+
+        self.environment_model = DummyEnvironmentModel()
 
         self.time = time.time()
 
@@ -36,11 +44,18 @@ class TestCommandVerification(unittest.TestCase):
             ag.PriorityArbitrator.Option.Flags.NO_FLAGS,
         )
 
-        self.assertTrue(test_priority_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_priority_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_priority_arbitrator.gain_control(self.time)
+        test_priority_arbitrator.gain_control(self.time, self.environment_model)
 
-        self.assertEqual("MidPriority", test_priority_arbitrator.get_command(self.time))
+        self.assertEqual(
+            "MidPriority",
+            test_priority_arbitrator.get_command(self.time, self.environment_model),
+        )
         self.assertFalse(
             test_priority_arbitrator.options()[0].verification_result.cached(self.time)
         )
@@ -80,11 +95,18 @@ class TestCommandVerification(unittest.TestCase):
             ag.PriorityArbitrator.Option.Flags.NO_FLAGS,
         )
 
-        self.assertTrue(test_priority_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_priority_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_priority_arbitrator.gain_control(self.time)
+        test_priority_arbitrator.gain_control(self.time, self.environment_model)
 
-        self.assertEqual("LowPriority", test_priority_arbitrator.get_command(self.time))
+        self.assertEqual(
+            "LowPriority",
+            test_priority_arbitrator.get_command(self.time, self.environment_model),
+        )
         self.assertFalse(
             test_priority_arbitrator.options()[0].verification_result.cached(self.time)
         )
@@ -131,12 +153,14 @@ class TestCommandVerification(unittest.TestCase):
             " -> 4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_priority_arbitrator.to_str(self.time)
+        actual_printout = test_priority_arbitrator.to_str(
+            self.time, self.environment_model
+        )
         print(actual_printout)
 
         self.assertEqual(expected_printout, actual_printout)
 
-        yaml_node = test_priority_arbitrator.to_yaml(self.time)
+        yaml_node = test_priority_arbitrator.to_yaml(self.time, self.environment_model)
         self.assertFalse("verificationResult" in yaml_node["options"][0])
         self.assertFalse("verificationResult" in yaml_node["options"][1])
         self.assertTrue("verificationResult" in yaml_node["options"][2])
@@ -145,15 +169,19 @@ class TestCommandVerification(unittest.TestCase):
         self.assertEqual("failed", yaml_node["options"][2]["verificationResult"])
         self.assertEqual("passed", yaml_node["options"][3]["verificationResult"])
 
-        test_priority_arbitrator.lose_control(self.time)
+        test_priority_arbitrator.lose_control(self.time, self.environment_model)
 
         self.test_behavior_low_priority.invocation_condition = False
-        self.assertTrue(test_priority_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_priority_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_priority_arbitrator.gain_control(self.time)
+        test_priority_arbitrator.gain_control(self.time, self.environment_model)
 
         with self.assertRaises(ag.NoApplicableOptionPassedVerificationError):
-            test_priority_arbitrator.get_command(self.time)
+            test_priority_arbitrator.get_command(self.time, self.environment_model)
 
     def test_dummy_verifier_in_priority_arbitrator_with_fallback(self):
         NO_FLAGS = ag.PriorityArbitrator.Option.Flags.NO_FLAGS
@@ -169,11 +197,18 @@ class TestCommandVerification(unittest.TestCase):
         test_priority_arbitrator.add_option(self.test_behavior_mid_priority, FALLBACK)
         test_priority_arbitrator.add_option(self.test_behavior_low_priority, NO_FLAGS)
 
-        self.assertTrue(test_priority_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_priority_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_priority_arbitrator.gain_control(self.time)
+        test_priority_arbitrator.gain_control(self.time, self.environment_model)
 
-        self.assertEqual("MidPriority", test_priority_arbitrator.get_command(self.time))
+        self.assertEqual(
+            "MidPriority",
+            test_priority_arbitrator.get_command(self.time, self.environment_model),
+        )
         self.assertFalse(
             test_priority_arbitrator.options()[0].verification_result.cached(self.time)
         )
@@ -225,12 +260,14 @@ class TestCommandVerification(unittest.TestCase):
             "    5. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_priority_arbitrator.to_str(self.time)
+        actual_printout = test_priority_arbitrator.to_str(
+            self.time, self.environment_model
+        )
         print(actual_printout)
 
         self.assertEqual(expected_printout, actual_printout)
 
-        yaml_node = test_priority_arbitrator.to_yaml(self.time)
+        yaml_node = test_priority_arbitrator.to_yaml(self.time, self.environment_model)
         self.assertFalse("verificationResult" in yaml_node["options"][0])
         self.assertFalse("verificationResult" in yaml_node["options"][1])
         self.assertTrue("verificationResult" in yaml_node["options"][2])
@@ -263,11 +300,18 @@ class TestCommandVerification(unittest.TestCase):
             self.test_behavior_low_priority, NO_FLAGS, cost_estimator
         )
 
-        self.assertTrue(test_cost_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_cost_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_cost_arbitrator.gain_control(self.time)
+        test_cost_arbitrator.gain_control(self.time, self.environment_model)
 
-        self.assertEqual("LowPriority", test_cost_arbitrator.get_command(self.time))
+        self.assertEqual(
+            "LowPriority",
+            test_cost_arbitrator.get_command(self.time, self.environment_model),
+        )
         self.assertFalse(
             test_cost_arbitrator.options()[0].verification_result.cached(self.time)
         )
@@ -304,17 +348,21 @@ class TestCommandVerification(unittest.TestCase):
             " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_cost_arbitrator.to_str(self.time)
+        actual_printout = test_cost_arbitrator.to_str(self.time, self.environment_model)
         print(actual_printout)
 
         self.assertEqual(expected_printout, actual_printout)
 
-        test_cost_arbitrator.lose_control(self.time)
+        test_cost_arbitrator.lose_control(self.time, self.environment_model)
 
         self.test_behavior_low_priority.invocation_condition = False
-        self.assertTrue(test_cost_arbitrator.check_invocation_condition(self.time))
+        self.assertTrue(
+            test_cost_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
 
-        test_cost_arbitrator.gain_control(self.time)
+        test_cost_arbitrator.gain_control(self.time, self.environment_model)
 
         with self.assertRaises(ag.NoApplicableOptionPassedVerificationError):
-            test_cost_arbitrator.get_command(self.time)
+            test_cost_arbitrator.get_command(self.time, self.environment_model)
