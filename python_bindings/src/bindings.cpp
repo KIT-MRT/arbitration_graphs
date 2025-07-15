@@ -18,14 +18,14 @@ namespace arbitration_graphs_py {
 
 namespace {
 void bindUtilCaching(py::module& module) {
-    using AbstractResult = arbitration_graphs::verification::AbstractResult;
+    using Result = arbitration_graphs::verification::Result;
     using Time = arbitration_graphs::Time;
 
     py::module utilCaching = module.def_submodule("util_caching");
     using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
     util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
                                                                                                  "ApproximateTime");
-    util_caching::python_api::time_based::bindCache<Time, AbstractResult::ConstPtr, ApproximateTimeT>(utilCaching);
+    util_caching::python_api::time_based::bindCache<Time, Result::ConstPtr, ApproximateTimeT>(utilCaching);
 }
 } // namespace
 
