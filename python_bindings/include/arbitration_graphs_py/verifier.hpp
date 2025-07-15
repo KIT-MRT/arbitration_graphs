@@ -45,9 +45,9 @@ inline void bindVerifier(py::module& module) {
 
     py::classh<agv::Result, PyResult>(module, "Result").def(py::init<>()).def("is_ok", &agv::Result::isOk);
 
-    py::classh<agv::PlaceboResult, agv::Result>(module, "PlaceboResult")
         .def(py::init<bool>(), py::arg("is_ok") = true)
-        .def("is_ok", &agv::PlaceboResult::isOk);
+    py::classh<agv::SimpleResult, agv::Result>(module, "SimpleResult")
+        .def("is_ok", &agv::SimpleResult::isOk);
 
     py::classh<VerifierT, PyVerifier>(module, "Verifier")
         .def(py::init<>())

@@ -70,7 +70,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
-        option->verificationResult_.cache(time, std::make_shared<verification::PlaceboResult>(false));
+        option->verificationResult_.cache(time, std::make_shared<verification::SimpleResult>(false));
         VLOG(1) << "Given option " << option->behavior_->name_
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
