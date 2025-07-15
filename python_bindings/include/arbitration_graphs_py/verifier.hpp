@@ -26,22 +26,21 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
-class PyAbstractVerifier : public agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>,
-                           py::trampoline_self_life_support {
+class PyVerifier : public agv::Verifier<EnvironmentModelWrapper, CommandWrapper>, py::trampoline_self_life_support {
 public:
-    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = agv::Verifier<EnvironmentModelWrapper, CommandWrapper>;
 
     // NOLINTBEGIN(readability-function-size)
     agv::Result::Ptr analyze(const ag::Time& time,
                              const EnvironmentModelWrapper& environmentModel,
                              const CommandWrapper& data) const override {
-        PYBIND11_OVERRIDE_PURE(agv::Result::Ptr, AbstractVerifierT, analyze, time, environmentModel, data);
+        PYBIND11_OVERRIDE_PURE(agv::Result::Ptr, VerifierT, analyze, time, environmentModel, data);
     }
     // NOLINTEND(readability-function-size)
 };
 
 inline void bindVerifier(py::module& module) {
-    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = agv::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = agv::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<agv::Result, PyResult>(module, "Result").def(py::init<>()).def("is_ok", &agv::Result::isOk);
@@ -50,11 +49,11 @@ inline void bindVerifier(py::module& module) {
         .def(py::init<bool>(), py::arg("is_ok") = true)
         .def("is_ok", &agv::PlaceboResult::isOk);
 
-    py::classh<AbstractVerifierT, PyAbstractVerifier>(module, "AbstractVerifier")
+    py::classh<VerifierT, PyVerifier>(module, "Verifier")
         .def(py::init<>())
-        .def("analyze", &AbstractVerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("data"));
+        .def("analyze", &VerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("data"));
 
-    py::classh<PlaceboVerifierT, AbstractVerifierT>(module, "PlaceboVerifier").def(py::init<>());
+    py::classh<PlaceboVerifierT, VerifierT>(module, "PlaceboVerifier").def(py::init<>());
 }
 
 } // namespace arbitration_graphs_py

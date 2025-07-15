@@ -23,7 +23,7 @@ private:
 };
 
 
-class Verifier : public arbitration_graphs::verification::AbstractVerifier<EnvironmentModel, Command> {
+class Verifier : public arbitration_graphs::verification::Verifier<EnvironmentModel, Command> {
 public:
     using Ptr = std::shared_ptr<Verifier>;
     using ConstPtr = std::shared_ptr<const Verifier>;

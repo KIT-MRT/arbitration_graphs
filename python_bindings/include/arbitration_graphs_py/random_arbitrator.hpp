@@ -30,12 +30,12 @@ inline void bindRandomArbitrator(py::module& module) {
     using OptionT = typename RandomArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = ag::verification::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<RandomArbitratorT, ArbitratorT> randomArbitrator(module, "RandomArbitrator");
     randomArbitrator
-        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
+        .def(py::init<const std::string&, const VerifierT::Ptr&>(),
              py::arg("name") = "RandomArbitrator",
              py::arg("verifier") = PlaceboVerifierT())
         .def("add_option", &RandomArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("weight") = 1)

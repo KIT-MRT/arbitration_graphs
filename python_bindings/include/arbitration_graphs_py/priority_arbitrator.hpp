@@ -30,12 +30,12 @@ inline void bindPriorityArbitrator(py::module& module) {
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = ag::verification::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<PriorityArbitratorT, ArbitratorT> priorityArbitrator(module, "PriorityArbitrator");
     priorityArbitrator
-        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
+        .def(py::init<const std::string&, const VerifierT::Ptr&>(),
              py::arg("name") = "PriorityArbitrator",
              py::arg("verifier") = PlaceboVerifierT())
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
