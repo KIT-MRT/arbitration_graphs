@@ -8,7 +8,7 @@
 #include <arbitration_graphs/priority_arbitrator.hpp>
 
 #include "command_wrapper.hpp"
-#include "verification_wrapper.hpp"
+#include "verification.hpp"
 #include "yaml_helper.hpp"
 
 namespace arbitration_graphs_py {
@@ -19,23 +19,24 @@ namespace ag = arbitration_graphs;
 inline void bindPriorityArbitrator(py::module& module) {
     using Time = ag::Time;
 
-    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using ArbitratorT = ag::Arbitrator<CommandWrapper, CommandWrapper>;
     using ArbitratorOptionT = typename ArbitratorT::Option;
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
-    using PriorityArbitratorT =
-        ag::PriorityArbitrator<CommandWrapper, CommandWrapper, VerifierWrapper, VerificationResultWrapper>;
+    using PriorityArbitratorT = ag::PriorityArbitrator<CommandWrapper, CommandWrapper>;
 
     using OptionT = typename PriorityArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    py::class_<PriorityArbitratorT, ArbitratorT, std::shared_ptr<PriorityArbitratorT>> priorityArbitrator(
-        module, "PriorityArbitrator");
+    using AbstractVerifierT = ag::verification::AbstractVerifier<CommandWrapper>;
+    using PlaceboVerifierT = ag::verification::PlaceboVerifier<CommandWrapper>;
+
+    py::classh<PriorityArbitratorT, ArbitratorT> priorityArbitrator(module, "PriorityArbitrator");
     priorityArbitrator
-        .def(py::init<const std::string&, const VerifierWrapper&>(),
+        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
              py::arg("name") = "PriorityArbitrator",
-             py::arg("verifier") = VerifierWrapper())
+             py::arg("verifier") = PlaceboVerifierT())
         .def("add_option", &PriorityArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
             "to_yaml",
@@ -45,7 +46,7 @@ inline void bindPriorityArbitrator(py::module& module) {
             py::arg("time"))
         .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
 
-    py::class_<OptionT, ArbitratorOptionT, std::shared_ptr<OptionT>> option(priorityArbitrator, "Option");
+    py::classh<OptionT, ArbitratorOptionT> option(priorityArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")

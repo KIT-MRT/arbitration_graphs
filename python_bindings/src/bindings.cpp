@@ -9,7 +9,7 @@
 #include "arbitration_graphs_py/exceptions.hpp"
 #include "arbitration_graphs_py/priority_arbitrator.hpp"
 #include "arbitration_graphs_py/random_arbitrator.hpp"
-#include "arbitration_graphs_py/verification_wrapper.hpp"
+#include "arbitration_graphs_py/verifier.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -18,13 +18,14 @@ namespace arbitration_graphs_py {
 
 namespace {
 void bindUtilCaching(py::module& module) {
+    using AbstractResult = arbitration_graphs::verification::AbstractResult;
     using Time = arbitration_graphs::Time;
 
     py::module utilCaching = module.def_submodule("util_caching");
     using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
     util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
                                                                                                  "ApproximateTime");
-    util_caching::python_api::time_based::bindCache<Time, VerificationResultWrapper, ApproximateTimeT>(utilCaching);
+    util_caching::python_api::time_based::bindCache<Time, AbstractResult::ConstPtr, ApproximateTimeT>(utilCaching);
 }
 } // namespace
 
@@ -33,6 +34,8 @@ void bindUtilCaching(py::module& module) {
 ///         created here in the main arbitration_graphs module.
 PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindExceptions(mainModule);
+    py::module verificationModule = mainModule.def_submodule("verification");
+    bindVerifier(verificationModule);
 
     bindBehavior(mainModule);
     bindArbitrator(mainModule);
