@@ -33,7 +33,7 @@ public:
 
     using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
-    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
     struct Option : ArbitratorBase::Option {
         using Ptr = std::shared_ptr<Option>;

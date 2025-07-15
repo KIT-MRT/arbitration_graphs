@@ -17,7 +17,7 @@ using namespace arbitration_graphs_tests;
 
 using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyEnvironmentModel, DummyCommand>;
 
-struct DummyVerifier : public verification::AbstractVerifier<DummyEnvironmentModel, DummyCommand> {
+struct DummyVerifier : public verification::Verifier<DummyEnvironmentModel, DummyCommand> {
     verification::Result::Ptr analyze(const Time& /*time*/,
                                       const DummyEnvironmentModel& environmentModel,
                                       const DummyCommand& data) const override {

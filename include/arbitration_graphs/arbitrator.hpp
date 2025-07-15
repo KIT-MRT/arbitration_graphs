@@ -33,7 +33,7 @@ public:
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
-    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
     /*!
      * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags

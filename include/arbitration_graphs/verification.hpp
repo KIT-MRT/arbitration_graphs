@@ -19,12 +19,12 @@ public:
 };
 
 template <typename EnvironmentModelT, typename DataT>
-class AbstractVerifier {
+class Verifier {
 public:
-    using Ptr = std::shared_ptr<AbstractVerifier>;
-    using ConstPtr = std::shared_ptr<const AbstractVerifier>;
+    using Ptr = std::shared_ptr<Verifier>;
+    using ConstPtr = std::shared_ptr<const Verifier>;
 
-    virtual ~AbstractVerifier() = default;
+    virtual ~Verifier() = default;
 
     virtual Result::Ptr analyze(const Time& time,
                                 const EnvironmentModelT& environmentModel,
@@ -49,7 +49,7 @@ private:
     bool isOk_{true};
 };
 template <typename EnvironmentModelT, typename DataT>
-struct PlaceboVerifier : public AbstractVerifier<EnvironmentModelT, DataT> {
+struct PlaceboVerifier : public Verifier<EnvironmentModelT, DataT> {
     Result::Ptr analyze(const Time& /*time*/,
                         const EnvironmentModelT& /*environmentModel*/,
                         const DataT& /*data*/) const override {

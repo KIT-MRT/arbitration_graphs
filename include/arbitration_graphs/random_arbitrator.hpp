@@ -18,7 +18,7 @@ public:
     using ConstPtr = std::shared_ptr<const RandomArbitrator>;
 
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
-    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
     struct Option : public ArbitratorBase::Option {
     public:
