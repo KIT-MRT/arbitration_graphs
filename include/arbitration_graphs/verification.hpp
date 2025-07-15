@@ -31,12 +31,6 @@ public:
                                 const DataT& data) const = 0;
 };
 
-/*!
- * @brief The PlaceboResult is always okay, thus is the PlaceboVerifier a placebo (you probably guessed it).
- *
- * Use this together with PlaceboVerifier, if you don't care to verify your commands before dumping them onto your
- * robots. Otherwise these are a good starting point to implement your own meaningful verifier.
- */
 class PlaceboResult : public Result {
 public:
     explicit PlaceboResult(bool isOk = true) : isOk_(isOk) {
@@ -48,6 +42,13 @@ public:
 private:
     bool isOk_{true};
 };
+
+/*!
+ * @brief The PlaceboVerifier is a dummy verifier that always returns a Result that is "okay".
+ *
+ * Use this, if you don't care to verify your commands before running them onto your
+ * robots. Otherwise this is a good starting point to implement your own meaningful verifier.
+ */
 template <typename EnvironmentModelT, typename DataT>
 struct PlaceboVerifier : public Verifier<EnvironmentModelT, DataT> {
     Result::Ptr analyze(const Time& /*time*/,
