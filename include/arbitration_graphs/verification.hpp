@@ -33,7 +33,7 @@ public:
 
 class SimpleResult : public Result {
 public:
-    explicit SimpleResult(bool isOk = true) : isOk_(isOk) {
+    explicit SimpleResult(bool isOk) : isOk_(isOk) {
     }
     bool isOk() const override {
         return isOk_;
@@ -54,7 +54,7 @@ struct PlaceboVerifier : public Verifier<EnvironmentModelT, DataT> {
     Result::Ptr analyze(const Time& /*time*/,
                         const EnvironmentModelT& /*environmentModel*/,
                         const DataT& /*data*/) const override {
-        return std::make_shared<SimpleResult>();
+        return std::make_shared<SimpleResult>(true);
     };
 };
 
