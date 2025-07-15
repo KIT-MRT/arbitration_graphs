@@ -18,7 +18,7 @@ public:
     virtual bool isOk() const = 0;
 };
 
-template <typename EnvironmentModelT, typename DataT>
+template <typename EnvironmentModelT, typename CommandT>
 class Verifier {
 public:
     using Ptr = std::shared_ptr<Verifier>;
@@ -28,7 +28,7 @@ public:
 
     virtual Result::Ptr analyze(const Time& time,
                                 const EnvironmentModelT& environmentModel,
-                                const DataT& data) const = 0;
+                                const CommandT& command) const = 0;
 };
 
 class SimpleResult : public Result {
@@ -49,11 +49,11 @@ private:
  * Use this, if you don't care to verify your commands before running them onto your
  * robots. Otherwise this is a good starting point to implement your own meaningful verifier.
  */
-template <typename EnvironmentModelT, typename DataT>
-struct PlaceboVerifier : public Verifier<EnvironmentModelT, DataT> {
+template <typename EnvironmentModelT, typename CommandT>
+struct PlaceboVerifier : public Verifier<EnvironmentModelT, CommandT> {
     Result::Ptr analyze(const Time& /*time*/,
                         const EnvironmentModelT& /*environmentModel*/,
-                        const DataT& /*data*/) const override {
+                        const CommandT& /*command*/) const override {
         return std::make_shared<SimpleResult>(true);
     };
 };

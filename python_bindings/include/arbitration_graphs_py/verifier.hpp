@@ -33,8 +33,8 @@ public:
     // NOLINTBEGIN(readability-function-size)
     agv::Result::Ptr analyze(const ag::Time& time,
                              const EnvironmentModelWrapper& environmentModel,
-                             const CommandWrapper& data) const override {
-        PYBIND11_OVERRIDE_PURE(agv::Result::Ptr, VerifierT, analyze, time, environmentModel, data);
+                             const CommandWrapper& command) const override {
+        PYBIND11_OVERRIDE_PURE(agv::Result::Ptr, VerifierT, analyze, time, environmentModel, command);
     }
     // NOLINTEND(readability-function-size)
 };
@@ -51,7 +51,7 @@ inline void bindVerifier(py::module& module) {
 
     py::classh<VerifierT, PyVerifier>(module, "Verifier")
         .def(py::init<>())
-        .def("analyze", &VerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("data"));
+        .def("analyze", &VerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("command"));
 
     py::classh<PlaceboVerifierT, VerifierT>(module, "PlaceboVerifier").def(py::init<>());
 }
