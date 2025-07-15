@@ -8,12 +8,12 @@
 
 namespace arbitration_graphs::verification {
 
-class AbstractResult {
+class Result {
 public:
-    using Ptr = std::shared_ptr<AbstractResult>;
-    using ConstPtr = std::shared_ptr<const AbstractResult>;
+    using Ptr = std::shared_ptr<Result>;
+    using ConstPtr = std::shared_ptr<const Result>;
 
-    virtual ~AbstractResult() = default;
+    virtual ~Result() = default;
 
     virtual bool isOk() const = 0;
 };
@@ -26,9 +26,9 @@ public:
 
     virtual ~AbstractVerifier() = default;
 
-    virtual AbstractResult::Ptr analyze(const Time& time,
-                                        const EnvironmentModelT& environmentModel,
-                                        const DataT& data) const = 0;
+    virtual Result::Ptr analyze(const Time& time,
+                                const EnvironmentModelT& environmentModel,
+                                const DataT& data) const = 0;
 };
 
 /*!
@@ -37,7 +37,7 @@ public:
  * Use this together with PlaceboVerifier, if you don't care to verify your commands before dumping them onto your
  * robots. Otherwise these are a good starting point to implement your own meaningful verifier.
  */
-class PlaceboResult : public AbstractResult {
+class PlaceboResult : public Result {
 public:
     explicit PlaceboResult(bool isOk = true) : isOk_(isOk) {
     }
@@ -50,9 +50,9 @@ private:
 };
 template <typename EnvironmentModelT, typename DataT>
 struct PlaceboVerifier : public AbstractVerifier<EnvironmentModelT, DataT> {
-    AbstractResult::Ptr analyze(const Time& /*time*/,
-                                const EnvironmentModelT& /*environmentModel*/,
-                                const DataT& /*data*/) const override {
+    Result::Ptr analyze(const Time& /*time*/,
+                        const EnvironmentModelT& /*environmentModel*/,
+                        const DataT& /*data*/) const override {
         return std::make_shared<PlaceboResult>();
     };
 };
@@ -67,7 +67,7 @@ struct PlaceboVerifier : public AbstractVerifier<EnvironmentModelT, DataT> {
  * std::cout << result << std::endl;
  * @endcode
  */
-inline std::ostream& operator<<(std::ostream& out, const arbitration_graphs::verification::AbstractResult& result) {
+inline std::ostream& operator<<(std::ostream& out, const arbitration_graphs::verification::Result& result) {
     out << (result.isOk() ? "is okay" : "is not okay");
     return out;
 }

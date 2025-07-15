@@ -60,7 +60,7 @@ public:
         typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
         FlagsT flags_;
         mutable util_caching::Cache<Time, SubCommandT> command_;
-        mutable util_caching::Cache<Time, verification::AbstractResult::ConstPtr> verificationResult_;
+        mutable util_caching::Cache<Time, verification::Result::ConstPtr> verificationResult_;
 
         SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
             if (!command_.cached(time)) {
