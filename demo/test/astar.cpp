@@ -12,14 +12,11 @@ using namespace demo;
 
 class AStarTest : public ::testing::Test {
 protected:
-    AStarTest() : environmentModel_(std::make_shared<MockEnvironmentModel>()) {
-    }
-
-    MockEnvironmentModel::Ptr environmentModel_;
+    MockEnvironmentModel environmentModel_{};
 };
 
 TEST_F(AStarTest, simpleDistance) {
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
 
     EXPECT_EQ(astar.mazeDistance({1, 1}, {1, 1}), 0);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {2, 2}), 2);
@@ -32,9 +29,9 @@ TEST_F(AStarTest, distanceWithWalls) {
                         "# # #"
                         "#   #"
                         "#####"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
     EXPECT_EQ(astar.mazeDistance({1, 2}, {3, 2}), 4);
 }
@@ -45,9 +42,9 @@ TEST_F(AStarTest, distanceWithHorizontalTunnel) {
                         "     "
                         "#   #"
                         "#####"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     EXPECT_EQ(astar.mazeDistance({0, 2}, {4, 2}), 1);
     EXPECT_EQ(astar.mazeDistance({4, 2}, {0, 2}), 1);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
@@ -60,9 +57,9 @@ TEST_F(AStarTest, distanceWithVerticalTunnel) {
                         "#   #"
                         "#   #"
                         "## ##"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     EXPECT_EQ(astar.mazeDistance({2, 0}, {2, 4}), 1);
     EXPECT_EQ(astar.mazeDistance({2, 4}, {2, 0}), 1);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
@@ -70,7 +67,7 @@ TEST_F(AStarTest, distanceWithVerticalTunnel) {
 }
 
 TEST_F(AStarTest, cachedDistance) {
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
 
     // In the first run, we need to compute distance the hard way
     std::clock_t startWithoutCaching = std::clock();
@@ -92,9 +89,9 @@ TEST_F(AStarTest, path) {
                         "# ###"
                         "#   #"
                         "#####"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     std::optional<Path> path = astar.shortestPath({2, 1}, {3, 3});
     Path targetPath = {Direction::LEFT, Direction::DOWN, Direction::DOWN, Direction::RIGHT, Direction::RIGHT};
     ASSERT_TRUE(path.has_value());
@@ -110,9 +107,9 @@ TEST_F(AStarTest, pathWithTunnel) {
                         "     "
                         "#   #"
                         "#####"};
-    environmentModel_->setMaze({5, 5}, str);
+    environmentModel_.setMaze({5, 5}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     std::optional<Path> path = astar.shortestPath({0, 2}, {4, 2});
     ASSERT_TRUE(path.has_value());
     ASSERT_EQ(path->size(), 1);
@@ -131,9 +128,9 @@ TEST_F(AStarTest, pathToClosestDot) {
                         "#   #"
                         "#  .#"
                         "#####"};
-    environmentModel_->setMaze({5, 6}, str);
+    environmentModel_.setMaze({5, 6}, str);
 
-    AStar astar(environmentModel_->maze());
+    AStar astar(environmentModel_.maze());
     std::optional<Path> path = astar.pathToClosestDot({1, 2});
     ASSERT_TRUE(path.has_value());
 
