@@ -9,7 +9,7 @@
 
 namespace demo {
 
-class VerificationResult : public arbitration_graphs::verification::AbstractResult {
+class VerificationResult : public arbitration_graphs::verification::Result {
 public:
     explicit VerificationResult(bool isOk) : isOk_{isOk} {
     }
@@ -28,9 +28,9 @@ public:
     using Ptr = std::shared_ptr<Verifier>;
     using ConstPtr = std::shared_ptr<const Verifier>;
 
-    arbitration_graphs::verification::AbstractResult::Ptr analyze(const Time& /*time*/,
-                                                                  const EnvironmentModel& environmentModel,
-                                                                  const Command& command) const override {
+    arbitration_graphs::verification::Result::Ptr analyze(const Time& /*time*/,
+                                                          const EnvironmentModel& environmentModel,
+                                                          const Command& command) const override {
         Move nextMove = Move{command.path.front()};
         Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
