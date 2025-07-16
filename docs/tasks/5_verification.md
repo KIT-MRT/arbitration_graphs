@@ -72,8 +72,8 @@ Add the `MoveRandomly` behavior component as a last resort fallback layer.
 In the `Verifier::analyze()` method (in `include/demo/verifier.hpp`), we simply check if the command would lead to an invalid position:
 ```cpp
 arbitration_graphs::verification::AbstractResult::Ptr analyze(const Time& /*time*/,
-                                                          const EnvironmentModel& environmentModel,
-                                                          const Command& command) const override {
+                                                                const EnvironmentModel& environmentModel,
+                                                                const Command& command) const override {
     Move nextMove = Move{command.path.front()};
     Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
@@ -103,7 +103,7 @@ private:
 In the constructor of the `PacmanAgent` class, initialize the verifier and the `StayInPlace` behavior component.
 Make sure to also pass the verifier to the arbitrator constructors:
 ```cpp
-explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
     // Initialize the verifier
     verifier_ = std::make_shared<Verifier>();
 
@@ -117,7 +117,7 @@ explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
 
     // Pass the verifier instance to the cost arbitrator
     eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
-    costEstimator_ = std::make_shared<CostEstimator>(environmentModel_, parameters_.costEstimator);
+    costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
     eatDotsArbitrator_->addOption(
         changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
     eatDotsArbitrator_->addOption(

@@ -46,9 +46,9 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 Finish the implementation of the `CostEstimator` class in `cost_estimator.cpp`:
 ```cpp
 double CostEstimator::estimateCost(const Time& /*time*/,
-                               const EnvironmentModel& environmentModel,
-                               const Command& command,
-                               bool /*isActive*/) {
+                                   const EnvironmentModel& environmentModel,
+                                   const Command& command,
+                                   bool /*isActive*/) {
     Positions absolutePath = environmentModel.toAbsolutePath(command.path);
 
     // Compute the number of dots along the path and in the neighborhood of the path end using helper functions
@@ -69,7 +69,7 @@ double CostEstimator::estimateCost(const Time& /*time*/,
     // We can define a cost as the inverse of a benefit.
     // Our benefit is a dot density (number of dots / number of examined cells)
     return static_cast<double>(nCells) / nDots;
-} 
+}
 ```
 
 Replace the include of the random arbitrator with the cost arbitrator in `include/demo/pacman_agent.hpp`.
@@ -109,7 +109,7 @@ struct Parameters {
 As always, the magic happens in the constructor of the `PacmanAgent` class.
 Instantiate the cost estimator and pass it in the `addOption` calls:
 ```cpp
-explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
     avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
     changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>();
     chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
