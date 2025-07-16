@@ -105,7 +105,7 @@ private:
     int numGetCommandsUntilThrow_;
 };
 
-using DummyResult = verification::PlaceboResult;
+using DummyResult = verification::SimpleResult;
 
 } // namespace arbitration_graphs_tests
 

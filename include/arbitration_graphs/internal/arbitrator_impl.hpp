@@ -53,8 +53,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
     try {
         const SubCommandT command = option->getCommand(time, environmentModel);
 
-        const verification::AbstractResult::ConstPtr verificationResult =
-            verifier_->analyze(time, environmentModel, command);
+        const verification::Result::ConstPtr verificationResult = verifier_->analyze(time, environmentModel, command);
         option->verificationResult_.cache(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification
@@ -71,7 +70,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
         VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
-        option->verificationResult_.cache(time, std::make_shared<verification::PlaceboResult>(false));
+        option->verificationResult_.cache(time, std::make_shared<verification::SimpleResult>(false));
         VLOG(1) << "Given option " << option->behavior_->name_
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }

@@ -1,5 +1,5 @@
 from arbitration_graphs import Behavior
-from arbitration_graphs.verification import AbstractResult, AbstractVerifier
+from arbitration_graphs.verification import Result, Verifier
 
 
 class PrintStrings:
@@ -78,9 +78,9 @@ class BrokenDummyBehavior(DummyBehavior):
         return self.name
 
 
-class DummyResult(AbstractResult):
+class DummyResult(Result):
     def __init__(self, is_ok=True):
-        AbstractResult.__init__(self)
+        Result.__init__(self)
         self._is_ok = is_ok
 
     def is_ok(self):
@@ -90,9 +90,9 @@ class DummyResult(AbstractResult):
         return "is okay" if self.is_ok() else "is not okay"
 
 
-class DummyVerifier(AbstractVerifier):
+class DummyVerifier(Verifier):
     def __init__(self, wrong="", reject_all=False):
-        AbstractVerifier.__init__(self)
+        Verifier.__init__(self)
         self.wrong = wrong
         self.reject_all = reject_all
 

@@ -55,14 +55,14 @@ inline void bindCostArbitrator(py::module& module) {
     using OptionT = typename CostArbitratorT::Option;
     using FlagsT = typename OptionT::FlagsT;
 
-    using AbstractVerifierT = ag::verification::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = ag::verification::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
     py::classh<CostEstimatorT, PyCostEstimator>(module, "CostEstimator").def(py::init<>());
 
     py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
-        .def(py::init<const std::string&, const AbstractVerifierT::Ptr&>(),
+        .def(py::init<const std::string&, const VerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
              py::arg("verifier") = PlaceboVerifierT())
         .def(

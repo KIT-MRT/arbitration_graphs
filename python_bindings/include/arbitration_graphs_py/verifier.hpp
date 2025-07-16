@@ -16,47 +16,44 @@ namespace ag = arbitration_graphs;
 namespace agv = ag::verification;
 
 
-/// @brief A wrapper class (a.k.a. trampoline class) for the AbstractResult class to allow Python overrides.
-class PyAbstractResult : public agv::AbstractResult, py::trampoline_self_life_support {
+/// @brief A wrapper class (a.k.a. trampoline class) for the Result class to allow Python overrides.
+class PyResult : public agv::Result, py::trampoline_self_life_support {
 public:
     // NOLINTBEGIN(readability-function-size)
     bool isOk() const override {
-        PYBIND11_OVERRIDE_PURE_NAME(bool, AbstractResult, "is_ok", isOk);
+        PYBIND11_OVERRIDE_PURE_NAME(bool, Result, "is_ok", isOk);
     }
     // NOLINTEND(readability-function-size)
 };
 
-class PyAbstractVerifier : public agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>,
-                           py::trampoline_self_life_support {
+class PyVerifier : public agv::Verifier<EnvironmentModelWrapper, CommandWrapper>, py::trampoline_self_life_support {
 public:
-    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = agv::Verifier<EnvironmentModelWrapper, CommandWrapper>;
 
     // NOLINTBEGIN(readability-function-size)
-    agv::AbstractResult::Ptr analyze(const ag::Time& time,
-                                     const EnvironmentModelWrapper& environmentModel,
-                                     const CommandWrapper& data) const override {
-        PYBIND11_OVERRIDE_PURE(agv::AbstractResult::Ptr, AbstractVerifierT, analyze, time, environmentModel, data);
+    agv::Result::Ptr analyze(const ag::Time& time,
+                             const EnvironmentModelWrapper& environmentModel,
+                             const CommandWrapper& command) const override {
+        PYBIND11_OVERRIDE_PURE(agv::Result::Ptr, VerifierT, analyze, time, environmentModel, command);
     }
     // NOLINTEND(readability-function-size)
 };
 
 inline void bindVerifier(py::module& module) {
-    using AbstractVerifierT = agv::AbstractVerifier<EnvironmentModelWrapper, CommandWrapper>;
+    using VerifierT = agv::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = agv::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
-    py::classh<agv::AbstractResult, PyAbstractResult>(module, "AbstractResult")
+    py::classh<agv::Result, PyResult>(module, "Result").def(py::init<>()).def("is_ok", &agv::Result::isOk);
+
+    py::classh<agv::SimpleResult, agv::Result>(module, "SimpleResult")
+        .def(py::init<bool>(), py::arg("is_ok"))
+        .def("is_ok", &agv::SimpleResult::isOk);
+
+    py::classh<VerifierT, PyVerifier>(module, "Verifier")
         .def(py::init<>())
-        .def("is_ok", &agv::AbstractResult::isOk);
+        .def("analyze", &VerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("command"));
 
-    py::classh<agv::PlaceboResult, agv::AbstractResult>(module, "PlaceboResult")
-        .def(py::init<bool>(), py::arg("is_ok") = true)
-        .def("is_ok", &agv::PlaceboResult::isOk);
-
-    py::classh<AbstractVerifierT, PyAbstractVerifier>(module, "AbstractVerifier")
-        .def(py::init<>())
-        .def("analyze", &AbstractVerifierT::analyze, py::arg("time"), py::arg("environment_model"), py::arg("data"));
-
-    py::classh<PlaceboVerifierT, AbstractVerifierT>(module, "PlaceboVerifier").def(py::init<>());
+    py::classh<PlaceboVerifierT, VerifierT>(module, "PlaceboVerifier").def(py::init<>());
 }
 
 } // namespace arbitration_graphs_py

@@ -33,7 +33,7 @@ public:
     using ConstPtr = std::shared_ptr<const Arbitrator>;
 
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
-    using VerifierT = verification::AbstractVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
     /*!
      * \brief The Option struct holds a behavior option of the arbitrator and corresponding flags
@@ -60,7 +60,7 @@ public:
         typename Behavior<EnvironmentModelT, SubCommandT>::Ptr behavior_;
         FlagsT flags_;
         mutable util_caching::Cache<Time, SubCommandT> command_;
-        mutable util_caching::Cache<Time, verification::AbstractResult::ConstPtr> verificationResult_;
+        mutable util_caching::Cache<Time, verification::Result::ConstPtr> verificationResult_;
 
         SubCommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) const {
             if (!command_.cached(time)) {

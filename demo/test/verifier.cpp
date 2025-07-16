@@ -11,7 +11,7 @@ namespace demo {
 
 class VerifierTest : public ::testing::Test {
 protected:
-    using AbstractResult = arbitration_graphs::verification::AbstractResult;
+    using Result = arbitration_graphs::verification::Result;
 
     VerifierTest() {
         const char str[] = {"###"
@@ -37,10 +37,10 @@ protected:
 };
 
 TEST_F(VerifierTest, basicVerification) {
-    AbstractResult::Ptr goodResult = verifier->analyze(time, environmentModel, goodCommand);
+    Result::Ptr goodResult = verifier->analyze(time, environmentModel, goodCommand);
     EXPECT_TRUE(goodResult->isOk());
 
-    AbstractResult::Ptr badResult = verifier->analyze(time, environmentModel, badCommand);
+    Result::Ptr badResult = verifier->analyze(time, environmentModel, badCommand);
     EXPECT_FALSE(badResult->isOk());
 }
 
@@ -66,12 +66,12 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
 
     ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
-    AbstractResult::ConstPtr verificationResult2 =
+    Result::ConstPtr verificationResult2 =
         testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value();
     EXPECT_FALSE(verificationResult2->isOk());
 
     ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
-    AbstractResult::ConstPtr verificationResult3 =
+    Result::ConstPtr verificationResult3 =
         testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value();
     EXPECT_TRUE(verificationResult3->isOk());
 
