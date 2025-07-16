@@ -34,9 +34,7 @@ public:
         Move nextMove = Move{command.path.front()};
         Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
-        if (environmentModel.isPassableCell(nextPosition)) {
-            return std::make_shared<VerificationResult>(true);
-        }
+        ///@todo Verify the next position is valid
 
         return std::make_shared<VerificationResult>(false);
     }
