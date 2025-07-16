@@ -8,6 +8,8 @@ tagline: "Task 4: Arbitrate based on predicted utility"
 
 Learn how the cost arbitrator can help you to arbitrate between behaviors based on their expected cost/utility.
 
+![](../assets/img/tutorial_arbitrator_EatDotsByReward.png)
+
 ## Context
 
 The `EatDot` arbitrator we added in the [previous task](3_nested_arbitrators.md) decides between the two dot eating strategies randomly.

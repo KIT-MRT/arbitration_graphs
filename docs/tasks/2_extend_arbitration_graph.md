@@ -8,6 +8,10 @@ tagline: "Task 2: Extend the Arbitration Graph"
 
 Extend the arbitration graph with the `ChaseGhost` behavior component.
 
+<p align="center">
+  <img src="../assets/img/tutorial_arbitrator_ChaseGhost.png" width="500" />
+</p>
+
 ## Context
 
 With our next behavior component ready to go, we need to think about integrating it into our arbitration graph.

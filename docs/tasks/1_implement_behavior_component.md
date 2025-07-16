@@ -8,6 +8,10 @@ tagline: "Task 1: Implement a Behavior Component"
 
 Implement your first `checkInvocationCondition()` and `getCommand()` function, such that the ChaseGhost behavior component passes its unit tests.
 
+<p align="center">
+  <img src="../assets/img/tutorial_scenario_ChaseGhost_cropped.png" width="300" /> 
+</p>
+
 ## Context
 
 Before we start building our arbitration graph, we want to take a closer look into behavior components.
