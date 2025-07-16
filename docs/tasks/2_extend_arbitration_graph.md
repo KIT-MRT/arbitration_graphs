@@ -76,6 +76,13 @@ explicit PacmanAgent(const entt::Game& game)
     rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
 }
 ```
+
+Your arbitration graph should now look like this:
+
+<p align="center">
+  <img src="../assets/img/tutorial_arbitrator_ChaseGhost.png" width="500" />
+</p>
+
 </details>
 
 
