@@ -36,7 +36,7 @@ public:
         CostEstimator::Parameters costEstimator;
     };
 
-    explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+    explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
         verifier_ = std::make_shared<Verifier>();
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
