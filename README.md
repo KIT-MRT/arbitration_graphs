@@ -91,7 +91,7 @@ Open the GUI with your favorite browser:
 
 ### Explanation
 
-You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
+You will see the *Pac-Man Agent* arbitrator selecting between five behavior options (by priority).  
 The *Eat Dots* option is itself an arbitrator with two sub-behaviors (selecting by expected benefit).
 
 In this scene,
@@ -333,7 +333,7 @@ This library and repo has been crafted with ❤️ by
 
 Christoph and Piotr coded the core in a pair-programming session.
 Piotr also contributed the GUI and GitHub Page.
-Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+Nick implemented the awesome Pac-Man demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
 The Python bindings have been contributed by Nick and reviewed by Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;
