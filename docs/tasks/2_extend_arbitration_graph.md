@@ -60,12 +60,11 @@ In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behav
 
 The invocation condition of `ChaseGhost` is a subset of the `AvoidGhost` invocation condition. Therefore, it only makes sense to add `ChaseGhost` with higher priority than (i.e. before) the `AvoidGhost` behavior component:
 ```cpp
-explicit PacmanAgent(const entt::Game& game)
-        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
-
+explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
     avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
     // Initialize the ChaseGhost behavior component
-    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior); 
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
