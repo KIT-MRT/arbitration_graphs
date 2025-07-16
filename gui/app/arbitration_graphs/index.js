@@ -40,6 +40,8 @@ app = Vue.createApp({
             this.websocket.onclose = () => {
                 this.isConnected = false;
                 this.status = "WebSocket connection closed";
+
+                this.connectToWebSocket();
             };
 
             this.websocket.onerror = (error) => {
