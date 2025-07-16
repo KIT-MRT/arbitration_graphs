@@ -69,10 +69,10 @@ public:
             return behavior_;
         }
 
-        std::optional<verification::AbstractResult::ConstPtr> verificationResult(const Time& time) const {
+        std::optional<verification::Result::ConstPtr> verificationResult(const Time& time) const {
             return verificationResult_.cached(time);
         }
-        void cacheVerificationResult(const Time& time, const verification::AbstractResult::ConstPtr& result) const {
+        void cacheVerificationResult(const Time& time, const verification::Result::ConstPtr& result) const {
             verificationResult_.cache(time, result);
         }
         void resetVerificationResult() const {
