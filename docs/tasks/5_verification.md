@@ -71,9 +71,9 @@ Add the `MoveRandomly` behavior component as a last resort fallback layer.
 
 In the `Verifier::analyze()` method (in `include/demo/verifier.hpp`), we simply check if the command would lead to an invalid position:
 ```cpp
-arbitration_graphs::verification::AbstractResult::Ptr analyze(const Time& /*time*/,
-                                                                const EnvironmentModel& environmentModel,
-                                                                const Command& command) const override {
+arbitration_graphs::verification::Result::Ptr analyze(const Time& /*time*/,
+                                                      const EnvironmentModel& environmentModel,
+                                                      const Command& command) const override {
     Move nextMove = Move{command.path.front()};
     Position nextPosition = environmentModel.pacmanPosition() + nextMove.deltaPosition;
 
