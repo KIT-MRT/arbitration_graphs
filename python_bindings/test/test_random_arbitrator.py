@@ -1,11 +1,10 @@
-import os
 import time
 import unittest
-
 from collections import defaultdict
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
+
+from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 
 
 class TestRandomArbitrator(unittest.TestCase):

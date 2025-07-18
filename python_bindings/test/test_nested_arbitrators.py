@@ -1,11 +1,10 @@
-import os
 import time
 import unittest
 
 import arbitration_graphs as ag
 
-from dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
-from cost_estimator import CostEstimatorFromCostMap
+from .cost_estimator import CostEstimatorFromCostMap
+from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 
 
 class NestedArbitratorsTest(unittest.TestCase):
