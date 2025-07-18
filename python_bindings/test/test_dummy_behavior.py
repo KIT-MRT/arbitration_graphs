@@ -7,7 +7,6 @@ from dummy_types import DummyBehavior, DummyCommand, DummyEnvironmentModel, Prin
 
 
 class DummyBehaviorTest(unittest.TestCase):
-
     def setUp(self):
         self.test_behavior_true = DummyBehavior(True, True)
         self.environment_model = DummyEnvironmentModel()
@@ -51,7 +50,7 @@ class DummyBehaviorTest(unittest.TestCase):
     def test_printout(self):
         ps = PrintStrings()
         expected_printout = ps.invocation_true + ps.commitment_true + "dummy_behavior"
-        actual_printout = self.test_behavior_true.to_str(
+        actual_printout = self.test_behavior_true.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)

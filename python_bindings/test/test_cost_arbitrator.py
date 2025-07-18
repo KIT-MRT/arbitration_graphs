@@ -8,7 +8,6 @@ from cost_estimator import CostEstimatorFromCostMap
 
 
 class CostArbitratorTest(unittest.TestCase):
-
     def setUp(self):
         self.test_behavior_low_cost = DummyBehavior(False, False, "low_cost")
         self.test_behavior_mid_cost = DummyBehavior(True, False, "mid_cost")
@@ -171,7 +170,7 @@ class CostArbitratorTest(unittest.TestCase):
             "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
-        actual_printout = self.test_cost_arbitrator.to_str(
+        actual_printout = self.test_cost_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -193,7 +192,7 @@ class CostArbitratorTest(unittest.TestCase):
             " -> - (cost: 0.500) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
-        actual_printout = self.test_cost_arbitrator.to_str(
+        actual_printout = self.test_cost_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)

@@ -126,7 +126,7 @@ class TestRandomArbitrator(unittest.TestCase):
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout = self.test_random_arbitrator.to_str(
+        actual_printout = self.test_random_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -149,7 +149,7 @@ class TestRandomArbitrator(unittest.TestCase):
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout_after_gain = self.test_random_arbitrator.to_str(
+        actual_printout_after_gain = self.test_random_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout_after_gain)
