@@ -52,9 +52,9 @@ inline void bindPriorityArbitrator(py::module& module) {
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
-        .value("NO_FLAGS", OptionT::NO_FLAGS)
-        .value("INTERRUPTABLE", OptionT::INTERRUPTABLE)
-        .value("FALLBACK", OptionT::FALLBACK)
+        .value("NO_FLAGS", OptionT::NoFlags)
+        .value("INTERRUPTABLE", OptionT::Interruptable)
+        .value("FALLBACK", OptionT::Fallback)
         .export_values();
 }
 
