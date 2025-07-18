@@ -60,15 +60,14 @@ In the constructor of the `PacmanAgent` class, initialize the `ChaseGhost` behav
 
 The invocation condition of `ChaseGhost` is a subset of the `AvoidGhost` invocation condition. Therefore, it only makes sense to add `ChaseGhost` with higher priority than (i.e. before) the `AvoidGhost` behavior component:
 ```cpp
-explicit PacmanAgent(const entt::Game& game)
-        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
-
-    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
     // Initialize the ChaseGhost behavior component
-    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior); 
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
-    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     // Add the ChaseGhost behavior component to the priority arbitrator (before the AvoidGhost behavior component!)
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);

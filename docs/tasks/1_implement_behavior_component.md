@@ -51,18 +51,18 @@ Finish the implementation of the `checkInvocationCondition()` and `getCommand()`
 Fix the invocation condition in `src/chase_ghost_behavior.cpp`:
 ```cpp
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const {
-    return environmentModel_->closestScaredGhost(time).has_value() &&
-           environmentModel_->closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
-           environmentModel_->closestScaredGhost(time)->distance < parameters_.invocationMinDistance; // Only applicable if a ghost is close by
+    return environmentModel.closestScaredGhost(time).has_value() &&
+           environmentModel.closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
+           environmentModel.closestScaredGhost(time)->distance < parameters_.invocationMinDistance; // Only applicable if a ghost is close by
 }
 ```
 
 Add the missing piece of the `getCommand()` function in `src/chase_ghost_behavior.cpp`:
 ```cpp
 Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
-    auto pacmanPosition = environmentModel_->pacmanPosition();
+    auto pacmanPosition = environmentModel.pacmanPosition();
 
-    auto closestScaredGhost = environmentModel_->closestScaredGhost(time);
+    auto closestScaredGhost = environmentModel.closestScaredGhost(time);
     if (!closestScaredGhost) {
         throw std::runtime_error("Can not compute command to chase ghost because there are no scared ghosts.");
     }
@@ -75,14 +75,14 @@ Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel&
     // Chose the direction moving pacman towards the closest scared ghost
     double minDistance = std::numeric_limits<double>::max();
     for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
+        auto nextPosition = environmentModel.positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
-        if (environmentModel_->isWall(nextPosition)) {
+        if (environmentModel.isWall(nextPosition)) {
             continue;
         }
 
         // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
-        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
+        auto nextDistance = environmentModel.mazeDistance(nextPosition, ghostPosition);
         if (nextDistance < minDistance) {
             direction = move.direction;
             minDistance = nextDistance;
