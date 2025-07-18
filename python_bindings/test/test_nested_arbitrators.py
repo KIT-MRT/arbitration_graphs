@@ -74,7 +74,7 @@ class NestedArbitratorsTest(unittest.TestCase):
         )
         # fmt: on
 
-        actual_printout = self.test_root_priority_arbitrator.to_str(
+        actual_printout = self.test_root_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         self.assertEqual(expected_printout, actual_printout)
@@ -101,7 +101,7 @@ class NestedArbitratorsTest(unittest.TestCase):
         )
         # fmt: on
 
-        actual_printout = self.test_root_priority_arbitrator.to_str(
+        actual_printout = self.test_root_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         self.assertEqual(expected_printout_after_command, actual_printout)

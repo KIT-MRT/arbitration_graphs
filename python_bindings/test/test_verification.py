@@ -348,7 +348,9 @@ class TestCommandVerification(unittest.TestCase):
             " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_cost_arbitrator.to_str(self.time, self.environment_model)
+        actual_printout = test_cost_arbitrator.to_string(
+            self.time, self.environment_model
+        )
         print(actual_printout)
 
         self.assertEqual(expected_printout, actual_printout)

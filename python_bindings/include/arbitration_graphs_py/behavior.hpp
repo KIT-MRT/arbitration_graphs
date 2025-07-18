@@ -51,11 +51,11 @@ public:
         PYBIND11_OVERRIDE_NAME(void, BaseT, "lose_control", loseControl, time, environmentModel);
     }
 
-    std::string to_str(const ag::Time& time,
-                       const EnvironmentModelWrapper& environmentModel,
-                       const std::string& prefix = "",
-                       const std::string& suffix = "") const override {
-        PYBIND11_OVERRIDE(std::string, BaseT, to_str, time, environmentModel, prefix, suffix);
+    std::string toString(const ag::Time& time,
+                         const EnvironmentModelWrapper& environmentModel,
+                         const std::string& prefix = "",
+                         const std::string& suffix = "") const override {
+        PYBIND11_OVERRIDE(std::string, BaseT, toString, time, environmentModel, prefix, suffix);
     }
     // NOLINTEND(readability-function-size)
 };
@@ -84,8 +84,8 @@ inline void bindBehavior(py::module& module) {
                  py::arg("environment_model"))
             .def("gain_control", &BehaviorT::gainControl, py::arg("time"), py::arg("environment_model"))
             .def("lose_control", &BehaviorT::loseControl, py::arg("time"), py::arg("environment_model"))
-            .def("to_str",
-                 &BehaviorT::to_str,
+            .def("to_string",
+                 &BehaviorT::toString,
                  py::arg("time"),
                  py::arg("environment_model"),
                  py::arg("prefix") = "",

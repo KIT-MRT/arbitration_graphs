@@ -170,7 +170,7 @@ class TestPriorityArbitrator(unittest.TestCase):
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
-        actual_printout = self.test_priority_arbitrator.to_str(
+        actual_printout = self.test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -194,7 +194,7 @@ class TestPriorityArbitrator(unittest.TestCase):
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
-        actual_printout = self.test_priority_arbitrator.to_str(
+        actual_printout = self.test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
