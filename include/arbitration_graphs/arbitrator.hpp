@@ -129,7 +129,7 @@ public:
     virtual void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                            const typename Option::FlagsT& flags) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
-        addOptionInternal(option);
+        addOptionImpl(option);
     }
 
     CommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) override {
@@ -218,7 +218,7 @@ public:
 
 
 protected:
-    void addOptionInternal(const typename Option::Ptr& option) {
+    void addOptionImpl(const typename Option::Ptr& option) {
         behaviorOptions_.push_back(option);
     }
 

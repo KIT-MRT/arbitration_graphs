@@ -73,7 +73,7 @@ public:
                    const typename Option::FlagsT& flags,
                    const double& weight = 1) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, weight);
-        this->addOptionInternal(option);
+        this->addOptionImpl(option);
     }
 
     /*!

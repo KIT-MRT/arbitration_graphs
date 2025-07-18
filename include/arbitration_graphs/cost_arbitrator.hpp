@@ -102,7 +102,7 @@ public:
                    const typename Option::FlagsT& flags,
                    const typename CostEstimatorT::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
-        this->addOptionInternal(option);
+        this->addOptionImpl(option);
     }
 
     /*!
