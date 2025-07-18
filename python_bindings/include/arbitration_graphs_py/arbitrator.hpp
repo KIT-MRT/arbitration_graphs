@@ -43,9 +43,8 @@ inline void bindArbitrator(py::module& module) {
     py::classh<OptionT> option(arbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"))
         .def("has_flags", &OptionT::hasFlag, py::arg("flags_to_check"))
-        .def_readwrite("behavior", &OptionT::behavior_)
-        .def_readwrite("flags", &OptionT::flags_)
-        .def_readwrite("verification_result", &OptionT::verificationResult_);
+        .def("behavior", &OptionT::behavior)
+        .def("verification_result", &OptionT::verificationResult);
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NO_FLAGS)
