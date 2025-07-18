@@ -74,7 +74,7 @@ inline void bindCostArbitrator(py::module& module) {
             },
             py::arg("time"),
             py::arg("environment_model"))
-        .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(costArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),

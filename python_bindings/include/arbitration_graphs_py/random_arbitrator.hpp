@@ -46,7 +46,7 @@ inline void bindRandomArbitrator(py::module& module) {
             },
             py::arg("time"),
             py::arg("environment_model"))
-        .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(randomArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const double&>(),
