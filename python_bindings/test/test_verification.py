@@ -57,20 +57,18 @@ class TestCommandVerification(unittest.TestCase):
             test_priority_arbitrator.get_command(self.time, self.environment_model),
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[0].verification_result(self.time)
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[1].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[1].verification_result(self.time)
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[2].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[2].verification_result(self.time)
         )
         # LowPriority could have been verified or not, so don't test it here
 
         self.assertTrue(
-            test_priority_arbitrator.options()[2]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_priority_arbitrator.options()[2].verification_result(self.time).is_ok()
         )
 
     def test_dummy_verifier_in_priority_arbitrator(self):
@@ -108,37 +106,33 @@ class TestCommandVerification(unittest.TestCase):
             test_priority_arbitrator.get_command(self.time, self.environment_model),
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[0].verification_result(self.time)
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[1].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[1].verification_result(self.time)
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[2].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[2].verification_result(self.time)
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[3].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[3].verification_result(self.time)
         )
 
         self.assertFalse(
-            test_priority_arbitrator.options()[2]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_priority_arbitrator.options()[2].verification_result(self.time).is_ok()
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[3]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_priority_arbitrator.options()[3].verification_result(self.time).is_ok()
         )
 
         # Print verification results
         print(
-            f"{test_priority_arbitrator.options()[2].verification_result.cached(self.time)}"
             f"Verification result for {test_priority_arbitrator.options()[2].behavior().name()}: "
+            f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
         )
         print(
-            f"{test_priority_arbitrator.options()[3].verification_result.cached(self.time)}"
             f"Verification result for {test_priority_arbitrator.options()[3].behavior().name()}: "
+            f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
         )
 
         # fmt:off
@@ -153,7 +147,7 @@ class TestCommandVerification(unittest.TestCase):
             " -> 4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_priority_arbitrator.to_str(
+        actual_printout = test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -210,39 +204,35 @@ class TestCommandVerification(unittest.TestCase):
             test_priority_arbitrator.get_command(self.time, self.environment_model),
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[0].verification_result(self.time)
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[1].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[1].verification_result(self.time)
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[2].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[2].verification_result(self.time)
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[3].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[3].verification_result(self.time)
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[4].verification_result.cached(self.time)
+            test_priority_arbitrator.options()[4].verification_result(self.time)
         )
 
         self.assertFalse(
-            test_priority_arbitrator.options()[2]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_priority_arbitrator.options()[2].verification_result(self.time).is_ok()
         )
         self.assertFalse(
-            test_priority_arbitrator.options()[3]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_priority_arbitrator.options()[3].verification_result(self.time).is_ok()
         )
 
         print(
-            f"{test_priority_arbitrator.options()[2].verification_result.cached(self.time)}"
             f"verificationResult for {test_priority_arbitrator.options()[2].behavior().name()}: "
+            f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
         )
         print(
-            f"{test_priority_arbitrator.options()[3].verification_result.cached(self.time)}"
             f"verificationResult for {test_priority_arbitrator.options()[3].behavior().name()}: "
+            f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
         )
 
         # fmt:off
@@ -260,7 +250,7 @@ class TestCommandVerification(unittest.TestCase):
             "    5. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
-        actual_printout = test_priority_arbitrator.to_str(
+        actual_printout = test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -313,27 +303,23 @@ class TestCommandVerification(unittest.TestCase):
             test_cost_arbitrator.get_command(self.time, self.environment_model),
         )
         self.assertFalse(
-            test_cost_arbitrator.options()[0].verification_result.cached(self.time)
+            test_cost_arbitrator.options()[0].verification_result(self.time)
         )
         self.assertFalse(
-            test_cost_arbitrator.options()[1].verification_result.cached(self.time)
+            test_cost_arbitrator.options()[1].verification_result(self.time)
         )
         self.assertTrue(
-            test_cost_arbitrator.options()[2].verification_result.cached(self.time)
+            test_cost_arbitrator.options()[2].verification_result(self.time)
         )
         self.assertTrue(
-            test_cost_arbitrator.options()[3].verification_result.cached(self.time)
+            test_cost_arbitrator.options()[3].verification_result(self.time)
         )
 
         self.assertFalse(
-            test_cost_arbitrator.options()[2]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_cost_arbitrator.options()[2].verification_result(self.time).is_ok()
         )
         self.assertTrue(
-            test_cost_arbitrator.options()[3]
-            .verification_result.cached(self.time)
-            .is_ok()
+            test_cost_arbitrator.options()[3].verification_result(self.time).is_ok()
         )
 
         # fmt:off
