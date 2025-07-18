@@ -14,21 +14,8 @@ Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel&
     auto ghostPosition = closestScaredGhost->ghost.position;
 
     std::optional<Direction> direction;
-    double minDistance = std::numeric_limits<double>::max();
-    for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = environmentModel.positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
-        if (environmentModel.isWall(nextPosition)) {
-            continue;
-        }
-
-        // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
-        auto nextDistance = environmentModel.mazeDistance(nextPosition, ghostPosition);
-        if (nextDistance < minDistance) {
-            direction = move.direction;
-            minDistance = nextDistance;
-        }
-    }
+    ///@todo Implement logic to get the direction to chase the closest ghost
 
     if (!direction) {
         throw std::runtime_error("Failed to compute direction to chase the closest ghost.");
@@ -38,9 +25,9 @@ Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel&
 }
 
 bool ChaseGhostBehavior::checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const {
+    ///@todo Also check if ghost is close by
     return environmentModel.closestScaredGhost(time).has_value() &&
-           environmentModel.closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
-           environmentModel.closestScaredGhost(time)->distance < parameters_.invocationMinDistance;
+           environmentModel.closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft;
 }
 
 bool ChaseGhostBehavior::checkCommitmentCondition(const Time& time, const EnvironmentModel& environmentModel) const {
