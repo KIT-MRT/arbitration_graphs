@@ -47,9 +47,9 @@ inline void bindArbitrator(py::module& module) {
         .def("verification_result", &OptionT::verificationResult);
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
-        .value("NO_FLAGS", OptionT::NO_FLAGS)
-        .value("INTERRUPTABLE", OptionT::INTERRUPTABLE)
-        .value("FALLBACK", OptionT::FALLBACK)
+        .value("NO_FLAGS", OptionT::NoFlags)
+        .value("INTERRUPTABLE", OptionT::Interruptable)
+        .value("FALLBACK", OptionT::Fallback)
         .export_values();
 }
 
