@@ -1,17 +1,15 @@
-import os
 import time
 import unittest
 
 import arbitration_graphs as ag
 
-from dummy_types import (
+from .cost_estimator import CostEstimatorFromCostMap
+from .dummy_types import (
     DummyBehavior,
-    DummyCommand,
     DummyEnvironmentModel,
     DummyVerifier,
     PrintStrings,
 )
-from cost_estimator import CostEstimatorFromCostMap
 
 
 class TestCommandVerification(unittest.TestCase):

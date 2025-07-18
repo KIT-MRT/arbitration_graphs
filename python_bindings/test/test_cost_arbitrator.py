@@ -1,10 +1,15 @@
-import os
 import time
 import unittest
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyCommand, DummyEnvironmentModel, PrintStrings
-from cost_estimator import CostEstimatorFromCostMap
+
+from .cost_estimator import CostEstimatorFromCostMap
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
 class CostArbitratorTest(unittest.TestCase):

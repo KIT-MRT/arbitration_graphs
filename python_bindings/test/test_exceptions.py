@@ -1,11 +1,10 @@
-import os
 import time
 import unittest
 
 import arbitration_graphs as ag
 
-from dummy_types import BrokenDummyBehavior, DummyBehavior, DummyEnvironmentModel
-from cost_estimator import CostEstimatorFromCostMap
+from .cost_estimator import CostEstimatorFromCostMap
+from .dummy_types import BrokenDummyBehavior, DummyBehavior, DummyEnvironmentModel
 
 
 class TestExceptionHandling(unittest.TestCase):
