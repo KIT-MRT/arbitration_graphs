@@ -49,10 +49,12 @@ inline void bindRandomArbitrator(py::module& module) {
         .def("__repr__", [](const RandomArbitratorT& self) { return "<RandomArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(randomArbitrator, "Option");
-    option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const double&>(),
-               py::arg("behavior"),
-               py::arg("flags"),
-               py::arg("weight"));
+    option
+        .def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const double&>(),
+             py::arg("behavior"),
+             py::arg("flags"),
+             py::arg("weight"))
+        .def("weight", &OptionT::weight);
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NO_FLAGS)
