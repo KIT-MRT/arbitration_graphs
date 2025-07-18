@@ -35,18 +35,14 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "LowPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(
-            test_priority_arbitrator.options()[0].verification_result.cached(t)
-        )
-        self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result.cached(t)
-        )
+        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
+        self.assertTrue(test_priority_arbitrator.options()[1].verification_result(t))
 
         self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result.cached(t).is_ok()
+            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result.cached(t).is_ok()
+            test_priority_arbitrator.options()[1].verification_result(t).is_ok()
         )
 
         test_priority_arbitrator.lose_control(t, environment_model)
@@ -88,11 +84,9 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "HighPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
+        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
         self.assertTrue(
-            test_priority_arbitrator.options()[0].verification_result.cached(t)
-        )
-        self.assertTrue(
-            test_priority_arbitrator.options()[0].verification_result.cached(t).is_ok()
+            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
         )
 
         # Progress time to not retrieve cached commands
@@ -103,18 +97,14 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "LowPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(
-            test_priority_arbitrator.options()[0].verification_result.cached(t)
-        )
-        self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result.cached(t)
-        )
+        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
+        self.assertTrue(test_priority_arbitrator.options()[1].verification_result(t))
 
         self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result.cached(t).is_ok()
+            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
         )
         self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result.cached(t).is_ok()
+            test_priority_arbitrator.options()[1].verification_result(t).is_ok()
         )
 
     def test_exceptions_in_cost_arbitrator(self):
@@ -151,12 +141,12 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "HighCost", test_cost_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(test_cost_arbitrator.options()[0].verification_result.cached(t))
-        self.assertTrue(test_cost_arbitrator.options()[1].verification_result.cached(t))
+        self.assertTrue(test_cost_arbitrator.options()[0].verification_result(t))
+        self.assertTrue(test_cost_arbitrator.options()[1].verification_result(t))
 
         self.assertFalse(
-            test_cost_arbitrator.options()[0].verification_result.cached(t).is_ok()
+            test_cost_arbitrator.options()[0].verification_result(t).is_ok()
         )
         self.assertTrue(
-            test_cost_arbitrator.options()[1].verification_result.cached(t).is_ok()
+            test_cost_arbitrator.options()[1].verification_result(t).is_ok()
         )
