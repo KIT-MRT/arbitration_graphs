@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-#include <iomanip>
 #include <memory>
 #include <optional>
 
@@ -20,7 +18,7 @@ struct CostEstimator {
     virtual double estimateCost(const Time& time,
                                 const EnvironmentModelT& environmentModel,
                                 const SubCommandT& command,
-                                const bool isActive) = 0;
+                                bool isActive) = 0;
 };
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
@@ -35,12 +33,13 @@ public:
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
     using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
-    struct Option : ArbitratorBase::Option {
+    class Option : public ArbitratorBase::Option {
+    public:
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
+        enum Flags { NoFlags = 0b0, Interruptable = 0b1, Fallback = 0b10 };
 
         Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
@@ -48,25 +47,37 @@ public:
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
+        double estimateCost(const Time& time,
+                            const EnvironmentModelT& environmentModel,
+                            const SubCommandT& command,
+                            bool isActive) const {
+            double cost = costEstimator_->estimateCost(time, environmentModel, command, isActive);
+            lastEstimatedCost_ = cost;
+            return cost;
+        }
+        void resetLastEstimatedCost() const {
+            lastEstimatedCost_.reset();
+        }
+
         /*!
          * \brief Writes a string representation of the behavior option and its current state to the output stream.
          *
-         * \param output        Output stream to write into, will be returned also
-         * \param time          Expected execution time point of this behaviors command
+         * \param output            Output stream to write into, will be returned also
+         * \param time              Expected execution time point of this behaviors command
          * \param environmentModel  A read-only object containing the current state of the environment
-         * \param option_index  Position index of this option within behaviorOptions_
-         * \param prefix        A string that should be prepended to each line that is written to the output stream
-         * \param suffix        A string that should be appended to each line that is written to the output stream
-         * \return              The same given input stream (signature similar to std::ostream& operator<<())
+         * \param optionIndex       Position index of this option within options()
+         * \param prefix            A string that should be prepended to each line that is written to the output stream
+         * \param suffix            A string that should be appended to each line that is written to the output stream
+         * \return                  The same given input stream (signature similar to std::ostream& operator<<())
          *
-         * \see Arbitrator::to_stream()
+         * \see Arbitrator::toStream()
          */
-        virtual std::ostream& to_stream(std::ostream& output,
-                                        const Time& time,
-                                        const EnvironmentModelT& environmentModel,
-                                        const int& option_index,
-                                        const std::string& prefix = "",
-                                        const std::string& suffix = "") const;
+        std::ostream& toStream(std::ostream& output,
+                               const Time& time,
+                               const EnvironmentModelT& environmentModel,
+                               const int& optionIndex,
+                               const std::string& prefix = "",
+                               const std::string& suffix = "") const override;
 
         /*!
          * \brief Returns a yaml representation of this option with its current state
@@ -74,15 +85,16 @@ public:
          * \param time  Expected execution time point of this behaviors command
          * \return      Yaml representation of this behavior
          */
-        virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
+        YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
+    private:
         typename CostEstimatorT::Ptr costEstimator_;
-        mutable std::optional<double> last_estimated_cost_;
+        mutable std::optional<double> lastEstimatedCost_;
     };
 
 
-    CostArbitrator(const std::string& name = "CostArbitrator",
-                   typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+    explicit CostArbitrator(const std::string& name = "CostArbitrator",
+                            typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
 
@@ -90,7 +102,7 @@ public:
                    const typename Option::FlagsT& flags,
                    const typename CostEstimatorT::Ptr& costEstimator) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
-        this->behaviorOptions_.push_back(option);
+        this->addOptionImpl(option);
     }
 
     /*!
@@ -100,7 +112,7 @@ public:
      * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
+    YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 private:
     /*!
@@ -112,10 +124,10 @@ private:
         const typename ArbitratorBase::Options& options,
         const Time& time,
         const EnvironmentModelT& environmentModel) const override {
-        // reset last_estimated_cost_ for all behaviorOptions_
-        for (const auto& optionBase : this->behaviorOptions_) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-            option->last_estimated_cost_ = std::nullopt;
+        // reset lastEstimatedCost for all behaviorOptions
+        for (const auto& optionBase : this->options()) {
+            typename Option::ConstPtr option = std::dynamic_pointer_cast<const Option>(optionBase);
+            option->resetLastEstimatedCost();
         }
 
         // sort given options by using a multiset
@@ -130,16 +142,15 @@ private:
             if (isActive) {
                 command = this->getAndVerifyCommand(option, time, environmentModel);
             } else {
-                option->behavior_->gainControl(time, environmentModel);
+                option->behavior()->gainControl(time, environmentModel);
                 command = this->getAndVerifyCommand(option, time, environmentModel);
-                option->behavior_->loseControl(time, environmentModel);
+                option->behavior()->loseControl(time, environmentModel);
             }
             if (!command) {
                 continue;
             }
 
-            double cost = option->costEstimator_->estimateCost(time, environmentModel, command.value(), isActive);
-            option->last_estimated_cost_ = cost;
+            double cost = option->estimateCost(time, environmentModel, command.value(), isActive);
             sortedOptionsMap.insert({cost, option});
         }
 
@@ -154,4 +165,4 @@ private:
 };
 } // namespace arbitration_graphs
 
-#include "internal/cost_arbitrator_io.hpp"
+#include "internal/cost_arbitrator_io.hpp" // IWYU pragma: keep

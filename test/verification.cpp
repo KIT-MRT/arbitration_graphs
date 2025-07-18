@@ -1,8 +1,8 @@
-#include <map>
 #include <memory>
 #include <optional>
 #include <string>
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 #include "behavior.hpp"
 #include "cost_arbitrator.hpp"
@@ -19,14 +19,14 @@ using DummyPlaceboVerifier = verification::PlaceboVerifier<DummyEnvironmentModel
 
 struct DummyVerifier : public verification::Verifier<DummyEnvironmentModel, DummyCommand> {
     verification::Result::Ptr analyze(const Time& /*time*/,
-                                      const DummyEnvironmentModel& environmentModel,
+                                      const DummyEnvironmentModel& /*environmentModel*/,
                                       const DummyCommand& command) const override {
-        if (command == wrong_) {
+        if (command == wrong) {
             return std::make_shared<DummyResult>(false);
         }
         return std::make_shared<DummyResult>(true);
     };
-    std::string wrong_{"MidPriority"};
+    std::string wrong{"MidPriority"};
 };
 
 class CommandVerificationTest : public ::testing::Test {
@@ -47,22 +47,22 @@ TEST_F(CommandVerificationTest, DefaultVerifier) {
 
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
     // LowPriority could have been verified or not, so don't test it here
 
-    EXPECT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time).value()->isOk());
 }
 
 
@@ -72,22 +72,22 @@ TEST_F(CommandVerificationTest, PlaceboVerifier) {
 
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator;
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
     // LowPriority could have been verified or not, so don't test it here
 
-    EXPECT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time).value()->isOk());
 }
 
 
@@ -98,42 +98,42 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
                                                                                    std::make_shared<DummyVerifier>());
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("LowPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult(time));
 
-    EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
-    EXPECT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult(time).value()->isOk());
+    EXPECT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult(time).value()->isOk());
 
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name_ << ": "
-              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name_ << ": "
-              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior()->name() << ": "
+              << testPriorityArbitrator.options().at(2)->verificationResult(time).value() << '\n';
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior()->name() << ": "
+              << testPriorityArbitrator.options().at(3)->verificationResult(time).value() << '\n';
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time, environmentModel);
@@ -148,7 +148,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitrator) {
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
@@ -164,47 +164,47 @@ TEST_F(CommandVerificationTest, DummyVerifierInPriorityArbitratorWithFallback) {
     PriorityArbitrator<DummyEnvironmentModel, DummyCommand> testPriorityArbitrator("PriorityArbitrator",
                                                                                    std::make_shared<DummyVerifier>());
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::FALLBACK);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, OptionFlags::Fallback);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("MidPriority", testPriorityArbitrator.getCommand(time, environmentModel));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
-    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(4)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
+    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(4)->verificationResult(time));
 
-    EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
-    EXPECT_FALSE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_FALSE(testPriorityArbitrator.options().at(2)->verificationResult(time).value()->isOk());
+    EXPECT_FALSE(testPriorityArbitrator.options().at(3)->verificationResult(time).value()->isOk());
 
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior_->name_ << ": "
-              << testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value() << std::endl;
-    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior_->name_ << ": "
-              << testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value() << std::endl;
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(2)->behavior()->name() << ": "
+              << testPriorityArbitrator.options().at(2)->verificationResult(time).value() << '\n';
+    std::cout << "verificationResult for " << testPriorityArbitrator.options().at(3)->behavior()->name() << ": "
+              << testPriorityArbitrator.options().at(3)->verificationResult(time).value() << '\n';
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        "    5. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        "    5. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actual_printout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     YAML::Node yaml = testPriorityArbitrator.toYaml(time, environmentModel);
@@ -228,42 +228,42 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     CostEstimatorFromCostMap::CostMap costMap{{"HighPriority", 0}, {"MidPriority", 0.5}, {"LowPriority", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
-    testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NO_FLAGS, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NO_FLAGS, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NO_FLAGS, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorMidPriority, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowPriority, OptionFlags::NoFlags, costEstimator);
 
     ASSERT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 
     testCostArbitrator.gainControl(time, environmentModel);
 
     EXPECT_EQ("LowPriority", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testCostArbitrator.options().at(1)->verificationResult_.cached(time));
-    ASSERT_TRUE(testCostArbitrator.options().at(2)->verificationResult_.cached(time));
-    ASSERT_TRUE(testCostArbitrator.options().at(3)->verificationResult_.cached(time));
+    EXPECT_FALSE(testCostArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testCostArbitrator.options().at(1)->verificationResult(time));
+    ASSERT_TRUE(testCostArbitrator.options().at(2)->verificationResult(time));
+    ASSERT_TRUE(testCostArbitrator.options().at(3)->verificationResult(time));
 
-    EXPECT_FALSE(testCostArbitrator.options().at(2)->verificationResult_.cached(time).value()->isOk());
-    EXPECT_TRUE(testCostArbitrator.options().at(3)->verificationResult_.cached(time).value()->isOk());
+    EXPECT_FALSE(testCostArbitrator.options().at(2)->verificationResult(time).value()->isOk());
+    EXPECT_TRUE(testCostArbitrator.options().at(3)->verificationResult(time).value()->isOk());
 
     // clang-format off
-    std::string expectedPrintout = invocationTrueString + commitmentTrueString + "CostArbitrator\n"
-                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    - (cost:  n.a.) " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    - (cost:  n.a.) " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> - (cost: 1.000) " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "CostArbitrator\n"
+                        "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    - (cost:  n.a.) " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testCostArbitrator.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::string actualPrintout = testCostArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
     testCostArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 
     testCostArbitrator.gainControl(time, environmentModel);

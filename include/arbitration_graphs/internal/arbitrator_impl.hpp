@@ -3,6 +3,7 @@
 #include "../arbitrator.hpp"
 
 #include <glog/logging.h>
+
 #include "verification.hpp"
 
 
@@ -31,17 +32,17 @@ template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 bool Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::isApplicable(
     const typename Option::Ptr& option, const Time& time, const EnvironmentModelT& environmentModel) const {
     const bool isActiveAndCanBeContinued =
-        isActive(option) && option->behavior_->checkCommitmentCondition(time, environmentModel);
-    return isActiveAndCanBeContinued || option->behavior_->checkInvocationCondition(time, environmentModel);
+        isActive(option) && option->behavior()->checkCommitmentCondition(time, environmentModel);
+    return isActiveAndCanBeContinued || option->behavior()->checkInvocationCondition(time, environmentModel);
 }
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 std::size_t Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getOptionIndex(
     const typename Option::ConstPtr& behaviorOption) const {
-    const auto it = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
+    const auto optionIt = std::find(behaviorOptions_.begin(), behaviorOptions_.end(), behaviorOption);
 
-    if (it != behaviorOptions_.end()) {
-        return std::distance(behaviorOptions_.begin(), it);
+    if (optionIt != behaviorOptions_.end()) {
+        return std::distance(behaviorOptions_.begin(), optionIt);
     }
     throw InvalidArgumentsError(
         "Invalid call of getOptionIndex(): Given option not found in list of behavior options!");
@@ -54,24 +55,24 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
         const SubCommandT command = option->getCommand(time, environmentModel);
 
         const verification::Result::ConstPtr verificationResult = verifier_->analyze(time, environmentModel, command);
-        option->verificationResult_.cache(time, verificationResult);
+        option->cacheVerificationResult(time, verificationResult);
 
         // options explicitly flagged as fallback do not need to pass verification
-        if (verificationResult->isOk() || option->hasFlag(Option::Flags::FALLBACK)) {
+        if (verificationResult->isOk() || option->hasFlag(Option::Flags::Fallback)) {
             return command;
         }
         // given option is applicable, but not safe
-        VLOG(1) << "Given option " << option->behavior_->name_ << " is applicable, but not safe";
+        VLOG(1) << "Given option " << option->behavior()->name() << " is applicable, but not safe";
         VLOG(2) << "verification result: " << verificationResult;
     } catch (VerificationError& e) {
         // given option is arbitrator without safe applicable option
-        option->verificationResult_.reset();
+        option->resetVerificationResult();
 
-        VLOG(1) << "Given option " << option->behavior_->name_ << " is an arbitrator without safe applicable option";
+        VLOG(1) << "Given option " << option->behavior()->name() << " is an arbitrator without safe applicable option";
     } catch (const std::exception& e) {
         // Catch all other exceptions and cache failed verification result
-        option->verificationResult_.cache(time, std::make_shared<verification::SimpleResult>(false));
-        VLOG(1) << "Given option " << option->behavior_->name_
+        option->cacheVerificationResult(time, std::make_shared<verification::SimpleResult>(false));
+        VLOG(1) << "Given option " << option->behavior()->name()
                 << " threw an exception during getAndVerifyCommand(): " << e.what();
     }
     return std::nullopt;
@@ -81,14 +82,14 @@ template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCommandFromActive(
     const Time& time, const EnvironmentModelT& environmentModel) {
     bool activeBehaviorCanBeContinued =
-        activeBehavior_ && activeBehavior_->behavior_->checkCommitmentCondition(time, environmentModel);
+        activeBehavior_ && activeBehavior_->behavior()->checkCommitmentCondition(time, environmentModel);
 
     if (activeBehavior_ && !activeBehaviorCanBeContinued) {
-        activeBehavior_->behavior_->loseControl(time, environmentModel);
+        activeBehavior_->behavior()->loseControl(time, environmentModel);
         activeBehavior_.reset();
     }
 
-    bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::INTERRUPTABLE));
+    bool activeBehaviorInterruptable = activeBehavior_ && (activeBehavior_->hasFlag(Option::Flags::Interruptable));
 
     // continue with active behavior, if one exists, it is committed, not interruptable and passes verification
     if (activeBehaviorCanBeContinued && !activeBehaviorInterruptable) {
@@ -97,7 +98,7 @@ std::optional<SubCommandT> Arbitrator<EnvironmentModelT, CommandT, SubCommandT>:
             return command.value();
         }
 
-        activeBehavior_->behavior_->loseControl(time, environmentModel);
+        activeBehavior_->behavior()->loseControl(time, environmentModel);
         activeBehavior_ = nullptr;
     }
 
@@ -111,7 +112,7 @@ SubCommandT Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCo
         if (!activeBehavior_ || bestOption != activeBehavior_) {
             // we allow bestOption and activeBehavior_ to gain control simultaneuosly until we figure out
             // if bestOption passes verification
-            bestOption->behavior_->gainControl(time, environmentModel);
+            bestOption->behavior()->gainControl(time, environmentModel);
         }
         // otherwise we have bestOption == activeBehavior_ which already gained control
 
@@ -121,12 +122,12 @@ SubCommandT Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::getAndVerifyCo
         if (command) {
             if (activeBehavior_ && bestOption != activeBehavior_) {
                 // finally, prevent two behaviors from having control
-                activeBehavior_->behavior_->loseControl(time, environmentModel);
+                activeBehavior_->behavior()->loseControl(time, environmentModel);
             }
             activeBehavior_ = bestOption;
             return command.value();
         }
-        bestOption->behavior_->loseControl(time, environmentModel);
+        bestOption->behavior()->loseControl(time, environmentModel);
     }
 
     throw NoApplicableOptionPassedVerificationError("None of the " + std::to_string(options.size()) +

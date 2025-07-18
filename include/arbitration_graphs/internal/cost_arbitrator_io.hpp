@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iomanip>
+
 #include "../cost_arbitrator.hpp"
 
 
@@ -10,21 +12,21 @@ namespace arbitration_graphs {
 //////////////////////////////////
 
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
-std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::to_stream(
+std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
     const EnvironmentModelT& environmentModel,
-    const int& option_index,
+    const int& optionIndex,
     const std::string& prefix,
     const std::string& suffix) const {
 
-    if (last_estimated_cost_) {
-        output << std::fixed << std::setprecision(3) << "- (cost: " << *last_estimated_cost_ << ") ";
+    if (lastEstimatedCost_) {
+        output << std::fixed << std::setprecision(3) << "- (cost: " << *lastEstimatedCost_ << ") ";
     } else {
         output << "- (cost:  n.a.) ";
     }
 
-    ArbitratorBase::Option::to_stream(output, time, environmentModel, option_index, prefix, suffix);
+    ArbitratorBase::Option::toStream(output, time, environmentModel, optionIndex, prefix, suffix);
     return output;
 }
 
@@ -32,8 +34,8 @@ template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
     const Time& time, const EnvironmentModelT& environmentModel) const {
     YAML::Node node = ArbitratorBase::Option::toYaml(time, environmentModel);
-    if (last_estimated_cost_) {
-        node["cost"] = *last_estimated_cost_;
+    if (lastEstimatedCost_) {
+        node["cost"] = *lastEstimatedCost_;
     }
     return node;
 }
@@ -50,7 +52,7 @@ YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
 
     node["type"] = "CostArbitrator";
     node["options"] = YAML::Null;
-    for (const auto& option : this->behaviorOptions_) {
+    for (const auto& option : this->options()) {
         node["options"].push_back(option->toYaml(time, environmentModel));
     }
 
