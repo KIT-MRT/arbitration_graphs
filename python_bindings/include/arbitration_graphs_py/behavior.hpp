@@ -97,8 +97,8 @@ inline void bindBehavior(py::module& module) {
                 },
                 py::arg("time"),
                 py::arg("environment_model"))
-            .def_readonly("name", &BehaviorT::name_)
-            .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name_ + "'>"; });
+            .def("name", &BehaviorT::name)
+            .def("__repr__", [](const BehaviorT& self) { return "<Behavior '" + self.name() + "'>"; });
 }
 
 } // namespace arbitration_graphs_py

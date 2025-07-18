@@ -46,7 +46,7 @@ inline void bindPriorityArbitrator(py::module& module) {
             },
             py::arg("time"),
             py::arg("environment_model"))
-        .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const PriorityArbitratorT& self) { return "<PriorityArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(priorityArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));

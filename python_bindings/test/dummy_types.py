@@ -39,7 +39,7 @@ class DummyBehavior(Behavior):
         # implementation, we merely simulate this access to assure that this interaction is possible. You will find
         # analogous calls to the environment model in the other methods of this class.
         environment_model.get_observation()
-        return self.name
+        return self.name()
 
     def check_invocation_condition(self, time, environment_model) -> bool:
         environment_model.get_observation()
@@ -75,7 +75,7 @@ class BrokenDummyBehavior(DummyBehavior):
         environment_model.get_observation()
 
         self.get_command_counter += 1
-        return self.name
+        return self.name()
 
 
 class DummyResult(Result):

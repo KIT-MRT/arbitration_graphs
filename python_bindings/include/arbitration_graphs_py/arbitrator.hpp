@@ -38,7 +38,7 @@ inline void bindArbitrator(py::module& module) {
              py::arg("environment_model"))
         .def("gain_control", &ArbitratorT::gainControl, py::arg("time"), py::arg("environment_model"))
         .def("lose_control", &ArbitratorT::loseControl, py::arg("time"), py::arg("environment_model"))
-        .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT> option(arbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"))
