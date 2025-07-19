@@ -14,6 +14,10 @@ namespace utils {
 class PacmanWrapper {
 public:
     PacmanWrapper();
+    PacmanWrapper(const PacmanWrapper&) = delete;
+    PacmanWrapper(PacmanWrapper&&) = delete;
+    PacmanWrapper& operator=(const PacmanWrapper&) = delete;
+    PacmanWrapper& operator=(PacmanWrapper&&) = delete;
     ~PacmanWrapper() {
         SDL_Quit();
     }

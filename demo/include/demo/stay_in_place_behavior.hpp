@@ -22,6 +22,12 @@ public:
     explicit StayInPlaceBehavior(const std::string& name = "StayInPlace") : Behavior(name) {
     }
 
+    StayInPlaceBehavior(const StayInPlaceBehavior&) = default;
+    StayInPlaceBehavior(StayInPlaceBehavior&&) = default;
+    StayInPlaceBehavior& operator=(const StayInPlaceBehavior&) = default;
+    StayInPlaceBehavior& operator=(StayInPlaceBehavior&&) = default;
+    virtual ~StayInPlaceBehavior() = default;
+
     Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
