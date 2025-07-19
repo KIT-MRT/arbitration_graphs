@@ -75,14 +75,6 @@ public:
         return environmentModel_;
     }
 
-    std::ostream& to_stream(std::ostream& output, const Time& time, const EnvironmentModel& environmentModel) const {
-        return rootArbitrator_->to_stream(output, time, environmentModel);
-    }
-    std::string to_str(const Time& time, const EnvironmentModel& environmentModel) const {
-        std::stringstream stringStream;
-        to_stream(stringStream, time, environmentModel);
-        return stringStream.str();
-    }
     std::string yamlString(const Time& time) const {
         YAML::Node node;
         node["type"] = "PacmanArbitrator";
