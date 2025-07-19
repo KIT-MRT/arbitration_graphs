@@ -49,10 +49,10 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
 
     PriorityArbitrator testPriorityArbitrator("PriorityArbitrator", verifier);
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, PriorityArbitrator::Option::Flags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 

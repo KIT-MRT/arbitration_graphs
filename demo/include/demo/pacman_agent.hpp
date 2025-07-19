@@ -49,18 +49,18 @@ public:
         eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
         costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
         eatDotsArbitrator_->addOption(
-            changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+            changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
         eatDotsArbitrator_->addOption(
-            eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+            eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
-        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
         rootArbitrator_->addOption(stayInPlaceBehavior_,
-                                   PriorityArbitrator::Option::Flags::INTERRUPTABLE |
-                                       PriorityArbitrator::Option::FALLBACK);
+                                   PriorityArbitrator::Option::Flags::Interruptable |
+                                       PriorityArbitrator::Option::Fallback);
     }
 
     Command getCommand(const Time& time) {
