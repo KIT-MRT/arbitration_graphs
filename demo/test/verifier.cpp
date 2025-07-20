@@ -62,17 +62,15 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     const auto yaml = testPriorityArbitrator.toYaml(time, environmentModel);
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
     EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
 
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
-    Result::ConstPtr verificationResult2 =
-        testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value();
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
+    Result::ConstPtr verificationResult2 = testPriorityArbitrator.options().at(2)->verificationResult(time).value();
     EXPECT_FALSE(verificationResult2->isOk());
 
-    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
-    Result::ConstPtr verificationResult3 =
-        testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value();
+    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult(time));
+    Result::ConstPtr verificationResult3 = testPriorityArbitrator.options().at(3)->verificationResult(time).value();
     EXPECT_TRUE(verificationResult3->isOk());
 
     // clang-format off
@@ -84,7 +82,7 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
                                   + strikeThroughOff + "\n"
                         " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << std::endl;
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
