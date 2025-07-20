@@ -2,6 +2,7 @@
 
 namespace utils {
 
+namespace {
 std::optional<demo::Direction> toDemoDirection(const demo::entt::Direction& enttDirection) {
     const std::map<demo::entt::Direction, demo::Direction> typeMap{
         {demo::entt::Direction::up, demo::Direction::UP},
@@ -16,6 +17,7 @@ std::optional<demo::Direction> toDemoDirection(const demo::entt::Direction& entt
     }
     return std::nullopt;
 }
+} // namespace
 
 void Ghost::update(const demo::entt::Registry& registry, const demo::entt::Entity& entity) {
     const auto& enttPosition = registry.get<demo::entt::Position>(entity);

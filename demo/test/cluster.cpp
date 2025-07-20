@@ -17,10 +17,12 @@ struct ExpectedCluster {
     }
 };
 
+namespace {
 bool clusterExists(const std::vector<Cluster>& clusters, const ExpectedCluster& expectedCluster) {
     return std::any_of(
         clusters.begin(), clusters.end(), [&](const Cluster& cluster) { return expectedCluster.matches(cluster); });
 }
+} // namespace
 
 class ClusterTest : public ::testing::Test {
 protected:

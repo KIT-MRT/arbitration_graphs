@@ -11,6 +11,8 @@
 
 namespace utils {
 
+// anonymous namespace to enforce internal linkage
+namespace {
 int getScaleFactor() {
     // Make the largest window possible with an integer scale factor
     SDL_Rect bounds;
@@ -45,6 +47,7 @@ SDL::Renderer createRendererAndSetLogicalSize(const SDL::Window& window) {
     SDL_CHECK(SDL_RenderSetLogicalSize(renderer.get(), tilesPx.x, tilesPx.y));
     return renderer;
 }
+} // namespace
 
 PacmanWrapper::PacmanWrapper()
         : scaleFactor_(initVideoAndGetScaleFactor()), window_(createWindow(scaleFactor_)),
