@@ -1,6 +1,5 @@
 #include <exception>
 #include <iostream>
-#include <thread>
 
 #include <arbitration_graphs/gui/web_server.hpp>
 

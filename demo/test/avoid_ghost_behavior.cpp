@@ -1,7 +1,5 @@
 #include "demo/avoid_ghost_behavior.hpp"
 
-#include <memory>
-
 #include <gtest/gtest.h>
 
 #include "mock_environment_model.hpp"
