@@ -70,24 +70,26 @@ public:
     Maze::ConstPtr maze() const {
         return maze_;
     }
+
+    // The Pac-Man implementation uses a C-style array to define the maze, so we have to do the same here.
     template <std::size_t Size>
-    void setMaze(const Position& size, const char (&str)[Size]) {
+    void setMaze(const Position& size, const char (&str)[Size]) { // NOLINT(*-avoid-c-arrays)
         maze_ = std::make_shared<Maze>(makeCustomMazeState({size.x, size.y}, str));
         astar_ = utils::AStar(maze_);
         clusterFinder_ = utils::DotClusterFinder(maze_);
     }
     void setEmptyMaze() {
-        const char str[] = {"##########"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "##########"};
-        setMaze({10, 10}, str);
+        setMaze({10, 10},
+                "##########"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "##########");
     }
 
 private:

@@ -50,10 +50,10 @@ TEST_F(AvoidGhostBehaviorTest, checkCommitmentConditionFalse) {
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandLeft) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({2, 1});
@@ -64,10 +64,10 @@ TEST_F(AvoidGhostBehaviorTest, getCommandLeft) {
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({0, 1});
@@ -78,10 +78,10 @@ TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({1, 0});
@@ -92,10 +92,10 @@ TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({1, 2});
@@ -106,10 +106,10 @@ TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandAwayFromWall) {
-    const char str[] = {"###"
-                        "#  "
-                        "###"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "#  "
+                             "###");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({2, 1});

@@ -14,10 +14,10 @@ protected:
     using Result = arbitration_graphs::verification::Result;
 
     VerifierTest() {
-        const char str[] = {"###"
-                            "#  "
-                            "###"};
-        environmentModel.setMaze({3, 3}, str);
+        environmentModel.setMaze({3, 3},
+                                 "###"
+                                 "#  "
+                                 "###");
         environmentModel.setPacmanPosition({1, 1});
 
         verifier = std::make_shared<Verifier>();

@@ -14,17 +14,17 @@ protected:
     }
 
     void setMaze() {
-        const char str[] = {"##########"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#.       #"
-                            "#.       #"
-                            "#...     #"
-                            "#...     #"
-                            "##########"};
-        environmentModel.setMaze({10, 10}, str);
+        environmentModel.setMaze({10, 10},
+                                 "##########"
+                                 "#        #"
+                                 "#        #"
+                                 "#        #"
+                                 "#        #"
+                                 "#.       #"
+                                 "#.       #"
+                                 "#...     #"
+                                 "#...     #"
+                                 "##########");
     }
 
     Time time = Clock::now();

@@ -14,31 +14,31 @@ protected:
     }
 
     void setMazeWithoutClusters() {
-        const char str[] = {"#####"
-                            "#   #"
-                            "#   #"
-                            "#   #"
-                            "#   #"
-                            "#####"};
-        environmentModel.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6},
+                                 "#####"
+                                 "#   #"
+                                 "#   #"
+                                 "#   #"
+                                 "#   #"
+                                 "#####");
     }
     void setMazeWithOneCluster() {
-        const char str[] = {"#####"
-                            "#o..#"
-                            "#   #"
-                            "#   #"
-                            "#   #"
-                            "#####"};
-        environmentModel.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6},
+                                 "#####"
+                                 "#o..#"
+                                 "#   #"
+                                 "#   #"
+                                 "#   #"
+                                 "#####");
     }
     void setMazeWithTwoClusters() {
-        const char str[] = {"#####"
-                            "#o..#"
-                            "#   #"
-                            "#   #"
-                            "#.. #"
-                            "#####"};
-        environmentModel.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6},
+                                 "#####"
+                                 "#o..#"
+                                 "#   #"
+                                 "#   #"
+                                 "#.. #"
+                                 "#####");
     }
 
     MockEnvironmentModel environmentModel;

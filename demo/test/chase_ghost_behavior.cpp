@@ -76,10 +76,10 @@ TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionFalse) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({0, 1});
@@ -92,10 +92,10 @@ TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({2, 1});
@@ -108,10 +108,10 @@ TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({1, 2});
@@ -124,10 +124,10 @@ TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
     environmentModel.setPacmanPosition({1, 1});
     environmentModel.setGhostPositions({1, 0});

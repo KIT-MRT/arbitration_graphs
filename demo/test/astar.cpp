@@ -24,12 +24,12 @@ TEST_F(AStarTest, simpleDistance) {
 }
 
 TEST_F(AStarTest, distanceWithWalls) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "# # #"
-                        "#   #"
-                        "#####"};
-    environmentModel.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "# # #"
+                             "#   #"
+                             "#####");
 
     AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
@@ -37,12 +37,12 @@ TEST_F(AStarTest, distanceWithWalls) {
 }
 
 TEST_F(AStarTest, distanceWithHorizontalTunnel) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "     "
-                        "#   #"
-                        "#####"};
-    environmentModel.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "     "
+                             "#   #"
+                             "#####");
 
     AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({0, 2}, {4, 2}), 1);
@@ -52,12 +52,12 @@ TEST_F(AStarTest, distanceWithHorizontalTunnel) {
 }
 
 TEST_F(AStarTest, distanceWithVerticalTunnel) {
-    const char str[] = {"## ##"
-                        "#   #"
-                        "#   #"
-                        "#   #"
-                        "## ##"};
-    environmentModel.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "## ##"
+                             "#   #"
+                             "#   #"
+                             "#   #"
+                             "## ##");
 
     AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({2, 0}, {2, 4}), 1);
@@ -84,12 +84,12 @@ TEST_F(AStarTest, cachedDistance) {
 }
 
 TEST_F(AStarTest, path) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "# ###"
-                        "#   #"
-                        "#####"};
-    environmentModel.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "# ###"
+                             "#   #"
+                             "#####");
 
     AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.shortestPath({2, 1}, {3, 3});
@@ -102,12 +102,12 @@ TEST_F(AStarTest, path) {
 }
 
 TEST_F(AStarTest, pathWithTunnel) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "     "
-                        "#   #"
-                        "#####"};
-    environmentModel.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "     "
+                             "#   #"
+                             "#####");
 
     AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.shortestPath({0, 2}, {4, 2});
@@ -122,13 +122,13 @@ TEST_F(AStarTest, pathWithTunnel) {
 }
 
 TEST_F(AStarTest, pathToClosestDot) {
-    const char str[] = {"#####"
-                        "#  .#"
-                        "# ###"
-                        "#   #"
-                        "#  .#"
-                        "#####"};
-    environmentModel.setMaze({5, 6}, str);
+    environmentModel.setMaze({5, 6},
+                             "#####"
+                             "#  .#"
+                             "# ###"
+                             "#   #"
+                             "#  .#"
+                             "#####");
 
     AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.pathToClosestDot({1, 2});
