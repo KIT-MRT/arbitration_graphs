@@ -83,7 +83,7 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
                         " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 

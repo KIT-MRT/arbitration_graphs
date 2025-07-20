@@ -130,7 +130,7 @@ void PacmanWrapper::printKeybindings() {
               << "\033[1;36m=====================================\033[0m\n"
               << "  \033[1;32mGUI\033[0m   - Open http://localhost:8080\n"
               << "\033[1;36m=====================================\033[0m\n"
-              << std::endl;
+              << std::flush;
 }
 
 void PacmanWrapper::renderPath(const demo::Positions& path) {
