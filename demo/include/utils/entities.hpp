@@ -35,7 +35,7 @@ struct Entities {
     }
     Ghosts scaredGhosts() const;
 
-    utils::Pacman pacman;
+    Pacman pacman;
 
     Ghost blinky;
     Ghost pinky;
