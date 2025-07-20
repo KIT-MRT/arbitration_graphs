@@ -36,6 +36,7 @@ public:
 private:
     void handleUserInput();
     void renderPath(const demo::Positions& path);
+    void toggleFullscreen();
 
     int scaleFactor_;
     SDL::Window window_;

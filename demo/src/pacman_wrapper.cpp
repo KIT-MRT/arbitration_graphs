@@ -65,28 +65,25 @@ void PacmanWrapper::handleUserInput() {
             break;
         }
 
-        if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-                pause_ = !pause_;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
-                quit_ = true;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_P) {
-                renderPath_ = !renderPath_;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_F) {
-                fullscreen_ = !fullscreen_;
-                if (fullscreen_) {
-                    SDL_SetWindowFullscreen(window_.get(), SDL_WINDOW_FULLSCREEN);
-                } else {
-                    SDL_SetWindowFullscreen(window_.get(), 0);
-                }
-                break;
-            }
+        if (event.type != SDL_KEYDOWN) {
+            continue;
+        }
+
+        if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+            pause_ = !pause_;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
+            quit_ = true;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+            renderPath_ = !renderPath_;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_F) {
+            toggleFullscreen();
+            break;
         }
     }
 }
@@ -149,6 +146,15 @@ void PacmanWrapper::renderPath(const demo::Positions& path) {
         rect.y = position.y * tileSize;
 
         SDL_RenderFillRect(renderer_.get(), &rect);
+    }
+}
+
+void PacmanWrapper::toggleFullscreen() {
+    fullscreen_ = !fullscreen_;
+    if (fullscreen_) {
+        SDL_SetWindowFullscreen(window_.get(), SDL_WINDOW_FULLSCREEN);
+    } else {
+        SDL_SetWindowFullscreen(window_.get(), 0);
     }
 }
 
