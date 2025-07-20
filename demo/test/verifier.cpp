@@ -14,17 +14,18 @@ protected:
     using Result = arbitration_graphs::verification::Result;
 
     VerifierTest() {
-        const char str[] = {"###"
-                            "#  "
-                            "###"};
-        environmentModel.setMaze({3, 3}, str);
+        environmentModel.setMaze({3, 3},
+                                 "###"
+                                 "#  "
+                                 "###");
         environmentModel.setPacmanPosition({1, 1});
 
         verifier = std::make_shared<Verifier>();
     }
 
-    Command goodCommand{Direction::RIGHT};
-    Command badCommand{Direction::LEFT};
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    Command goodCommand{Direction::Right};
+    Command badCommand{Direction::Left};
     DummyBehavior::Ptr testBehaviorHighPriority =
         std::make_shared<DummyBehavior>(false, false, goodCommand, "HighPriority");
     DummyBehavior::Ptr testBehaviorMidPriority =
@@ -34,6 +35,7 @@ protected:
     MockEnvironmentModel environmentModel;
     Time time{Clock::now()};
     Verifier::Ptr verifier;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(VerifierTest, basicVerification) {
@@ -49,10 +51,10 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
 
     PriorityArbitrator testPriorityArbitrator("PriorityArbitrator", verifier);
 
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorMidPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
-    testPriorityArbitrator.addOption(testBehaviorLowPriority, PriorityArbitrator::Option::Flags::NO_FLAGS);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorHighPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorMidPriority, PriorityArbitrator::Option::Flags::NoFlags);
+    testPriorityArbitrator.addOption(testBehaviorLowPriority, PriorityArbitrator::Option::Flags::NoFlags);
 
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
@@ -62,36 +64,34 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     const auto yaml = testPriorityArbitrator.toYaml(time, environmentModel);
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
     EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
-    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult_.cached(time));
-    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult_.cached(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(0)->verificationResult(time));
+    EXPECT_FALSE(testPriorityArbitrator.options().at(1)->verificationResult(time));
 
-    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult_.cached(time));
-    Result::ConstPtr verificationResult2 =
-        testPriorityArbitrator.options().at(2)->verificationResult_.cached(time).value();
+    ASSERT_TRUE(testPriorityArbitrator.options().at(2)->verificationResult(time));
+    Result::ConstPtr verificationResult2 = testPriorityArbitrator.options().at(2)->verificationResult(time).value();
     EXPECT_FALSE(verificationResult2->isOk());
 
-    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult_.cached(time));
-    Result::ConstPtr verificationResult3 =
-        testPriorityArbitrator.options().at(3)->verificationResult_.cached(time).value();
+    ASSERT_TRUE(testPriorityArbitrator.options().at(3)->verificationResult(time));
+    Result::ConstPtr verificationResult3 = testPriorityArbitrator.options().at(3)->verificationResult(time).value();
     EXPECT_TRUE(verificationResult3->isOk());
 
     // clang-format off
-    std::string expectedPrintout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
-    std::string actualPrintout = testPriorityArbitrator.to_str(time, environmentModel);
-    std::cout << actualPrintout << std::endl;
+    std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);

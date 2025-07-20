@@ -35,12 +35,12 @@ struct Entities {
     }
     Ghosts scaredGhosts() const;
 
-    utils::Pacman pacman;
+    Pacman pacman{};
 
-    Ghost blinky;
-    Ghost pinky;
-    Ghost inky;
-    Ghost clyde;
+    Ghost blinky{};
+    Ghost pinky{};
+    Ghost inky{};
+    Ghost clyde{};
 };
 
 } // namespace utils

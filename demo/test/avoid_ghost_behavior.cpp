@@ -1,7 +1,5 @@
 #include "demo/avoid_ghost_behavior.hpp"
 
-#include <memory>
-
 #include <gtest/gtest.h>
 
 #include "mock_environment_model.hpp"
@@ -10,116 +8,118 @@ namespace demo {
 
 class AvoidGhostBehaviorTest : public ::testing::Test {
 protected:
-    AvoidGhostBehaviorTest() : avoidGhostBehavior_{parameters_} {
+    AvoidGhostBehaviorTest() : avoidGhostBehavior{parameters} {
     }
 
-    AvoidGhostBehavior::Parameters parameters_;
-    MockEnvironmentModel environmentModel_{};
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    AvoidGhostBehavior::Parameters parameters{};
+    MockEnvironmentModel environmentModel;
 
-    AvoidGhostBehavior avoidGhostBehavior_;
+    AvoidGhostBehavior avoidGhostBehavior;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(AvoidGhostBehaviorTest, checkInvocationConditionTrue) {
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({2, 3});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({2, 3});
 
     Time time = Clock::now();
-    ASSERT_TRUE(avoidGhostBehavior_.checkInvocationCondition(time, environmentModel_));
+    ASSERT_TRUE(avoidGhostBehavior.checkInvocationCondition(time, environmentModel));
 }
 
 TEST_F(AvoidGhostBehaviorTest, checkInvocationConditionFalse) {
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({8, 8});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({8, 8});
 
     Time time = Clock::now();
-    ASSERT_FALSE(avoidGhostBehavior_.checkInvocationCondition(time, environmentModel_));
+    ASSERT_FALSE(avoidGhostBehavior.checkInvocationCondition(time, environmentModel));
 }
 
 TEST_F(AvoidGhostBehaviorTest, checkCommitmentConditionTrue) {
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({2, 3});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({2, 3});
 
     Time time = Clock::now();
-    ASSERT_TRUE(avoidGhostBehavior_.checkCommitmentCondition(time, environmentModel_));
+    ASSERT_TRUE(avoidGhostBehavior.checkCommitmentCondition(time, environmentModel));
 }
 
 TEST_F(AvoidGhostBehaviorTest, checkCommitmentConditionFalse) {
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({8, 8});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({8, 8});
 
     Time time = Clock::now();
-    ASSERT_FALSE(avoidGhostBehavior_.checkCommitmentCondition(time, environmentModel_));
+    ASSERT_FALSE(avoidGhostBehavior.checkCommitmentCondition(time, environmentModel));
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandLeft) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel_.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({2, 1});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({2, 1});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
+    Command command = avoidGhostBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Left);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
-    const char str[] = {"###"
-                        "   "
-                        "###"};
-    environmentModel_.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "   "
+                             "###");
 
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({0, 1});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({0, 1});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    Command command = avoidGhostBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel_.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({1, 0});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({1, 0});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
+    Command command = avoidGhostBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Down);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
-    const char str[] = {"# #"
-                        "# #"
-                        "# #"};
-    environmentModel_.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "# #"
+                             "# #"
+                             "# #");
 
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({1, 2});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({1, 2});
 
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::UP);
+    Command command = avoidGhostBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Up);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandAwayFromWall) {
-    const char str[] = {"###"
-                        "#  "
-                        "###"};
-    environmentModel_.setMaze({3, 3}, str);
+    environmentModel.setMaze({3, 3},
+                             "###"
+                             "#  "
+                             "###");
 
-    environmentModel_.setPacmanPosition({1, 1});
-    environmentModel_.setGhostPositions({2, 1});
+    environmentModel.setPacmanPosition({1, 1});
+    environmentModel.setGhostPositions({2, 1});
 
     // Even though there is a ghost, pacman should not move towards a wall.
     Time time = Clock::now();
-    Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    Command command = avoidGhostBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 }
 
 } // namespace demo

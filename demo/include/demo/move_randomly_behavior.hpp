@@ -28,6 +28,12 @@ public:
             : Behavior{name}, parameters_{parameters} {
     }
 
+    MoveRandomlyBehavior(const MoveRandomlyBehavior&) = delete;
+    MoveRandomlyBehavior(MoveRandomlyBehavior&&) = delete;
+    MoveRandomlyBehavior& operator=(const MoveRandomlyBehavior&) = delete;
+    MoveRandomlyBehavior& operator=(MoveRandomlyBehavior&&) = delete;
+    virtual ~MoveRandomlyBehavior() = default;
+
     Command getCommand(const Time& time, const EnvironmentModel& /*environmentModel*/) override;
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;

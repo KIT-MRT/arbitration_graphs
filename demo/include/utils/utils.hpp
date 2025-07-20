@@ -1,7 +1,6 @@
 #pragma once
 
 #include "demo/environment_model.hpp"
-#include "demo/types.hpp"
 
 namespace utils {
 

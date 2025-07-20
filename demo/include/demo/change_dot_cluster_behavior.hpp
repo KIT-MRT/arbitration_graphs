@@ -23,6 +23,12 @@ public:
     explicit ChangeDotClusterBehavior(const std::string& name = "ChangeDotCluster") : Behavior(name) {
     }
 
+    ChangeDotClusterBehavior(const ChangeDotClusterBehavior&) = default;
+    ChangeDotClusterBehavior(ChangeDotClusterBehavior&&) = default;
+    ChangeDotClusterBehavior& operator=(const ChangeDotClusterBehavior&) = default;
+    ChangeDotClusterBehavior& operator=(ChangeDotClusterBehavior&&) = default;
+    virtual ~ChangeDotClusterBehavior() = default;
+
     Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;

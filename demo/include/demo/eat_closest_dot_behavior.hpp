@@ -18,6 +18,12 @@ public:
     explicit EatClosestDotBehavior(const std::string& name = "EatClosestDot") : Behavior(name) {
     }
 
+    EatClosestDotBehavior(const EatClosestDotBehavior&) = default;
+    EatClosestDotBehavior(EatClosestDotBehavior&&) = default;
+    EatClosestDotBehavior& operator=(const EatClosestDotBehavior&) = default;
+    EatClosestDotBehavior& operator=(EatClosestDotBehavior&&) = default;
+    virtual ~EatClosestDotBehavior() = default;
+
     Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override;

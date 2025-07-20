@@ -17,25 +17,27 @@ struct ExpectedCluster {
     }
 };
 
+namespace {
 bool clusterExists(const std::vector<Cluster>& clusters, const ExpectedCluster& expectedCluster) {
     return std::any_of(
         clusters.begin(), clusters.end(), [&](const Cluster& cluster) { return expectedCluster.matches(cluster); });
 }
+} // namespace
 
 class ClusterTest : public ::testing::Test {
 protected:
-    MockEnvironmentModel environmentModel_;
+    MockEnvironmentModel environmentModel;
 };
 
 TEST_F(ClusterTest, dotClusters) {
-    const char str[] = {"#####"
-                        "#o..#"
-                        "     "
-                        "#.. #"
-                        "#####"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#o..#"
+                             "     "
+                             "#.. #"
+                             "#####");
 
-    DotClusterFinder dotClusterFinder(environmentModel_.maze());
+    DotClusterFinder dotClusterFinder(environmentModel.maze());
     std::vector<Cluster> clusters = dotClusterFinder.clusters();
     ASSERT_EQ(clusters.size(), 2);
 

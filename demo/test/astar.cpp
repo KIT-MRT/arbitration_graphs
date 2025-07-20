@@ -12,11 +12,11 @@ using namespace demo;
 
 class AStarTest : public ::testing::Test {
 protected:
-    MockEnvironmentModel environmentModel_{};
+    MockEnvironmentModel environmentModel;
 };
 
 TEST_F(AStarTest, simpleDistance) {
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
 
     EXPECT_EQ(astar.mazeDistance({1, 1}, {1, 1}), 0);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {2, 2}), 2);
@@ -24,27 +24,27 @@ TEST_F(AStarTest, simpleDistance) {
 }
 
 TEST_F(AStarTest, distanceWithWalls) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "# # #"
-                        "#   #"
-                        "#####"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "# # #"
+                             "#   #"
+                             "#####");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
     EXPECT_EQ(astar.mazeDistance({1, 2}, {3, 2}), 4);
 }
 
 TEST_F(AStarTest, distanceWithHorizontalTunnel) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "     "
-                        "#   #"
-                        "#####"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "     "
+                             "#   #"
+                             "#####");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({0, 2}, {4, 2}), 1);
     EXPECT_EQ(astar.mazeDistance({4, 2}, {0, 2}), 1);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
@@ -52,14 +52,14 @@ TEST_F(AStarTest, distanceWithHorizontalTunnel) {
 }
 
 TEST_F(AStarTest, distanceWithVerticalTunnel) {
-    const char str[] = {"## ##"
-                        "#   #"
-                        "#   #"
-                        "#   #"
-                        "## ##"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "## ##"
+                             "#   #"
+                             "#   #"
+                             "#   #"
+                             "## ##");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     EXPECT_EQ(astar.mazeDistance({2, 0}, {2, 4}), 1);
     EXPECT_EQ(astar.mazeDistance({2, 4}, {2, 0}), 1);
     EXPECT_EQ(astar.mazeDistance({1, 1}, {3, 3}), 4);
@@ -67,7 +67,7 @@ TEST_F(AStarTest, distanceWithVerticalTunnel) {
 }
 
 TEST_F(AStarTest, cachedDistance) {
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
 
     // In the first run, we need to compute distance the hard way
     std::clock_t startWithoutCaching = std::clock();
@@ -84,16 +84,16 @@ TEST_F(AStarTest, cachedDistance) {
 }
 
 TEST_F(AStarTest, path) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "# ###"
-                        "#   #"
-                        "#####"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "# ###"
+                             "#   #"
+                             "#####");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.shortestPath({2, 1}, {3, 3});
-    Path targetPath = {Direction::LEFT, Direction::DOWN, Direction::DOWN, Direction::RIGHT, Direction::RIGHT};
+    Path targetPath = {Direction::Left, Direction::Down, Direction::Down, Direction::Right, Direction::Right};
     ASSERT_TRUE(path.has_value());
     ASSERT_EQ(path->size(), targetPath.size());
     for (int i = 0; i < targetPath.size(); i++) {
@@ -102,39 +102,39 @@ TEST_F(AStarTest, path) {
 }
 
 TEST_F(AStarTest, pathWithTunnel) {
-    const char str[] = {"#####"
-                        "#   #"
-                        "     "
-                        "#   #"
-                        "#####"};
-    environmentModel_.setMaze({5, 5}, str);
+    environmentModel.setMaze({5, 5},
+                             "#####"
+                             "#   #"
+                             "     "
+                             "#   #"
+                             "#####");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.shortestPath({0, 2}, {4, 2});
     ASSERT_TRUE(path.has_value());
     ASSERT_EQ(path->size(), 1);
-    EXPECT_EQ(path->front(), demo::Direction::LEFT);
+    EXPECT_EQ(path->front(), demo::Direction::Left);
 
     path = astar.shortestPath({4, 2}, {0, 2});
     ASSERT_TRUE(path.has_value());
     ASSERT_EQ(path->size(), 1);
-    EXPECT_EQ(path->front(), demo::Direction::RIGHT);
+    EXPECT_EQ(path->front(), demo::Direction::Right);
 }
 
 TEST_F(AStarTest, pathToClosestDot) {
-    const char str[] = {"#####"
-                        "#  .#"
-                        "# ###"
-                        "#   #"
-                        "#  .#"
-                        "#####"};
-    environmentModel_.setMaze({5, 6}, str);
+    environmentModel.setMaze({5, 6},
+                             "#####"
+                             "#  .#"
+                             "# ###"
+                             "#   #"
+                             "#  .#"
+                             "#####");
 
-    AStar astar(environmentModel_.maze());
+    AStar astar(environmentModel.maze());
     std::optional<Path> path = astar.pathToClosestDot({1, 2});
     ASSERT_TRUE(path.has_value());
 
-    Path targetPath = {Direction::UP, Direction::RIGHT, Direction::RIGHT};
+    Path targetPath = {Direction::Up, Direction::Right, Direction::Right};
     ASSERT_EQ(path->size(), targetPath.size());
     for (int i = 0; i < targetPath.size(); i++) {
         EXPECT_EQ(path->at(i), targetPath.at(i));
