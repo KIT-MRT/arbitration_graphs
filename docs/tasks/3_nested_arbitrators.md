@@ -14,7 +14,7 @@ We have now implemented a behavior component and integrated it into the arbitrat
 So far, all behavior components are children of the root arbitrator.
 
 Let's make things a bit more interesting by adding a long-term behavior component that's also about eating dots.
-The `ChangeDotCluster` behavior will move Pac-man to an area in the maze where there is a higher density of dots.
+The `ChangeDotCluster` behavior will move Pac-Man to an area in the maze where there is a higher density of dots.
 
 For now, we'll just decide between the two dot eating strategies using chance.
 We can achieve that by adding them to a random arbitrator which is then added as an option to the root arbitrator.
@@ -47,7 +47,7 @@ Include the header of the `ChangeDotCluster` behavior component and the random a
 
 For better code readability, add the following alias near the top of the class definition:
 ```cpp
-using RandomArbitrator = arbitration_graphs::RandomArbitrator<Command, Command>;
+using RandomArbitrator = arbitration_graphs::RandomArbitrator<EnvironmentModel, Command>;
 ```
 
 Add the `ChangeDotCluster` behavior component and the `RandomArbitrator` as a new members of the `PacmanAgent` class:
@@ -62,22 +62,20 @@ In the constructor of the `PacmanAgent` class, initialize the `ChangeDotCluster`
 Add the `EatClosestDot` and `ChangeDotCluster` behavior components as options to the random arbitrator.
 Finally, add the random arbitrator as an option to the root arbitrator:
 ```cpp
-explicit PacmanAgent(const entt::Game& game)
-        : parameters_{}, environmentModel_{std::make_shared<EnvironmentModel>(game)} {
-
-    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(environmentModel_, parameters_.avoidGhostBehavior);
+explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
+    avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
     // Initialize the ChangeDotCluster behavior component
-    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>(environmentModel_);
-    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(environmentModel_, parameters_.chaseGhostBehavior);
-    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>(environmentModel_);
+    changeDotClusterBehavior_ = std::make_shared<ChangeDotClusterBehavior>();
+    chaseGhostBehavior_ = std::make_shared<ChaseGhostBehavior>(parameters_.chaseGhostBehavior);
+    eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
     // Initialize the random arbitrator and add the EatClosestDot and ChangeDotCluster behavior components as options
     eatDotsArbitrator_ = std::make_shared<RandomArbitrator>("EatDots");
-    eatDotsArbitrator_->addOption( changeDotClusterBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
-    eatDotsArbitrator_->addOption( eatClosestDotBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
+    eatDotsArbitrator_->addOption(changeDotClusterBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
+    eatDotsArbitrator_->addOption(eatClosestDotBehavior_, RandomArbitrator::Option::Flags::INTERRUPTABLE);
 
-    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pacman");
+    rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
     // The EatDot arbitrator is itself an option of the root arbitrator
