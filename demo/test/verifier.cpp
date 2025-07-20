@@ -74,13 +74,13 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
     EXPECT_TRUE(verificationResult3->isOk());
 
     // clang-format off
-    std::string expectedPrintout = invocationTrueString + commitmentTrueString + "PriorityArbitrator\n"
-                        "    1. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    2. " + invocationFalseString + commitmentFalseString + "HighPriority\n"
-                        "    3. " + strikeThroughOn
-                                  + invocationTrueString + commitmentFalseString + "MidPriority"
-                                  + strikeThroughOff + "\n"
-                        " -> 4. " + invocationTrueString + commitmentTrueString + "LowPriority";
+    std::string expectedPrintout = InvocationTrueString + CommitmentTrueString + "PriorityArbitrator\n"
+                        "    1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    2. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
+                        "    3. " + StrikeThroughOn
+                                  + InvocationTrueString + CommitmentFalseString + "MidPriority"
+                                  + StrikeThroughOff + "\n"
+                        " -> 4. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testPriorityArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';
@@ -89,7 +89,7 @@ TEST_F(VerifierTest, verifierInPriorityArbitrator) {
 
     testPriorityArbitrator.loseControl(time, environmentModel);
 
-    testBehaviorLowPriority->invocationCondition_ = false;
+    testBehaviorLowPriority->invocationCondition = false;
     ASSERT_TRUE(testPriorityArbitrator.checkInvocationCondition(time, environmentModel));
 
     testPriorityArbitrator.gainControl(time, environmentModel);

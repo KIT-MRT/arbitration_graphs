@@ -10,7 +10,7 @@ class ChangeDotClusterBehaviorTest : public ::testing::Test {
 protected:
     ChangeDotClusterBehaviorTest() {
         setMazeWithTwoClusters();
-        environmentModel_.setGhostPositions({1, 1});
+        environmentModel.setGhostPositions({1, 1});
     }
 
     void setMazeWithoutClusters() {
@@ -20,7 +20,7 @@ protected:
                             "#   #"
                             "#   #"
                             "#####"};
-        environmentModel_.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6}, str);
     }
     void setMazeWithOneCluster() {
         const char str[] = {"#####"
@@ -29,7 +29,7 @@ protected:
                             "#   #"
                             "#   #"
                             "#####"};
-        environmentModel_.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6}, str);
     }
     void setMazeWithTwoClusters() {
         const char str[] = {"#####"
@@ -38,12 +38,12 @@ protected:
                             "#   #"
                             "#.. #"
                             "#####"};
-        environmentModel_.setMaze({5, 6}, str);
+        environmentModel.setMaze({5, 6}, str);
     }
 
-    MockEnvironmentModel environmentModel_{};
+    MockEnvironmentModel environmentModel;
 
-    ChangeDotClusterBehavior changeDotClusterBehavior_{};
+    ChangeDotClusterBehavior changeDotClusterBehavior;
 };
 
 TEST_F(ChangeDotClusterBehaviorTest, checkInvocationConditionTrue) {
@@ -53,18 +53,18 @@ TEST_F(ChangeDotClusterBehaviorTest, checkInvocationConditionTrue) {
 
     // ...we are outside the only cluster that's left
     setMazeWithOneCluster();
-    environmentModel_.setPacmanPosition({1, 3});
+    environmentModel.setPacmanPosition({1, 3});
 
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 
     // ...or there are multiple clusters left. Doesn't matter if we are outside...
     setMazeWithTwoClusters();
-    environmentModel_.setPacmanPosition({1, 3});
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({1, 3});
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 
     // .. or inside a cluster in that case
-    environmentModel_.setPacmanPosition({1, 1});
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({1, 1});
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 }
 
 TEST_F(ChangeDotClusterBehaviorTest, checkInvocationConditionFalse) {
@@ -74,54 +74,54 @@ TEST_F(ChangeDotClusterBehaviorTest, checkInvocationConditionFalse) {
 
     // ..there are no clusters left
     setMazeWithoutClusters();
-    environmentModel_.setPacmanPosition({1, 3});
+    environmentModel.setPacmanPosition({1, 3});
 
-    ASSERT_FALSE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    ASSERT_FALSE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 
     // ...we are inside the only cluster that's left
     setMazeWithOneCluster();
-    environmentModel_.setPacmanPosition({1, 1});
+    environmentModel.setPacmanPosition({1, 1});
 
-    ASSERT_FALSE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    ASSERT_FALSE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 }
 
 TEST_F(ChangeDotClusterBehaviorTest, checkCommitmentConditionTrue) {
     Time time = Clock::now();
     setMazeWithTwoClusters();
-    environmentModel_.setPacmanPosition({1, 2});
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({1, 2});
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 
     // Once we gained control, we commit to reaching the target dot cluster
-    changeDotClusterBehavior_.gainControl(time, environmentModel_);
-    ASSERT_TRUE(changeDotClusterBehavior_.checkCommitmentCondition(time, environmentModel_));
+    changeDotClusterBehavior.gainControl(time, environmentModel);
+    ASSERT_TRUE(changeDotClusterBehavior.checkCommitmentCondition(time, environmentModel));
 }
 
 TEST_F(ChangeDotClusterBehaviorTest, checkCommitmentConditionFalse) {
     Time time = Clock::now();
     setMazeWithTwoClusters();
-    environmentModel_.setPacmanPosition({1, 2});
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
-    changeDotClusterBehavior_.gainControl(time, environmentModel_);
+    environmentModel.setPacmanPosition({1, 2});
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
+    changeDotClusterBehavior.gainControl(time, environmentModel);
 
     // Once we reached the target cluster, we finished our intended behavior and give up the commitment
-    environmentModel_.setPacmanPosition({2, 1});
-    ASSERT_FALSE(changeDotClusterBehavior_.checkCommitmentCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({2, 1});
+    ASSERT_FALSE(changeDotClusterBehavior.checkCommitmentCondition(time, environmentModel));
 
     // We reached our goal no matter if we reached the cluster center or just any of the cluster dots
-    environmentModel_.setPacmanPosition({1, 1});
-    ASSERT_FALSE(changeDotClusterBehavior_.checkCommitmentCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({1, 1});
+    ASSERT_FALSE(changeDotClusterBehavior.checkCommitmentCondition(time, environmentModel));
 }
 
 TEST_F(ChangeDotClusterBehaviorTest, getCommand) {
     Time time = Clock::now();
     setMazeWithTwoClusters();
-    environmentModel_.setPacmanPosition({2, 2});
-    ASSERT_TRUE(changeDotClusterBehavior_.checkInvocationCondition(time, environmentModel_));
+    environmentModel.setPacmanPosition({2, 2});
+    ASSERT_TRUE(changeDotClusterBehavior.checkInvocationCondition(time, environmentModel));
 
-    changeDotClusterBehavior_.gainControl(time, environmentModel_);
+    changeDotClusterBehavior.gainControl(time, environmentModel);
 
     // The resulting command should navigate us towards the closest cluster center
-    Command command = changeDotClusterBehavior_.getCommand(time, environmentModel_);
+    Command command = changeDotClusterBehavior.getCommand(time, environmentModel);
     ASSERT_EQ(command.nextDirection(), Direction::Up);
 }
 

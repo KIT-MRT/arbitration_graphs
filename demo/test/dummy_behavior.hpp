@@ -8,13 +8,13 @@
 
 namespace demo {
 
-const std::string strikeThroughOn = "×××\010\010\010\033[9m";
-const std::string strikeThroughOff = "\033[29m\033[8m×××\033[28m";
+const std::string StrikeThroughOn = "×××\010\010\010\033[9m";
+const std::string StrikeThroughOff = "\033[29m\033[8m×××\033[28m";
 
-const std::string invocationTrueString = "\033[32mINVOCATION\033[39m ";
-const std::string invocationFalseString = "\033[31mInvocation\033[39m ";
-const std::string commitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
-const std::string commitmentFalseString = "\033[31mCommitment\033[39m ";
+const std::string InvocationTrueString = "\033[32mINVOCATION\033[39m ";
+const std::string InvocationFalseString = "\033[31mInvocation\033[39m ";
+const std::string CommitmentTrueString = "\033[32mCOMMITMENT\033[39m ";
+const std::string CommitmentFalseString = "\033[31mCommitment\033[39m ";
 
 
 class DummyBehavior : public arbitration_graphs::Behavior<EnvironmentModel, Command> {
@@ -25,22 +25,22 @@ public:
                   const bool commitment,
                   const Command& command,
                   const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition_{invocation}, commitmentCondition_{commitment}, command_{command} {};
+            : Behavior(name), invocationCondition{invocation}, commitmentCondition{commitment}, command{command} {};
 
     Command getCommand(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) override {
-        return command_;
+        return command;
     }
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override {
-        return invocationCondition_;
+        return invocationCondition;
     }
     bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) const override {
-        return commitmentCondition_;
+        return commitmentCondition;
     }
 
-    bool invocationCondition_;
-    bool commitmentCondition_;
-    Command command_;
+    bool invocationCondition;
+    bool commitmentCondition;
+    Command command;
 };
 
 } // namespace demo
