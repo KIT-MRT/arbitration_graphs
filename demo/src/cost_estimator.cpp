@@ -20,7 +20,7 @@ double CostEstimator::estimateCost(const Time& /*time*/,
     }
 
     const int pathLength = static_cast<int>(absolutePath.size());
-    const int neighborhoodSize = static_cast<int>(std::pow(2 * parameters_.pathEndNeighborhoodRadius + 1, 2));
+    const int neighborhoodSize = static_cast<int>(std::pow((2 * parameters_.pathEndNeighborhoodRadius) + 1, 2));
     const int nCells = pathLength + neighborhoodSize;
 
     // We can define a cost as the inverse of a benefit.
