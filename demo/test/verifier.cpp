@@ -23,8 +23,8 @@ protected:
         verifier = std::make_shared<Verifier>();
     }
 
-    Command goodCommand{Direction::RIGHT};
-    Command badCommand{Direction::LEFT};
+    Command goodCommand{Direction::Right};
+    Command badCommand{Direction::Left};
     DummyBehavior::Ptr testBehaviorHighPriority =
         std::make_shared<DummyBehavior>(false, false, goodCommand, "HighPriority");
     DummyBehavior::Ptr testBehaviorMidPriority =

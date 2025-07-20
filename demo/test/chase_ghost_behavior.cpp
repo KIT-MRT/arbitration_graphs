@@ -20,7 +20,7 @@ protected:
 TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionTrue) {
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({2, 2});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
@@ -28,13 +28,13 @@ TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionTrue) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionFalse) {
-    environmentModel_.setGhostMode(GhostMode::CHASING);
+    environmentModel_.setGhostMode(GhostMode::Chasing);
 
     Time time = Clock::now();
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time, environmentModel_));
 
     // We don't want to chase ghosts when they are far away
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({8, 8});
@@ -49,7 +49,7 @@ TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionFalse) {
 TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionTrue) {
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({2, 2});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
@@ -57,13 +57,13 @@ TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionTrue) {
 }
 
 TEST_F(ChaseGhostBehaviorTest, checkCommitmentConditionFalse) {
-    environmentModel_.setGhostMode(GhostMode::CHASING);
+    environmentModel_.setGhostMode(GhostMode::Chasing);
 
     Time time = Clock::now();
     ASSERT_FALSE(chaseGhostBehavior_.checkInvocationCondition(time, environmentModel_));
 
     // We don't want to chase ghosts when they are far away
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({8, 8});
@@ -83,12 +83,12 @@ TEST_F(ChaseGhostBehaviorTest, getCommandLeft) {
 
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({0, 1});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
+    ASSERT_EQ(command.nextDirection(), Direction::Left);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
@@ -99,12 +99,12 @@ TEST_F(ChaseGhostBehaviorTest, getCommandRight) {
 
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({2, 1});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
@@ -115,12 +115,12 @@ TEST_F(ChaseGhostBehaviorTest, getCommandDown) {
 
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({1, 2});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
+    ASSERT_EQ(command.nextDirection(), Direction::Down);
 }
 
 TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
@@ -131,12 +131,12 @@ TEST_F(ChaseGhostBehaviorTest, getCommandUp) {
 
     environmentModel_.setPacmanPosition({1, 1});
     environmentModel_.setGhostPositions({1, 0});
-    environmentModel_.setGhostMode(GhostMode::SCARED);
+    environmentModel_.setGhostMode(GhostMode::Scared);
     environmentModel_.setScaredCountdown(40);
 
     Time time = Clock::now();
     Command command = chaseGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::UP);
+    ASSERT_EQ(command.nextDirection(), Direction::Up);
 }
 
 } // namespace demo

@@ -62,9 +62,9 @@ public:
 
     void initializeEntitiesInOppositeCorners() {
         setPacmanPosition({1, 1});
-        setPacmanDirection(Direction::RIGHT);
+        setPacmanDirection(Direction::Right);
         setGhostPositions({8, 8});
-        setGhostDirections(Direction::LEFT);
+        setGhostDirections(Direction::Left);
     }
 
     Maze::ConstPtr maze() const {

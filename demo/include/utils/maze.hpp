@@ -61,10 +61,10 @@ public:
     }
 
     bool isDot(const Position& position) const {
-        return at(position) == TileType::DOT;
+        return at(position) == TileType::Dot;
     }
     bool isWall(const Position& position) const {
-        return at(position) == TileType::WALL;
+        return at(position) == TileType::Wall;
     }
     bool isInBounds(const Position& position) const {
         return position.x >= 0 && position.x < width() && position.y >= 0 && position.y < height();
@@ -76,11 +76,11 @@ public:
 private:
     MazeState mazeState_;
     std::map<demo::entt::Tile, demo::TileType> tileTypeMap_{
-        {demo::entt::Tile::empty, TileType::EMPTY},
-        {demo::entt::Tile::dot, TileType::DOT},
-        {demo::entt::Tile::energizer, TileType::ENGERIZER},
-        {demo::entt::Tile::wall, TileType::WALL},
-        {demo::entt::Tile::door, TileType::DOOR},
+        {demo::entt::Tile::empty, TileType::Empty},
+        {demo::entt::Tile::dot, TileType::Dot},
+        {demo::entt::Tile::energizer, TileType::Energizer},
+        {demo::entt::Tile::wall, TileType::Wall},
+        {demo::entt::Tile::door, TileType::Door},
     };
 };
 
@@ -88,13 +88,13 @@ struct BaseCell {
     using TileType = demo::TileType;
     using Position = demo::Position;
 
-    BaseCell(const Position& position, const TileType& type) : position(position), type(type){};
+    BaseCell(const Position& position, const TileType& type) : position(position), type(type) {};
 
     double manhattanDistance(const Position& other) const {
         return std::abs(position.x - other.x) + std::abs(position.y - other.y);
     }
     bool isConsumable() const {
-        return type == TileType::DOT || type == TileType::ENGERIZER;
+        return type == TileType::Dot || type == TileType::Energizer;
     }
 
     Position position;
@@ -113,7 +113,7 @@ public:
     using MazeStateConstPtr = std::shared_ptr<const MazeState>;
     using Position = demo::Position;
 
-    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}){};
+    explicit MazeAdapter(Maze::ConstPtr maze) : maze_(std::move(maze)), cells_({maze_->width(), maze_->height()}) {};
 
     CellT& cell(const Position& position) const {
         if (!cells_[{position.x, position.y}]) {

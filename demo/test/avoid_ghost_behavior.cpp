@@ -62,7 +62,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandLeft) {
 
     Time time = Clock::now();
     Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
+    ASSERT_EQ(command.nextDirection(), Direction::Left);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
@@ -76,7 +76,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandRight) {
 
     Time time = Clock::now();
     Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
@@ -90,7 +90,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandDown) {
 
     Time time = Clock::now();
     Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
+    ASSERT_EQ(command.nextDirection(), Direction::Down);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
@@ -104,7 +104,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandUp) {
 
     Time time = Clock::now();
     Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::UP);
+    ASSERT_EQ(command.nextDirection(), Direction::Up);
 }
 
 TEST_F(AvoidGhostBehaviorTest, getCommandAwayFromWall) {
@@ -119,7 +119,7 @@ TEST_F(AvoidGhostBehaviorTest, getCommandAwayFromWall) {
     // Even though there is a ghost, pacman should not move towards a wall.
     Time time = Clock::now();
     Command command = avoidGhostBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 }
 
 } // namespace demo

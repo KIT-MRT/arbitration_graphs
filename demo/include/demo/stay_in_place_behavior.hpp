@@ -35,10 +35,10 @@ public:
 
 private:
     static Direction oppositeDirection(const Direction& direction) {
-        const std::map<Direction, Direction> oppositeDirectionMap{{Direction::UP, Direction::DOWN},
-                                                                  {Direction::DOWN, Direction::UP},
-                                                                  {Direction::LEFT, Direction::RIGHT},
-                                                                  {Direction::RIGHT, Direction::LEFT}};
+        const std::map<Direction, Direction> oppositeDirectionMap{{Direction::Up, Direction::Down},
+                                                                  {Direction::Down, Direction::Up},
+                                                                  {Direction::Left, Direction::Right},
+                                                                  {Direction::Right, Direction::Left}};
         return oppositeDirectionMap.at(direction);
     }
 };
