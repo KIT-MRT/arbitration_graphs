@@ -1,7 +1,6 @@
 #include <pybind11/chrono.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <util_caching/python_bindings.hpp>
 
 #include "arbitration_graphs_py/arbitrator.hpp"
 #include "arbitration_graphs_py/behavior.hpp"
@@ -16,19 +15,6 @@
 
 namespace arbitration_graphs_py {
 
-namespace {
-void bindUtilCaching(py::module& module) {
-    using Result = arbitration_graphs::verification::Result;
-    using Time = arbitration_graphs::Time;
-
-    py::module utilCaching = module.def_submodule("util_caching");
-    using ApproximateTimeT = util_caching::policies::ApproximateTime<Time, std::chrono::milliseconds>;
-    util_caching::python_api::time_based::bindApproximatePolicy<Time, std::chrono::milliseconds>(utilCaching,
-                                                                                                 "ApproximateTime");
-    util_caching::python_api::time_based::bindCache<Time, Result::ConstPtr, ApproximateTimeT>(utilCaching);
-}
-} // namespace
-
 ///@brief Bindings for the arbitration_graphs library
 ///@details This is where it all comes together. The bindings for the individual classes are
 ///         created here in the main arbitration_graphs module.
@@ -42,9 +28,6 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindCostArbitrator(mainModule);
     bindPriorityArbitrator(mainModule);
     bindRandomArbitrator(mainModule);
-
-    // Bind util_caching to be able to access cached verification results
-    bindUtilCaching(mainModule);
 
     // Add the __version__ attribute to the module
 #ifdef PROJECT_VERSION
