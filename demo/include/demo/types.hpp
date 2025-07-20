@@ -32,9 +32,9 @@ using ScaredMode = ::ScaredMode;
 using Tile = ::Tile;
 } // namespace entt
 
-enum class Direction { UP, DOWN, LEFT, RIGHT };
-enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
-enum class TileType { EMPTY, DOT, ENGERIZER, WALL, DOOR };
+enum class Direction : uint8_t { UP, DOWN, LEFT, RIGHT };
+enum class GhostMode : uint8_t { CHASING, EATEN, SCARED, SCATTERING };
+enum class TileType : uint8_t { EMPTY, DOT, ENGERIZER, WALL, DOOR };
 
 using Path = std::vector<Direction>;
 struct Position {
