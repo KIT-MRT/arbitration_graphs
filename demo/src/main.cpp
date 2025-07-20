@@ -15,7 +15,7 @@ using namespace arbitration_graphs;
 int main() {
     try {
         PacmanWrapper demo;
-        demo.printKeybindings();
+        PacmanWrapper::printKeybindings();
 
         PacmanAgent agent(demo.game());
 

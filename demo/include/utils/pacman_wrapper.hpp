@@ -31,7 +31,7 @@ public:
         return game_;
     }
 
-    void printKeybindings();
+    static void printKeybindings();
 
 private:
     void handleUserInput();
