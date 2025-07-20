@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <arbitration_graphs/behavior.hpp>
 
 #include "demo/environment_model.hpp"
@@ -23,9 +24,15 @@ public:
 
     DummyBehavior(const bool invocation,
                   const bool commitment,
-                  const Command& command,
+                  Command command,
                   const std::string& name = "DummyBehavior")
-            : Behavior(name), invocationCondition{invocation}, commitmentCondition{commitment}, command{command} {};
+            : Behavior(name), invocationCondition{invocation}, commitmentCondition{commitment},
+              command{std::move(command)} {};
+    DummyBehavior(const DummyBehavior&) = default;
+    DummyBehavior(DummyBehavior&&) = default;
+    DummyBehavior& operator=(const DummyBehavior&) = default;
+    DummyBehavior& operator=(DummyBehavior&&) = default;
+    virtual ~DummyBehavior() = default;
 
     Command getCommand(const Time& /*time*/, const EnvironmentModel& /*environmentModel*/) override {
         return command;
