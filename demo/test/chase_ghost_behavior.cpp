@@ -11,10 +11,12 @@ protected:
     ChaseGhostBehaviorTest() : chaseGhostBehavior{parameters} {
     }
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     ChaseGhostBehavior::Parameters parameters{};
     MockEnvironmentModel environmentModel;
 
     ChaseGhostBehavior chaseGhostBehavior;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(ChaseGhostBehaviorTest, checkInvocationConditionTrue) {

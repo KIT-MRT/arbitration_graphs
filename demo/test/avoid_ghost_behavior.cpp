@@ -11,10 +11,12 @@ protected:
     AvoidGhostBehaviorTest() : avoidGhostBehavior{parameters} {
     }
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     AvoidGhostBehavior::Parameters parameters{};
     MockEnvironmentModel environmentModel;
 
     AvoidGhostBehavior avoidGhostBehavior;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(AvoidGhostBehaviorTest, checkInvocationConditionTrue) {

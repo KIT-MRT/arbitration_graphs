@@ -23,6 +23,7 @@ protected:
         verifier = std::make_shared<Verifier>();
     }
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     Command goodCommand{Direction::Right};
     Command badCommand{Direction::Left};
     DummyBehavior::Ptr testBehaviorHighPriority =
@@ -34,6 +35,7 @@ protected:
     MockEnvironmentModel environmentModel;
     Time time{Clock::now()};
     Verifier::Ptr verifier;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(VerifierTest, basicVerification) {

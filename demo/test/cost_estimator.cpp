@@ -27,12 +27,14 @@ protected:
                                  "##########");
     }
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     Time time = Clock::now();
 
     MockEnvironmentModel environmentModel;
     CostEstimator::Parameters parameters{1};
 
     CostEstimator costEstimator;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(CostEstimatorTest, estimateCostDownPath) {

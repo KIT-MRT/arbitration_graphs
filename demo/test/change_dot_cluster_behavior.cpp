@@ -41,9 +41,11 @@ protected:
                                  "#####");
     }
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     MockEnvironmentModel environmentModel;
 
     ChangeDotClusterBehavior changeDotClusterBehavior;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(ChangeDotClusterBehaviorTest, checkInvocationConditionTrue) {
