@@ -2,6 +2,7 @@
 
 import time
 import unittest
+from typing import final
 
 from .dummy_types import (
     DummyBehavior,
@@ -11,6 +12,7 @@ from .dummy_types import (
 )
 
 
+@final
 class DummyBehaviorTest(unittest.TestCase):
     def setUp(self):
         self.test_behavior_true = DummyBehavior(True, True)

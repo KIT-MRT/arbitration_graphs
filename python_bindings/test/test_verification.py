@@ -2,6 +2,7 @@
 
 import time
 import unittest
+from typing import final
 
 import arbitration_graphs as ag
 
@@ -14,6 +15,7 @@ from .dummy_types import (
 )
 
 
+@final
 class TestCommandVerification(unittest.TestCase):
     def setUp(self):
         self.test_behavior_high_priority = DummyBehavior(False, False, "HighPriority")
