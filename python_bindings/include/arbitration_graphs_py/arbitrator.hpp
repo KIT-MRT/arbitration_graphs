@@ -44,7 +44,7 @@ inline void bindArbitrator(py::module& module) {
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"))
         .def("has_flags", &OptionT::hasFlag, py::arg("flags_to_check"))
         .def("behavior", &OptionT::behavior)
-        .def("verification_result", &OptionT::verificationResult);
+        .def("verification_result", &OptionT::verificationResult, py::arg("time"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NoFlags)
