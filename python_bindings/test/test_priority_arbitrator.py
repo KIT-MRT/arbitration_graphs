@@ -163,10 +163,10 @@ class TestPriorityArbitrator(unittest.TestCase):
         # fmt: off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n" +
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
@@ -187,10 +187,10 @@ class TestPriorityArbitrator(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            " -> 3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            " -> 3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n" +
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on

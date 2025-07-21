@@ -136,12 +136,12 @@ class TestCommandVerification(unittest.TestCase):
         # fmt:off
         ps = PrintStrings
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
             "    3. " + ps.strike_through_on
                       + ps.invocation_true + ps.commitment_false + "MidPriority"
-                      + ps.strike_through_off + "\n"
+                      + ps.strike_through_off + "\n" +
             " -> 4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
@@ -236,15 +236,15 @@ class TestCommandVerification(unittest.TestCase):
         # fmt:off
         ps = PrintStrings
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
             "    3. " + ps.strike_through_on
                       + ps.invocation_true + ps.commitment_false + "MidPriority"
-                      + ps.strike_through_off + "\n"
+                      + ps.strike_through_off + "\n" +
             " -> 4. " + ps.strike_through_on
                       + ps.invocation_true + ps.commitment_false + "MidPriority"
-                      + ps.strike_through_off + "\n"
+                      + ps.strike_through_off + "\n" +
             "    5. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
@@ -323,12 +323,12 @@ class TestCommandVerification(unittest.TestCase):
         # fmt:off
         ps = PrintStrings
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
+            ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
             "    - (cost:  n.a.) " + ps.strike_through_on
                                    + ps.invocation_true + ps.commitment_false + "MidPriority"
-                                   + ps.strike_through_off + "\n"
+                                   + ps.strike_through_off + "\n" +
             " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on

@@ -168,10 +168,10 @@ class CostArbitratorTest(unittest.TestCase):
         # fmt: off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            ps.invocation_true + ps.commitment_false + "CostArbitrator\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
@@ -190,10 +190,10 @@ class CostArbitratorTest(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             " -> - (cost: 0.500) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on

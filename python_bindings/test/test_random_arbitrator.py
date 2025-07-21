@@ -117,11 +117,11 @@ class TestRandomArbitrator(unittest.TestCase):
         # fmt:off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
@@ -140,11 +140,11 @@ class TestRandomArbitrator(unittest.TestCase):
 
         # fmt:off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
