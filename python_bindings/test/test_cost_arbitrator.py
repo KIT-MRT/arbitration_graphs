@@ -1,3 +1,5 @@
+# pyright: reportUninitializedInstanceVariable=false, reportImplicitOverride=false
+
 import time
 import unittest
 
