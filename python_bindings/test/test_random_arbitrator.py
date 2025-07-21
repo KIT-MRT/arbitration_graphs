@@ -3,12 +3,14 @@
 import time
 import unittest
 from collections import defaultdict
+from typing import final
 
 import arbitration_graphs as ag
 
 from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 
 
+@final
 class TestRandomArbitrator(unittest.TestCase):
     def setUp(self):
         self.test_behavior_unavailable = DummyBehavior(False, False, "Unavailable")

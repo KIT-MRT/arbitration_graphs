@@ -2,6 +2,7 @@
 
 import time
 import unittest
+from typing import final
 
 import arbitration_graphs as ag
 
@@ -9,6 +10,7 @@ from .cost_estimator import CostEstimatorFromCostMap
 from .dummy_types import BrokenDummyBehavior, DummyBehavior, DummyEnvironmentModel
 
 
+@final
 class TestExceptionHandling(unittest.TestCase):
     def test_exception_in_priority_arbitrator(self):
         test_behavior_high_priority = BrokenDummyBehavior(True, True, "HighPriority")
