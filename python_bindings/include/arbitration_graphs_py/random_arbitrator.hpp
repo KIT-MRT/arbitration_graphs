@@ -59,8 +59,7 @@ inline void bindRandomArbitrator(py::module& module) {
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NoFlags)
         .value("INTERRUPTABLE", OptionT::Interruptable)
-        .value("FALLBACK", OptionT::Fallback)
-        .export_values();
+        .value("FALLBACK", OptionT::Fallback);
 }
 
 } // namespace arbitration_graphs_py

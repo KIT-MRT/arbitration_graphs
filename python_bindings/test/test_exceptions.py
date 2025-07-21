@@ -18,10 +18,10 @@ class TestExceptionHandling(unittest.TestCase):
 
         test_priority_arbitrator = ag.PriorityArbitrator()
         test_priority_arbitrator.add_option(
-            test_behavior_high_priority, ag.PriorityArbitrator.Option.NO_FLAGS
+            test_behavior_high_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
         )
         test_priority_arbitrator.add_option(
-            test_behavior_low_priority, ag.PriorityArbitrator.Option.NO_FLAGS
+            test_behavior_low_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
         )
 
         self.assertTrue(
@@ -67,10 +67,10 @@ class TestExceptionHandling(unittest.TestCase):
 
         test_priority_arbitrator = ag.PriorityArbitrator()
         test_priority_arbitrator.add_option(
-            test_behavior_high_priority, ag.PriorityArbitrator.Option.NO_FLAGS
+            test_behavior_high_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
         )
         test_priority_arbitrator.add_option(
-            test_behavior_low_priority, ag.PriorityArbitrator.Option.NO_FLAGS
+            test_behavior_low_priority, ag.PriorityArbitrator.Option.Flags.NO_FLAGS
         )
 
         self.assertTrue(
@@ -120,12 +120,12 @@ class TestExceptionHandling(unittest.TestCase):
         test_cost_arbitrator = ag.CostArbitrator()
         test_cost_arbitrator.add_option(
             test_behavior_low_cost,
-            ag.CostArbitrator.Option.NO_FLAGS,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
             cost_estimator,
         )
         test_cost_arbitrator.add_option(
             test_behavior_high_cost,
-            ag.CostArbitrator.Option.NO_FLAGS,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
             cost_estimator,
         )
 
