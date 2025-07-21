@@ -18,6 +18,7 @@ maintainers = [
 description="Hierarchical behavior models for complex decision-making and behavior generation in robotics"
 dependencies = [
   "pyyaml",
+  "typing-extensions",
 ]
 readme = "README.md"
 license = { text = "MIT" }

@@ -1,8 +1,10 @@
-# pyright: reportUninitializedInstanceVariable=false, reportImplicitOverride=false
+# pyright: reportUninitializedInstanceVariable=false
 
 import time
 import unittest
 from typing import final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
 
@@ -17,6 +19,7 @@ from .dummy_types import (
 
 @final
 class TestCommandVerification(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_high_priority = DummyBehavior(False, False, "HighPriority")
         self.test_behavior_mid_priority = DummyBehavior(True, False, "MidPriority")
