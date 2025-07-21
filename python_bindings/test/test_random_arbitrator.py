@@ -1,9 +1,11 @@
-# pyright: reportUninitializedInstanceVariable=false, reportImplicitOverride=false
+# pyright: reportUninitializedInstanceVariable=false
 
 import time
 import unittest
 from collections import defaultdict
 from typing import final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
 
@@ -12,6 +14,7 @@ from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 
 @final
 class TestRandomArbitrator(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_unavailable = DummyBehavior(False, False, "Unavailable")
         self.test_behavior_high_weight = DummyBehavior(True, False, "HighWeight")

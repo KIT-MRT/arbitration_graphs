@@ -1,8 +1,10 @@
-# pyright: reportUninitializedInstanceVariable=false, reportImplicitOverride=false
+# pyright: reportUninitializedInstanceVariable=false
 
 import time
 import unittest
 from typing import final
+
+from typing_extensions import override
 
 from .dummy_types import (
     DummyBehavior,
@@ -14,6 +16,7 @@ from .dummy_types import (
 
 @final
 class DummyBehaviorTest(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_true = DummyBehavior(True, True)
         self.environment_model = DummyEnvironmentModel()

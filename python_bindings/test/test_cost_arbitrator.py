@@ -1,8 +1,10 @@
-# pyright: reportUninitializedInstanceVariable=false, reportImplicitOverride=false
+# pyright: reportUninitializedInstanceVariable=false
 
 import time
 import unittest
 from typing import final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
 
@@ -17,6 +19,7 @@ from .dummy_types import (
 
 @final
 class CostArbitratorTest(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_low_cost = DummyBehavior(False, False, "low_cost")
         self.test_behavior_mid_cost = DummyBehavior(True, False, "mid_cost")
