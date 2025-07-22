@@ -181,7 +181,18 @@ class CostArbitrator(Arbitrator):
     ) -> None: ...
     @override
     def __repr__(self) -> str: ...
-    @override
+    @typing.overload
+    def add_option(
+        self,
+        behavior: Behavior,
+        flags: typing.SupportsInt,
+    ) -> None:
+        """
+        Inherited from abstract Arbitrator. This overload is for compatibility with the base class.
+        Use the overload passing a CostEstimator instead.
+        """
+        ...
+    @typing.overload
     def add_option(
         self,
         behavior: Behavior,
