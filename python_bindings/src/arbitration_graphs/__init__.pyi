@@ -374,4 +374,4 @@ class RandomArbitrator(Arbitrator):
 class VerificationError(Exception):
     pass
 
-__version__: str = '"0.8.0"'
+__version__: str

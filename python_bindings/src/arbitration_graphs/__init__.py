@@ -16,6 +16,7 @@ from .arbitration_graphs_py import (
     PriorityArbitrator,
     RandomArbitrator,
     VerificationError,
+    __version__,
 )
 
 __all__ = [
@@ -32,4 +33,5 @@ __all__ = [
     "PriorityArbitrator",
     "RandomArbitrator",
     "VerificationError",
+    "__version__",
 ]
