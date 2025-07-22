@@ -1,3 +1,5 @@
+# pyright: reportAny=false,reportExplicitAny=false
+
 from arbitration_graphs.typing import Command, EnvironmentModel, Time
 
 __all__ = ["PlaceboVerifier", "Result", "SimpleResult", "Verifier"]

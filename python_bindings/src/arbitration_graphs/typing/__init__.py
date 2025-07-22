@@ -1,3 +1,5 @@
+# pyright: reportExplicitAny=false
+
 import datetime
 from typing import Any, TypeAlias
 
