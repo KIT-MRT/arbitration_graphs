@@ -1,3 +1,5 @@
+# pyright: reportAny=false,reportExplicitAny=false
+
 import typing
 
 from arbitration_graphs import verification
