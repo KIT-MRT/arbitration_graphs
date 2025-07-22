@@ -2,12 +2,18 @@
 
 import time
 import unittest
-from typing import final
+from typing import cast, final
 
 import arbitration_graphs as ag
+from arbitration_graphs.verification import Result
 
 from .cost_estimator import CostEstimatorFromCostMap
-from .dummy_types import BrokenDummyBehavior, DummyBehavior, DummyEnvironmentModel
+from .dummy_types import (
+    BrokenDummyBehavior,
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+)
 
 
 @final
@@ -38,15 +44,16 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "LowPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
-        self.assertTrue(test_priority_arbitrator.options()[1].verification_result(t))
 
-        self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
-        )
-        self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result(t).is_ok()
-        )
+        result_0 = test_priority_arbitrator.options()[0].verification_result(t)
+        result_1 = test_priority_arbitrator.options()[1].verification_result(t)
+        self.assertTrue(result_0)
+        self.assertTrue(result_1)
+
+        result_0 = cast(Result, result_0)
+        result_1 = cast(Result, result_1)
+        self.assertFalse(result_0.is_ok())
+        self.assertTrue(result_1.is_ok())
 
         test_priority_arbitrator.lose_control(t, environment_model)
 
@@ -87,10 +94,11 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "HighPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
-        self.assertTrue(
-            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
-        )
+
+        result = test_priority_arbitrator.options()[0].verification_result(t)
+        self.assertTrue(result)
+        result = cast(Result, result)
+        self.assertTrue(result.is_ok())
 
         # Progress time to not retrieve cached commands
         t += 1
@@ -100,15 +108,16 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "LowPriority", test_priority_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(test_priority_arbitrator.options()[0].verification_result(t))
-        self.assertTrue(test_priority_arbitrator.options()[1].verification_result(t))
 
-        self.assertFalse(
-            test_priority_arbitrator.options()[0].verification_result(t).is_ok()
-        )
-        self.assertTrue(
-            test_priority_arbitrator.options()[1].verification_result(t).is_ok()
-        )
+        result_0 = test_priority_arbitrator.options()[0].verification_result(t)
+        result_1 = test_priority_arbitrator.options()[1].verification_result(t)
+        self.assertTrue(result_0)
+        self.assertTrue(result_1)
+
+        result_0 = cast(Result, result_0)
+        result_1 = cast(Result, result_1)
+        self.assertFalse(result_0.is_ok())
+        self.assertTrue(result_1.is_ok())
 
     def test_exceptions_in_cost_arbitrator(self):
         test_behavior_low_cost = BrokenDummyBehavior(True, True, "LowCost")
@@ -144,12 +153,13 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(
             "HighCost", test_cost_arbitrator.get_command(t, environment_model)
         )
-        self.assertTrue(test_cost_arbitrator.options()[0].verification_result(t))
-        self.assertTrue(test_cost_arbitrator.options()[1].verification_result(t))
 
-        self.assertFalse(
-            test_cost_arbitrator.options()[0].verification_result(t).is_ok()
-        )
-        self.assertTrue(
-            test_cost_arbitrator.options()[1].verification_result(t).is_ok()
-        )
+        result_0 = test_cost_arbitrator.options()[0].verification_result(t)
+        result_1 = test_cost_arbitrator.options()[1].verification_result(t)
+        self.assertTrue(result_0)
+        self.assertTrue(result_1)
+
+        result_0 = cast(Result, result_0)
+        result_1 = cast(Result, result_1)
+        self.assertFalse(result_0.is_ok())
+        self.assertTrue(result_1.is_ok())
