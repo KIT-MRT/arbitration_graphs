@@ -2,11 +2,12 @@
 
 import time
 import unittest
-from typing import final
+from typing import cast, final
 
 from typing_extensions import override
 
 import arbitration_graphs as ag
+from arbitration_graphs.typing import ArbitratorYamlNode
 
 from .cost_estimator import CostEstimatorFromCostMap
 from .dummy_types import (
@@ -163,33 +164,39 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.assertEqual(2, len(yaml_node["options"]))
         self.assertEqual("Option", yaml_node["options"][0]["type"])
         self.assertEqual("Option", yaml_node["options"][1]["type"])
-        self.assertEqual("CostArbitrator", yaml_node["options"][0]["behavior"]["name"])
-        self.assertEqual(
-            "PriorityArbitrator", yaml_node["options"][1]["behavior"]["name"]
+
+        nested_cost_arbitrator = cast(
+            ArbitratorYamlNode, yaml_node["options"][0]["behavior"]
         )
+        self.assertEqual("CostArbitrator", nested_cost_arbitrator["name"])
+
+        nested_priority_arbitrator = cast(
+            ArbitratorYamlNode, yaml_node["options"][1]["behavior"]
+        )
+        self.assertEqual("PriorityArbitrator", nested_priority_arbitrator["name"])
         self.assertFalse("flags" in yaml_node["options"][0])
         self.assertFalse("flags" in yaml_node["options"][1])
 
-        self.assertEqual(2, len(yaml_node["options"][0]["behavior"]["options"]))
-        self.assertFalse("activeBehavior" in yaml_node["options"][0]["behavior"])
+        self.assertEqual(2, len(nested_cost_arbitrator["options"]))
+        self.assertFalse("activeBehavior" in nested_cost_arbitrator)
         self.assertEqual(
             "low_cost",
-            yaml_node["options"][0]["behavior"]["options"][0]["behavior"]["name"],
+            nested_cost_arbitrator["options"][0]["behavior"]["name"],
         )
         self.assertEqual(
             "high_cost",
-            yaml_node["options"][0]["behavior"]["options"][1]["behavior"]["name"],
+            nested_cost_arbitrator["options"][1]["behavior"]["name"],
         )
 
-        self.assertEqual(2, len(yaml_node["options"][1]["behavior"]["options"]))
-        self.assertFalse("activeBehavior" in yaml_node["options"][1]["behavior"])
+        self.assertEqual(2, len(nested_priority_arbitrator["options"]))
+        self.assertFalse("activeBehavior" in nested_priority_arbitrator)
         self.assertEqual(
             "HighPriority",
-            yaml_node["options"][1]["behavior"]["options"][0]["behavior"]["name"],
+            nested_priority_arbitrator["options"][0]["behavior"]["name"],
         )
         self.assertEqual(
             "LowPriority",
-            yaml_node["options"][1]["behavior"]["options"][1]["behavior"]["name"],
+            nested_priority_arbitrator["options"][1]["behavior"]["name"],
         )
 
         self.assertFalse("activeBehavior" in yaml_node)
@@ -209,5 +216,8 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.assertTrue("activeBehavior" in yaml_node)
         self.assertEqual(0, yaml_node["activeBehavior"])
 
-        self.assertTrue("activeBehavior" in yaml_node["options"][0]["behavior"])
-        self.assertEqual(1, yaml_node["options"][0]["behavior"]["activeBehavior"])
+        nested_cost_arbitrator = cast(
+            ArbitratorYamlNode, yaml_node["options"][0]["behavior"]
+        )
+        self.assertTrue("activeBehavior" in nested_cost_arbitrator)
+        self.assertEqual(1, nested_cost_arbitrator["activeBehavior"])
