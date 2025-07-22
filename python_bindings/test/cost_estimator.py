@@ -11,7 +11,9 @@ from .dummy_types import DummyCommand, DummyEnvironmentModel
 
 @final
 class CostEstimatorFromCostMap(CostEstimator):
-    def __init__(self, cost_map: Mapping[str, float], activation_costs: float = 0):
+    def __init__(
+        self, cost_map: Mapping[DummyCommand, float], activation_costs: float = 0
+    ):
         super().__init__()
         self.cost_map = cost_map
         self.activation_costs = activation_costs
