@@ -5,7 +5,12 @@ import typing
 from typing_extensions import override
 
 from arbitration_graphs import verification
-from arbitration_graphs.typing import Command, EnvironmentModel, Time
+from arbitration_graphs.typing import (
+    ArbitratorYamlNode,
+    Command,
+    EnvironmentModel,
+    Time,
+)
 
 __all__ = [
     "ApplicableOptionFailedVerificationError",
@@ -118,7 +123,7 @@ class Behavior:
     ) -> str: ...
     def to_yaml(
         self, time: Time, environment_model: EnvironmentModel
-    ) -> typing.Any: ...
+    ) -> ArbitratorYamlNode: ...
 
 class CostArbitrator(Arbitrator):
     class Option(Arbitrator.Option):
@@ -202,7 +207,7 @@ class CostArbitrator(Arbitrator):
     @override
     def to_yaml(
         self, time: Time, environment_model: EnvironmentModel
-    ) -> typing.Any: ...
+    ) -> ArbitratorYamlNode: ...
 
 class CostEstimator:
     def __init__(self) -> None: ...
@@ -290,7 +295,7 @@ class PriorityArbitrator(Arbitrator):
     @override
     def to_yaml(
         self, time: Time, environment_model: EnvironmentModel
-    ) -> typing.Any: ...
+    ) -> ArbitratorYamlNode: ...
 
 class RandomArbitrator(Arbitrator):
     class Option(Arbitrator.Option):
@@ -364,7 +369,7 @@ class RandomArbitrator(Arbitrator):
     @override
     def to_yaml(
         self, time: Time, environment_model: EnvironmentModel
-    ) -> typing.Any: ...
+    ) -> ArbitratorYamlNode: ...
 
 class VerificationError(Exception):
     pass
