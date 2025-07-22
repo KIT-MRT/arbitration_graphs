@@ -122,7 +122,11 @@ class Behavior:
 
 class CostArbitrator(Arbitrator):
     class Option(Arbitrator.Option):
-        class Flags:
+        # The nested "Flags" class intentionally differs between Arbitrator subtypes.
+        # Each Arbitrator subclass defines its own Option.Flags type even though pyright
+        # expects the child class to override the Flags enum of the parent class.
+        # We therefore suppress the pyright warning.
+        class Flags:  # pyright: ignore[reportIncompatibleVariableOverride]
             """
             Members:
 
@@ -216,7 +220,11 @@ class NoApplicableOptionPassedVerificationError(Exception):
 
 class PriorityArbitrator(Arbitrator):
     class Option(Arbitrator.Option):
-        class Flags:
+        # The nested "Flags" class intentionally differs between Arbitrator subtypes.
+        # Each Arbitrator subclass defines its own Option.Flags type even though pyright
+        # expects the child class to override the Flags enum of the parent class.
+        # We therefore suppress the pyright warning.
+        class Flags:  # pyright: ignore[reportIncompatibleVariableOverride]
             """
             Members:
 
@@ -275,7 +283,11 @@ class PriorityArbitrator(Arbitrator):
 
 class RandomArbitrator(Arbitrator):
     class Option(Arbitrator.Option):
-        class Flags:
+        # The nested "Flags" class intentionally differs between Arbitrator subtypes.
+        # Each Arbitrator subclass defines its own Option.Flags type even though pyright
+        # expects the child class to override the Flags enum of the parent class.
+        # We therefore suppress the pyright warning.
+        class Flags:  # pyright: ignore[reportIncompatibleVariableOverride]
             """
             Members:
 
