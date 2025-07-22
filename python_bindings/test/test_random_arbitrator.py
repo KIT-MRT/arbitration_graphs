@@ -3,13 +3,18 @@
 import time
 import unittest
 from collections import defaultdict
-from typing import final
+from typing import cast, final
 
 from typing_extensions import override
 
 import arbitration_graphs as ag
 
-from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
 @final
@@ -78,11 +83,14 @@ class TestRandomArbitrator(unittest.TestCase):
         self.test_random_arbitrator.gain_control(self.time, self.environment_model)
 
         sample_size = 1000
-        command_counter = defaultdict(int)
+        command_counter: dict[str, int] = defaultdict(int)
 
         for _ in range(sample_size):
-            command = self.test_random_arbitrator.get_command(
-                self.time, self.environment_model
+            command = cast(
+                DummyCommand,
+                self.test_random_arbitrator.get_command(
+                    self.time, self.environment_model
+                ),
             )
             command_counter[command] += 1
 
