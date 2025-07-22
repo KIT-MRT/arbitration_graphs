@@ -2,7 +2,7 @@
 
 import time
 import unittest
-from typing import final
+from typing import cast, final
 
 from typing_extensions import override
 
@@ -273,8 +273,11 @@ class CostArbitratorTest(unittest.TestCase):
         self.assertFalse("cost" in yaml_node["options"][1])
         self.assertTrue("cost" in yaml_node["options"][2])
         self.assertTrue("cost" in yaml_node["options"][3])
-        self.assertAlmostEqual(1.0, yaml_node["options"][2]["cost"], delta=1e-3)
-        self.assertAlmostEqual(0.5, yaml_node["options"][3]["cost"], delta=1e-3)
+
+        cost_2 = cast(float, yaml_node["options"][2]["cost"])
+        cost_3 = cast(float, yaml_node["options"][3]["cost"])
+        self.assertAlmostEqual(1.0, cost_2, delta=1e-3)
+        self.assertAlmostEqual(0.5, cost_3, delta=1e-3)
 
         self.assertTrue("activeBehavior" in yaml_node)
         self.assertEqual(3, yaml_node["activeBehavior"])
