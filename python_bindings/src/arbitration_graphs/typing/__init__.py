@@ -5,8 +5,13 @@ from __future__ import annotations
 import datetime
 from typing import Any, Literal, TypeAlias, TypedDict
 
-EnvironmentModel: TypeAlias = Any
+# Both Command and EnvironmentModel can be Any as they will only be wrapped into the
+# corresponding wrapper and "passed through" the arbitration graph. Adding this type alias
+# does provide a little more semantic context for the hover info of functions such as get_command.
 Command: TypeAlias = Any
+EnvironmentModel: TypeAlias = Any
+
+# We allow Time to be a float as well to support the use of time.time()
 Time: TypeAlias = datetime.timedelta | float
 
 
