@@ -1,4 +1,4 @@
-import datetime
+from arbitration_graphs.typing import Command, EnvironmentModel, Time
 
 __all__ = ["PlaceboVerifier", "Result", "SimpleResult", "Verifier"]
 
@@ -17,7 +17,7 @@ class Verifier:
     def __init__(self) -> None: ...
     def analyze(
         self,
-        time: datetime.timedelta,
-        environment_model: EnvironmentModelWrapper,
-        command: CommandWrapper,
+        time: Time,
+        environment_model: EnvironmentModel,
+        command: Command,
     ) -> Result: ...
