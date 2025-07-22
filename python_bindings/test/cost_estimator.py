@@ -30,7 +30,7 @@ class CostEstimatorFromCostMap(CostEstimator):
         environment_model.get_observation()
         if is_active:
             return self.cost_map[command] / (1 + self.activation_costs)
-        else:
-            return (self.cost_map[command] + self.activation_costs) / (
-                1 + self.activation_costs
-            )
+
+        return (self.cost_map[command] + self.activation_costs) / (
+            1 + self.activation_costs
+        )
