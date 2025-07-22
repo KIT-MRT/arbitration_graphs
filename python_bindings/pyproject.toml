@@ -36,5 +36,6 @@ regex = '^VERSION=v(?P<value>.+)$'
 
 [tool.setuptools.package-data]
 arbitration_graphs = [
+  "py.typed",
   "*.pyi",
 ]
