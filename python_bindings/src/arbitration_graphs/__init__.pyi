@@ -1,8 +1,8 @@
 from __future__ import annotations
 import datetime
 import typing
-from . import verification
 
+from arbitration_graphs import verification
 __all__ = [
     "ApplicableOptionFailedVerificationError",
     "Arbitrator",
@@ -17,7 +17,6 @@ __all__ = [
     "PriorityArbitrator",
     "RandomArbitrator",
     "VerificationError",
-    "verification",
 ]
 
 class ApplicableOptionFailedVerificationError(Exception):
