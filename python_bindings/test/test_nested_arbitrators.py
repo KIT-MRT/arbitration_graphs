@@ -9,7 +9,12 @@ from typing_extensions import override
 import arbitration_graphs as ag
 
 from .cost_estimator import CostEstimatorFromCostMap
-from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
 @final
@@ -23,7 +28,11 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.test_behavior_mid_cost = DummyBehavior(True, False, "mid_cost")
         self.test_behavior_high_cost = DummyBehavior(True, True, "high_cost")
 
-        cost_map = {"low_cost": 0, "mid_cost": 0.5, "high_cost": 1}
+        cost_map = {
+            DummyCommand("low_cost"): 0,
+            DummyCommand("mid_cost"): 0.5,
+            DummyCommand("high_cost"): 1,
+        }
         self.cost_estimator = CostEstimatorFromCostMap(cost_map)
 
         self.test_cost_arbitrator = ag.CostArbitrator()

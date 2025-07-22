@@ -11,6 +11,7 @@ import arbitration_graphs as ag
 from .cost_estimator import CostEstimatorFromCostMap
 from .dummy_types import (
     DummyBehavior,
+    DummyCommand,
     DummyEnvironmentModel,
     DummyVerifier,
     PrintStrings,
@@ -279,7 +280,11 @@ class TestCommandVerification(unittest.TestCase):
             "CostArbitrator", DummyVerifier("MidPriority")
         )
 
-        cost_map = {"HighPriority": 0, "MidPriority": 0.5, "LowPriority": 1}
+        cost_map = {
+            DummyCommand("HighPriority"): 0,
+            DummyCommand("MidPriority"): 0.5,
+            DummyCommand("LowPriority"): 1,
+        }
         cost_estimator = CostEstimatorFromCostMap(cost_map)
 
         test_cost_arbitrator.add_option(

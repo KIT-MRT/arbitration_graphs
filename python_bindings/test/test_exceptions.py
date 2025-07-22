@@ -116,7 +116,7 @@ class TestExceptionHandling(unittest.TestCase):
 
         environment_model = DummyEnvironmentModel()
 
-        cost_map = {"LowCost": 0, "HighCost": 1}
+        cost_map = {DummyCommand("LowCost"): 0, DummyCommand("HighCost"): 1}
         cost_estimator = CostEstimatorFromCostMap(cost_map)
 
         t = time.time()
