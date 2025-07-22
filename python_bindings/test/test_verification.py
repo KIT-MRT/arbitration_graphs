@@ -127,11 +127,11 @@ class TestCommandVerification(unittest.TestCase):
         # Print verification results
         print(
             f"Verification result for {test_priority_arbitrator.options()[2].behavior().name()}: "
-            f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
+            + f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
         )
         print(
             f"Verification result for {test_priority_arbitrator.options()[3].behavior().name()}: "
-            f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
+            + f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
         )
 
         # fmt:off
@@ -221,11 +221,11 @@ class TestCommandVerification(unittest.TestCase):
 
         print(
             f"verificationResult for {test_priority_arbitrator.options()[2].behavior().name()}: "
-            f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
+            + f"{test_priority_arbitrator.options()[2].verification_result(self.time)}"
         )
         print(
             f"verificationResult for {test_priority_arbitrator.options()[3].behavior().name()}: "
-            f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
+            + f"{test_priority_arbitrator.options()[3].verification_result(self.time)}"
         )
 
         # fmt:off
