@@ -1,5 +1,4 @@
-from collections.abc import Mapping
-from typing import final
+from typing import Mapping, final
 
 from typing_extensions import override
 
