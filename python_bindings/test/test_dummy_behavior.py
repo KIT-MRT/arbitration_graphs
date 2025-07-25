@@ -1,13 +1,22 @@
-import os
+# pyright: reportUninitializedInstanceVariable=false
+
 import time
 import unittest
+from typing import final
 
-import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyCommand, DummyEnvironmentModel, PrintStrings
+from typing_extensions import override
+
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
+@final
 class DummyBehaviorTest(unittest.TestCase):
-
+    @override
     def setUp(self):
         self.test_behavior_true = DummyBehavior(True, True)
         self.environment_model = DummyEnvironmentModel()
@@ -51,7 +60,7 @@ class DummyBehaviorTest(unittest.TestCase):
     def test_printout(self):
         ps = PrintStrings()
         expected_printout = ps.invocation_true + ps.commitment_true + "dummy_behavior"
-        actual_printout = self.test_behavior_true.to_str(
+        actual_printout = self.test_behavior_true.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)

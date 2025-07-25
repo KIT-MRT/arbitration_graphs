@@ -1,14 +1,25 @@
-import os
+# pyright: reportUninitializedInstanceVariable=false
+
 import time
 import unittest
-
 from collections import defaultdict
+from typing import cast, final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
+
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
+@final
 class TestRandomArbitrator(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_unavailable = DummyBehavior(False, False, "Unavailable")
         self.test_behavior_high_weight = DummyBehavior(True, False, "HighWeight")
@@ -72,11 +83,14 @@ class TestRandomArbitrator(unittest.TestCase):
         self.test_random_arbitrator.gain_control(self.time, self.environment_model)
 
         sample_size = 1000
-        command_counter = defaultdict(int)
+        command_counter: dict[str, int] = defaultdict(int)
 
         for _ in range(sample_size):
-            command = self.test_random_arbitrator.get_command(
-                self.time, self.environment_model
+            command = cast(
+                DummyCommand,
+                self.test_random_arbitrator.get_command(
+                    self.time, self.environment_model
+                ),
             )
             command_counter[command] += 1
 
@@ -118,15 +132,15 @@ class TestRandomArbitrator(unittest.TestCase):
         # fmt:off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout = self.test_random_arbitrator.to_str(
+        actual_printout = self.test_random_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -141,15 +155,15 @@ class TestRandomArbitrator(unittest.TestCase):
 
         # fmt:off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout_after_gain = self.test_random_arbitrator.to_str(
+        actual_printout_after_gain = self.test_random_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout_after_gain)
