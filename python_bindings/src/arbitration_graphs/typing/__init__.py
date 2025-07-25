@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any, Literal, TypeAlias, TypedDict
+from typing import Any, Literal, TypedDict, Union
+
+from typing_extensions import TypeAlias
 
 # Both Command and EnvironmentModel can be Any as they will only be wrapped into the
 # corresponding wrapper and "passed through" the arbitration graph. Adding this type alias
@@ -12,7 +14,7 @@ Command: TypeAlias = Any
 EnvironmentModel: TypeAlias = Any
 
 # We allow Time to be a float as well to support the use of time.time()
-Time: TypeAlias = datetime.timedelta | float
+Time: TypeAlias = Union[datetime.timedelta, float]
 
 
 # =========================================================
