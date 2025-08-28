@@ -177,7 +177,7 @@ This package includes unit tests analogous to the C++ tests.
 To run all tests, use the following command:
 
 ```bash
-cd arbitration_graphs/python_bindings/test
+cd arbitration_graphs/python_bindings
 python -m unittest discover
 ```
 </details>

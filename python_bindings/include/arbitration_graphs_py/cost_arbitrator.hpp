@@ -41,6 +41,19 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
+inline void bindCostEstimator(py::module& module) {
+    using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+
+    py::classh<CostEstimatorT, PyCostEstimator>(module, "CostEstimator")
+        .def(py::init<>())
+        .def("estimate_cost",
+             &CostEstimatorT::estimateCost,
+             py::arg("time"),
+             py::arg("environment_model"),
+             py::arg("command"),
+             py::arg("is_active"));
+}
+
 inline void bindCostArbitrator(py::module& module) {
     using Time = ag::Time;
 
@@ -58,7 +71,7 @@ inline void bindCostArbitrator(py::module& module) {
     using VerifierT = ag::verification::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
-    py::classh<CostEstimatorT, PyCostEstimator>(module, "CostEstimator").def(py::init<>());
+    bindCostEstimator(module);
 
     py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
@@ -74,7 +87,7 @@ inline void bindCostArbitrator(py::module& module) {
             },
             py::arg("time"),
             py::arg("environment_model"))
-        .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(costArbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
@@ -83,10 +96,9 @@ inline void bindCostArbitrator(py::module& module) {
                py::arg("cost_estimator"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
-        .value("NO_FLAGS", OptionT::NO_FLAGS)
-        .value("INTERRUPTABLE", OptionT::INTERRUPTABLE)
-        .value("FALLBACK", OptionT::FALLBACK)
-        .export_values();
+        .value("NO_FLAGS", OptionT::NoFlags)
+        .value("INTERRUPTABLE", OptionT::Interruptable)
+        .value("FALLBACK", OptionT::Fallback);
 }
 
 

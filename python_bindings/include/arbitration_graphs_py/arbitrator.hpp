@@ -38,20 +38,18 @@ inline void bindArbitrator(py::module& module) {
              py::arg("environment_model"))
         .def("gain_control", &ArbitratorT::gainControl, py::arg("time"), py::arg("environment_model"))
         .def("lose_control", &ArbitratorT::loseControl, py::arg("time"), py::arg("environment_model"))
-        .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name_ + "'>"; });
+        .def("__repr__", [](const ArbitratorT& self) { return "<Arbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT> option(arbitrator, "Option");
     option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"))
         .def("has_flags", &OptionT::hasFlag, py::arg("flags_to_check"))
-        .def_readwrite("behavior", &OptionT::behavior_)
-        .def_readwrite("flags", &OptionT::flags_)
-        .def_readwrite("verification_result", &OptionT::verificationResult_);
+        .def("behavior", &OptionT::behavior)
+        .def("verification_result", &OptionT::verificationResult, py::arg("time"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
-        .value("NO_FLAGS", OptionT::NO_FLAGS)
-        .value("INTERRUPTABLE", OptionT::INTERRUPTABLE)
-        .value("FALLBACK", OptionT::FALLBACK)
-        .export_values();
+        .value("NO_FLAGS", OptionT::NoFlags)
+        .value("INTERRUPTABLE", OptionT::Interruptable)
+        .value("FALLBACK", OptionT::Fallback);
 }
 
 } // namespace arbitration_graphs_py

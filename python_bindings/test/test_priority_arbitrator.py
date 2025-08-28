@@ -1,12 +1,19 @@
-import os
+# pyright: reportUninitializedInstanceVariable=false
+
 import time
 import unittest
+from typing import final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
+
+from .dummy_types import DummyBehavior, DummyEnvironmentModel, PrintStrings
 
 
+@final
 class TestPriorityArbitrator(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_high_priority = DummyBehavior(False, False, "HighPriority")
         self.test_behavior_mid_priority = DummyBehavior(True, False, "MidPriority")
@@ -163,14 +170,14 @@ class TestPriorityArbitrator(unittest.TestCase):
         # fmt: off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n" +
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
-        actual_printout = self.test_priority_arbitrator.to_str(
+        actual_printout = self.test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -187,14 +194,14 @@ class TestPriorityArbitrator(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n"
-            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n"
-            " -> 3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n"
+            ps.invocation_true + ps.commitment_true + "PriorityArbitrator\n" +
+            "    1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            "    2. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
+            " -> 3. " + ps.invocation_true + ps.commitment_false + "MidPriority\n" +
             "    4. " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt: on
-        actual_printout = self.test_priority_arbitrator.to_str(
+        actual_printout = self.test_priority_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)

@@ -1,14 +1,25 @@
-import os
+# pyright: reportUninitializedInstanceVariable=false
+
 import time
 import unittest
+from typing import cast, final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, DummyCommand, DummyEnvironmentModel, PrintStrings
-from cost_estimator import CostEstimatorFromCostMap
+
+from .cost_estimator import CostEstimatorFromCostMap
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
+@final
 class CostArbitratorTest(unittest.TestCase):
-
+    @override
     def setUp(self):
         self.test_behavior_low_cost = DummyBehavior(False, False, "low_cost")
         self.test_behavior_mid_cost = DummyBehavior(True, False, "mid_cost")
@@ -164,14 +175,14 @@ class CostArbitratorTest(unittest.TestCase):
         # fmt: off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            ps.invocation_true + ps.commitment_false + "CostArbitrator\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             "    - (cost:  n.a.) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
-        actual_printout = self.test_cost_arbitrator.to_str(
+        actual_printout = self.test_cost_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -186,14 +197,14 @@ class CostArbitratorTest(unittest.TestCase):
 
         # fmt: off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "CostArbitrator\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n"
-            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n"
+            ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
+            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             " -> - (cost: 0.500) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
-        actual_printout = self.test_cost_arbitrator.to_str(
+        actual_printout = self.test_cost_arbitrator.to_string(
             self.time, self.environment_model
         )
         print(actual_printout)
@@ -262,8 +273,11 @@ class CostArbitratorTest(unittest.TestCase):
         self.assertFalse("cost" in yaml_node["options"][1])
         self.assertTrue("cost" in yaml_node["options"][2])
         self.assertTrue("cost" in yaml_node["options"][3])
-        self.assertAlmostEqual(1.0, yaml_node["options"][2]["cost"], delta=1e-3)
-        self.assertAlmostEqual(0.5, yaml_node["options"][3]["cost"], delta=1e-3)
+
+        cost_2 = cast(float, yaml_node["options"][2]["cost"])
+        cost_3 = cast(float, yaml_node["options"][3]["cost"])
+        self.assertAlmostEqual(1.0, cost_2, delta=1e-3)
+        self.assertAlmostEqual(0.5, cost_3, delta=1e-3)
 
         self.assertTrue("activeBehavior" in yaml_node)
         self.assertEqual(3, yaml_node["activeBehavior"])
