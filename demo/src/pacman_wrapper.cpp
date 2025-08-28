@@ -11,6 +11,8 @@
 
 namespace utils {
 
+// anonymous namespace to enforce internal linkage
+namespace {
 int getScaleFactor() {
     // Make the largest window possible with an integer scale factor
     SDL_Rect bounds;
@@ -45,6 +47,7 @@ SDL::Renderer createRendererAndSetLogicalSize(const SDL::Window& window) {
     SDL_CHECK(SDL_RenderSetLogicalSize(renderer.get(), tilesPx.x, tilesPx.y));
     return renderer;
 }
+} // namespace
 
 PacmanWrapper::PacmanWrapper()
         : scaleFactor_(initVideoAndGetScaleFactor()), window_(createWindow(scaleFactor_)),
@@ -62,28 +65,25 @@ void PacmanWrapper::handleUserInput() {
             break;
         }
 
-        if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-                pause_ = !pause_;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
-                quit_ = true;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_P) {
-                renderPath_ = !renderPath_;
-                break;
-            }
-            if (event.key.keysym.scancode == SDL_SCANCODE_F) {
-                fullscreen_ = !fullscreen_;
-                if (fullscreen_) {
-                    SDL_SetWindowFullscreen(window_.get(), SDL_WINDOW_FULLSCREEN);
-                } else {
-                    SDL_SetWindowFullscreen(window_.get(), 0);
-                }
-                break;
-            }
+        if (event.type != SDL_KEYDOWN) {
+            continue;
+        }
+
+        if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+            pause_ = !pause_;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE || event.key.keysym.scancode == SDL_SCANCODE_Q) {
+            quit_ = true;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+            renderPath_ = !renderPath_;
+            break;
+        }
+        if (event.key.keysym.scancode == SDL_SCANCODE_F) {
+            toggleFullscreen();
+            break;
         }
     }
 }
@@ -130,7 +130,7 @@ void PacmanWrapper::printKeybindings() {
               << "\033[1;36m=====================================\033[0m\n"
               << "  \033[1;32mGUI\033[0m   - Open http://localhost:8080\n"
               << "\033[1;36m=====================================\033[0m\n"
-              << std::endl;
+              << std::flush;
 }
 
 void PacmanWrapper::renderPath(const demo::Positions& path) {
@@ -146,6 +146,15 @@ void PacmanWrapper::renderPath(const demo::Positions& path) {
         rect.y = position.y * tileSize;
 
         SDL_RenderFillRect(renderer_.get(), &rect);
+    }
+}
+
+void PacmanWrapper::toggleFullscreen() {
+    fullscreen_ = !fullscreen_;
+    if (fullscreen_) {
+        SDL_SetWindowFullscreen(window_.get(), SDL_WINDOW_FULLSCREEN);
+    } else {
+        SDL_SetWindowFullscreen(window_.get(), 0);
     }
 }
 

@@ -29,6 +29,12 @@ public:
             : Behavior(name), parameters_{parameters} {
     }
 
+    ChaseGhostBehavior(const ChaseGhostBehavior&) = default;
+    ChaseGhostBehavior(ChaseGhostBehavior&&) = default;
+    ChaseGhostBehavior& operator=(const ChaseGhostBehavior&) = default;
+    ChaseGhostBehavior& operator=(ChaseGhostBehavior&&) = default;
+    virtual ~ChaseGhostBehavior() = default;
+
     Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const override;

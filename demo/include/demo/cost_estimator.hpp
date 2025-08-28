@@ -21,6 +21,12 @@ struct CostEstimator : public arbitration_graphs::CostEstimator<EnvironmentModel
     explicit CostEstimator(const Parameters& parameters) : parameters_{parameters} {
     }
 
+    CostEstimator(const CostEstimator&) = default;
+    CostEstimator(CostEstimator&&) = delete;
+    CostEstimator& operator=(const CostEstimator&) = default;
+    CostEstimator& operator=(CostEstimator&&) = delete;
+    virtual ~CostEstimator() = default;
+
     /**
      * @brief Estimate the cost of a command.
      *

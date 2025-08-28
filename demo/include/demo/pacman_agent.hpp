@@ -49,18 +49,18 @@ public:
         eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
         costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
         eatDotsArbitrator_->addOption(
-            changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+            changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
         eatDotsArbitrator_->addOption(
-            eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+            eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
-        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+        rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::Interruptable);
+        rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
         rootArbitrator_->addOption(stayInPlaceBehavior_,
-                                   PriorityArbitrator::Option::Flags::INTERRUPTABLE |
-                                       PriorityArbitrator::Option::FALLBACK);
+                                   PriorityArbitrator::Option::Flags::Interruptable |
+                                       PriorityArbitrator::Option::Fallback);
     }
 
     Command getCommand(const Time& time) {
@@ -75,14 +75,6 @@ public:
         return environmentModel_;
     }
 
-    std::ostream& to_stream(std::ostream& output, const Time& time, const EnvironmentModel& environmentModel) const {
-        return rootArbitrator_->to_stream(output, time, environmentModel);
-    }
-    std::string to_str(const Time& time, const EnvironmentModel& environmentModel) const {
-        std::stringstream stringStream;
-        to_stream(stringStream, time, environmentModel);
-        return stringStream.str();
-    }
     std::string yamlString(const Time& time) const {
         YAML::Node node;
         node["type"] = "PacmanArbitrator";

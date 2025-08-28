@@ -9,36 +9,36 @@ namespace demo {
 
 class StayInPlaceBehaviorTest : public ::testing::Test {
 protected:
-    MockEnvironmentModel environmentModel_{};
-    StayInPlaceBehavior stayInPlaceBehavior_{};
+    MockEnvironmentModel environmentModel;
+    StayInPlaceBehavior stayInPlaceBehavior;
 };
 
 TEST_F(StayInPlaceBehaviorTest, checkInvocationConditionTrue) {
-    ASSERT_TRUE(stayInPlaceBehavior_.checkInvocationCondition(Clock::now(), environmentModel_));
+    ASSERT_TRUE(stayInPlaceBehavior.checkInvocationCondition(Clock::now(), environmentModel));
 }
 
 TEST_F(StayInPlaceBehaviorTest, checkCommitmentConditionFalse) {
-    ASSERT_FALSE(stayInPlaceBehavior_.checkCommitmentCondition(Clock::now(), environmentModel_));
+    ASSERT_FALSE(stayInPlaceBehavior.checkCommitmentCondition(Clock::now(), environmentModel));
 }
 
 TEST_F(StayInPlaceBehaviorTest, getCommand) {
     Time time = Clock::now();
 
-    environmentModel_.setPacmanDirection(Direction::LEFT);
-    Command command = stayInPlaceBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::RIGHT);
+    environmentModel.setPacmanDirection(Direction::Left);
+    Command command = stayInPlaceBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Right);
 
-    environmentModel_.setPacmanDirection(Direction::RIGHT);
-    command = stayInPlaceBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::LEFT);
+    environmentModel.setPacmanDirection(Direction::Right);
+    command = stayInPlaceBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Left);
 
-    environmentModel_.setPacmanDirection(Direction::UP);
-    command = stayInPlaceBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::DOWN);
+    environmentModel.setPacmanDirection(Direction::Up);
+    command = stayInPlaceBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Down);
 
-    environmentModel_.setPacmanDirection(Direction::DOWN);
-    command = stayInPlaceBehavior_.getCommand(time, environmentModel_);
-    ASSERT_EQ(command.nextDirection(), Direction::UP);
+    environmentModel.setPacmanDirection(Direction::Down);
+    command = stayInPlaceBehavior.getCommand(time, environmentModel);
+    ASSERT_EQ(command.nextDirection(), Direction::Up);
 }
 
 } // namespace demo

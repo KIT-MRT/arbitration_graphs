@@ -26,7 +26,7 @@ std::optional<Path> AStar::shortestPath(const Position& start, const Position& g
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
     Cell& goalCell = mazeAdapter.cell(wrappedGoal);
-    if (startCell.type == TileType::WALL || goalCell.type == TileType::WALL) {
+    if (startCell.type == TileType::Wall || goalCell.type == TileType::Wall) {
         throw std::runtime_error("Can't compute path from/to wall cell");
     }
     startCell.distanceFromStart = 0;
@@ -57,7 +57,7 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     Set openSet;
 
     Cell& startCell = mazeAdapter.cell(wrappedStart);
-    if (startCell.type == TileType::WALL) {
+    if (startCell.type == TileType::Wall) {
         throw std::runtime_error("Can't compute path from wall cell");
     }
     startCell.distanceFromStart = 0;
@@ -69,7 +69,7 @@ std::optional<Path> AStar::pathToClosestDot(const Position& start) const {
     while (!openSet.empty()) {
         // Unfortunately, the pacman simulation will handle the dot consumption after the move, therefore we need to
         // explicitly exclude the start position from the search.
-        if (openSet.top().type == TileType::DOT && openSet.top().position != start) {
+        if (openSet.top().type == TileType::Dot && openSet.top().position != start) {
             return extractPathTo(mazeAdapter, openSet.top().position);
         }
         expandCell(openSet, mazeAdapter, heuristic);

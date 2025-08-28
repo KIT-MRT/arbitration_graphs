@@ -37,7 +37,7 @@ std::optional<EnvironmentModel::GhostWithDistance> EnvironmentModel::closestScar
     }
 
     if (closestScaredGhostCache_.cached(time)) {
-        return closestScaredGhostCache_.cached(time).value();
+        return closestScaredGhostCache_.cached(time);
     }
 
     GhostWithDistance currentlyClosestScaredGhost = closestGhost(scaredGhosts);

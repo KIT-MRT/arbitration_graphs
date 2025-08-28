@@ -40,7 +40,7 @@ TEST(MoveRandomlyTest, getRandomCommand) {
 
     int sampleSize = 1000;
     std::map<Direction, int> directionCounter{
-        {Direction::UP, 0}, {Direction::DOWN, 0}, {Direction::LEFT, 0}, {Direction::RIGHT, 0}};
+        {Direction::Up, 0}, {Direction::Down, 0}, {Direction::Left, 0}, {Direction::Right, 0}};
 
     for (int i = 0; i < sampleSize; i++) {
         Direction direction = moveRandomlyBehavior.getCommand(time, environmentModel).nextDirection();
@@ -51,10 +51,10 @@ TEST(MoveRandomlyTest, getRandomCommand) {
     }
 
     // Every possible direction should be chosen roughly the same amount of time
-    EXPECT_NEAR(0.25, directionCounter[Direction::UP] / static_cast<double>(sampleSize), 0.1);
-    EXPECT_NEAR(0.25, directionCounter[Direction::DOWN] / static_cast<double>(sampleSize), 0.1);
-    EXPECT_NEAR(0.25, directionCounter[Direction::LEFT] / static_cast<double>(sampleSize), 0.1);
-    EXPECT_NEAR(0.25, directionCounter[Direction::RIGHT] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(0.25, directionCounter[Direction::Up] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(0.25, directionCounter[Direction::Down] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(0.25, directionCounter[Direction::Left] / static_cast<double>(sampleSize), 0.1);
+    EXPECT_NEAR(0.25, directionCounter[Direction::Right] / static_cast<double>(sampleSize), 0.1);
 }
 
 } // namespace demo

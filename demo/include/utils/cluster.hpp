@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 
 #include "demo/types.hpp"
@@ -23,8 +24,8 @@ struct ClusterCell : public BaseCell {
  * empty space.
  */
 struct Cluster {
-    explicit Cluster(const int& clusterId, const Positions& points)
-            : id(clusterId), dots(points), center{findClusterCenter()} {
+    explicit Cluster(const int& clusterId, Positions points)
+            : id(clusterId), dots(std::move(points)), center{findClusterCenter()} {
     }
     bool isInCluster(const Position& target) const {
         return std::any_of(dots.begin(), dots.end(), [target](Position dot) { return dot == target; });

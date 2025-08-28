@@ -32,9 +32,9 @@ using ScaredMode = ::ScaredMode;
 using Tile = ::Tile;
 } // namespace entt
 
-enum class Direction { UP, DOWN, LEFT, RIGHT };
-enum class GhostMode { CHASING, EATEN, SCARED, SCATTERING };
-enum class TileType { EMPTY, DOT, ENGERIZER, WALL, DOOR };
+enum class Direction : uint8_t { Up, Down, Left, Right };
+enum class GhostMode : uint8_t { Chasing, Eaten, Scared, Scattering };
+enum class TileType : uint8_t { Empty, Dot, Energizer, Wall, Door };
 
 using Path = std::vector<Direction>;
 struct Position {
@@ -73,10 +73,10 @@ struct Command {
     }
 
     std::map<Direction, SDL_Scancode> scancodeMap{
-        {Direction::UP, SDL_SCANCODE_UP},
-        {Direction::DOWN, SDL_SCANCODE_DOWN},
-        {Direction::LEFT, SDL_SCANCODE_LEFT},
-        {Direction::RIGHT, SDL_SCANCODE_RIGHT},
+        {Direction::Up, SDL_SCANCODE_UP},
+        {Direction::Down, SDL_SCANCODE_DOWN},
+        {Direction::Left, SDL_SCANCODE_LEFT},
+        {Direction::Right, SDL_SCANCODE_RIGHT},
     };
 
     Path path;
@@ -87,16 +87,17 @@ struct Move {
             : direction{direction}, deltaPosition{directionDeltaPositionMap().at(direction)} {
     }
 
-    // It would be nicer to have a static member here, but as we're self-referencing Move here, that doesn't work (incomplete type).
-    // Using a static member function returning this list is still nicer than a global constant variable
+    // It would be nicer to have a static member here, but as we're self-referencing Move here, that doesn't work
+    // (incomplete type). Using a static member function returning this list is still nicer than a global constant
+    // variable
     static std::vector<Move> possibleMoves() {
-        return {Move{Direction::UP}, Move{Direction::DOWN}, Move{Direction::LEFT}, Move{Direction::RIGHT}};
+        return {Move{Direction::Up}, Move{Direction::Down}, Move{Direction::Left}, Move{Direction::Right}};
     }
     static std::map<Direction, Position> directionDeltaPositionMap() {
-        return {{Direction::UP, {0, -1}},
-                {Direction::DOWN, {0, 1}},
-                {Direction::LEFT, {-1, 0}},
-                {Direction::RIGHT, {1, 0}}};
+        return {{Direction::Up, {0, -1}},
+                {Direction::Down, {0, 1}},
+                {Direction::Left, {-1, 0}},
+                {Direction::Right, {1, 0}}};
     }
 
     Direction direction;

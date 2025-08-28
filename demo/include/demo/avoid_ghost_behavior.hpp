@@ -28,6 +28,12 @@ public:
             : Behavior(name), parameters_{parameters} {
     }
 
+    AvoidGhostBehavior(const AvoidGhostBehavior&) = default;
+    AvoidGhostBehavior(AvoidGhostBehavior&&) = default;
+    AvoidGhostBehavior& operator=(const AvoidGhostBehavior&) = default;
+    AvoidGhostBehavior& operator=(AvoidGhostBehavior&&) = default;
+    virtual ~AvoidGhostBehavior() = default;
+
     Command getCommand(const Time& time, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const override;

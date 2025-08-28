@@ -22,6 +22,12 @@ public:
     explicit StayInPlaceBehavior(const std::string& name = "StayInPlace") : Behavior(name) {
     }
 
+    StayInPlaceBehavior(const StayInPlaceBehavior&) = default;
+    StayInPlaceBehavior(StayInPlaceBehavior&&) = default;
+    StayInPlaceBehavior& operator=(const StayInPlaceBehavior&) = default;
+    StayInPlaceBehavior& operator=(StayInPlaceBehavior&&) = default;
+    virtual ~StayInPlaceBehavior() = default;
+
     Command getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) override;
 
     bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModel& environmentModel) const override;
@@ -29,10 +35,10 @@ public:
 
 private:
     static Direction oppositeDirection(const Direction& direction) {
-        const std::map<Direction, Direction> oppositeDirectionMap{{Direction::UP, Direction::DOWN},
-                                                                  {Direction::DOWN, Direction::UP},
-                                                                  {Direction::LEFT, Direction::RIGHT},
-                                                                  {Direction::RIGHT, Direction::LEFT}};
+        const std::map<Direction, Direction> oppositeDirectionMap{{Direction::Up, Direction::Down},
+                                                                  {Direction::Down, Direction::Up},
+                                                                  {Direction::Left, Direction::Right},
+                                                                  {Direction::Right, Direction::Left}};
         return oppositeDirectionMap.at(direction);
     }
 };
