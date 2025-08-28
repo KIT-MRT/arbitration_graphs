@@ -41,7 +41,7 @@ COPY test /tmp/arbitration_graphs/test
 WORKDIR /tmp/arbitration_graphs
 RUN pip install .
 
-CMD ["python3", "-m", "unittest", "discover", "-s", "test"]
+CMD ["python3", "-m", "unittest", "discover"]
 
 
 # =============
