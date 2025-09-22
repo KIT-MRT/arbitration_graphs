@@ -60,7 +60,7 @@ public:
         rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
         rootArbitrator_->addOption(stayInPlaceBehavior_,
                                    PriorityArbitrator::Option::Flags::Interruptable |
-                                       PriorityArbitrator::Option::Fallback);
+                                       PriorityArbitrator::Option::Flags::Fallback);
     }
 
     Command getCommand(const Time& time) {

@@ -123,15 +123,15 @@ explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{
     // Add the ChangeDotCluster and EatClosestDot behavior components as options to the
     // cost arbitrator while also passing the cost estimator
     eatDotsArbitrator_->addOption(
-        changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+        changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
     eatDotsArbitrator_->addOption(
-        eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+        eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
 
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
-    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
 }
 ```
 

@@ -119,20 +119,20 @@ explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{
     eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
     costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
     eatDotsArbitrator_->addOption(
-        changeDotClusterBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+        changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
     eatDotsArbitrator_->addOption(
-        eatClosestDotBehavior_, CostArbitrator::Option::Flags::INTERRUPTABLE, costEstimator_);
+        eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
 
     // Pass the verifier instance to the priority arbitrator
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
-    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::INTERRUPTABLE);
-    // Add the StayInPlace behavior component. Mark it as a last resort fallback layer using the FALLBACK flag.
+    rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(avoidGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(eatDotsArbitrator_, PriorityArbitrator::Option::Flags::Interruptable);
+    rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
+    // Add the StayInPlace behavior component. Mark it as a last resort fallback layer using the Fallback flag.
     rootArbitrator_->addOption(stayInPlaceBehavior_,
-                               PriorityArbitrator::Option::Flags::INTERRUPTABLE |
-                                   PriorityArbitrator::Option::FALLBACK);
+                               PriorityArbitrator::Option::Flags::Interruptable |
+                                   PriorityArbitrator::Option::Flags::Fallback);
 }
 ```
 </details>
