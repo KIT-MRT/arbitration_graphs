@@ -36,7 +36,7 @@ public:
         CostEstimator::Parameters costEstimator;
     };
 
-    explicit PacmanAgent(const entt::Game& game) : environmentModel_{game} {
+    explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
         verifier_ = std::make_shared<Verifier>();
 
         avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
@@ -60,7 +60,7 @@ public:
         rootArbitrator_->addOption(moveRandomlyBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
         rootArbitrator_->addOption(stayInPlaceBehavior_,
                                    PriorityArbitrator::Option::Flags::Interruptable |
-                                       PriorityArbitrator::Option::Fallback);
+                                       PriorityArbitrator::Option::Flags::Fallback);
     }
 
     Command getCommand(const Time& time) {
