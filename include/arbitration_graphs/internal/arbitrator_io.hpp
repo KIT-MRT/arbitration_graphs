@@ -9,43 +9,45 @@ namespace arbitration_graphs {
 //    Arbitrator::Option    //
 //////////////////////////////
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::ostream& Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option::to_stream(
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
-    const int& option_index,
+    const EnvironmentModelT& environmentModel,
+    const int& /*optionIndex*/,
     const std::string& prefix,
     const std::string& suffix) const {
 
-    if (verificationResult_.cached(time) && !verificationResult_.cached(time)->isOk()) {
+    if (verificationResult(time) && !verificationResult(time).value()->isOk()) {
         // ANSI backspace: \010
         // ANSI strikethrough on: \033[9m
         output << "×××\010\010\010\033[9m";
-        behavior_->to_stream(output, time, prefix, suffix);
+        behavior()->toStream(output, time, environmentModel, prefix, suffix);
         // ANSI strikethrough off: \033[29m
         // ANSI hide on: \033[8m
         // ANSI hide off: \033[28m
         output << "\033[29m\033[8m×××\033[28m";
     } else {
-        behavior_->to_stream(output, time, prefix, suffix);
+        behavior()->toStream(output, time, environmentModel, prefix, suffix);
     }
 
     return output;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-YAML::Node Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option::toYaml(const Time& time) const {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
+    const Time& time, const EnvironmentModelT& environmentModel) const {
     YAML::Node node;
     node["type"] = "Option";
-    node["behavior"] = behavior_->toYaml(time);
-    if (verificationResult_.cached(time)) {
-        node["verificationResult"] = verificationResult_.cached(time)->isOk() ? "passed" : "failed";
+    node["behavior"] = behavior()->toYaml(time, environmentModel);
+    if (verificationResult(time)) {
+        node["verificationResult"] = verificationResult(time).value()->isOk() ? "passed" : "failed";
     }
-    if (hasFlag(Option::Flags::INTERRUPTABLE)) {
-        node["flags"].push_back("INTERRUPTABLE");
+    if (hasFlag(Option::Flags::Interruptable)) {
+        node["flags"].push_back("Interruptable");
     }
-    if (hasFlag(Option::Flags::FALLBACK)) {
-        node["flags"].push_back("FALLBACK");
+    if (hasFlag(Option::Flags::Fallback)) {
+        node["flags"].push_back("Fallback");
     }
 
     return node;
@@ -56,33 +58,37 @@ YAML::Node Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Op
 //        Arbitrator        //
 //////////////////////////////
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::ostream& Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::to_stream(
-    std::ostream& output, const Time& time, const std::string& prefix, const std::string& suffix) const {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::ostream& Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::toStream(std::ostream& output,
+                                                                             const Time& time,
+                                                                             const EnvironmentModelT& environmentModel,
+                                                                             const std::string& prefix,
+                                                                             const std::string& suffix) const {
 
-    Behavior<CommandT>::to_stream(output, time, prefix, suffix);
+    Behavior<EnvironmentModelT, CommandT>::toStream(output, time, environmentModel, prefix, suffix);
 
-    for (int i = 0; i < (int)behaviorOptions_.size(); ++i) {
-        const typename Option::Ptr& option = behaviorOptions_.at(i);
+    for (int i = 0; i < static_cast<int>(options().size()); ++i) {
+        const typename Option::ConstPtr option = options().at(i);
         bool isActive = activeBehavior_ && (option == activeBehavior_);
 
         if (isActive) {
-            output << suffix << std::endl << prefix << " -> ";
+            output << suffix << '\n' << prefix << " -> ";
         } else {
-            output << suffix << std::endl << prefix << "    ";
+            output << suffix << '\n' << prefix << "    ";
         }
-        option->to_stream(output, time, i, "    " + prefix, suffix);
+        option->toStream(output, time, environmentModel, i, "    " + prefix, suffix);
     }
     return output;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-YAML::Node Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::toYaml(const Time& time) const {
-    YAML::Node node = Behavior<CommandT>::toYaml(time);
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+YAML::Node Arbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
+    const Time& time, const EnvironmentModelT& environmentModel) const {
+    YAML::Node node = Behavior<EnvironmentModelT, CommandT>::toYaml(time, environmentModel);
 
     node["type"] = "Arbitrator";
-    for (const typename Option::Ptr& option : behaviorOptions_) {
-        YAML::Node yaml = option->toYaml(time);
+    for (const typename Option::ConstPtr& option : options()) {
+        YAML::Node yaml = option->toYaml(time, environmentModel);
         node["options"].push_back(yaml);
     }
     if (activeBehavior_) {

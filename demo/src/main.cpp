@@ -1,6 +1,5 @@
 #include <exception>
 #include <iostream>
-#include <thread>
 
 #include <arbitration_graphs/gui/web_server.hpp>
 
@@ -15,7 +14,7 @@ using namespace arbitration_graphs;
 int main() {
     try {
         PacmanWrapper demo;
-        demo.printKeybindings();
+        PacmanWrapper::printKeybindings();
 
         PacmanAgent agent(demo.game());
 

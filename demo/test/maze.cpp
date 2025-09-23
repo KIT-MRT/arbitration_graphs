@@ -7,10 +7,10 @@ namespace utils::a_star {
 using namespace demo;
 
 TEST(MazeState, positionConsideringTunnel) {
-    const char str[] = {"### #"
-                        "#    "
-                        "### #"};
-    Maze maze{makeCustomMazeState({5, 3}, str)};
+    Maze maze{makeCustomMazeState({5, 3},
+                                  "### #"
+                                  "#    "
+                                  "### #")};
 
     // Regular position -> no wrapping
     EXPECT_EQ(maze.positionConsideringTunnel({1, 1}).x, 1);

@@ -3,10 +3,10 @@
 
 namespace demo {
 
-Command ChaseGhostBehavior::getCommand(const Time& time) {
-    auto pacmanPosition = environmentModel_->pacmanPosition();
+Command ChaseGhostBehavior::getCommand(const Time& time, const EnvironmentModel& environmentModel) {
+    auto pacmanPosition = environmentModel.pacmanPosition();
 
-    auto closestScaredGhost = environmentModel_->closestScaredGhost(time);
+    auto closestScaredGhost = environmentModel.closestScaredGhost(time);
     if (!closestScaredGhost) {
         throw std::runtime_error("Can not compute command to chase ghost because there are no scared ghosts.");
     }
@@ -16,14 +16,14 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
     std::optional<Direction> direction;
     double minDistance = std::numeric_limits<double>::max();
     for (const auto& move : Move::possibleMoves()) {
-        auto nextPosition = environmentModel_->positionConsideringTunnel(pacmanPosition + move.deltaPosition);
+        auto nextPosition = environmentModel.positionConsideringTunnel(pacmanPosition + move.deltaPosition);
 
-        if (environmentModel_->isWall(nextPosition)) {
+        if (environmentModel.isWall(nextPosition)) {
             continue;
         }
 
         // Chose the direction moving pacman towards the closest scared ghost (considering ghost movement)
-        auto nextDistance = environmentModel_->mazeDistance(nextPosition, ghostPosition);
+        auto nextDistance = environmentModel.mazeDistance(nextPosition, ghostPosition);
         if (nextDistance < minDistance) {
             direction = move.direction;
             minDistance = nextDistance;
@@ -37,14 +37,14 @@ Command ChaseGhostBehavior::getCommand(const Time& time) {
     return Command{direction.value()};
 }
 
-bool ChaseGhostBehavior::checkInvocationCondition(const Time& time) const {
-    return environmentModel_->closestScaredGhost(time).has_value() &&
-           environmentModel_->closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
-           environmentModel_->closestScaredGhost(time)->distance < parameters_.invocationMinDistance;
+bool ChaseGhostBehavior::checkInvocationCondition(const Time& time, const EnvironmentModel& environmentModel) const {
+    return environmentModel.closestScaredGhost(time).has_value() &&
+           environmentModel.closestScaredGhost(time)->ghost.scaredCountdown > parameters_.minScaredTicksLeft &&
+           environmentModel.closestScaredGhost(time)->distance < parameters_.invocationMinDistance;
 }
 
-bool ChaseGhostBehavior::checkCommitmentCondition(const Time& time) const {
-    return checkInvocationCondition(time);
+bool ChaseGhostBehavior::checkCommitmentCondition(const Time& time, const EnvironmentModel& environmentModel) const {
+    return checkInvocationCondition(time, environmentModel);
 }
 
 } // namespace demo

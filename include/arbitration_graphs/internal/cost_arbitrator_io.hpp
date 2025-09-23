@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iomanip>
+
 #include "../cost_arbitrator.hpp"
 
 
@@ -9,30 +11,31 @@ namespace arbitration_graphs {
 //    CostArbitrator::Option    //
 //////////////////////////////////
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-std::ostream& CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option::to_stream(
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toStream(
     std::ostream& output,
     const Time& time,
-    const int& option_index,
+    const EnvironmentModelT& environmentModel,
+    const int& optionIndex,
     const std::string& prefix,
     const std::string& suffix) const {
 
-    if (last_estimated_cost_) {
-        output << std::fixed << std::setprecision(3) << "- (cost: " << *last_estimated_cost_ << ") ";
+    if (lastEstimatedCost_) {
+        output << std::fixed << std::setprecision(3) << "- (cost: " << *lastEstimatedCost_ << ") ";
     } else {
         output << "- (cost:  n.a.) ";
     }
 
-    ArbitratorBase::Option::to_stream(output, time, option_index, prefix, suffix);
+    ArbitratorBase::Option::toStream(output, time, environmentModel, optionIndex, prefix, suffix);
     return output;
 }
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-YAML::Node CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::Option::toYaml(
-    const Time& time) const {
-    YAML::Node node = ArbitratorBase::Option::toYaml(time);
-    if (last_estimated_cost_) {
-        node["cost"] = *last_estimated_cost_;
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
+    const Time& time, const EnvironmentModelT& environmentModel) const {
+    YAML::Node node = ArbitratorBase::Option::toYaml(time, environmentModel);
+    if (lastEstimatedCost_) {
+        node["cost"] = *lastEstimatedCost_;
     }
     return node;
 }
@@ -42,14 +45,15 @@ YAML::Node CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>
 //        CostArbitrator        //
 //////////////////////////////////
 
-template <typename CommandT, typename SubCommandT, typename VerifierT, typename VerificationResultT>
-YAML::Node CostArbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>::toYaml(const Time& time) const {
-    YAML::Node node = ArbitratorBase::toYaml(time);
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
+YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
+    const Time& time, const EnvironmentModelT& environmentModel) const {
+    YAML::Node node = ArbitratorBase::toYaml(time, environmentModel);
 
     node["type"] = "CostArbitrator";
     node["options"] = YAML::Null;
-    for (const auto& option : this->behaviorOptions_) {
-        node["options"].push_back(option->toYaml(time));
+    for (const auto& option : this->options()) {
+        node["options"].push_back(option->toYaml(time, environmentModel));
     }
 
     return node;

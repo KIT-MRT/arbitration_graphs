@@ -95,7 +95,7 @@ Open the GUI with your favorite browser:
 
 ### Explanation
 
-You will see the *Pacman Agent* arbitrator selecting between five behavior options (by priority).  
+You will see the *Pac-Man Agent* arbitrator selecting between five behavior options (by priority).  
 The *Eat Dots* option is itself an arbitrator with two sub-behaviors (selecting by expected benefit).
 
 In this scene,
@@ -139,6 +139,7 @@ Handy for development or if your target platform is currently not supported by t
 First make sure all dependencies are installed:
 - The arbitration graph core library (see [../README.md](../README.md))
 - Python 3.8 or higher
+- [pybind11](https://pybind11.readthedocs.io/en/stable/installing.html) >= 3.0.0
 - [ninja](https://ninja-build.org/)
 
 See also the [`Dockerfile`](./Dockerfile) for how to install these packages under Debian or Ubuntu.
@@ -166,7 +167,8 @@ Clone the repository and build the package using CMake:
 ```bash
 mkdir -p arbitration_graphs/python_bindings/build
 cd arbitration_graphs/python_bindings/build
-cmake ..
+# Point to the pybind11 CMake configuration directory, if not installed globally (e.g., via pip in a virtual environment)
+cmake -Dpybind11_DIR=$(pybind11-config --cmakedir) ..
 cmake --build .
 ```
 </details>
@@ -198,7 +200,7 @@ This package includes unit tests analogous to the C++ tests.
 To run all tests, use the following command:
 
 ```bash
-cd arbitration_graphs/python_bindings/test
+cd arbitration_graphs/python_bindings
 python -m unittest discover
 ```
 </details>
@@ -277,7 +279,7 @@ This library and repo has been crafted with ❤️ by
 
 Christoph and Piotr coded the core in a pair-programming session.
 Piotr also contributed the GUI and GitHub Page.
-Nick implemented the awesome PacMan demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
+Nick implemented the awesome Pac-Man demo and tutorial, with drafting support by Christoph, reviews and finetuning by Piotr.
 The Python bindings have been contributed by Nick and reviewed by Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;

@@ -1,14 +1,25 @@
-import os
+# pyright: reportUninitializedInstanceVariable=false
+
 import time
 import unittest
-
 from collections import defaultdict
+from typing import cast, final
+
+from typing_extensions import override
 
 import arbitration_graphs as ag
-from dummy_types import DummyBehavior, PrintStrings
+
+from .dummy_types import (
+    DummyBehavior,
+    DummyCommand,
+    DummyEnvironmentModel,
+    PrintStrings,
+)
 
 
+@final
 class TestRandomArbitrator(unittest.TestCase):
+    @override
     def setUp(self):
         self.test_behavior_unavailable = DummyBehavior(False, False, "Unavailable")
         self.test_behavior_high_weight = DummyBehavior(True, False, "HighWeight")
@@ -17,6 +28,8 @@ class TestRandomArbitrator(unittest.TestCase):
 
         self.test_random_arbitrator = ag.RandomArbitrator()
 
+        self.environment_model = DummyEnvironmentModel()
+
         self.time = time.time()
 
     def test_basic_functionality(self):
@@ -24,19 +37,27 @@ class TestRandomArbitrator(unittest.TestCase):
 
         # if there are no options yet -> the invocationCondition should be false
         self.assertFalse(
-            self.test_random_arbitrator.check_invocation_condition(self.time)
+            self.test_random_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
         )
         self.assertFalse(
-            self.test_random_arbitrator.check_commitment_condition(self.time)
+            self.test_random_arbitrator.check_commitment_condition(
+                self.time, self.environment_model
+            )
         )
 
         # otherwise the invocationCondition is true if any of the option has true invocationCondition
         self.test_random_arbitrator.add_option(self.test_behavior_unavailable, NO_FLAGS)
         self.assertFalse(
-            self.test_random_arbitrator.check_invocation_condition(self.time)
+            self.test_random_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
         )
         self.assertFalse(
-            self.test_random_arbitrator.check_commitment_condition(self.time)
+            self.test_random_arbitrator.check_commitment_condition(
+                self.time, self.environment_model
+            )
         )
 
         self.test_random_arbitrator.add_option(
@@ -49,19 +70,28 @@ class TestRandomArbitrator(unittest.TestCase):
         weight_sum_of_available_options = 2.5 + 1.0 + 0.5
 
         self.assertTrue(
-            self.test_random_arbitrator.check_invocation_condition(self.time)
+            self.test_random_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
         )
         self.assertFalse(
-            self.test_random_arbitrator.check_commitment_condition(self.time)
+            self.test_random_arbitrator.check_commitment_condition(
+                self.time, self.environment_model
+            )
         )
 
-        self.test_random_arbitrator.gain_control(self.time)
+        self.test_random_arbitrator.gain_control(self.time, self.environment_model)
 
         sample_size = 1000
-        command_counter = defaultdict(int)
+        command_counter: dict[str, int] = defaultdict(int)
 
         for _ in range(sample_size):
-            command = self.test_random_arbitrator.get_command(self.time)
+            command = cast(
+                DummyCommand,
+                self.test_random_arbitrator.get_command(
+                    self.time, self.environment_model
+                ),
+            )
             command_counter[command] += 1
 
         self.assertEqual(0, command_counter["Unavailable"])
@@ -102,35 +132,40 @@ class TestRandomArbitrator(unittest.TestCase):
         # fmt:off
         ps = PrintStrings()
         expected_printout = (
-            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_false + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout = self.test_random_arbitrator.to_str(self.time)
+        actual_printout = self.test_random_arbitrator.to_string(
+            self.time, self.environment_model
+        )
         print(actual_printout)
 
         self.assertEqual(expected_printout, actual_printout)
 
-        self.test_random_arbitrator.gain_control(self.time)
+        self.test_random_arbitrator.gain_control(self.time, self.environment_model)
         self.assertEqual(
-            "MidWeight", self.test_random_arbitrator.get_command(self.time)
+            "MidWeight",
+            self.test_random_arbitrator.get_command(self.time, self.environment_model),
         )
 
         # fmt:off
         expected_printout = (
-            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n"
-            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n"
-            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n"
+            ps.invocation_true + ps.commitment_true + "RandomArbitrator\n" +
+            "    - (weight: 1.000) " + ps.invocation_false + ps.commitment_false + "Unavailable\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "HighWeight\n" +
+            " -> - (weight: 2.500) " + ps.invocation_true + ps.commitment_false + "MidWeight\n" +
             "    - (weight: 0.000) " + ps.invocation_true + ps.commitment_false + "LowWeight"
         )
         # fmt:on
-        actual_printout_after_gain = self.test_random_arbitrator.to_str(self.time)
+        actual_printout_after_gain = self.test_random_arbitrator.to_string(
+            self.time, self.environment_model
+        )
         print(actual_printout_after_gain)
 
         self.assertEqual(expected_printout, actual_printout_after_gain)
@@ -153,7 +188,9 @@ class TestRandomArbitrator(unittest.TestCase):
             self.test_behavior_low_weight, NO_FLAGS, 0
         )
 
-        yaml_node = self.test_random_arbitrator.to_yaml(self.time)
+        yaml_node = self.test_random_arbitrator.to_yaml(
+            self.time, self.environment_model
+        )
 
         self.assertEqual("RandomArbitrator", yaml_node["type"])
         self.assertEqual("RandomArbitrator", yaml_node["name"])
@@ -179,10 +216,12 @@ class TestRandomArbitrator(unittest.TestCase):
 
         self.assertTrue("activeBehavior" not in yaml_node)
 
-        self.test_random_arbitrator.gain_control(self.time)
-        self.test_random_arbitrator.get_command(self.time)
+        self.test_random_arbitrator.gain_control(self.time, self.environment_model)
+        self.test_random_arbitrator.get_command(self.time, self.environment_model)
 
-        yaml_node = self.test_random_arbitrator.to_yaml(self.time)
+        yaml_node = self.test_random_arbitrator.to_yaml(
+            self.time, self.environment_model
+        )
 
         self.assertEqual(True, yaml_node["invocationCondition"])
         self.assertEqual(True, yaml_node["commitmentCondition"])

@@ -20,6 +20,8 @@ namespace demo {
  * the world. */
 class EnvironmentModel {
 public:
+    friend class MockEnvironmentModel; // Allow extended access for testing purposes
+
     using Cluster = utils::Cluster;
     using Clusters = utils::DotClusterFinder::Clusters;
     using Entities = utils::Entities;
@@ -92,7 +94,7 @@ public:
         return astar_.mazeDistance(start, goal);
     }
 
-    std::optional<Path> pathTo(const Position& goal) {
+    std::optional<Path> pathTo(const Position& goal) const {
         return astar_.shortestPath(pacmanPosition(), goal);
     }
 
@@ -118,7 +120,7 @@ public:
         return maze_->positionConsideringTunnel(position);
     }
 
-protected:
+private:
     void updateEntities(const entt::Registry& registry);
 
     GhostWithDistance closestGhost(const Ghosts& ghosts) const;

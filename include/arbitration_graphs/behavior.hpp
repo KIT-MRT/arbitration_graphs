@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <memory>
-#include <sstream>
+#include <utility>
 
 #include <yaml-cpp/yaml.h>
 
@@ -20,6 +20,8 @@ namespace arbitration_graphs {
  *
  * The command itself is a template argument, so you can use this behavior planning library to realize chessplay,
  * trading or automated driving.
+ * The input to getting a command is an environment model, which is also application-specific and therefore a template
+ * argument. The behavior itself will only read but never modify the environment model.
  *
  * In general, a behavior is not aware if it is active or not, but only if it is applicable in the current situation.
  * In such a way, the complexity of behavior planning is tackled on twofold:
@@ -31,13 +33,13 @@ namespace arbitration_graphs {
  *      only about their commitment/invocation conditions and optionally other abstract (quality) measures
  *      (e.g. priority, expected reward, etc.).
  */
-template <typename CommandT>
+template <typename EnvironmentModelT, typename CommandT>
 class Behavior {
 public:
     using Ptr = std::shared_ptr<Behavior>;
     using ConstPtr = std::shared_ptr<const Behavior>;
 
-    Behavior(const std::string& name = "Behavior") : name_{name} {
+    explicit Behavior(std::string name = "Behavior") : name_{std::move(name)} {
     }
 
     /*!
@@ -46,18 +48,20 @@ public:
      * \attention   Make sure to only call getCommand(), if either the invocation or the commitment condition is true!
      *              Otherwise the behavior is undefined or an exception may be thrown.
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      A command that can be executed to realize this behavior.
      */
-    virtual CommandT getCommand(const Time& time) = 0;
+    virtual CommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) = 0;
 
     /*!
      * \brief   true if the behavior can be activated in the current state of the environment model
      *          and would generate reasonable commands
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      true if this behavior can be activated
      */
-    virtual bool checkInvocationCondition(const Time& time) const {
+    virtual bool checkInvocationCondition(const Time& /*time*/, const EnvironmentModelT& /*environmentModel*/) const {
         return false;
     }
 
@@ -67,9 +71,10 @@ public:
      * Usually tells a superior behavior/arbitrator that this can be continued.
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      true if this behavior can be continued
      */
-    virtual bool checkCommitmentCondition(const Time& time) const {
+    virtual bool checkCommitmentCondition(const Time& /*time*/, const EnvironmentModelT& /*environmentModel*/) const {
         return false;
     }
 
@@ -84,8 +89,9 @@ public:
      * nor the command itself depend on that.
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      */
-    virtual void gainControl(const Time& time) {
+    virtual void gainControl(const Time& time, const EnvironmentModelT& environmentModel) {
     }
 
     /*!
@@ -95,21 +101,26 @@ public:
      * After loseControl(), getCommand() will not be called without prior gainControl().
      *
      * \param time  Expected execution time point of next behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      */
-    virtual void loseControl(const Time& time) {
+    virtual void loseControl(const Time& time, const EnvironmentModelT& environmentModel) {
     }
 
     /*!
-     * \brief Returns a string representation of the behavior object with its current state using to_stream()
+     * \brief Returns a string representation of the behavior object with its current state using toStream()
      *
      * \param time      Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \param prefix    A string that should be prepended to each line this function writes
      * \param suffix    A string that should be appended to each line this function writes
      * \return          String representation of this behavior
      *
-     * \see to_stream()
+     * \see toStream()
      */
-    virtual std::string to_str(const Time& time, const std::string& prefix = "", const std::string& suffix = "") const;
+    virtual std::string toString(const Time& time,
+                                 const EnvironmentModelT& environmentModel,
+                                 const std::string& prefix = "",
+                                 const std::string& suffix = "") const;
 
     /*!
      * \brief Writes a string representation of the behavior object with its current state to the given output stream.
@@ -134,21 +145,28 @@ public:
      * \param suffix    A string that should be appended to each line that is written to the output stream
      * \return          The same given input stream (signature similar to std::ostream& operator<<())
      */
-    virtual std::ostream& to_stream(std::ostream& output,
-                                    const Time& time,
-                                    const std::string& prefix = "",
-                                    const std::string& suffix = "") const;
+    virtual std::ostream& toStream(std::ostream& output,
+                                   const Time& time,
+                                   const EnvironmentModelT& environmentModel,
+                                   const std::string& prefix = "",
+                                   const std::string& suffix = "") const;
 
     /*!
      * \brief Returns a yaml representation of the behavior object with its current state
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const;
+    virtual YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const;
 
-    const std::string name_;
+    const std::string& name() const {
+        return name_;
+    }
+
+private:
+    std::string name_;
 };
 } // namespace arbitration_graphs
 
-#include "internal/behavior_io.hpp"
+#include "internal/behavior_io.hpp" // IWYU pragma: keep

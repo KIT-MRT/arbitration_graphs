@@ -8,11 +8,7 @@ FROM ghcr.io/kit-mrt/arbitration_graphs:$VERSION AS base
 RUN apt-get update && \
     apt-get install -y \
       ninja-build \
-      pybind11-dev \
-      python3-dev \
-      python3-pip \
-      python3-pybind11 \
-      python3-yaml && \
+      python3-pip && \
     apt-get clean
 
 
@@ -45,7 +41,7 @@ COPY test /tmp/arbitration_graphs/test
 WORKDIR /tmp/arbitration_graphs
 RUN pip install .
 
-CMD ["python3", "-m", "unittest", "discover", "-s", "test"]
+CMD ["python3", "-m", "unittest", "discover"]
 
 
 # =============

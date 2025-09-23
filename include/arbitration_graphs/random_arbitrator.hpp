@@ -9,26 +9,28 @@
 
 namespace arbitration_graphs {
 
-template <typename CommandT,
-          typename SubCommandT = CommandT,
-          typename VerifierT = verification::PlaceboVerifier<SubCommandT>,
-          typename VerificationResultT = typename decltype(std::function{VerifierT::analyze})::result_type>
-class RandomArbitrator : public Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT> {
+template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
+class RandomArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT> {
 public:
-    using ArbitratorBase = Arbitrator<CommandT, SubCommandT, VerifierT, VerificationResultT>;
+    using ArbitratorBase = Arbitrator<EnvironmentModelT, CommandT, SubCommandT>;
 
     using Ptr = std::shared_ptr<RandomArbitrator>;
     using ConstPtr = std::shared_ptr<const RandomArbitrator>;
 
-    struct Option : public ArbitratorBase::Option {
+    using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
+    using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
+
+    class Option : public ArbitratorBase::Option {
     public:
         using Ptr = std::shared_ptr<Option>;
         using FlagsT = typename ArbitratorBase::Option::FlagsT;
         using ConstPtr = std::shared_ptr<const Option>;
 
-        enum Flags { NO_FLAGS = 0b0, INTERRUPTABLE = 0b1, FALLBACK = 0b10 };
+        enum Flags { NoFlags = 0b0, Interruptable = 0b1, Fallback = 0b10 };
 
-        Option(const typename Behavior<SubCommandT>::Ptr& behavior, const FlagsT& flags, const double& weight)
+        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
+               const FlagsT& flags,
+               const double& weight)
                 : ArbitratorBase::Option(behavior, flags), weight_(weight) {
         }
 
@@ -36,43 +38,52 @@ public:
          * \brief Writes a string representation of the behavior option and its
          * current state to the output stream.
          *
-         * \param output        Output stream to write into, will be returned also
-         * \param time          Expected execution time point of this behaviors command
-         * \param option_index  Position index of this option within behaviorOptions_
-         * \param prefix        A string that should be prepended to each line that is written to the output stream
-         * \param suffix        A string that should be appended to each line that is written to the output stream
-         * \return              The same given input stream (signature similar to std::ostream& operator<<())
+         * \param output            Output stream to write into, will be returned also
+         * \param time              Expected execution time point of this behaviors command
+         * \param environmentModel  A read-only object containing the current state of the environment
+         * \param optionIndex       Position index of this option within options()
+         * \param prefix            A string that should be prepended to each line that is written to the output stream
+         * \param suffix            A string that should be appended to each line that is written to the output stream
+         * \return                  The same given input stream (signature similar to std::ostream& operator<<())
          *
-         * \see Arbitrator::to_stream()
+         * \see Arbitrator::toStream()
          */
-        virtual std::ostream& to_stream(std::ostream& output,
-                                        const Time& time,
-                                        const int& option_index,
-                                        const std::string& prefix = "",
-                                        const std::string& suffix = "") const;
+        std::ostream& toStream(std::ostream& output,
+                               const Time& time,
+                               const EnvironmentModelT& environmentModel,
+                               const int& optionIndex,
+                               const std::string& prefix = "",
+                               const std::string& suffix = "") const override;
 
         //! The option has a chance of weight_ divided by the sum of all options' weights to be selected.
+        double weight() const {
+            return weight_;
+        }
+
+    private:
         double weight_;
     };
     using Options = std::vector<typename Option::Ptr>;
 
-    RandomArbitrator(const std::string& name = "RandomArbitrator", const VerifierT& verifier = VerifierT())
-            : ArbitratorBase(name, verifier){};
+    explicit RandomArbitrator(const std::string& name = "RandomArbitrator",
+                              typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+            : ArbitratorBase(name, verifier) {};
 
-    void addOption(const typename Behavior<SubCommandT>::Ptr& behavior,
+    void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags,
                    const double& weight = 1) {
         typename Option::Ptr option = std::make_shared<Option>(behavior, flags, weight);
-        this->behaviorOptions_.push_back(option);
+        this->addOptionImpl(option);
     }
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
      *
      * \param time  Expected execution time point of this behaviors command
+     * \param environmentModel  A read-only object containing the current state of the environment
      * \return      Yaml representation of this behavior
      */
-    virtual YAML::Node toYaml(const Time& time) const override;
+    YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
 protected:
     /*!
@@ -80,8 +91,10 @@ protected:
      *
      * \return  Behavior options sorted randomly considering their respective weights
      */
-    typename ArbitratorBase::Options sortOptionsByGivenPolicy(const typename ArbitratorBase::Options& options,
-                                                              const Time& time) const override {
+    typename ArbitratorBase::Options sortOptionsByGivenPolicy(
+        const typename ArbitratorBase::Options& options,
+        const Time& /*time*/,
+        const EnvironmentModelT& /*environmentModel*/) const override {
         typename ArbitratorBase::Options shuffledOptions;
         shuffledOptions.reserve(options.size());
 
@@ -89,7 +102,7 @@ protected:
         weights.reserve(options.size());
         for (const auto& optionBase : options) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-            weights.push_back(option->weight_);
+            weights.push_back(option->weight());
         }
 
         std::random_device randomDevice;
@@ -110,4 +123,4 @@ protected:
 }; // namespace arbitration_graphs
 } // namespace arbitration_graphs
 
-#include "internal/random_arbitrator_io.hpp"
+#include "internal/random_arbitrator_io.hpp" // IWYU pragma: keep

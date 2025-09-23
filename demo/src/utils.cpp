@@ -2,11 +2,11 @@
 
 namespace utils {
 
-int dotsAlongPath(const Positions& absolutePath, const demo::EnvironmentModel::ConstPtr& environmentModel) {
+int dotsAlongPath(const Positions& absolutePath, const demo::EnvironmentModel& environmentModel) {
     int nDots{0};
 
     for (const auto& position : absolutePath) {
-        if (environmentModel->isDot(position)) {
+        if (environmentModel.isDot(position)) {
             nDots++;
         }
     }
@@ -14,7 +14,7 @@ int dotsAlongPath(const Positions& absolutePath, const demo::EnvironmentModel::C
 }
 
 int dotsInRadius(const Position& center,
-                 const demo::EnvironmentModel::ConstPtr& environmentModel,
+                 const demo::EnvironmentModel& environmentModel,
                  int pathEndNeighborhoodRadius) {
     int nDots{0};
 
@@ -22,7 +22,7 @@ int dotsInRadius(const Position& center,
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
             Position neighbor = {center.x + dx, center.y + dy};
-            if (environmentModel->isInBounds(neighbor) && environmentModel->isDot(neighbor)) {
+            if (environmentModel.isInBounds(neighbor) && environmentModel.isDot(neighbor)) {
                 nDots++;
             }
         }

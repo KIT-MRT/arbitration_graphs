@@ -2,15 +2,17 @@
 
 namespace demo {
 
-Command StayInPlaceBehavior::getCommand(const Time& /*time*/) {
-    Direction currentDirection = environmentModel_->pacmanDirection();
+Command StayInPlaceBehavior::getCommand(const Time& /*time*/, const EnvironmentModel& environmentModel) {
+    Direction currentDirection = environmentModel.pacmanDirection();
     return Command{oppositeDirection(currentDirection)};
 }
 
-bool StayInPlaceBehavior::checkInvocationCondition(const Time& /*time*/) const {
+bool StayInPlaceBehavior::checkInvocationCondition(const Time& /*time*/,
+                                                   const EnvironmentModel& /*environmentModel*/) const {
     return true;
 }
-bool StayInPlaceBehavior::checkCommitmentCondition(const Time& /*time*/) const {
+bool StayInPlaceBehavior::checkCommitmentCondition(const Time& /*time*/,
+                                                   const EnvironmentModel& /*environmentModel*/) const {
     return false;
 }
 

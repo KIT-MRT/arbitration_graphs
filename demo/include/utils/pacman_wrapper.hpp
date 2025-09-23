@@ -14,11 +14,15 @@ namespace utils {
 class PacmanWrapper {
 public:
     PacmanWrapper();
+    PacmanWrapper(const PacmanWrapper&) = delete;
+    PacmanWrapper(PacmanWrapper&&) = delete;
+    PacmanWrapper& operator=(const PacmanWrapper&) = delete;
+    PacmanWrapper& operator=(PacmanWrapper&&) = delete;
     ~PacmanWrapper() {
         SDL_Quit();
     }
 
-    void progressGame(const demo::Command& command, const demo::EnvironmentModel::ConstPtr& environmentModel);
+    void progressGame(const demo::Command& command, const demo::EnvironmentModel& environmentModel);
 
     bool quit() const {
         return quit_;
@@ -27,11 +31,12 @@ public:
         return game_;
     }
 
-    void printKeybindings();
+    static void printKeybindings();
 
 private:
     void handleUserInput();
     void renderPath(const demo::Positions& path);
+    void toggleFullscreen();
 
     int scaleFactor_;
     SDL::Window window_;

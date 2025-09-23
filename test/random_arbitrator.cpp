@@ -1,44 +1,8 @@
-// google test docs
-// wiki page: https://code.google.com/p/googletest/w/list
-// primer: https://code.google.com/p/googletest/wiki/V1_7_Primer
-// FAQ: https://code.google.com/p/googletest/wiki/FAQ
-// advanced guide: https://code.google.com/p/googletest/wiki/V1_7_AdvancedGuide
-// samples: https://code.google.com/p/googletest/wiki/V1_7_Samples
-//
-// List of some basic tests fuctions:
-// Fatal assertion                      Nonfatal assertion Verifies /
-// Description
-//-------------------------------------------------------------------------------------------------------------------------------------------------------
-// ASSERT_EQ(expected, actual);         EXPECT_EQ(expected, actual); expected ==
-// actual ASSERT_NE(val1, val2);               EXPECT_NE(val1, val2); val1 !=
-// val2 ASSERT_LT(val1, val2);               EXPECT_LT(val1, val2); val1 < val2
-// ASSERT_LE(val1, val2);               EXPECT_LE(val1, val2); val1 <= val2
-// ASSERT_GT(val1, val2);               EXPECT_GT(val1, val2); val1 > val2
-// ASSERT_GE(val1, val2);               EXPECT_GE(val1, val2); val1 >= val2
-//
-// ASSERT_FLOAT_EQ(expected, actual);   EXPECT_FLOAT_EQ(expected, actual);   the
-// two float values are almost equal (4 ULPs) ASSERT_DOUBLE_EQ(expected,
-// actual); EXPECT_DOUBLE_EQ(expected, actual);  the two double values are
-// almost equal (4 ULPs) ASSERT_NEAR(val1, val2, abs_error);  EXPECT_NEAR(val1,
-// val2, abs_error); the difference between val1 and val2 doesn't exceed the
-// given absolute error
-//
-// Note: more information about ULPs can be found here:
-// http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
-//
-// Example of two unit test:
-// TEST(Math, Add) {
-//    ASSERT_EQ(10, 5+ 5);
-//}
-//
-// TEST(Math, Float) {
-//	  ASSERT_FLOAT_EQ((10.0f + 2.0f) * 3.0f, 10.0f * 3.0f + 2.0f * 3.0f)
-//}
-//=======================================================================================================================================================
 #include <map>
 #include <memory>
 #include <string>
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 #include "behavior.hpp"
 #include "random_arbitrator.hpp"
@@ -52,15 +16,16 @@ using namespace arbitration_graphs_tests;
 
 class RandomArbitratorTest : public ::testing::Test {
 protected:
-    using OptionFlags = RandomArbitrator<DummyCommand>::Option::Flags;
+    using OptionFlags = RandomArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorUnavailable = std::make_shared<DummyBehavior>(false, false, "Unavailable");
     DummyBehavior::Ptr testBehaviorHighWeight = std::make_shared<DummyBehavior>(true, false, "HighWeight");
     DummyBehavior::Ptr testBehaviorMidWeight = std::make_shared<DummyBehavior>(true, false, "MidWeight");
     DummyBehavior::Ptr testBehaviorLowWeight = std::make_shared<DummyBehavior>(true, false, "LowWeight");
 
+    RandomArbitrator<DummyEnvironmentModel, DummyCommand> testRandomArbitrator;
 
-    RandomArbitrator<DummyCommand> testRandomArbitrator;
+    DummyEnvironmentModel environmentModel;
 
     Time time{Clock::now()};
 };
@@ -68,30 +33,30 @@ protected:
 
 TEST_F(RandomArbitratorTest, BasicFunctionality) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
+    EXPECT_FALSE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 2.5);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0.5);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 2.5);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0.5);
     double weightSumOfAvailableOptions = 2.5 + 1.0 + 0.5;
 
-    EXPECT_TRUE(testRandomArbitrator.checkInvocationCondition(time));
-    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time));
+    EXPECT_TRUE(testRandomArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testRandomArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testRandomArbitrator.gainControl(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
 
     int sampleSize = 1000;
     std::map<std::string, int> commandCounter{
         {"Unavailable", 0}, {"HighWeight", 0}, {"MidWeight", 0}, {"LowWeight", 0}};
 
     for (int i = 0; i < sampleSize; i++) {
-        std::string command = testRandomArbitrator.getCommand(time);
+        std::string command = testRandomArbitrator.getCommand(time, environmentModel);
         commandCounter[command]++;
     }
 
@@ -103,51 +68,51 @@ TEST_F(RandomArbitratorTest, BasicFunctionality) {
 
 TEST_F(RandomArbitratorTest, Printout) {
     // Force midWeight behavior by setting all applicable behavior's weights to 0
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS, 2.5);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags, 2.5);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
     // clang-format off
-    std::string expected_printout = invocationTrueString + commitmentFalseString + "RandomArbitrator\n"
-                                    "    - (weight: 1.000) " + invocationFalseString + commitmentFalseString + "Unavailable\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                                    "    - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
-                                    "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
+    std::string expectedPrintout = InvocationTrueString + CommitmentFalseString + "RandomArbitrator\n"
+                                    "    - (weight: 1.000) " + InvocationFalseString + CommitmentFalseString + "Unavailable\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                                    "    - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
+                                    "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
-    std::string actual_printout = testRandomArbitrator.to_str(time);
-    std::cout << actual_printout << std::endl;
+    std::string actualPrintout = testRandomArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 
 
-    testRandomArbitrator.gainControl(time);
-    EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time));
+    testRandomArbitrator.gainControl(time, environmentModel);
+    EXPECT_EQ("MidWeight", testRandomArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
-    expected_printout = invocationTrueString + commitmentTrueString + "RandomArbitrator\n"
-                        "    - (weight: 1.000) " + invocationFalseString + commitmentFalseString + "Unavailable\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "HighWeight\n"
-                        " -> - (weight: 2.500) " + invocationTrueString + commitmentFalseString + "MidWeight\n"
-                        "    - (weight: 0.000) " + invocationTrueString + commitmentFalseString + "LowWeight";
+    expectedPrintout = InvocationTrueString + CommitmentTrueString + "RandomArbitrator\n"
+                        "    - (weight: 1.000) " + InvocationFalseString + CommitmentFalseString + "Unavailable\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "HighWeight\n"
+                        " -> - (weight: 2.500) " + InvocationTrueString + CommitmentFalseString + "MidWeight\n"
+                        "    - (weight: 0.000) " + InvocationTrueString + CommitmentFalseString + "LowWeight";
     // clang-format on
-    actual_printout = testRandomArbitrator.to_str(time);
-    std::cout << actual_printout << std::endl;
+    actualPrintout = testRandomArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
 
-    EXPECT_EQ(expected_printout, actual_printout);
+    EXPECT_EQ(expectedPrintout, actualPrintout);
 }
 
 TEST_F(RandomArbitratorTest, ToYaml) {
-    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS, 0);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::INTERRUPTABLE);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorUnavailable, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags, 0);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::Interruptable);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
-    YAML::Node yaml = testRandomArbitrator.toYaml(time);
+    YAML::Node yaml = testRandomArbitrator.toYaml(time, environmentModel);
 
     EXPECT_EQ("RandomArbitrator", yaml["type"].as<std::string>());
     EXPECT_EQ("RandomArbitrator", yaml["name"].as<std::string>());
@@ -173,10 +138,10 @@ TEST_F(RandomArbitratorTest, ToYaml) {
 
     EXPECT_EQ(false, yaml["activeBehavior"].IsDefined());
 
-    testRandomArbitrator.gainControl(time);
-    testRandomArbitrator.getCommand(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
+    testRandomArbitrator.getCommand(time, environmentModel);
 
-    yaml = testRandomArbitrator.toYaml(time);
+    yaml = testRandomArbitrator.toYaml(time, environmentModel);
 
     EXPECT_EQ(true, yaml["invocationCondition"].as<bool>());
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
@@ -187,21 +152,22 @@ TEST_F(RandomArbitratorTest, ToYaml) {
 
 TEST(PriorityArbitrator, SubCommandTypeDiffersFromCommandType) {
     Time time{Clock::now()};
+    DummyEnvironmentModel environmentModel;
 
-    using OptionFlags = RandomArbitrator<DummyCommandInt, DummyCommand>::Option::Flags;
+    using OptionFlags = RandomArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand>::Option::Flags;
 
     DummyBehavior::Ptr testBehaviorHighWeight = std::make_shared<DummyBehavior>(false, false, "___HighWeight___");
     DummyBehavior::Ptr testBehaviorMidWeight = std::make_shared<DummyBehavior>(true, false, "__MidWeight__");
     DummyBehavior::Ptr testBehaviorLowWeight = std::make_shared<DummyBehavior>(true, true, "_LowWeight_");
 
-    RandomArbitrator<DummyCommandInt, DummyCommand> testRandomArbitrator;
+    RandomArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testRandomArbitrator;
 
-    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NO_FLAGS);
-    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NO_FLAGS, 0);
+    testRandomArbitrator.addOption(testBehaviorHighWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorMidWeight, OptionFlags::NoFlags);
+    testRandomArbitrator.addOption(testBehaviorLowWeight, OptionFlags::NoFlags, 0);
 
-    testRandomArbitrator.gainControl(time);
+    testRandomArbitrator.gainControl(time, environmentModel);
 
     std::string expected = "__MidWeight__";
-    EXPECT_EQ(expected.length(), testRandomArbitrator.getCommand(time));
+    EXPECT_EQ(expected.length(), testRandomArbitrator.getCommand(time, environmentModel));
 }

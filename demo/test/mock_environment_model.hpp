@@ -6,12 +6,19 @@
 
 namespace demo {
 
+inline entt::Game makeDummyGame() {
+    entt::Game game;
+    game.init();
+    return game;
+}
+
 class MockEnvironmentModel : public EnvironmentModel {
 public:
     using Ptr = std::shared_ptr<MockEnvironmentModel>;
     using ConstPtr = std::shared_ptr<const MockEnvironmentModel>;
 
-    MockEnvironmentModel() : EnvironmentModel(dummyGame_) {
+    explicit MockEnvironmentModel(entt::Game game = makeDummyGame())
+            : EnvironmentModel(game), dummyGame_{std::move(game)} {
         initializeEntitiesInOppositeCorners();
         setEmptyMaze();
     }
@@ -55,32 +62,34 @@ public:
 
     void initializeEntitiesInOppositeCorners() {
         setPacmanPosition({1, 1});
-        setPacmanDirection(Direction::RIGHT);
+        setPacmanDirection(Direction::Right);
         setGhostPositions({8, 8});
-        setGhostDirections(Direction::LEFT);
+        setGhostDirections(Direction::Left);
     }
 
     Maze::ConstPtr maze() const {
         return maze_;
     }
+
+    // The Pac-Man implementation uses a C-style array to define the maze, so we have to do the same here.
     template <std::size_t Size>
-    void setMaze(const Position& size, const char (&str)[Size]) {
+    void setMaze(const Position& size, const char (&str)[Size]) { // NOLINT(*-avoid-c-arrays)
         maze_ = std::make_shared<Maze>(makeCustomMazeState({size.x, size.y}, str));
         astar_ = utils::AStar(maze_);
         clusterFinder_ = utils::DotClusterFinder(maze_);
     }
     void setEmptyMaze() {
-        const char str[] = {"##########"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "#        #"
-                            "##########"};
-        setMaze({10, 10}, str);
+        setMaze({10, 10},
+                "##########"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "#        #"
+                "##########");
     }
 
 private:
