@@ -69,7 +69,11 @@ Options can be behavior components or nested arbitrators.
 **Verifiers** check whether the command of a behavior component is safe and valid prior to being selected by an arbitrator.
 
 <p align="center">
-  <img src="../docs/assets/img/arbitration_graphs_at_a_glance.svg" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+    <img src="../docs/assets/img/arbitration_graphs_at_a_glance_light.svg">
+  </picture>
 </p>
 
 
@@ -108,7 +112,26 @@ In this scene,
 
 ## Installation
 
+> **Note:** We are currently working on a new major release of the library which will include some breaking changes.
+> See the corresponding [issue](https://github.com/KIT-MRT/arbitration_graphs/issues/116) and [pull request](https://github.com/KIT-MRT/arbitration_graphs/pull/123) for details and the current status.
+
 The Python interface to the arbitration graph library is generated using `pybind11` and provides a convenient interface to utilize the full power of the arbitration graph library in Python.
+
+### Via PyPI (Recommended)
+
+Even more good news: The package is available on PyPI, so installing it is as easy as running:
+
+```bash
+pip install arbitration-graphs
+```
+
+> **Note:** The package requires Python 3.8 or higher and currently only supports a limited set of platforms.
+> Let us know if you need support for an additional platform and we will see what we can do!
+
+### From Source
+
+You can also build the package from source.
+Handy for development or if your target platform is currently not supported by the pre-built package.
 
 <details>
 <summary>Prerequisites</summary>
@@ -123,7 +146,7 @@ See also the [`Dockerfile`](./Dockerfile) for how to install these packages unde
 </details>
 
 <details>
-<summary>From source via pip</summary>
+<summary>Via pip</summary>
 
 
 ```bash
@@ -138,7 +161,7 @@ pip install git+https://github.com/KIT-MRT/arbitration_graphs.git#subdirectory=p
 </details>
 
 <details>
-<summary>From source via CMake</summary>
+<summary>Via CMake</summary>
 
 Clone the repository and build the package using CMake:
 ```bash
@@ -187,53 +210,72 @@ python -m unittest discover
 This library and repo has been crafted with ❤️ by
 
 **Christoph Burger**
-&nbsp;
-<a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
-  ChristophBurger89
-</a>
-&nbsp;
-<a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
-  christoph-burger
-</a>
-&nbsp;
-<a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
-  0009-0002-9147-8749
-</a><br>
+<span>&nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
+  <a href="https://github.com/ChristophBurger89" aria-label="View GitHub profile">
+    ChristophBurger89
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <a href="https://www.linkedin.com/in/christoph-burger" aria-label="View LinkedIn profile">
+    christoph-burger
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <a href="https://orcid.org/0009-0002-9147-8749" aria-label="View ORCID record">
+    0009-0002-9147-8749
+  </a>
+</span>
+<br>
 **Nick Le Large**
-&nbsp;
-<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
-  ll-nick
-</a>
-&nbsp;
-<a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
-  nick-le-large
-</a>
-&nbsp;
-<a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
-  0009-0006-5191-9043
-</a><br>
+<span>
+  &nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
+  <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+    ll-nick
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <a href="https://www.linkedin.com/in/nick-le-large" aria-label="View LinkedIn profile">
+    nick-le-large
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <a href="https://orcid.org/0009-0006-5191-9043" aria-label="View ORCID record">
+    0009-0006-5191-9043
+  </a>
+</span>
+<br>
 **Piotr Spieker**
+<span>
 &nbsp;
-<a href="https://github.com/orzechow" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
-  orzechow
-</a>
-&nbsp;
-<a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
-  piotr-spieker
-</a>
-&nbsp;
-<a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
-  <img style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
-  0000-0002-0449-3741
-</a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
+  <a href="https://github.com/orzechow" aria-label="View GitHub profile">
+    orzechow
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/In-Blue-128@2x.png" alt="LinkedIn logo"/>
+  <a href="https://www.linkedin.com/in/piotr-spieker" aria-label="View LinkedIn profile">
+    piotr-spieker
+  </a>
+  &nbsp;
+  <img height="16" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/ORCID-iD_icon_vector.svg" alt="ORCID iD"/>
+  <a href="https://orcid.org/0000-0002-0449-3741" aria-label="View ORCID record">
+    0000-0002-0449-3741
+  </a>
+</span>
 
 Christoph and Piotr coded the core in a pair-programming session.
 Piotr also contributed the GUI and GitHub Page.
@@ -241,16 +283,28 @@ Nick implemented the awesome Pac-Man demo and tutorial, with drafting support by
 The Python bindings have been contributed by Nick and reviewed by Piotr.
 
 The repository is maintained by Piotr Spieker&nbsp;
-<a href="https://github.com/orzechow" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
-  orzechow
-</a>
+<span>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
+  <a href="https://github.com/orzechow" aria-label="View GitHub profile">
+    orzechow
+  </a>
+</span>
 and
 Nick Le Large&nbsp;
-<a href="https://github.com/ll-nick" aria-label="View GitHub profile">
-  <img class="github-logo" style="height:1em; position: relative; top:.2em" src="../docs/assets/img/github-mark-white.svg" alt="GitHub Invertocat"/>
-  ll-nick
-</a>.
+<span>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../docs/assets/img/github-mark-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../docs/assets/img/github-mark.svg">
+    <img height="16" class="github-logo" src="../docs/assets/img/github-mark.svg" alt="GitHub Invertocat"/>
+  </picture>
+  <a href="https://github.com/ll-nick" aria-label="View GitHub profile">
+    ll-nick
+  </a>
+</span>.
 
 
 ## Citation

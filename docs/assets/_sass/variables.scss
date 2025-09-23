@@ -3,28 +3,28 @@ $large-breakpoint: 64em !default;
 $medium-breakpoint: 42em !default;
 
 // Navigation
-$nav-text-color: #ccc !default;
-$nav-text-active-color: #333 !default;
-$nav-text-focus-color: #666 !default;
+$nav-text-color: var(--nav-text-color, #ccc) !default;
+$nav-text-active-color: var(--nav-text-active-color, #333) !default;
+$nav-text-focus-color: var(--nav-text-focus-color, #666) !default;
 
 // Headers
-$header-heading-color: #fff !default;
-$header-bg-color: #008383 !default;
-$header-bg-color-secondary: #00001D !default;
+$header-heading-color: var(--header-heading-color, #fff) !default;
+$header-bg-color: var(--header-bg-color, #008383) !default;
+$header-bg-color-secondary: var(--header-bg-color-secondary, #00001D) !default;
 
 // Text
-$section-headings-color: #257180 !default;
-$section-bg-color: #fff !default;
-$body-text-color: #606c71 !default;
-$body-link-color: #008383 !default;
-$blockquote-text-color: #819198 !default;
+$section-headings-color: var(--section-headings-color, #257180) !default;
+$section-bg-color: var(--section-bg-color, #fff) !default;
+$body-text-color: var(--body-text-color, #606c71) !default;
+$body-link-color: var(--body-link-color, #008383) !default;
+$blockquote-text-color: var(--blockquote-text-color, #819198) !default;
 
 // Code
-$code-bg-color: #272822 !default;
-$code-text-color: #f8f8f2 !default;
+$code-bg-color: var(--code-bg-color, #272822) !default;
+$code-text-color: var(--code-text-color, #f8f8f2) !default;
 
 // Borders
-$border-color: #dce6f0 !default;
-$table-border-color: #e9ebec !default;
-$hr-border-color: #eff0f1 !default;
-$nav-border-color: #efefef !default;
+$border-color: var(--border-color, #dce6f0) !default;
+$table-border-color: var(--table-border-color, #e9ebec) !default;
+$hr-border-color: var(--hr-border-color, #eff0f1) !default;
+$nav-border-color: var(--nav-border-color, #efefef) !default;
