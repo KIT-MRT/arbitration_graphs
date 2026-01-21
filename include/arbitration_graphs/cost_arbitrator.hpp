@@ -3,9 +3,12 @@
 #include <memory>
 #include <optional>
 
+#include <util_caching/cache.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include "arbitrator.hpp"
+#include "exceptions.hpp"
+#include "types.hpp"
 
 
 namespace arbitration_graphs {
@@ -21,6 +24,45 @@ struct CostEstimator {
                                 bool isActive) = 0;
 };
 
+template <typename EnvironmentModelT, typename SubCommandT>
+struct BatchCostEstimator {
+    using Ptr = std::shared_ptr<BatchCostEstimator>;
+    using ConstPtr = std::shared_ptr<const BatchCostEstimator>;
+
+    struct Candidate {
+        SubCommandT command;
+        bool isActive;
+    };
+
+    virtual std::vector<double> estimateCosts(const Time& time,
+                                              const EnvironmentModelT& environmentModel,
+                                              const std::vector<Candidate>& candidates) = 0;
+};
+
+template <typename EnvironmentModelT, typename SubCommandT>
+class PerOptionToBatchAdapter : public BatchCostEstimator<EnvironmentModelT, SubCommandT> {
+public:
+    using CandidateT = typename BatchCostEstimator<EnvironmentModelT, SubCommandT>::Candidate;
+    using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
+    explicit PerOptionToBatchAdapter(typename CostEstimatorT::Ptr perOptionEstimator)
+            : perOptionEstimator_(std::move(perOptionEstimator)) {
+    }
+    std::vector<double> estimateCosts(const Time& time,
+                                      const EnvironmentModelT& environmentModel,
+                                      const std::vector<CandidateT>& candidates) override {
+        std::vector<double> costs;
+        costs.reserve(candidates.size());
+        for (const auto& candidate : candidates) {
+            costs.push_back(
+                perOptionEstimator_->estimateCost(time, environmentModel, candidate.command, candidate.isActive));
+        }
+        return costs;
+    }
+
+private:
+    typename CostEstimatorT::Ptr perOptionEstimator_;
+};
+
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
 class CostArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT> {
 public:
@@ -29,6 +71,8 @@ public:
     using Ptr = std::shared_ptr<CostArbitrator>;
     using ConstPtr = std::shared_ptr<const CostArbitrator>;
 
+    using BatchCostEstimatorT = BatchCostEstimator<EnvironmentModelT, SubCommandT>;
+    using CandidateT = typename BatchCostEstimatorT::Candidate;
     using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
     using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
@@ -43,20 +87,19 @@ public:
 
         Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                const FlagsT& flags,
-               const typename CostEstimatorT::Ptr& costEstimator)
+               const typename BatchCostEstimatorT::Ptr& costEstimator)
                 : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
         }
 
-        double estimateCost(const Time& time,
-                            const EnvironmentModelT& environmentModel,
-                            const SubCommandT& command,
-                            bool isActive) const {
-            double cost = costEstimator_->estimateCost(time, environmentModel, command, isActive);
-            lastEstimatedCost_ = cost;
-            return cost;
+        typename BatchCostEstimatorT::Ptr costEstimator() const {
+            return costEstimator_;
         }
-        void resetLastEstimatedCost() const {
-            lastEstimatedCost_.reset();
+
+        std::optional<double> lastEstimatedCost(const Time& time) const {
+            return lastEstimatedCost_.cached(time);
+        }
+        void cacheLastEstimatedCost(const Time& time, const double& cost) const {
+            lastEstimatedCost_.cache(time, cost);
         }
 
         /*!
@@ -88,8 +131,8 @@ public:
         YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
     private:
-        typename CostEstimatorT::Ptr costEstimator_;
-        mutable std::optional<double> lastEstimatedCost_;
+        typename BatchCostEstimatorT::Ptr costEstimator_;
+        mutable util_caching::Cache<Time, double> lastEstimatedCost_;
     };
 
 
@@ -97,12 +140,20 @@ public:
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier) {};
 
+    void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
+                   const typename Option::FlagsT& flags,
+                   const typename BatchCostEstimatorT::Ptr& batchCostEstimator) {
+        typename Option::Ptr option = std::make_shared<Option>(behavior, flags, batchCostEstimator);
+        this->addOptionImpl(option);
+    }
+
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
                    const typename Option::FlagsT& flags,
                    const typename CostEstimatorT::Ptr& costEstimator) {
-        typename Option::Ptr option = std::make_shared<Option>(behavior, flags, costEstimator);
-        this->addOptionImpl(option);
+        typename BatchCostEstimatorT::Ptr batchEstimator =
+            std::make_shared<PerOptionToBatchAdapter<EnvironmentModelT, SubCommandT>>(costEstimator);
+        addOption(behavior, flags, batchEstimator);
     }
 
     /*!
@@ -124,34 +175,63 @@ private:
         const typename ArbitratorBase::Options& options,
         const Time& time,
         const EnvironmentModelT& environmentModel) const override {
-        // reset lastEstimatedCost for all behaviorOptions
-        for (const auto& optionBase : this->options()) {
-            typename Option::ConstPtr option = std::dynamic_pointer_cast<const Option>(optionBase);
-            option->resetLastEstimatedCost();
-        }
 
-        // sort given options by using a multiset
-        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
+        using CandidateT = typename BatchCostEstimatorT::Candidate;
 
+        std::unordered_map<typename BatchCostEstimatorT::Ptr, std::vector<typename Option::Ptr>> optionsByEstimator;
         for (auto& optionBase : options) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+            optionsByEstimator[option->costEstimator()].push_back(option);
+        }
 
-            const bool isActive = this->isActive(option);
+        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
 
-            std::optional<SubCommandT> command;
-            if (isActive) {
-                command = this->getAndVerifyCommand(option, time, environmentModel);
-            } else {
-                option->behavior()->gainControl(time, environmentModel);
-                command = this->getAndVerifyCommand(option, time, environmentModel);
-                option->behavior()->loseControl(time, environmentModel);
+        for (const auto& group : optionsByEstimator) {
+            auto estimator = group.first;
+            auto& groupedOptions = group.second;
+
+            std::vector<typename Option::Ptr> validOptions;
+            for (auto& option : groupedOptions) {
+                const bool isActive = this->isActive(option);
+
+                std::optional<SubCommandT> command;
+                if (isActive) {
+                    command = this->getAndVerifyCommand(option, time, environmentModel);
+                } else {
+                    option->behavior()->gainControl(time, environmentModel);
+                    command = this->getAndVerifyCommand(option, time, environmentModel);
+                    option->behavior()->loseControl(time, environmentModel);
+                }
+                if (!command) {
+                    continue;
+                }
+
+                validOptions.push_back(option);
             }
-            if (!command) {
+
+            if (validOptions.empty()) {
                 continue;
             }
 
-            double cost = option->estimateCost(time, environmentModel, command.value(), isActive);
-            sortedOptionsMap.insert({cost, option});
+            std::vector<CandidateT> candidates;
+            candidates.reserve(validOptions.size());
+            for (const auto& option : validOptions) {
+                const bool isActive = this->isActive(option);
+                const SubCommandT command = option->getCommand(time, environmentModel);
+                candidates.push_back(CandidateT{command, isActive});
+            }
+
+            const std::vector<double> estimatedCosts = estimator->estimateCosts(time, environmentModel, candidates);
+
+            if (estimatedCosts.size() != validOptions.size()) {
+                throw InvalidCostError("CostEstimator returned invalid number of costs!");
+            }
+
+            for (std::size_t i = 0; i < validOptions.size(); i++) {
+                const double cost = estimatedCosts[i];
+                validOptions[i]->cacheLastEstimatedCost(time, cost);
+                sortedOptionsMap.insert({cost, validOptions[i]});
+            }
         }
 
         // copy back to vector (these are pointers anyway, so copying is cheap)
