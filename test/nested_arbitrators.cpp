@@ -33,7 +33,7 @@ protected:
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
-    CostArbitratorT::Ptr testCostArbitrator = std::make_shared<CostArbitratorT>();
+    CostArbitratorT::Ptr testCostArbitrator = std::make_shared<CostArbitratorT>(costEstimator);
     PriorityArbitratorT::Ptr testPriorityArbitrator = std::make_shared<PriorityArbitratorT>();
 
     PriorityArbitratorT::Ptr testRootPriorityArbitrator =
@@ -48,8 +48,8 @@ TEST_F(NestedArbitratorsTest, Printout) {
     testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NoFlags);
     testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NoFlags);
 
-    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags, costEstimator);
-    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags, costEstimator);
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags);
 
     testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NoFlags);
     testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NoFlags);
@@ -99,8 +99,8 @@ TEST_F(NestedArbitratorsTest, ToYaml) {
     testRootPriorityArbitrator->addOption(testCostArbitrator, PriorityOptionFlags::NoFlags);
     testRootPriorityArbitrator->addOption(testPriorityArbitrator, PriorityOptionFlags::NoFlags);
 
-    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags, costEstimator);
-    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags, costEstimator);
+    testCostArbitrator->addOption(testBehaviorLowCost, CostOptionFlags::NoFlags);
+    testCostArbitrator->addOption(testBehaviorHighCost, CostOptionFlags::NoFlags);
 
     testPriorityArbitrator->addOption(testBehaviorHighPriority, PriorityOptionFlags::NoFlags);
     testPriorityArbitrator->addOption(testBehaviorLowPriority, PriorityOptionFlags::NoFlags);
