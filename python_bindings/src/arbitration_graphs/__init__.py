@@ -5,6 +5,7 @@
 from .arbitration_graphs_py import (
     ApplicableOptionFailedVerificationError,
     Arbitrator,
+    BatchCostEstimator,
     Behavior,
     CostArbitrator,
     CostEstimator,
@@ -22,6 +23,7 @@ from .arbitration_graphs_py import (
 __all__ = [
     "ApplicableOptionFailedVerificationError",
     "Arbitrator",
+    "BatchCostEstimator",
     "Behavior",
     "CostArbitrator",
     "CostEstimator",
