@@ -171,32 +171,13 @@ private:
 
         using CandidateT = typename BatchCostEstimatorT::Candidate;
 
-        std::vector<typename Option::Ptr> validOptions;
-        for (auto& optionBase : options) {
-            typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
+        std::vector<typename Option::Ptr> validOptions = collectValidOptions(options, time, environmentModel);
 
-            const bool isActive = this->isActive(option);
-
-            std::optional<SubCommandT> command;
-            if (isActive) {
-                command = this->getAndVerifyCommand(option, time, environmentModel);
-            } else {
-                option->behavior()->gainControl(time, environmentModel);
-                command = this->getAndVerifyCommand(option, time, environmentModel);
-                option->behavior()->loseControl(time, environmentModel);
-            }
-            if (!command) {
-                continue;
-            }
-
-            validOptions.push_back(option);
-        }
-
-        // prepare candidates for cost estimation
         std::vector<CandidateT> candidates;
         candidates.reserve(validOptions.size());
         for (const auto& option : validOptions) {
             const bool isActive = this->isActive(option);
+            // The command has already been computed (and verified), so we can safely retrieve it from cache
             const std::optional<SubCommandT> command = option->getCommand(time, environmentModel);
             if (!command) {
                 throw InvalidStateError("Could not retrieve cached command.");
@@ -223,6 +204,32 @@ private:
         }
         return sortedOptionsVector;
     }
+
+    std::vector<typename Option::Ptr> collectValidOptions(const typename ArbitratorBase::Options& options,
+                                                          const Time& time,
+                                                          const EnvironmentModelT& environmentModel) const {
+
+        std::vector<typename Option::Ptr> validOptions;
+        for (auto& optionBase : options) {
+            auto option = std::dynamic_pointer_cast<Option>(optionBase);
+
+            const bool isActive = this->isActive(option);
+
+            std::optional<SubCommandT> command;
+            if (isActive) {
+                command = this->getAndVerifyCommand(option, time, environmentModel);
+            } else {
+                option->behavior()->gainControl(time, environmentModel);
+                command = this->getAndVerifyCommand(option, time, environmentModel);
+                option->behavior()->loseControl(time, environmentModel);
+            }
+            if (command) {
+                validOptions.push_back(option);
+            }
+        }
+        return validOptions;
+    }
+
 
     typename BatchCostEstimatorT::Ptr costEstimator_;
 };
