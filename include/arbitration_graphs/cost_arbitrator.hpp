@@ -74,6 +74,7 @@ public:
     using BatchCostEstimatorT = BatchCostEstimator<EnvironmentModelT, SubCommandT>;
     using CandidateT = typename BatchCostEstimatorT::Candidate;
     using CostEstimatorT = CostEstimator<EnvironmentModelT, SubCommandT>;
+    using PerOptionToBatchAdapterT = PerOptionToBatchAdapter<EnvironmentModelT, SubCommandT>;
     using PlaceboVerifierT = verification::PlaceboVerifier<EnvironmentModelT, SubCommandT>;
     using VerifierT = verification::Verifier<EnvironmentModelT, SubCommandT>;
 
@@ -85,14 +86,8 @@ public:
 
         enum Flags { NoFlags = 0b0, Interruptable = 0b1, Fallback = 0b10 };
 
-        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
-               const FlagsT& flags,
-               const typename BatchCostEstimatorT::Ptr& costEstimator)
-                : ArbitratorBase::Option(behavior, flags), costEstimator_{costEstimator} {
-        }
-
-        typename BatchCostEstimatorT::Ptr costEstimator() const {
-            return costEstimator_;
+        Option(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior, const FlagsT& flags)
+                : ArbitratorBase::Option(behavior, flags) {
         }
 
         std::optional<double> lastEstimatedCost(const Time& time) const {
@@ -131,30 +126,28 @@ public:
         YAML::Node toYaml(const Time& time, const EnvironmentModelT& environmentModel) const override;
 
     private:
-        typename BatchCostEstimatorT::Ptr costEstimator_;
         mutable util_caching::Cache<Time, double> lastEstimatedCost_;
     };
 
 
-    explicit CostArbitrator(const std::string& name = "CostArbitrator",
+    explicit CostArbitrator(const typename BatchCostEstimatorT::Ptr& batchCostEstimator,
+                            const std::string& name = "CostArbitrator",
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
-            : ArbitratorBase(name, verifier) {};
+            : ArbitratorBase(name, verifier), costEstimator_{batchCostEstimator} {};
+
+    explicit CostArbitrator(const typename CostEstimatorT::Ptr& costEstimator,
+                            const std::string& name = "CostArbitrator",
+                            typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
+            : ArbitratorBase(name, verifier),
+              costEstimator_{std::make_shared<PerOptionToBatchAdapterT>(costEstimator)} {};
+
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
-                   const typename Option::FlagsT& flags,
-                   const typename BatchCostEstimatorT::Ptr& batchCostEstimator) {
-        typename Option::Ptr option = std::make_shared<Option>(behavior, flags, batchCostEstimator);
+                   const typename Option::FlagsT& flags) override {
+        typename Option::Ptr option = std::make_shared<Option>(behavior, flags);
         this->addOptionImpl(option);
     }
 
-
-    void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
-                   const typename Option::FlagsT& flags,
-                   const typename CostEstimatorT::Ptr& costEstimator) {
-        typename BatchCostEstimatorT::Ptr batchEstimator =
-            std::make_shared<PerOptionToBatchAdapter<EnvironmentModelT, SubCommandT>>(costEstimator);
-        addOption(behavior, flags, batchEstimator);
-    }
 
     /*!
      * \brief Returns a yaml representation of the arbitrator object with its current state
@@ -178,60 +171,46 @@ private:
 
         using CandidateT = typename BatchCostEstimatorT::Candidate;
 
-        std::unordered_map<typename BatchCostEstimatorT::Ptr, std::vector<typename Option::Ptr>> optionsByEstimator;
+        std::vector<std::tuple<typename Option::Ptr, CandidateT>> optionsWithCandidates;
         for (auto& optionBase : options) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
-            optionsByEstimator[option->costEstimator()].push_back(option);
-        }
 
-        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
+            const bool isActive = this->isActive(option);
 
-        for (const auto& group : optionsByEstimator) {
-            auto estimator = group.first;
-            auto& groupedOptions = group.second;
-
-            std::vector<typename Option::Ptr> validOptions;
-            for (auto& option : groupedOptions) {
-                const bool isActive = this->isActive(option);
-
-                std::optional<SubCommandT> command;
-                if (isActive) {
-                    command = this->getAndVerifyCommand(option, time, environmentModel);
-                } else {
-                    option->behavior()->gainControl(time, environmentModel);
-                    command = this->getAndVerifyCommand(option, time, environmentModel);
-                    option->behavior()->loseControl(time, environmentModel);
-                }
-                if (!command) {
-                    continue;
-                }
-
-                validOptions.push_back(option);
+            std::optional<SubCommandT> command;
+            if (isActive) {
+                command = this->getAndVerifyCommand(option, time, environmentModel);
+            } else {
+                option->behavior()->gainControl(time, environmentModel);
+                command = this->getAndVerifyCommand(option, time, environmentModel);
+                option->behavior()->loseControl(time, environmentModel);
             }
-
-            if (validOptions.empty()) {
+            if (!command) {
                 continue;
             }
 
-            std::vector<CandidateT> candidates;
-            candidates.reserve(validOptions.size());
-            for (const auto& option : validOptions) {
-                const bool isActive = this->isActive(option);
-                const SubCommandT command = option->getCommand(time, environmentModel);
-                candidates.push_back(CandidateT{command, isActive});
-            }
+            optionsWithCandidates.push_back({option, CandidateT{command.value(), isActive}});
+        }
 
-            const std::vector<double> estimatedCosts = estimator->estimateCosts(time, environmentModel, candidates);
+        // prepare candidates for cost estimation
+        std::vector<CandidateT> candidates;
+        candidates.reserve(optionsWithCandidates.size());
+        for (const auto& [option, candidate] : optionsWithCandidates) {
+            candidates.push_back(candidate);
+        }
 
-            if (estimatedCosts.size() != validOptions.size()) {
-                throw InvalidCostError("CostEstimator returned invalid number of costs!");
-            }
+        std::vector<double> costs = costEstimator_->estimateCosts(time, environmentModel, candidates);
+        if (costs.size() != candidates.size()) {
+            throw InvalidCostError(
+                "CostArbitrator::sortOptionsByGivenPolicy: CostEstimator returned mismatching number of costs");
+        }
 
-            for (std::size_t i = 0; i < validOptions.size(); i++) {
-                const double cost = estimatedCosts[i];
-                validOptions[i]->cacheLastEstimatedCost(time, cost);
-                sortedOptionsMap.insert({cost, validOptions[i]});
-            }
+        std::map<double, typename Option::Ptr> sortedOptionsMap;
+        for (size_t i = 0; i < candidates.size(); ++i) {
+            const auto& [option, candidate] = optionsWithCandidates[i];
+            const double cost = costs[i];
+            option->cacheLastEstimatedCost(time, cost);
+            sortedOptionsMap.insert({cost, option});
         }
 
         // copy back to vector (these are pointers anyway, so copying is cheap)
@@ -242,6 +221,8 @@ private:
         }
         return sortedOptionsVector;
     }
+
+    typename BatchCostEstimatorT::Ptr costEstimator_;
 };
 } // namespace arbitration_graphs
 
