@@ -30,12 +30,15 @@ class CostArbitratorTest(unittest.TestCase):
             DummyCommand("mid_cost"): 0.5,
             DummyCommand("high_cost"): 1,
         }
-        self.cost_estimator = CostEstimatorFromCostMap(self.cost_map)
-        self.cost_estimator_with_activation_costs = CostEstimatorFromCostMap(
+        cost_estimator = CostEstimatorFromCostMap(self.cost_map)
+        cost_estimator_with_activation_costs = CostEstimatorFromCostMap(
             self.cost_map, 10
         )
 
-        self.test_cost_arbitrator = ag.CostArbitrator()
+        self.test_cost_arbitrator = ag.CostArbitrator(cost_estimator)
+        self.test_cost_arbitrator_with_activation_costs = ag.CostArbitrator(
+            cost_estimator_with_activation_costs
+        )
 
         self.environment_model = DummyEnvironmentModel()
 
@@ -58,12 +61,10 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.assertFalse(
             self.test_cost_arbitrator.check_invocation_condition(
@@ -79,12 +80,10 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_mid_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
 
         self.assertTrue(
@@ -154,22 +153,18 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_mid_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
 
         # fmt: off
@@ -215,22 +210,18 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_mid_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
 
         yaml_node = self.test_cost_arbitrator.to_yaml(self.time, self.environment_model)
@@ -285,109 +276,119 @@ class CostArbitratorTest(unittest.TestCase):
     def test_basic_functionality_with_interruptable_options_and_activation_costs(self):
         # If there are no options yet, the invocationCondition should be false
         self.assertFalse(
-            self.test_cost_arbitrator.check_invocation_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_invocation_condition(
                 self.time, self.environment_model
             )
         )
         self.assertFalse(
-            self.test_cost_arbitrator.check_commitment_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_commitment_condition(
                 self.time, self.environment_model
             )
         )
 
         # InvocationCondition is true if any option has true invocationCondition
-        self.test_cost_arbitrator.add_option(
+        self.test_cost_arbitrator_with_activation_costs.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator_with_activation_costs,
         )
-        self.test_cost_arbitrator.add_option(
+        self.test_cost_arbitrator_with_activation_costs.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator_with_activation_costs,
         )
         self.assertFalse(
-            self.test_cost_arbitrator.check_invocation_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_invocation_condition(
                 self.time, self.environment_model
             )
         )
         self.assertFalse(
-            self.test_cost_arbitrator.check_commitment_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_commitment_condition(
                 self.time, self.environment_model
             )
         )
 
-        self.test_cost_arbitrator.add_option(
+        self.test_cost_arbitrator_with_activation_costs.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator_with_activation_costs,
         )
-        self.test_cost_arbitrator.add_option(
+        self.test_cost_arbitrator_with_activation_costs.add_option(
             self.test_behavior_mid_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator_with_activation_costs,
         )
 
         self.assertTrue(
-            self.test_cost_arbitrator.check_invocation_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_invocation_condition(
                 self.time, self.environment_model
             )
         )
         self.assertFalse(
-            self.test_cost_arbitrator.check_commitment_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_commitment_condition(
                 self.time, self.environment_model
             )
         )
 
-        self.test_cost_arbitrator.gain_control(self.time, self.environment_model)
-        self.assertEqual(
-            "mid_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+        self.test_cost_arbitrator_with_activation_costs.gain_control(
+            self.time, self.environment_model
         )
         self.assertEqual(
             "mid_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
+        )
+        self.assertEqual(
+            "mid_cost",
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
         )
 
         self.test_behavior_mid_cost.invocation_condition = False
         self.assertTrue(
-            self.test_cost_arbitrator.check_invocation_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_invocation_condition(
                 self.time, self.environment_model
             )
         )
         self.assertTrue(
-            self.test_cost_arbitrator.check_commitment_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_commitment_condition(
                 self.time, self.environment_model
             )
         )
         self.assertEqual(
             "high_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
         )
         self.assertEqual(
             "high_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
         )
 
         # high_cost behavior is not interruptable -> high_cost should stay active
         self.test_behavior_mid_cost.invocation_condition = True
         self.assertTrue(
-            self.test_cost_arbitrator.check_invocation_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_invocation_condition(
                 self.time, self.environment_model
             )
         )
         self.assertTrue(
-            self.test_cost_arbitrator.check_commitment_condition(
+            self.test_cost_arbitrator_with_activation_costs.check_commitment_condition(
                 self.time, self.environment_model
             )
         )
         self.assertEqual(
             "high_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
         )
         self.assertEqual(
             "high_cost",
-            self.test_cost_arbitrator.get_command(self.time, self.environment_model),
+            self.test_cost_arbitrator_with_activation_costs.get_command(
+                self.time, self.environment_model
+            ),
         )
 
     def test_basic_functionality_with_interruptable_options(self):
@@ -407,12 +408,10 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator,
         )
         self.assertFalse(
             self.test_cost_arbitrator.check_invocation_condition(
@@ -428,12 +427,10 @@ class CostArbitratorTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_mid_cost,
             ag.CostArbitrator.Option.Flags.INTERRUPTABLE,
-            self.cost_estimator,
         )
 
         self.assertTrue(
