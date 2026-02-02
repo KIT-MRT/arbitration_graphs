@@ -171,7 +171,7 @@ private:
 
         using CandidateT = typename BatchCostEstimatorT::Candidate;
 
-        std::vector<std::tuple<typename Option::Ptr, CandidateT>> optionsWithCandidates;
+        std::vector<typename Option::Ptr> validOptions;
         for (auto& optionBase : options) {
             typename Option::Ptr option = std::dynamic_pointer_cast<Option>(optionBase);
 
@@ -189,28 +189,30 @@ private:
                 continue;
             }
 
-            optionsWithCandidates.push_back({option, CandidateT{command.value(), isActive}});
+            validOptions.push_back(option);
         }
 
         // prepare candidates for cost estimation
         std::vector<CandidateT> candidates;
-        candidates.reserve(optionsWithCandidates.size());
-        for (const auto& [option, candidate] : optionsWithCandidates) {
-            candidates.push_back(candidate);
+        candidates.reserve(validOptions.size());
+        for (const auto& option : validOptions) {
+            const bool isActive = this->isActive(option);
+            const std::optional<SubCommandT> command = option->getCommand(time, environmentModel);
+            if (!command) {
+                throw InvalidStateError("Could not retrieve cached command.");
+            }
+            candidates.push_back(CandidateT{command.value(), isActive});
         }
 
         std::vector<double> costs = costEstimator_->estimateCosts(time, environmentModel, candidates);
         if (costs.size() != candidates.size()) {
-            throw InvalidCostError(
-                "CostArbitrator::sortOptionsByGivenPolicy: CostEstimator returned mismatching number of costs");
+            throw InvalidCostError("CostEstimator returned mismatching number of costs.");
         }
 
-        std::map<double, typename Option::Ptr> sortedOptionsMap;
-        for (size_t i = 0; i < candidates.size(); ++i) {
-            const auto& [option, candidate] = optionsWithCandidates[i];
-            const double cost = costs[i];
-            option->cacheLastEstimatedCost(time, cost);
-            sortedOptionsMap.insert({cost, option});
+        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
+        for (std::size_t i = 0; i < validOptions.size(); ++i) {
+            validOptions[i]->cacheLastEstimatedCost(time, costs[i]);
+            sortedOptionsMap.insert({costs[i], validOptions[i]});
         }
 
         // copy back to vector (these are pointers anyway, so copying is cheap)

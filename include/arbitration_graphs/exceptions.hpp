@@ -24,6 +24,10 @@ class InvalidCostError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
+class InvalidStateError : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
+
 class VerificationError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
