@@ -16,6 +16,24 @@ namespace arbitration_graphs_py {
 namespace py = pybind11;
 namespace ag = arbitration_graphs;
 
+class PyBatchCostEstimator : public ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>,
+                             public py::trampoline_self_life_support {
+public:
+    using BaseT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+    using CandidateT = typename BaseT::Candidate;
+
+    using BaseT::BaseT;
+    virtual ~PyBatchCostEstimator() = default;
+
+    // NOLINTBEGIN(readability-function-size)
+    std::vector<double> estimateCosts(const ag::Time& time,
+                                      const EnvironmentModelWrapper& env,
+                                      const std::vector<CandidateT>& candidates) override {
+        PYBIND11_OVERRIDE_PURE_NAME(std::vector<double>, BaseT, "estimate_costs", estimateCosts, time, env, candidates);
+    }
+    // NOLINTEND(readability-function-size)
+};
+
 /// @brief A wrapper class (a.k.a. trampoline class) for the CostEstimator class to allow Python overrides.
 class PyCostEstimator : public ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>,
                         py::trampoline_self_life_support {
@@ -41,6 +59,24 @@ public:
     // NOLINTEND(readability-function-size)
 };
 
+inline void bindBatchCostEstimator(py::module& module) {
+    using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+
+    using CandidateT = typename BatchCostEstimatorT::Candidate;
+
+    py::classh<BatchCostEstimatorT, PyBatchCostEstimator> batchCostEstimator(module, "BatchCostEstimator");
+    batchCostEstimator.def(py::init<>())
+        .def("estimate_costs",
+             &BatchCostEstimatorT::estimateCosts,
+             py::arg("time"),
+             py::arg("environment_model"),
+             py::arg("candidates"));
+
+    py::classh<CandidateT>(batchCostEstimator, "Candidate")
+        .def_readonly("command", &CandidateT::command)
+        .def_readonly("is_active", &CandidateT::isActive);
+}
+
 inline void bindCostEstimator(py::module& module) {
     using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
@@ -62,6 +98,7 @@ inline void bindCostArbitrator(py::module& module) {
 
     using BehaviorT = typename ArbitratorT::Behavior;
 
+    using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
     using CostArbitratorT = ag::CostArbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
@@ -71,15 +108,20 @@ inline void bindCostArbitrator(py::module& module) {
     using VerifierT = ag::verification::Verifier<EnvironmentModelWrapper, CommandWrapper>;
     using PlaceboVerifierT = ag::verification::PlaceboVerifier<EnvironmentModelWrapper, CommandWrapper>;
 
+    bindBatchCostEstimator(module);
     bindCostEstimator(module);
 
     py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
-        .def(py::init<const std::string&, const VerifierT::Ptr&>(),
+        .def(py::init<const std::shared_ptr<BatchCostEstimatorT>&, const std::string&, const VerifierT::Ptr&>(),
+             py::arg("batch_cost_estimator"),
              py::arg("name") = "CostArbitrator",
-             py::arg("verifier") = PlaceboVerifierT())
-        .def(
-            "add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"), py::arg("cost_estimator"))
+             py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
+        .def(py::init<const std::shared_ptr<CostEstimatorT>&, const std::string&, const VerifierT::Ptr&>(),
+             py::arg("cost_estimator"),
+             py::arg("name") = "CostArbitrator",
+             py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
+        .def("add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
             "to_yaml",
             [](const CostArbitratorT& self, const Time& time, const EnvironmentModelWrapper& environmentModel) {
@@ -90,10 +132,7 @@ inline void bindCostArbitrator(py::module& module) {
         .def("__repr__", [](const CostArbitratorT& self) { return "<CostArbitrator '" + self.name() + "'>"; });
 
     py::classh<OptionT, ArbitratorOptionT> option(costArbitrator, "Option");
-    option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&, const typename CostEstimatorT::Ptr&>(),
-               py::arg("behavior"),
-               py::arg("flags"),
-               py::arg("cost_estimator"));
+    option.def(py::init<const typename BehaviorT::Ptr&, const FlagsT&>(), py::arg("behavior"), py::arg("flags"));
 
     py::enum_<typename OptionT::Flags>(option, "Flags")
         .value("NO_FLAGS", OptionT::NoFlags)
