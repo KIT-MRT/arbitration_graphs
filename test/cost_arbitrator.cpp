@@ -22,7 +22,7 @@ protected:
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
-    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
+    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 2}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
     CostEstimatorFromCostMap::Ptr costEstimatorWithActivationCosts =
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
@@ -139,7 +139,7 @@ TEST_F(CostArbitratorTest, Printout) {
     expectedPrintout = InvocationTrueString + CommitmentTrueString + "CostArbitrator\n"
                         "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "low_cost\n"
                         "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "low_cost\n"
-                        "    - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
+                        "    - (cost: 2.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
                         " -> - (cost: 0.500) " + InvocationTrueString + CommitmentFalseString + "mid_cost";
     // clang-format on
     actualPrintout = testCostArbitrator.toString(time, environmentModel);
@@ -197,11 +197,34 @@ TEST_F(CostArbitratorTest, ToYaml) {
     EXPECT_EQ(false, yaml["options"][1]["cost"].IsDefined());
     ASSERT_EQ(true, yaml["options"][2]["cost"].IsDefined());
     ASSERT_EQ(true, yaml["options"][3]["cost"].IsDefined());
-    EXPECT_NEAR(1.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
+    EXPECT_NEAR(2.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
     EXPECT_NEAR(0.5, yaml["options"][3]["cost"].as<double>(), 1e-3);
 
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
     EXPECT_EQ(3, yaml["activeBehavior"].as<int>());
+}
+
+
+TEST_F(CostArbitratorTest, BatchCostEstimator) {
+    auto batchEstimator = std::make_shared<ScaledCostEstimatorFromCostMap>(costMap);
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> batchArbitrator{batchEstimator};
+
+    batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
+
+    batchArbitrator.gainControl(time, environmentModel);
+    EXPECT_EQ("mid_cost", batchArbitrator.getCommand(time, environmentModel));
+
+    YAML::Node yaml = batchArbitrator.toYaml(time, environmentModel);
+
+
+    ASSERT_EQ(true, yaml["options"][2]["cost"].IsDefined());
+    ASSERT_EQ(true, yaml["options"][3]["cost"].IsDefined());
+    // The costs are scaled to [0,1] in this estimator
+    EXPECT_NEAR(1.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
+    EXPECT_NEAR(0.25, yaml["options"][3]["cost"].as<double>(), 1e-3);
 }
 
 

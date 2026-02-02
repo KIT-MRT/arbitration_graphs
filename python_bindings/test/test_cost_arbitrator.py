@@ -8,7 +8,7 @@ from typing_extensions import override
 
 import arbitration_graphs as ag
 
-from .cost_estimator import CostEstimatorFromCostMap
+from .cost_estimator import CostEstimatorFromCostMap, ScaledCostEstimatorFromCostMap
 from .dummy_types import (
     DummyBehavior,
     DummyCommand,
@@ -28,7 +28,7 @@ class CostArbitratorTest(unittest.TestCase):
         self.cost_map = {
             DummyCommand("low_cost"): 0,
             DummyCommand("mid_cost"): 0.5,
-            DummyCommand("high_cost"): 1,
+            DummyCommand("high_cost"): 2,
         }
         cost_estimator = CostEstimatorFromCostMap(self.cost_map)
         cost_estimator_with_activation_costs = CostEstimatorFromCostMap(
@@ -195,7 +195,7 @@ class CostArbitratorTest(unittest.TestCase):
             ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
             "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
             "    - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
-            "    - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
+            "    - (cost: 2.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             " -> - (cost: 0.500) " + ps.invocation_true + ps.commitment_false + "mid_cost"
         )
         # fmt: on
@@ -267,11 +267,40 @@ class CostArbitratorTest(unittest.TestCase):
 
         cost_2 = cast(float, yaml_node["options"][2]["cost"])
         cost_3 = cast(float, yaml_node["options"][3]["cost"])
-        self.assertAlmostEqual(1.0, cost_2, delta=1e-3)
+        self.assertAlmostEqual(2.0, cost_2, delta=1e-3)
         self.assertAlmostEqual(0.5, cost_3, delta=1e-3)
 
         self.assertTrue("activeBehavior" in yaml_node)
         self.assertEqual(3, yaml_node["activeBehavior"])
+
+    def test_batch_cost_estimator(self):
+        batch_estimator = ScaledCostEstimatorFromCostMap(self.cost_map)
+        batch_arbitrator = ag.CostArbitrator(batch_estimator)
+
+        batch_arbitrator.add_option(
+            self.test_behavior_low_cost, ag.CostArbitrator.Option.Flags.NO_FLAGS
+        )
+        batch_arbitrator.add_option(
+            self.test_behavior_low_cost, ag.CostArbitrator.Option.Flags.NO_FLAGS
+        )
+        batch_arbitrator.add_option(
+            self.test_behavior_high_cost, ag.CostArbitrator.Option.Flags.NO_FLAGS
+        )
+        batch_arbitrator.add_option(
+            self.test_behavior_mid_cost, ag.CostArbitrator.Option.Flags.NO_FLAGS
+        )
+
+        batch_arbitrator.gain_control(self.time, self.environment_model)
+        self.assertEqual(
+            "mid_cost", batch_arbitrator.get_command(self.time, self.environment_model)
+        )
+
+        yaml_node = batch_arbitrator.to_yaml(self.time, self.environment_model)
+        # The costs are scaled to [0,1] in this estimator
+        cost_2 = cast(float, yaml_node["options"][2]["cost"])
+        cost_3 = cast(float, yaml_node["options"][3]["cost"])
+        self.assertAlmostEqual(1.0, cost_2, delta=1e-3)
+        self.assertAlmostEqual(0.25, cost_3, delta=1e-3)
 
     def test_basic_functionality_with_interruptable_options_and_activation_costs(self):
         # If there are no options yet, the invocationCondition should be false
