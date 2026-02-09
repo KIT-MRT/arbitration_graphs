@@ -13,6 +13,15 @@
 
 namespace arbitration_graphs {
 
+/**
+ * \brief Interface for estimating the cost of a single command.
+ *
+ * A CostEstimator computes a scalar cost value for a single command given
+ * the current environment state and execution context.
+ *
+ * The CostArbitrator will use the cost estimates to sort the behavior options
+ * and select the one with the lowest cost.
+ */
 template <typename EnvironmentModelT, typename SubCommandT>
 struct CostEstimator {
     using Ptr = std::shared_ptr<CostEstimator>;
@@ -24,6 +33,16 @@ struct CostEstimator {
                                 bool isActive) = 0;
 };
 
+/**
+ * \brief Interface for estimating costs for multiple commands in a single batch.
+ *
+ * An alternative to the per-option CostEstimator for more advanced use cases.
+ * A BatchCostEstimator computes cost values for multiple commands at once.
+ * This interface enables implementations to exploit shared computation,
+ * vectorization, or global context across candidates.
+ *
+ * \note The returned cost vector must have the same order and size as the input candidates vector.
+ */
 template <typename EnvironmentModelT, typename SubCommandT>
 struct BatchCostEstimator {
     using Ptr = std::shared_ptr<BatchCostEstimator>;
