@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <numeric>
 #include <optional>
 
 #include <util_caching/cache.hpp>
@@ -82,6 +83,35 @@ private:
     typename CostEstimatorT::Ptr perOptionEstimator_;
 };
 
+/**
+ * \brief Default batch cost estimator assigning monotonically increasing costs.
+ *
+ * This estimator assigns costs purely based on the candidate order:
+ * the first candidate gets cost 0.0, the second 1.0, and so on.
+ *
+ * As a result, the CostArbitrator effectively degrades into a
+ * priority-based arbitrator where earlier options always win over
+ * later ones, regardless of the command or environment state.
+ *
+ * \warning Users will very likely *not* want to rely on this default
+ *          in real applications. It is mainly provided to keep the CostArbitrator
+ *          constructor analogous to other arbitrators.
+ */
+template <typename EnvironmentModelT, typename SubCommandT>
+class DefaultCostEstimator : public BatchCostEstimator<EnvironmentModelT, SubCommandT> {
+public:
+    using CandidateT = typename BatchCostEstimator<EnvironmentModelT, SubCommandT>::Candidate;
+
+    std::vector<double> estimateCosts(const Time& /*time*/,
+                                      const EnvironmentModelT& /*environmentModel*/,
+                                      const std::vector<CandidateT>& candidates) override {
+        std::vector<double> costs(candidates.size());
+        std::iota(costs.begin(), costs.end(), 0.0);
+        return costs;
+    }
+};
+
+
 template <typename EnvironmentModelT, typename CommandT, typename SubCommandT = CommandT>
 class CostArbitrator : public Arbitrator<EnvironmentModelT, CommandT, SubCommandT> {
 public:
@@ -149,16 +179,22 @@ public:
     };
 
 
-    explicit CostArbitrator(const typename BatchCostEstimatorT::Ptr& batchCostEstimator,
-                            const std::string& name = "CostArbitrator",
+    explicit CostArbitrator(const std::string& name = "CostArbitrator",
+                            const typename BatchCostEstimatorT::Ptr& batchCostEstimator =
+                                std::make_shared<DefaultCostEstimator<EnvironmentModelT, SubCommandT>>(),
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier), costEstimator_{batchCostEstimator} {};
 
-    explicit CostArbitrator(const typename CostEstimatorT::Ptr& costEstimator,
-                            const std::string& name = "CostArbitrator",
+    explicit CostArbitrator(const std::string& name = "CostArbitrator",
+                            const typename CostEstimatorT::Ptr& costEstimator = nullptr,
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
-            : ArbitratorBase(name, verifier),
-              costEstimator_{std::make_shared<PerOptionToBatchAdapterT>(costEstimator)} {};
+            : ArbitratorBase(name, verifier) {
+        if (costEstimator) {
+            costEstimator_ = std::make_shared<PerOptionToBatchAdapterT>(costEstimator);
+        } else {
+            costEstimator_ = std::make_shared<DefaultCostEstimator<EnvironmentModelT, SubCommandT>>();
+        };
+    }
 
 
     void addOption(const typename Behavior<EnvironmentModelT, SubCommandT>::Ptr& behavior,
