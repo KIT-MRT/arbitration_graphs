@@ -36,7 +36,7 @@ class NestedArbitratorsTest(unittest.TestCase):
         }
         cost_estimator = CostEstimatorFromCostMap(cost_map)
 
-        self.test_cost_arbitrator = ag.CostArbitrator(cost_estimator)
+        self.test_cost_arbitrator = ag.CostArbitrator("CostArbitrator", cost_estimator)
         self.test_priority_arbitrator = ag.PriorityArbitrator()
 
         self.test_root_priority_arbitrator = ag.PriorityArbitrator(

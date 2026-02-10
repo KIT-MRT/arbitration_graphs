@@ -47,7 +47,7 @@ public:
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
 
         CostEstimator::Ptr costEstimator = std::make_shared<CostEstimator>(parameters_.costEstimator);
-        eatDotsArbitrator_ = std::make_shared<CostArbitrator>(costEstimator, "EatDots", verifier_);
+        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", costEstimator, verifier_);
         eatDotsArbitrator_->addOption(changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable);
         eatDotsArbitrator_->addOption(eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable);
 

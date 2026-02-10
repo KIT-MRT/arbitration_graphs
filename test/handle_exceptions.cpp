@@ -99,7 +99,7 @@ TEST_F(ExceptionHandlingTest, HandleExceptionsInCostArbitrator) {
 
     Time time{Clock::now()};
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator{costEstimator};
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator{"CostArbitrator", costEstimator};
 
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
     testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);

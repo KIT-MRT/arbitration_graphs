@@ -33,7 +33,7 @@ protected:
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
-    CostArbitratorT::Ptr testCostArbitrator = std::make_shared<CostArbitratorT>(costEstimator);
+    CostArbitratorT::Ptr testCostArbitrator = std::make_shared<CostArbitratorT>("CostArbitrator", costEstimator);
     PriorityArbitratorT::Ptr testPriorityArbitrator = std::make_shared<PriorityArbitratorT>();
 
     PriorityArbitratorT::Ptr testRootPriorityArbitrator =

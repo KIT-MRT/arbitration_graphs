@@ -35,9 +35,9 @@ class CostArbitratorTest(unittest.TestCase):
             self.cost_map, 10
         )
 
-        self.test_cost_arbitrator = ag.CostArbitrator(cost_estimator)
+        self.test_cost_arbitrator = ag.CostArbitrator("CostArbitrator", cost_estimator)
         self.test_cost_arbitrator_with_activation_costs = ag.CostArbitrator(
-            cost_estimator_with_activation_costs
+            "CostArbitrator", cost_estimator_with_activation_costs
         )
 
         self.environment_model = DummyEnvironmentModel()
@@ -275,7 +275,7 @@ class CostArbitratorTest(unittest.TestCase):
 
     def test_batch_cost_estimator(self):
         batch_estimator = ScaledCostEstimatorFromCostMap(self.cost_map)
-        batch_arbitrator = ag.CostArbitrator(batch_estimator)
+        batch_arbitrator = ag.CostArbitrator("CostArbitrator", batch_estimator)
 
         batch_arbitrator.add_option(
             self.test_behavior_low_cost, ag.CostArbitrator.Option.Flags.NO_FLAGS

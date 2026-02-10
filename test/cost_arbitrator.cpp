@@ -27,9 +27,9 @@ protected:
     CostEstimatorFromCostMap::Ptr costEstimatorWithActivationCosts =
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator{costEstimator};
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator{"CostArbitrator", costEstimator};
     CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitratorWithActivationCosts{
-        costEstimatorWithActivationCosts};
+        "CostArbitrator", costEstimatorWithActivationCosts};
 
     DummyEnvironmentModel environmentModel;
 
@@ -207,7 +207,7 @@ TEST_F(CostArbitratorTest, ToYaml) {
 
 TEST_F(CostArbitratorTest, BatchCostEstimator) {
     auto batchEstimator = std::make_shared<ScaledCostEstimatorFromCostMap>(costMap);
-    CostArbitrator<DummyEnvironmentModel, DummyCommand> batchArbitrator{batchEstimator};
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> batchArbitrator{"CostArbitrator", batchEstimator};
 
     batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
     batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
@@ -315,7 +315,8 @@ TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"__mid_cost__", 0.5}, {"____high_cost____", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testCostArbitrator{costEstimator};
+    CostArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testCostArbitrator{"CostArbitrator",
+                                                                                            costEstimator};
 
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);

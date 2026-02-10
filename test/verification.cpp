@@ -226,7 +226,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
     CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator(
-        costEstimator, "CostArbitrator", std::make_shared<DummyVerifier>());
+        "CostArbitrator", costEstimator, std::make_shared<DummyVerifier>());
 
     testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);
     testCostArbitrator.addOption(testBehaviorHighPriority, OptionFlags::NoFlags);

@@ -271,7 +271,7 @@ class TestCommandVerification(unittest.TestCase):
         cost_estimator = CostEstimatorFromCostMap(cost_map)
 
         test_cost_arbitrator = ag.CostArbitrator(
-            cost_estimator, "CostArbitrator", DummyVerifier("MidPriority")
+            "CostArbitrator", cost_estimator, DummyVerifier("MidPriority")
         )
 
         test_cost_arbitrator.add_option(self.test_behavior_high_priority, NO_FLAGS)
