@@ -107,7 +107,7 @@ class NestedArbitratorsTest(unittest.TestCase):
             ps.invocation_true + ps.commitment_true + "root priority arbitrator\n" +
             " -> 1. " + ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
             "        - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
-            "     -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
+            "     -> - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             "    2. " + ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n" +
             "        1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
             "        2. " + ps.invocation_true + ps.commitment_true + "LowPriority"

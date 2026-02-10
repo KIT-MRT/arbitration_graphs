@@ -317,7 +317,7 @@ class TestCommandVerification(unittest.TestCase):
             "    - (cost:  n.a.) " + ps.strike_through_on
                                    + ps.invocation_true + ps.commitment_false + "MidPriority"
                                    + ps.strike_through_off + "\n" +
-            " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
+            " -> - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
         actual_printout = test_cost_arbitrator.to_string(

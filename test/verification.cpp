@@ -253,7 +253,7 @@ TEST_F(CommandVerificationTest, DummyVerifierInCostArbitrator) {
                         "    - (cost:  n.a.) " + StrikeThroughOn
                                   + InvocationTrueString + CommitmentFalseString + "MidPriority"
                                   + StrikeThroughOff + "\n"
-                        " -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
+                        " -> - (cost:  n.a.) " + InvocationTrueString + CommitmentTrueString + "LowPriority";
     // clang-format on
     std::string actualPrintout = testCostArbitrator.toString(time, environmentModel);
     std::cout << actualPrintout << '\n';

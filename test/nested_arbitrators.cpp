@@ -83,7 +83,7 @@ TEST_F(NestedArbitratorsTest, Printout) {
     expectedPrintout = InvocationTrueString + CommitmentTrueString + "root priority arbitrator\n"
                         " -> 1. "  + InvocationTrueString + CommitmentTrueString + "CostArbitrator\n"
                         "        - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "low_cost\n"
-                        "     -> - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
+                        "     -> - (cost:  n.a.) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
                         "    2. " + InvocationTrueString + CommitmentFalseString + "PriorityArbitrator\n"
                         "        1. " + InvocationFalseString + CommitmentFalseString + "HighPriority\n"
                         "        2. " + InvocationTrueString + CommitmentTrueString + "LowPriority";
