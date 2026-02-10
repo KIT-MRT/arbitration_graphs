@@ -224,7 +224,6 @@ private:
         const Time& time,
         const EnvironmentModelT& environmentModel) const override {
 
-        using CandidateT = typename BatchCostEstimatorT::Candidate;
 
         std::vector<typename Option::Ptr> validOptions = collectValidOptions(options, time, environmentModel);
 
@@ -233,36 +232,7 @@ private:
             return typename ArbitratorBase::Options(validOptions.begin(), validOptions.end());
         }
 
-        std::vector<CandidateT> candidates;
-        candidates.reserve(validOptions.size());
-        for (const auto& option : validOptions) {
-            const bool isActive = this->isActive(option);
-            // The command has already been computed (and verified), so we can safely retrieve it from cache
-            const std::optional<SubCommandT> command = option->getCommand(time, environmentModel);
-            if (!command) {
-                throw InvalidStateError("Could not retrieve cached command.");
-            }
-            candidates.push_back(CandidateT{command.value(), isActive});
-        }
-
-        std::vector<double> costs = costEstimator_->estimateCosts(time, environmentModel, candidates);
-        if (costs.size() != candidates.size()) {
-            throw InvalidCostError("CostEstimator returned mismatching number of costs.");
-        }
-
-        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
-        for (std::size_t i = 0; i < validOptions.size(); ++i) {
-            validOptions[i]->cacheLastEstimatedCost(time, costs[i]);
-            sortedOptionsMap.insert({costs[i], validOptions[i]});
-        }
-
-        // copy back to vector (these are pointers anyway, so copying is cheap)
-        typename ArbitratorBase::Options sortedOptionsVector;
-        sortedOptionsVector.reserve(options.size());
-        for (const auto& sortedOption : sortedOptionsMap) {
-            sortedOptionsVector.push_back(sortedOption.second);
-        }
-        return sortedOptionsVector;
+        return sortOptionsByCost(validOptions, time, environmentModel);
     }
 
     std::vector<typename Option::Ptr> collectValidOptions(const typename ArbitratorBase::Options& options,
@@ -288,6 +258,43 @@ private:
             }
         }
         return validOptions;
+    }
+
+    typename ArbitratorBase::Options sortOptionsByCost(const std::vector<typename Option::Ptr>& options,
+                                                       const Time& time,
+                                                       const EnvironmentModelT& environmentModel) const {
+        std::vector<CandidateT> candidates;
+        candidates.reserve(options.size());
+        for (const auto& option : options) {
+            // The command has already been computed (and verified), so we can safely retrieve it from cache
+            const std::optional<SubCommandT> command = option->getCommand(time, environmentModel);
+            if (!command) {
+                throw InvalidStateError("Could not retrieve cached command.");
+            }
+            const bool isActive = this->isActive(option);
+            candidates.push_back(CandidateT{command.value(), isActive});
+        }
+
+        std::vector<double> costs = costEstimator_->estimateCosts(time, environmentModel, candidates);
+        if (costs.size() != candidates.size()) {
+            throw InvalidCostError("CostEstimator returned mismatching number of costs.");
+        }
+
+        // Sort options by cost
+        std::multimap<double, typename ArbitratorBase::Option::Ptr> sortedOptionsMap;
+        for (std::size_t i = 0; i < options.size(); ++i) {
+            options[i]->cacheLastEstimatedCost(time, costs[i]);
+            sortedOptionsMap.insert({costs[i], options[i]});
+        }
+
+        // Copy back to vector
+        typename ArbitratorBase::Options sortedOptionsVector;
+        sortedOptionsVector.reserve(options.size());
+        for (const auto& sortedOption : sortedOptionsMap) {
+            sortedOptionsVector.push_back(sortedOption.second);
+        }
+
+        return sortedOptionsVector;
     }
 
 
