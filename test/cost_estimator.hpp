@@ -68,6 +68,10 @@ struct ScaledCostEstimatorFromCostMap : public BatchCostEstimator<DummyEnvironme
             rawCosts.push_back(costMap_.at(candidate.command));
         }
 
+        if (rawCosts.empty()) {
+            return {};
+        }
+
         // Compute max cost in the batch
         double maxCost = *std::max_element(rawCosts.begin(), rawCosts.end());
 
