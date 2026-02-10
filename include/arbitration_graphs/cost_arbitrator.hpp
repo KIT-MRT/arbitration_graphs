@@ -228,6 +228,11 @@ private:
 
         std::vector<typename Option::Ptr> validOptions = collectValidOptions(options, time, environmentModel);
 
+        if (validOptions.size() < 2) {
+            // no need to estimate costs if there is nothing to sort
+            return typename ArbitratorBase::Options(validOptions.begin(), validOptions.end());
+        }
+
         std::vector<CandidateT> candidates;
         candidates.reserve(validOptions.size());
         for (const auto& option : validOptions) {
