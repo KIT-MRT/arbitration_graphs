@@ -23,7 +23,12 @@ public:
     using CandidateT = typename BaseT::Candidate;
 
     using BaseT::BaseT;
+
     virtual ~PyBatchCostEstimator() = default;
+    PyBatchCostEstimator(const PyBatchCostEstimator&) = default;
+    PyBatchCostEstimator(PyBatchCostEstimator&&) = default;
+    PyBatchCostEstimator& operator=(const PyBatchCostEstimator&) = delete;
+    PyBatchCostEstimator& operator=(PyBatchCostEstimator&&) = delete;
 
     // NOLINTBEGIN(readability-function-size)
     std::vector<double> estimateCosts(const ag::Time& time,
@@ -90,6 +95,19 @@ inline void bindCostEstimator(py::module& module) {
              py::arg("is_active"));
 }
 
+inline void bindDefaultCostEstimator(py::module& module) {
+    using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+    using DefaultCostEstimatorT = ag::DefaultCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+
+    py::classh<DefaultCostEstimatorT, BatchCostEstimatorT>(module, "DefaultCostEstimator")
+        .def(py::init<>())
+        .def("estimate_costs",
+             &BatchCostEstimatorT::estimateCosts,
+             py::arg("time"),
+             py::arg("environment_model"),
+             py::arg("candidates"));
+}
+
 inline void bindCostArbitrator(py::module& module) {
     using Time = ag::Time;
 
@@ -99,6 +117,7 @@ inline void bindCostArbitrator(py::module& module) {
     using BehaviorT = typename ArbitratorT::Behavior;
 
     using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+    using DefaultCostEstimatorT = ag::DefaultCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
     using CostArbitratorT = ag::CostArbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
@@ -110,16 +129,17 @@ inline void bindCostArbitrator(py::module& module) {
 
     bindBatchCostEstimator(module);
     bindCostEstimator(module);
+    bindDefaultCostEstimator(module);
 
     py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
-        .def(py::init<const std::shared_ptr<BatchCostEstimatorT>&, const std::string&, const VerifierT::Ptr&>(),
-             py::arg("batch_cost_estimator"),
+        .def(py::init<const std::string&, const std::shared_ptr<BatchCostEstimatorT>&, const VerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
+             py::arg("batch_cost_estimator") = std::make_shared<DefaultCostEstimatorT>(),
              py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
-        .def(py::init<const std::shared_ptr<CostEstimatorT>&, const std::string&, const VerifierT::Ptr&>(),
-             py::arg("cost_estimator"),
+        .def(py::init<const std::string&, const std::shared_ptr<CostEstimatorT>&, const VerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
+             py::arg("cost_estimator") = nullptr,
              py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
         .def("add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(

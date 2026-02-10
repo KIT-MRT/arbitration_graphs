@@ -198,15 +198,15 @@ class CostArbitrator(Arbitrator):
     @typing.overload
     def __init__(
         self,
-        cost_estimator: CostEstimator,
         name: str = "CostArbitrator",
+        cost_estimator: CostEstimator = ...,
         verifier: verification.Verifier = ...,
     ) -> None: ...
     @typing.overload
     def __init__(
         self,
-        batch_cost_estimator: BatchCostEstimator,
         name: str = "CostArbitrator",
+        batch_cost_estimator: BatchCostEstimator = ...,
         verifier: verification.Verifier = ...,
     ) -> None: ...
     @override
