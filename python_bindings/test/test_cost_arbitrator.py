@@ -148,6 +148,60 @@ class CostArbitratorTest(unittest.TestCase):
             self.test_cost_arbitrator.get_command(self.time, self.environment_model),
         )
 
+    def test_default_constructor(self):
+        default_cost_arbitrator = ag.CostArbitrator()
+
+        default_cost_arbitrator.add_option(
+            self.test_behavior_low_cost,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
+        )
+        default_cost_arbitrator.add_option(
+            self.test_behavior_low_cost,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
+        )
+        default_cost_arbitrator.add_option(
+            self.test_behavior_high_cost,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
+        )
+        default_cost_arbitrator.add_option(
+            self.test_behavior_mid_cost,
+            ag.CostArbitrator.Option.Flags.NO_FLAGS,
+        )
+
+        self.assertTrue(
+            default_cost_arbitrator.check_invocation_condition(
+                self.time, self.environment_model
+            )
+        )
+        self.assertFalse(
+            default_cost_arbitrator.check_commitment_condition(
+                self.time, self.environment_model
+            )
+        )
+
+        default_cost_arbitrator.gain_control(self.time, self.environment_model)
+
+        # With PlaceboCostEstimator:
+        # Costs are assigned by order: 0, 1, 2, ...
+        # low_cost is invalid (invocation=false) and filtered out.
+        # high_cost becomes first valid option → cost 0
+        # mid_cost becomes second valid option → cost 1
+        # => high_cost must win even though mid_cost would normally be cheaper.
+        self.assertEqual(
+            "high_cost",
+            default_cost_arbitrator.get_command(self.time, self.environment_model),
+        )
+
+        yaml_node = default_cost_arbitrator.to_yaml(self.time, self.environment_model)
+
+        cost_high = cast(float, yaml_node["options"][2]["cost"])
+        cost_mid = cast(float, yaml_node["options"][3]["cost"])
+
+        self.assertAlmostEqual(0.0, cost_high, delta=1e-6)
+        self.assertAlmostEqual(1.0, cost_mid, delta=1e-6)
+
+        self.assertEqual(2, yaml_node["activeBehavior"])
+
     def test_printout(self):
         # Adding options
         self.test_cost_arbitrator.add_option(

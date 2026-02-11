@@ -83,6 +83,44 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
 }
 
+TEST_F(CostArbitratorTest, DefaultConstructor) {
+    // Use default constructor -> should internally use PlaceboCostEstimator
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> defaultCostArbitrator;
+
+    using OptionFlags = CostArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
+
+    defaultCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
+
+    EXPECT_TRUE(defaultCostArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(defaultCostArbitrator.checkCommitmentCondition(time, environmentModel));
+
+    defaultCostArbitrator.gainControl(time, environmentModel);
+
+    // With PlaceboCostEstimator:
+    // Costs are assigned by order: 0, 1, 2, ...
+    // low_cost is invalid (invocation=false) and filtered out.
+    // high_cost becomes first valid option → cost 0
+    // mid_cost becomes second valid option → cost 1
+    // => high_cost must win even though mid_cost would normally be cheaper.
+    EXPECT_EQ("high_cost", defaultCostArbitrator.getCommand(time, environmentModel));
+
+    YAML::Node yaml = defaultCostArbitrator.toYaml(time, environmentModel);
+
+    // Verify placebo costs are monotonic starting from 0
+    ASSERT_TRUE(yaml["options"][2]["cost"].IsDefined());
+    ASSERT_TRUE(yaml["options"][3]["cost"].IsDefined());
+
+    EXPECT_NEAR(0.0, yaml["options"][2]["cost"].as<double>(), 1e-6);
+    EXPECT_NEAR(1.0, yaml["options"][3]["cost"].as<double>(), 1e-6);
+
+    // Active behavior should be index 1 (high_cost)
+    ASSERT_TRUE(yaml["activeBehavior"].IsDefined());
+    EXPECT_EQ(2, yaml["activeBehavior"].as<int>());
+}
+
 TEST_F(CostArbitratorTest, CommandCaching) {
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
     testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
