@@ -117,7 +117,7 @@ explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{
     // Construct the cost estimator
     CostEstimator::Ptr costEstimator = std::make_shared<CostEstimator>(parameters_.costEstimator);
     // This is now a cost arbitrator using the cost estimator
-    eatDotsArbitrator_ = std::make_shared<CostArbitrator>(costEstimator, "EatDots");
+    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", costEstimator);
     // Add the ChangeDotCluster and EatClosestDot behavior components as options to the cost arbitrator
     eatDotsArbitrator_->addOption(changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable);
     eatDotsArbitrator_->addOption(eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable);
