@@ -95,11 +95,11 @@ inline void bindCostEstimator(py::module& module) {
              py::arg("is_active"));
 }
 
-inline void bindDefaultCostEstimator(py::module& module) {
+inline void bindPlaceboCostEstimator(py::module& module) {
     using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
-    using DefaultCostEstimatorT = ag::DefaultCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboCostEstimatorT = ag::PlaceboCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
-    py::classh<DefaultCostEstimatorT, BatchCostEstimatorT>(module, "DefaultCostEstimator")
+    py::classh<PlaceboCostEstimatorT, BatchCostEstimatorT>(module, "PlaceboCostEstimator")
         .def(py::init<>())
         .def("estimate_costs",
              &BatchCostEstimatorT::estimateCosts,
@@ -117,7 +117,7 @@ inline void bindCostArbitrator(py::module& module) {
     using BehaviorT = typename ArbitratorT::Behavior;
 
     using BatchCostEstimatorT = ag::BatchCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
-    using DefaultCostEstimatorT = ag::DefaultCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
+    using PlaceboCostEstimatorT = ag::PlaceboCostEstimator<EnvironmentModelWrapper, CommandWrapper>;
     using CostArbitratorT = ag::CostArbitrator<EnvironmentModelWrapper, CommandWrapper>;
     using CostEstimatorT = ag::CostEstimator<EnvironmentModelWrapper, CommandWrapper>;
 
@@ -129,13 +129,13 @@ inline void bindCostArbitrator(py::module& module) {
 
     bindBatchCostEstimator(module);
     bindCostEstimator(module);
-    bindDefaultCostEstimator(module);
+    bindPlaceboCostEstimator(module);
 
     py::classh<CostArbitratorT, ArbitratorT> costArbitrator(module, "CostArbitrator");
     costArbitrator
         .def(py::init<const std::string&, const std::shared_ptr<BatchCostEstimatorT>&, const VerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",
-             py::arg("batch_cost_estimator") = std::make_shared<DefaultCostEstimatorT>(),
+             py::arg("batch_cost_estimator") = std::make_shared<PlaceboCostEstimatorT>(),
              py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
         .def(py::init<const std::string&, const std::shared_ptr<CostEstimatorT>&, const VerifierT::Ptr&>(),
              py::arg("name") = "CostArbitrator",

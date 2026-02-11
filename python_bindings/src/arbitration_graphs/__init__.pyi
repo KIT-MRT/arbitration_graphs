@@ -24,6 +24,7 @@ __all__ = [
     "InvocationConditionIsFalseError",
     "MultipleReferencesToSameInstanceError",
     "NoApplicableOptionPassedVerificationError",
+    "PlaceboCostEstimator",
     "PriorityArbitrator",
     "RandomArbitrator",
     "VerificationError",
@@ -257,6 +258,16 @@ class MultipleReferencesToSameInstanceError(Exception):
 
 class NoApplicableOptionPassedVerificationError(Exception):
     pass
+
+class PlaceboCostEstimator(BatchCostEstimator):
+    def __init__(self) -> None: ...
+    @override
+    def estimate_costs(
+        self,
+        time: Time,
+        environment_model: EnvironmentModel,
+        candidates: list[BatchCostEstimator.Candidate],
+    ) -> list[float]: ...
 
 class PriorityArbitrator(Arbitrator):
     class Option(Arbitrator.Option):

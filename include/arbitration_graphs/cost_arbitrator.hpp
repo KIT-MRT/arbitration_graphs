@@ -84,7 +84,7 @@ private:
 };
 
 /**
- * \brief Default batch cost estimator assigning monotonically increasing costs.
+ * \brief The PlaceboCostEstimator is a dummy estimator assigning monotonically increasing costs.
  *
  * This estimator assigns costs purely based on the candidate order:
  * the first candidate gets cost 0.0, the second 1.0, and so on.
@@ -98,7 +98,7 @@ private:
  *          constructor analogous to other arbitrators.
  */
 template <typename EnvironmentModelT, typename SubCommandT>
-class DefaultCostEstimator : public BatchCostEstimator<EnvironmentModelT, SubCommandT> {
+class PlaceboCostEstimator : public BatchCostEstimator<EnvironmentModelT, SubCommandT> {
 public:
     using CandidateT = typename BatchCostEstimator<EnvironmentModelT, SubCommandT>::Candidate;
 
@@ -181,7 +181,7 @@ public:
 
     explicit CostArbitrator(const std::string& name = "CostArbitrator",
                             const typename BatchCostEstimatorT::Ptr& batchCostEstimator =
-                                std::make_shared<DefaultCostEstimator<EnvironmentModelT, SubCommandT>>(),
+                                std::make_shared<PlaceboCostEstimator<EnvironmentModelT, SubCommandT>>(),
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier), costEstimator_{batchCostEstimator} {};
 
@@ -192,7 +192,7 @@ public:
         if (costEstimator) {
             costEstimator_ = std::make_shared<PerOptionToBatchAdapterT>(costEstimator);
         } else {
-            costEstimator_ = std::make_shared<DefaultCostEstimator<EnvironmentModelT, SubCommandT>>();
+            costEstimator_ = std::make_shared<PlaceboCostEstimator<EnvironmentModelT, SubCommandT>>();
         };
     }
 
