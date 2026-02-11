@@ -22,12 +22,14 @@ protected:
     DummyBehavior::Ptr testBehaviorMidCost = std::make_shared<DummyBehavior>(true, false, "mid_cost");
     DummyBehavior::Ptr testBehaviorHighCost = std::make_shared<DummyBehavior>(true, true, "high_cost");
 
-    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 1}};
+    CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"mid_cost", 0.5}, {"high_cost", 2}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
     CostEstimatorFromCostMap::Ptr costEstimatorWithActivationCosts =
         std::make_shared<CostEstimatorFromCostMap>(costMap, 10);
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator;
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitrator{"CostArbitrator", costEstimator};
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> testCostArbitratorWithActivationCosts{
+        "CostArbitrator", costEstimatorWithActivationCosts};
 
     DummyEnvironmentModel environmentModel;
 
@@ -41,13 +43,13 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 
@@ -81,11 +83,49 @@ TEST_F(CostArbitratorTest, BasicFunctionality) {
     EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
 }
 
+TEST_F(CostArbitratorTest, DefaultConstructor) {
+    // Use default constructor -> should internally use PlaceboCostEstimator
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> defaultCostArbitrator;
+
+    using OptionFlags = CostArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
+
+    defaultCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    defaultCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
+
+    EXPECT_TRUE(defaultCostArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(defaultCostArbitrator.checkCommitmentCondition(time, environmentModel));
+
+    defaultCostArbitrator.gainControl(time, environmentModel);
+
+    // With PlaceboCostEstimator:
+    // Costs are assigned by order: 0, 1, 2, ...
+    // low_cost is invalid (invocation=false) and filtered out.
+    // high_cost becomes first valid option → cost 0
+    // mid_cost becomes second valid option → cost 1
+    // => high_cost must win even though mid_cost would normally be cheaper.
+    EXPECT_EQ("high_cost", defaultCostArbitrator.getCommand(time, environmentModel));
+
+    YAML::Node yaml = defaultCostArbitrator.toYaml(time, environmentModel);
+
+    // Verify placebo costs are monotonic starting from 0
+    ASSERT_TRUE(yaml["options"][2]["cost"].IsDefined());
+    ASSERT_TRUE(yaml["options"][3]["cost"].IsDefined());
+
+    EXPECT_NEAR(0.0, yaml["options"][2]["cost"].as<double>(), 1e-6);
+    EXPECT_NEAR(1.0, yaml["options"][3]["cost"].as<double>(), 1e-6);
+
+    // Active behavior should be index 1 (high_cost)
+    ASSERT_TRUE(yaml["activeBehavior"].IsDefined());
+    EXPECT_EQ(2, yaml["activeBehavior"].as<int>());
+}
+
 TEST_F(CostArbitratorTest, CommandCaching) {
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
@@ -112,10 +152,10 @@ TEST_F(CostArbitratorTest, CommandCaching) {
 }
 
 TEST_F(CostArbitratorTest, Printout) {
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
 
     // clang-format off
     std::string expectedPrintout = InvocationTrueString + CommitmentFalseString + "CostArbitrator\n"
@@ -137,7 +177,7 @@ TEST_F(CostArbitratorTest, Printout) {
     expectedPrintout = InvocationTrueString + CommitmentTrueString + "CostArbitrator\n"
                         "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "low_cost\n"
                         "    - (cost:  n.a.) " + InvocationFalseString + CommitmentFalseString + "low_cost\n"
-                        "    - (cost: 1.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
+                        "    - (cost: 2.000) " + InvocationTrueString + CommitmentTrueString + "high_cost\n"
                         " -> - (cost: 0.500) " + InvocationTrueString + CommitmentFalseString + "mid_cost";
     // clang-format on
     actualPrintout = testCostArbitrator.toString(time, environmentModel);
@@ -147,10 +187,10 @@ TEST_F(CostArbitratorTest, Printout) {
 }
 
 TEST_F(CostArbitratorTest, ToYaml) {
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
 
     YAML::Node yaml = testCostArbitrator.toYaml(time, environmentModel);
 
@@ -195,7 +235,7 @@ TEST_F(CostArbitratorTest, ToYaml) {
     EXPECT_EQ(false, yaml["options"][1]["cost"].IsDefined());
     ASSERT_EQ(true, yaml["options"][2]["cost"].IsDefined());
     ASSERT_EQ(true, yaml["options"][3]["cost"].IsDefined());
-    EXPECT_NEAR(1.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
+    EXPECT_NEAR(2.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
     EXPECT_NEAR(0.5, yaml["options"][3]["cost"].as<double>(), 1e-3);
 
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
@@ -203,41 +243,64 @@ TEST_F(CostArbitratorTest, ToYaml) {
 }
 
 
+TEST_F(CostArbitratorTest, BatchCostEstimator) {
+    auto batchEstimator = std::make_shared<ScaledCostEstimatorFromCostMap>(costMap);
+    CostArbitrator<DummyEnvironmentModel, DummyCommand> batchArbitrator{"CostArbitrator", batchEstimator};
+
+    batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorLowCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorHighCost, OptionFlags::NoFlags);
+    batchArbitrator.addOption(testBehaviorMidCost, OptionFlags::NoFlags);
+
+    batchArbitrator.gainControl(time, environmentModel);
+    EXPECT_EQ("mid_cost", batchArbitrator.getCommand(time, environmentModel));
+
+    YAML::Node yaml = batchArbitrator.toYaml(time, environmentModel);
+
+
+    ASSERT_EQ(true, yaml["options"][2]["cost"].IsDefined());
+    ASSERT_EQ(true, yaml["options"][3]["cost"].IsDefined());
+    // The costs are scaled to [0,1] in this estimator
+    EXPECT_NEAR(1.0, yaml["options"][2]["cost"].as<double>(), 1e-3);
+    EXPECT_NEAR(0.25, yaml["options"][3]["cost"].as<double>(), 1e-3);
+}
+
+
 TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptionsAndActivationCosts) {
     // if there are no options yet -> the invocationCondition should be false
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
+    EXPECT_FALSE(testCostArbitratorWithActivationCosts.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testCostArbitratorWithActivationCosts.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimatorWithActivationCosts);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimatorWithActivationCosts);
-    EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
+    testCostArbitratorWithActivationCosts.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
+    testCostArbitratorWithActivationCosts.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
+    EXPECT_FALSE(testCostArbitratorWithActivationCosts.checkInvocationCondition(time, environmentModel));
+    EXPECT_FALSE(testCostArbitratorWithActivationCosts.checkCommitmentCondition(time, environmentModel));
 
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::Interruptable, costEstimatorWithActivationCosts);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::Interruptable, costEstimatorWithActivationCosts);
+    testCostArbitratorWithActivationCosts.addOption(testBehaviorHighCost, OptionFlags::Interruptable);
+    testCostArbitratorWithActivationCosts.addOption(testBehaviorMidCost, OptionFlags::Interruptable);
 
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
+    EXPECT_TRUE(testCostArbitratorWithActivationCosts.checkInvocationCondition(time, environmentModel));
 
-    EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
+    EXPECT_FALSE(testCostArbitratorWithActivationCosts.checkCommitmentCondition(time, environmentModel));
 
-    testCostArbitrator.gainControl(time, environmentModel);
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
+    testCostArbitratorWithActivationCosts.gainControl(time, environmentModel);
+    EXPECT_EQ("mid_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
 
-    EXPECT_EQ("mid_cost", testCostArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ("mid_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
 
     testBehaviorMidCost->invocationCondition = false;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
+    EXPECT_TRUE(testCostArbitratorWithActivationCosts.checkInvocationCondition(time, environmentModel));
+    EXPECT_TRUE(testCostArbitratorWithActivationCosts.checkCommitmentCondition(time, environmentModel));
+    EXPECT_EQ("high_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
+    EXPECT_EQ("high_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
 
     // high_cost behavior is not interruptable -> high_cost should stay active
     testBehaviorMidCost->invocationCondition = true;
-    EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
-    EXPECT_TRUE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
-    EXPECT_EQ("high_cost", testCostArbitrator.getCommand(time, environmentModel));
+    EXPECT_TRUE(testCostArbitratorWithActivationCosts.checkInvocationCondition(time, environmentModel));
+    EXPECT_TRUE(testCostArbitratorWithActivationCosts.checkCommitmentCondition(time, environmentModel));
+    EXPECT_EQ("high_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
+    EXPECT_EQ("high_cost", testCostArbitratorWithActivationCosts.getCommand(time, environmentModel));
 }
 
 
@@ -247,13 +310,13 @@ TEST_F(CostArbitratorTest, BasicFunctionalityWithInterruptableOptions) {
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // otherwise the invocationCondition is true if any of the option has true invocationCondition
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
     EXPECT_FALSE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
     EXPECT_FALSE(testCostArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::Interruptable, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::Interruptable, costEstimator);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::Interruptable);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::Interruptable);
 
     EXPECT_TRUE(testCostArbitrator.checkInvocationCondition(time, environmentModel));
 
@@ -290,12 +353,13 @@ TEST(CostArbitrator, SubCommandTypeDiffersFromCommandType) {
     CostEstimatorFromCostMap::CostMap costMap{{"low_cost", 0}, {"__mid_cost__", 0.5}, {"____high_cost____", 1}};
     CostEstimatorFromCostMap::Ptr costEstimator = std::make_shared<CostEstimatorFromCostMap>(costMap);
 
-    CostArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testCostArbitrator;
+    CostArbitrator<DummyEnvironmentModel, DummyCommandInt, DummyCommand> testCostArbitrator{"CostArbitrator",
+                                                                                            costEstimator};
 
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimator);
-    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable, costEstimator);
-    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::Interruptable, costEstimator);
-    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::Interruptable, costEstimator);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
+    testCostArbitrator.addOption(testBehaviorLowCost, OptionFlags::Interruptable);
+    testCostArbitrator.addOption(testBehaviorHighCost, OptionFlags::Interruptable);
+    testCostArbitrator.addOption(testBehaviorMidCost, OptionFlags::Interruptable);
 
     testCostArbitrator.gainControl(time, environmentModel);
 

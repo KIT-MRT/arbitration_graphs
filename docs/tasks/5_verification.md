@@ -116,12 +116,10 @@ explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{
     stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
 
     // Pass the verifier instance to the cost arbitrator
-    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
-    costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
-    eatDotsArbitrator_->addOption(
-        changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
-    eatDotsArbitrator_->addOption(
-        eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
+    CostEstimator::Ptr costEstimator = std::make_shared<CostEstimator>(parameters_.costEstimator);
+    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", costEstimator, verifier_);
+    eatDotsArbitrator_->addOption(changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable);
+    eatDotsArbitrator_->addOption(eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable);
 
     // Pass the verifier instance to the priority arbitrator
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);

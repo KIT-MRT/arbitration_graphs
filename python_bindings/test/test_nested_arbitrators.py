@@ -34,9 +34,9 @@ class NestedArbitratorsTest(unittest.TestCase):
             DummyCommand("mid_cost"): 0.5,
             DummyCommand("high_cost"): 1,
         }
-        self.cost_estimator = CostEstimatorFromCostMap(cost_map)
+        cost_estimator = CostEstimatorFromCostMap(cost_map)
 
-        self.test_cost_arbitrator = ag.CostArbitrator()
+        self.test_cost_arbitrator = ag.CostArbitrator("CostArbitrator", cost_estimator)
         self.test_priority_arbitrator = ag.PriorityArbitrator()
 
         self.test_root_priority_arbitrator = ag.PriorityArbitrator(
@@ -60,12 +60,10 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
 
         self.test_priority_arbitrator.add_option(
@@ -109,7 +107,7 @@ class NestedArbitratorsTest(unittest.TestCase):
             ps.invocation_true + ps.commitment_true + "root priority arbitrator\n" +
             " -> 1. " + ps.invocation_true + ps.commitment_true + "CostArbitrator\n" +
             "        - (cost:  n.a.) " + ps.invocation_false + ps.commitment_false + "low_cost\n" +
-            "     -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
+            "     -> - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "high_cost\n" +
             "    2. " + ps.invocation_true + ps.commitment_false + "PriorityArbitrator\n" +
             "        1. " + ps.invocation_false + ps.commitment_false + "HighPriority\n" +
             "        2. " + ps.invocation_true + ps.commitment_true + "LowPriority"
@@ -135,12 +133,10 @@ class NestedArbitratorsTest(unittest.TestCase):
         self.test_cost_arbitrator.add_option(
             self.test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
         self.test_cost_arbitrator.add_option(
             self.test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            self.cost_estimator,
         )
 
         self.test_priority_arbitrator.add_option(

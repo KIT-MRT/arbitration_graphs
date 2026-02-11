@@ -46,12 +46,10 @@ public:
         moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
         stayInPlaceBehavior_ = std::make_shared<StayInPlaceBehavior>();
 
-        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", verifier_);
-        costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
-        eatDotsArbitrator_->addOption(
-            changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
-        eatDotsArbitrator_->addOption(
-            eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
+        CostEstimator::Ptr costEstimator = std::make_shared<CostEstimator>(parameters_.costEstimator);
+        eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", costEstimator, verifier_);
+        eatDotsArbitrator_->addOption(changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable);
+        eatDotsArbitrator_->addOption(eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable);
 
         rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man", verifier_);
         rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
@@ -98,7 +96,6 @@ private:
     PriorityArbitrator::Ptr rootArbitrator_;
     CostArbitrator::Ptr eatDotsArbitrator_;
 
-    CostEstimator::Ptr costEstimator_;
     Verifier::Ptr verifier_;
 };
 

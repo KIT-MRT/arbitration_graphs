@@ -1,6 +1,6 @@
 # pyright: reportAny=false,reportExplicitAny=false
-
 import typing
+from dataclasses import dataclass
 
 from typing_extensions import override
 
@@ -15,14 +15,18 @@ from arbitration_graphs.typing import (
 __all__ = [
     "ApplicableOptionFailedVerificationError",
     "Arbitrator",
+    "BatchCostEstimator",
     "Behavior",
     "CostArbitrator",
     "CostEstimator",
     "GetCommandCalledWithoutGainControlError",
     "InvalidArgumentsError",
+    "InvalidCostError",
+    "InvalidStateError",
     "InvocationConditionIsFalseError",
     "MultipleReferencesToSameInstanceError",
     "NoApplicableOptionPassedVerificationError",
+    "PlaceboCostEstimator",
     "PriorityArbitrator",
     "RandomArbitrator",
     "VerificationError",
@@ -97,6 +101,20 @@ class Arbitrator(Behavior):
     @override
     def lose_control(self, time: Time, environment_model: EnvironmentModel) -> None: ...
     def options(self) -> list[Option]: ...
+
+class BatchCostEstimator:
+    @dataclass
+    class Candidate:
+        command: Command
+        is_active: bool
+
+    def __init__(self) -> None: ...
+    def estimate_costs(
+        self,
+        time: Time,
+        environment_model: EnvironmentModel,
+        candidates: list[Candidate],
+    ) -> list[float]: ...
 
 class Behavior:
     def __init__(self, name: str = "Behavior") -> None: ...
@@ -178,15 +196,25 @@ class CostArbitrator(Arbitrator):
             self,
             behavior: Behavior,
             flags: typing.SupportsInt,
-            cost_estimator: CostEstimator,
         ) -> None: ...
 
+    @typing.overload
     def __init__(
-        self, name: str = "CostArbitrator", verifier: verification.Verifier = ...
+        self,
+        name: str = "CostArbitrator",
+        batch_cost_estimator: BatchCostEstimator = ...,
+        verifier: verification.Verifier = ...,
+    ) -> None: ...
+    @typing.overload
+    def __init__(
+        self,
+        name: str,
+        cost_estimator: CostEstimator,
+        verifier: verification.Verifier = ...,
     ) -> None: ...
     @override
     def __repr__(self) -> str: ...
-    @typing.overload
+    @override
     def add_option(
         self,
         behavior: Behavior,
@@ -197,13 +225,6 @@ class CostArbitrator(Arbitrator):
         Use the overload passing a CostEstimator instead.
         """
         ...
-    @typing.overload
-    def add_option(
-        self,
-        behavior: Behavior,
-        flags: typing.SupportsInt,
-        cost_estimator: CostEstimator,
-    ) -> None: ...
     @override
     def to_yaml(
         self, time: Time, environment_model: EnvironmentModel
@@ -228,11 +249,27 @@ class InvalidArgumentsError(Exception):
 class InvocationConditionIsFalseError(Exception):
     pass
 
+class InvalidCostError(Exception):
+    pass
+
+class InvalidStateError(Exception):
+    pass
+
 class MultipleReferencesToSameInstanceError(Exception):
     pass
 
 class NoApplicableOptionPassedVerificationError(Exception):
     pass
+
+class PlaceboCostEstimator(BatchCostEstimator):
+    def __init__(self) -> None: ...
+    @override
+    def estimate_costs(
+        self,
+        time: Time,
+        environment_model: EnvironmentModel,
+        candidates: list[BatchCostEstimator.Candidate],
+    ) -> list[float]: ...
 
 class PriorityArbitrator(Arbitrator):
     class Option(Arbitrator.Option):

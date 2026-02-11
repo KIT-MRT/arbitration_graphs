@@ -263,10 +263,6 @@ class TestCommandVerification(unittest.TestCase):
     def test_dummy_verifier_in_cost_arbitrator(self):
         NO_FLAGS = ag.CostArbitrator.Option.Flags.NO_FLAGS
 
-        test_cost_arbitrator = ag.CostArbitrator(
-            "CostArbitrator", DummyVerifier("MidPriority")
-        )
-
         cost_map = {
             DummyCommand("HighPriority"): 0,
             DummyCommand("MidPriority"): 0.5,
@@ -274,18 +270,14 @@ class TestCommandVerification(unittest.TestCase):
         }
         cost_estimator = CostEstimatorFromCostMap(cost_map)
 
-        test_cost_arbitrator.add_option(
-            self.test_behavior_high_priority, NO_FLAGS, cost_estimator
+        test_cost_arbitrator = ag.CostArbitrator(
+            "CostArbitrator", cost_estimator, DummyVerifier("MidPriority")
         )
-        test_cost_arbitrator.add_option(
-            self.test_behavior_high_priority, NO_FLAGS, cost_estimator
-        )
-        test_cost_arbitrator.add_option(
-            self.test_behavior_mid_priority, NO_FLAGS, cost_estimator
-        )
-        test_cost_arbitrator.add_option(
-            self.test_behavior_low_priority, NO_FLAGS, cost_estimator
-        )
+
+        test_cost_arbitrator.add_option(self.test_behavior_high_priority, NO_FLAGS)
+        test_cost_arbitrator.add_option(self.test_behavior_high_priority, NO_FLAGS)
+        test_cost_arbitrator.add_option(self.test_behavior_mid_priority, NO_FLAGS)
+        test_cost_arbitrator.add_option(self.test_behavior_low_priority, NO_FLAGS)
 
         self.assertTrue(
             test_cost_arbitrator.check_invocation_condition(
@@ -325,7 +317,7 @@ class TestCommandVerification(unittest.TestCase):
             "    - (cost:  n.a.) " + ps.strike_through_on
                                    + ps.invocation_true + ps.commitment_false + "MidPriority"
                                    + ps.strike_through_off + "\n" +
-            " -> - (cost: 1.000) " + ps.invocation_true + ps.commitment_true + "LowPriority"
+            " -> - (cost:  n.a.) " + ps.invocation_true + ps.commitment_true + "LowPriority"
         )
         # fmt:on
         actual_printout = test_cost_arbitrator.to_string(

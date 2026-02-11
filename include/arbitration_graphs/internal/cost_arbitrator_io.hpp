@@ -20,8 +20,8 @@ std::ostream& CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::
     const std::string& prefix,
     const std::string& suffix) const {
 
-    if (lastEstimatedCost_) {
-        output << std::fixed << std::setprecision(3) << "- (cost: " << *lastEstimatedCost_ << ") ";
+    if (lastEstimatedCost(time)) {
+        output << std::fixed << std::setprecision(3) << "- (cost: " << *lastEstimatedCost(time) << ") ";
     } else {
         output << "- (cost:  n.a.) ";
     }
@@ -34,8 +34,8 @@ template <typename EnvironmentModelT, typename CommandT, typename SubCommandT>
 YAML::Node CostArbitrator<EnvironmentModelT, CommandT, SubCommandT>::Option::toYaml(
     const Time& time, const EnvironmentModelT& environmentModel) const {
     YAML::Node node = ArbitratorBase::Option::toYaml(time, environmentModel);
-    if (lastEstimatedCost_) {
-        node["cost"] = *lastEstimatedCost_;
+    if (lastEstimatedCost(time)) {
+        node["cost"] = *lastEstimatedCost(time);
     }
     return node;
 }

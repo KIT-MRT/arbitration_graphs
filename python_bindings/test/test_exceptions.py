@@ -130,16 +130,14 @@ class TestExceptionHandling(unittest.TestCase):
 
         t = time.time()
 
-        test_cost_arbitrator = ag.CostArbitrator()
+        test_cost_arbitrator = ag.CostArbitrator("CostArbitrator", cost_estimator)
         test_cost_arbitrator.add_option(
             test_behavior_low_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            cost_estimator,
         )
         test_cost_arbitrator.add_option(
             test_behavior_high_cost,
             ag.CostArbitrator.Option.Flags.NO_FLAGS,
-            cost_estimator,
         )
 
         self.assertTrue(

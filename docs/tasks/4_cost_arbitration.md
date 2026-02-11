@@ -34,9 +34,9 @@ Finish the implementation of the `CostEstimator` and replace the random arbitrat
 - Run the unit tests and note that some of the `CostEstimator` tests are failing
 - In `cost_estimator.cpp`, fill in the blanks to compute `nDots` and `nCells`.
 - Compile and run the unit tests for the `CostEstimator` to verify that your implementation is correct.
-- Add an instance of the `CostEstimator` to the `PacmanAgent` class and initialize it in the constructor.
+- Create an instance of the `CostEstimator` in the `PacmanAgent` constructor.
   Don't forget to include the necessary headers and extend the parameter struct with the parameters for the `CostEstimator`.
-- Replace the random arbitrator with a cost arbitrator in the `PacmanAgent` class. Pass the `CostEstimator` instance to the `addOption()` method.
+- Replace the random arbitrator with a cost arbitrator in the `PacmanAgent` class passing the `CostEstimator` instance to the constructor.
 
 ## Solution
 
@@ -86,12 +86,10 @@ To keep things tidy and consistent, add an alias definition analogous to the exi
 using CostArbitrator = arbitration_graphs::CostArbitrator<EnvironmentModel, Command>;
 ```
 
-Change the type of the `eatDotsArbitrator_` member in the `PacmanAgent` class to `CostArbitrator` and add an instance of the `CostEstimator`:
+Change the type of the `eatDotsArbitrator_` member in the `PacmanAgent` class to `CostArbitrator`:
 ```cpp
 private:
     CostArbitrator::Ptr eatDotsArbitrator_;
-
-    CostEstimator::Ptr costEstimator_;
 ```
 
 Extend the `Parameters` struct to contain the parameters for the `CostEstimator`:
@@ -107,7 +105,7 @@ struct Parameters {
 ```
 
 As always, the magic happens in the constructor of the `PacmanAgent` class.
-Instantiate the cost estimator and pass it in the `addOption` calls:
+Instantiate the cost estimator and pass it to the new cost arbitrator:
 ```cpp
 explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{game} {
     avoidGhostBehavior_ = std::make_shared<AvoidGhostBehavior>(parameters_.avoidGhostBehavior);
@@ -116,16 +114,13 @@ explicit PacmanAgent(const entt::Game& game) : parameters_{}, environmentModel_{
     eatClosestDotBehavior_ = std::make_shared<EatClosestDotBehavior>();
     moveRandomlyBehavior_ = std::make_shared<MoveRandomlyBehavior>(parameters_.moveRandomlyBehavior);
 
-    // This is now a cost arbitrator
-    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots");
     // Construct the cost estimator
-    costEstimator_ = std::make_shared<CostEstimator>(parameters_.costEstimator);
-    // Add the ChangeDotCluster and EatClosestDot behavior components as options to the
-    // cost arbitrator while also passing the cost estimator
-    eatDotsArbitrator_->addOption(
-        changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
-    eatDotsArbitrator_->addOption(
-        eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable, costEstimator_);
+    CostEstimator::Ptr costEstimator = std::make_shared<CostEstimator>(parameters_.costEstimator);
+    // This is now a cost arbitrator using the cost estimator
+    eatDotsArbitrator_ = std::make_shared<CostArbitrator>("EatDots", costEstimator);
+    // Add the ChangeDotCluster and EatClosestDot behavior components as options to the cost arbitrator
+    eatDotsArbitrator_->addOption(changeDotClusterBehavior_, CostArbitrator::Option::Flags::Interruptable);
+    eatDotsArbitrator_->addOption(eatClosestDotBehavior_, CostArbitrator::Option::Flags::Interruptable);
 
     rootArbitrator_ = std::make_shared<PriorityArbitrator>("Pac-Man");
     rootArbitrator_->addOption(chaseGhostBehavior_, PriorityArbitrator::Option::Flags::Interruptable);
