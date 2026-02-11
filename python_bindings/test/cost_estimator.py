@@ -50,6 +50,13 @@ class ScaledCostEstimatorFromCostMap(BatchCostEstimator):
         environment_model: DummyEnvironmentModel,
         candidates: list[BatchCostEstimator.Candidate],
     ) -> list[float]:
+        if not candidates:
+            return []
+
         raw_costs = [self.cost_map[cast(DummyCommand, c.command)] for c in candidates]
         max_cost = max(raw_costs)
+
+        if max_cost == 0:
+            return [0.0 for _ in raw_costs]
+
         return [c / max_cost for c in raw_costs]

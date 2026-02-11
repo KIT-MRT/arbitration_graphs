@@ -77,6 +77,12 @@ struct ScaledCostEstimatorFromCostMap : public BatchCostEstimator<DummyEnvironme
 
         std::vector<double> scaledCosts;
         scaledCosts.reserve(candidates.size());
+
+        if (maxCost == 0.0) {
+            scaledCosts.assign(rawCosts.size(), 0.0);
+            return scaledCosts;
+        }
+
         for (double cost : rawCosts) {
             scaledCosts.push_back(cost / maxCost);
         }
