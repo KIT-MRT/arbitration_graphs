@@ -185,15 +185,11 @@ public:
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
             : ArbitratorBase(name, verifier), costEstimator_{batchCostEstimator} {};
 
-    explicit CostArbitrator(const std::string& name = "CostArbitrator",
-                            const typename CostEstimatorT::Ptr& costEstimator = nullptr,
+    explicit CostArbitrator(const std::string& name,
+                            const typename CostEstimatorT::Ptr& costEstimator,
                             typename VerifierT::Ptr verifier = std::make_shared<PlaceboVerifierT>())
-            : ArbitratorBase(name, verifier) {
-        if (costEstimator) {
-            costEstimator_ = std::make_shared<PerOptionToBatchAdapterT>(costEstimator);
-        } else {
-            costEstimator_ = std::make_shared<PlaceboCostEstimator<EnvironmentModelT, SubCommandT>>();
-        };
+            : ArbitratorBase(name, verifier),
+              costEstimator_(std::make_shared<PerOptionToBatchAdapterT>(costEstimator)) {
     }
 
 

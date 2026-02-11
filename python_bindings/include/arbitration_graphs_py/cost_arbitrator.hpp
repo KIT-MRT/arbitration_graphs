@@ -138,8 +138,8 @@ inline void bindCostArbitrator(py::module& module) {
              py::arg("batch_cost_estimator") = std::make_shared<PlaceboCostEstimatorT>(),
              py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
         .def(py::init<const std::string&, const std::shared_ptr<CostEstimatorT>&, const VerifierT::Ptr&>(),
-             py::arg("name") = "CostArbitrator",
-             py::arg("cost_estimator") = nullptr,
+             py::arg("name"),
+             py::arg("cost_estimator"),
              py::arg("verifier") = std::make_shared<PlaceboVerifierT>())
         .def("add_option", &CostArbitratorT::addOption, py::arg("behavior"), py::arg("flags"))
         .def(
