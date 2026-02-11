@@ -21,6 +21,8 @@ __all__ = [
     "CostEstimator",
     "GetCommandCalledWithoutGainControlError",
     "InvalidArgumentsError",
+    "InvalidCostError",
+    "InvalidStateError",
     "InvocationConditionIsFalseError",
     "MultipleReferencesToSameInstanceError",
     "NoApplicableOptionPassedVerificationError",
