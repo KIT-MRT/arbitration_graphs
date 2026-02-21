@@ -1,0 +1,101 @@
+arbitration:
+  type: PriorityArbitrator
+  name: R
+  invocationCondition: true
+  commitmentCondition: true
+  options:
+    - type: Option
+      behavior:
+        type: PriorityArbitrator
+        name: Uninitialized
+        invocationCondition: true
+        commitmentCondition: true
+        options:
+          - type: Option
+            behavior:
+              type: Behavior
+              name: A
+              invocationCondition: true
+              commitmentCondition: true
+            verificationResult: passed
+            flags:
+              - INTERRUPTABLE
+          - type: Option
+            behavior:
+              type: Behavior
+              name: B
+              invocationCondition: false
+              commitmentCondition: false
+            flags:
+              - INTERRUPTABLE
+          - type: Option
+            behavior:
+              type: Behavior
+              name: C
+              invocationCondition: false
+              commitmentCondition: false
+            flags:
+              - INTERRUPTABLE
+          - type: Option
+            behavior:
+              type: Behavior
+              name: D
+              invocationCondition: true
+              commitmentCondition: true
+            flags:
+              - INTERRUPTABLE
+        activeBehavior: 0
+      verificationResult: passed
+      flags:
+        - INTERRUPTABLE
+    - type: Option
+      behavior:
+        type: PriorityArbitrator
+        name: E
+        invocationCondition: true
+        commitmentCondition: false
+        options:
+          - type: Option
+            behavior:
+              type: Behavior
+              name: F
+              invocationCondition: false
+              commitmentCondition: false
+            flags:
+              - INTERRUPTABLE
+          - type: Option
+            behavior:
+              type: Behavior
+              name: G
+              invocationCondition: false
+              commitmentCondition: false
+            flags:
+              - INTERRUPTABLE
+          - type: Option
+            behavior:
+              type: PriorityArbitrator
+              name: H
+              invocationCondition: true
+              commitmentCondition: false
+              options:
+                - type: Option
+                  behavior:
+                    type: Behavior
+                    name: I
+                    invocationCondition: false
+                    commitmentCondition: false
+                  flags:
+                    - INTERRUPTABLE
+                - type: Option
+                  behavior:
+                    type: Behavior
+                    name: J
+                    invocationCondition: true
+                    commitmentCondition: true
+                  flags:
+                    - INTERRUPTABLE
+            flags:
+              - INTERRUPTABLE
+      flags:
+        - INTERRUPTABLE
+  activeBehavior: 0
