@@ -40,7 +40,7 @@ std::ostream& SequenceArbitrator<EnvironmentModelT, CommandT, SubCommandT>::toSt
 
     for (int i = 0; i < static_cast<int>(this->options().size()); ++i) {
         const typename ArbitratorBase::Option::ConstPtr option = this->options().at(i);
-        const bool isCurrent = sequenceStarted_ && (i == currentIndex_);
+        const bool isCurrent = sequenceStarted_ && currentBehaviorActivated_ && (i == currentIndex_);
 
         if (isCurrent) {
             output << suffix << '\n' << prefix << " -> ";
@@ -61,7 +61,7 @@ YAML::Node SequenceArbitrator<EnvironmentModelT, CommandT, SubCommandT>::toYaml(
     for (const typename ArbitratorBase::Option::ConstPtr& option : this->options()) {
         node["options"].push_back(option->toYaml(time, environmentModel));
     }
-    if (sequenceStarted_) {
+    if (sequenceStarted_ && currentBehaviorActivated_) {
         node["activeBehavior"] = currentIndex_;
     }
 

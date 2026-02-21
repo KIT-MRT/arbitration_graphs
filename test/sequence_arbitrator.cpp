@@ -17,7 +17,7 @@ class SequenceArbitratorTest : public ::testing::Test {
 protected:
     using OptionFlags = SequenceArbitrator<DummyEnvironmentModel, DummyCommand>::Option::Flags;
 
-    // Behaviors: first two have invocation=false (unavailable), remaining have invocation=true
+    // Behaviors: first two have commitment=false (unavailable), remaining have invocation=true
     // commitment=false means the behavior completes immediately (no persistent commitment)
     // commitment=true means the behavior keeps running until told to stop
     DummyBehavior::Ptr behaviorA = std::make_shared<DummyBehavior>(true, false, "BehaviorA");
@@ -58,16 +58,32 @@ TEST_F(SequenceArbitratorTest, BasicFunctionality) {
     // Sequence has started: CC should be true (A is not committed but B and C remain)
     EXPECT_TRUE(testSequenceArbitrator.checkCommitmentCondition(time, environmentModel));
 
-    // First call: A has commitment=false → immediately advances to B
-    // B has commitment=false → immediately advances to C
-    // C has commitment=true → executes C
-    EXPECT_EQ("BehaviorC", testSequenceArbitrator.getCommand(time, environmentModel));
+    // First call: gainControl A + getCommand A → "BehaviorA"
+    EXPECT_EQ("BehaviorA", testSequenceArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ(0, behaviorA->loseControlCounter);
 
-    // C has commitment=true → CC of sequence is still true
+    // A has CC=false but B remains → sequence is still committed
+    EXPECT_TRUE(testSequenceArbitrator.checkCommitmentCondition(time, environmentModel));
+
+    // Second call: loseControl A, gainControl B + getCommand B → "BehaviorB"
+    EXPECT_EQ("BehaviorB", testSequenceArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ(1, behaviorA->loseControlCounter);
+    EXPECT_EQ(0, behaviorB->loseControlCounter);
+
+    // B has CC=false but C remains → sequence is still committed
+    EXPECT_TRUE(testSequenceArbitrator.checkCommitmentCondition(time, environmentModel));
+
+    // Third call: loseControl B, gainControl C + getCommand C → "BehaviorC"
+    EXPECT_EQ("BehaviorC", testSequenceArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ(1, behaviorB->loseControlCounter);
+    EXPECT_EQ(0, behaviorC->loseControlCounter);
+
+    // C has CC=true → sequence is still committed
     EXPECT_TRUE(testSequenceArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // Continue executing C
     EXPECT_EQ("BehaviorC", testSequenceArbitrator.getCommand(time, environmentModel));
+    EXPECT_EQ(0, behaviorC->loseControlCounter);
     EXPECT_TRUE(testSequenceArbitrator.checkCommitmentCondition(time, environmentModel));
 
     // When C's commitment becomes false, the sequence is complete
@@ -162,7 +178,21 @@ TEST_F(SequenceArbitratorTest, Printout) {
     EXPECT_EQ(expectedPrintout, actualPrintout);
 
     testSequenceArbitrator.gainControl(time, environmentModel);
-    // A and B have commitment=false, so the sequence advances directly to C
+    EXPECT_EQ("BehaviorA", testSequenceArbitrator.getCommand(time, environmentModel));
+
+    // clang-format off
+    expectedPrintout = InvocationTrueString + CommitmentTrueString + "SequenceArbitrator\n"
+                        " -> 1. " + InvocationTrueString + CommitmentFalseString + "BehaviorA\n"
+                        "    2. " + InvocationTrueString + CommitmentFalseString + "BehaviorB\n"
+                        "    3. " + InvocationTrueString + CommitmentTrueString + "BehaviorC";
+    // clang-format on
+    actualPrintout = testSequenceArbitrator.toString(time, environmentModel);
+    std::cout << actualPrintout << '\n';
+
+    EXPECT_EQ(expectedPrintout, actualPrintout);
+
+    // Advance through B to C
+    EXPECT_EQ("BehaviorB", testSequenceArbitrator.getCommand(time, environmentModel));
     EXPECT_EQ("BehaviorC", testSequenceArbitrator.getCommand(time, environmentModel));
 
     // clang-format off
@@ -208,8 +238,8 @@ TEST_F(SequenceArbitratorTest, ToYaml) {
     EXPECT_EQ(true, yaml["commitmentCondition"].as<bool>());
 
     ASSERT_EQ(true, yaml["activeBehavior"].IsDefined());
-    // A and B have commitment=false, so the sequence advances to C (index 2)
-    EXPECT_EQ(2, yaml["activeBehavior"].as<int>());
+    // After the first getCommand, BehaviorA (index 0) is active
+    EXPECT_EQ(0, yaml["activeBehavior"].as<int>());
 }
 
 TEST(SequenceArbitrator, SubCommandTypeDiffersFromCommandType) {
@@ -230,7 +260,11 @@ TEST(SequenceArbitrator, SubCommandTypeDiffersFromCommandType) {
 
     testSequenceArbitrator.gainControl(time, environmentModel);
 
-    // step1 has commitment=false → advances to step2
+    // First call: gainControl step1 + getCommand step1
+    std::string step1Name = "__Step1__";
+    EXPECT_EQ(step1Name.length(), testSequenceArbitrator.getCommand(time, environmentModel));
+
+    // Second call: step1.CC=false → advance to step2 (loseControl step1, gainControl step2, getCommand step2)
     std::string expected = "____Step2____";
     EXPECT_EQ(expected.length(), testSequenceArbitrator.getCommand(time, environmentModel));
 }

@@ -106,33 +106,35 @@ public:
     }
 
     /*!
-     * \brief Starts execution of the sequence from the first sub-behavior.
+     * \brief Starts execution of the sequence, resetting to the first sub-behavior.
+     *
+     * The first sub-behavior will be activated lazily on the first call to getCommand().
      */
-    void gainControl(const Time& time, const EnvironmentModelT& environmentModel) override {
+    void gainControl(const Time& /*time*/, const EnvironmentModelT& /*environmentModel*/) override {
         currentIndex_ = 0;
         sequenceStarted_ = true;
-        if (!sequenceOptions_.empty()) {
-            sequenceOptions_.front()->behavior()->gainControl(time, environmentModel);
-        }
+        currentBehaviorActivated_ = false;
     }
 
     /*!
-     * \brief Stops execution of the sequence and cleans up the current sub-behavior.
+     * \brief Stops execution of the sequence and cleans up the currently active sub-behavior.
      */
     void loseControl(const Time& time, const EnvironmentModelT& environmentModel) override {
-        if (sequenceStarted_ && !sequenceOptions_.empty() &&
-            currentIndex_ < static_cast<int>(sequenceOptions_.size())) {
+        if (sequenceStarted_ && currentBehaviorActivated_ && !sequenceOptions_.empty()) {
             sequenceOptions_.at(currentIndex_)->behavior()->loseControl(time, environmentModel);
         }
         currentIndex_ = 0;
         sequenceStarted_ = false;
+        currentBehaviorActivated_ = false;
     }
 
     /*!
-     * \brief Executes sub-behaviors in sequence, advancing when the current one is done.
+     * \brief Executes sub-behaviors in sequence, advancing by one step when the current one is done.
      *
-     * Advances to the next sub-behavior when the current sub-behavior's commitment condition
-     * becomes false. Returns the command of the current (active) sub-behavior.
+     * On each call, the current sub-behavior is activated (if not already) and its command is returned.
+     * If the current sub-behavior's commitment condition is false on the next call and a subsequent
+     * sub-behavior exists, the sequence advances exactly one step: loseControl on the current,
+     * gainControl on the next.
      */
     CommandT getCommand(const Time& time, const EnvironmentModelT& environmentModel) override {
         if (!sequenceStarted_ || sequenceOptions_.empty()) {
@@ -140,12 +142,19 @@ public:
                 "SequenceArbitrator::getCommand() called without prior gainControl() or with no options!");
         }
 
-        // Advance past sub-behaviors whose commitment condition has become false
-        while (currentIndex_ + 1 < static_cast<int>(sequenceOptions_.size()) &&
-               !sequenceOptions_.at(currentIndex_)->behavior()->checkCommitmentCondition(time, environmentModel)) {
+        // If the current sub-behavior has been executed before and its CC is now false, advance one step
+        if (currentBehaviorActivated_ &&
+            currentIndex_ + 1 < static_cast<int>(sequenceOptions_.size()) &&
+            !sequenceOptions_.at(currentIndex_)->behavior()->checkCommitmentCondition(time, environmentModel)) {
             sequenceOptions_.at(currentIndex_)->behavior()->loseControl(time, environmentModel);
             currentIndex_++;
+            currentBehaviorActivated_ = false;
+        }
+
+        // Lazily activate the current sub-behavior on its first execution
+        if (!currentBehaviorActivated_) {
             sequenceOptions_.at(currentIndex_)->behavior()->gainControl(time, environmentModel);
+            currentBehaviorActivated_ = true;
         }
 
         // Get and verify command from the current sub-behavior
@@ -196,6 +205,7 @@ private:
     std::vector<typename Option::Ptr> sequenceOptions_;
     int currentIndex_{0};
     bool sequenceStarted_{false};
+    bool currentBehaviorActivated_{false};
 };
 
 } // namespace arbitration_graphs
