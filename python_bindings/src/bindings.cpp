@@ -8,6 +8,7 @@
 #include "arbitration_graphs_py/exceptions.hpp"
 #include "arbitration_graphs_py/priority_arbitrator.hpp"
 #include "arbitration_graphs_py/random_arbitrator.hpp"
+#include "arbitration_graphs_py/sequence_arbitrator.hpp"
 #include "arbitration_graphs_py/verifier.hpp"
 
 #define STRINGIFY(x) #x
@@ -28,6 +29,7 @@ PYBIND11_MODULE(arbitration_graphs_py, mainModule) {
     bindCostArbitrator(mainModule);
     bindPriorityArbitrator(mainModule);
     bindRandomArbitrator(mainModule);
+    bindSequenceArbitrator(mainModule);
 
     // Add the __version__ attribute to the module
 #ifdef PROJECT_VERSION
