@@ -120,8 +120,28 @@ let ArbitratorOptionComponent = {
         optionRy: function () {
             return this.optionRx();
         },
+        optionSubtreeHeight: function (behavior) {
+            if (!behavior || !behavior.options || behavior.options.length === 0) {
+                return this.optionOuterHeight;
+            }
+            let totalHeight = 0;
+            for (const option of behavior.options) {
+                totalHeight += this.optionSubtreeHeight(option.behavior);
+            }
+            return totalHeight;
+        },
         optionY: function (index) {
-            return index * this.optionOuterHeight - this.options.length / 2 * this.optionOuterHeight + this.optionOuterHeight / 2;
+            let totalHeight = 0;
+            for (const option of this.options) {
+                totalHeight += this.optionSubtreeHeight(option.behavior);
+            }
+            let subtreeStartY = this.optionInnerHeight / 2 - totalHeight / 2;
+            let y = subtreeStartY;
+            for (let i = 0; i < index; i++) {
+                y += this.optionSubtreeHeight(this.options[i].behavior);
+            }
+            let currentSubtreeHeight = this.optionSubtreeHeight(this.options[index].behavior);
+            return y + currentSubtreeHeight / 2 - this.optionInnerHeight / 2;
         },
         normalizedUtility: function (cost, minCost, maxCost) {
             costRange = maxCost - minCost;
