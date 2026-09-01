@@ -8,6 +8,8 @@ tagline: "Task 5: Better safe than sorry"
 
 Execute only safe commands and add a fallback strategy.
 
+![](../assets/img/tutorial_arbitrator_verification.png)
+
 ## Context
 
 The arbitration graph is now complete and Pac-Man is eating dots like a pro.

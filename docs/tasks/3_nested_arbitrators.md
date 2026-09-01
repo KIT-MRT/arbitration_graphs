@@ -8,6 +8,8 @@ tagline: "Task 3: Nested arbitration graphs"
 
 Integrate a long-term behavior and add another layer to the arbitration graph.
 
+![](../assets/img/tutorial_arbitrator_EatDotsRandomly.png)
+
 ## Context
 
 We have now implemented a behavior component and integrated it into the arbitration graph.
